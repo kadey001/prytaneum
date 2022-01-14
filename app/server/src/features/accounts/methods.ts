@@ -1,9 +1,11 @@
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@app/prisma';
-import { toGlobalId } from '@local/features/utils';
+import { errors, toGlobalId } from '@local/features/utils';
 
 import * as jwt from '@local/lib/jwt';
-import { DeleteAccountForm, LoginForm, RegistrationForm, UpdateEmailForm, UpdatePasswordForm } from '@local/graphql-types';
+import { DeleteAccountForm, LoginForm, RegistrationForm, ResetPasswordForm, UpdateEmailForm, UpdatePasswordForm } from '@local/graphql-types';
+import { server } from '@local/index';
+import { sendEmail } from '@local/lib/email/email';
 
 const toUserId = toGlobalId('User');
 
@@ -209,4 +211,25 @@ export async function deleteAccount(prisma: PrismaClient, input: DeleteAccountFo
 
     // return deleted user
     return { deletedUser };
+}
+
+export async function resetPasswordRequest(prisma: PrismaClient, input: ResetPasswordForm) {
+    const result = await prisma.user.findUnique({
+        where: { email: input.email }
+    });
+    const accountFound = !!result;
+
+    // No need to send email if the account does not exist
+    if (!accountFound) return accountFound;
+    
+    try {
+        await sendEmail({
+            to: input.email,
+            subject: 'Password Reset'
+        });
+        return accountFound;
+    } catch (err) {
+        server.log.error(err);
+        throw new Error(errors.email)
+    }
 }
