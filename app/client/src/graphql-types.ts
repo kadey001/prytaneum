@@ -478,6 +478,11 @@ export type Mutation = {
   prevQuestion: Event;
   register: UserMutationResponse;
   removeQuestionFromQueue: EventQuestionMutationResponse;
+  /**
+   * send a reset password request if the account exists
+   * returns false if an account with the provided email cannot be found
+   */
+  resetPasswordRequest: ResetPasswordRequestMutationResponse;
   /** Start the event so that it is "live" */
   startEvent: EventMutationResponse;
   updateEmail: UserMutationResponse;
@@ -614,6 +619,11 @@ export type MutationRegisterArgs = {
 
 export type MutationRemoveQuestionFromQueueArgs = {
   input: RemoveQuestionFromQueue;
+};
+
+
+export type MutationResetPasswordRequestArgs = {
+  input: ResetPasswordForm;
 };
 
 
@@ -794,6 +804,17 @@ export type RegistrationForm = {
 export type RemoveQuestionFromQueue = {
   eventId: Scalars['ID'];
   questionId: Scalars['ID'];
+};
+
+export type ResetPasswordForm = {
+  email: Scalars['String'];
+};
+
+export type ResetPasswordRequestMutationResponse = MutationResponse & {
+  __typename?: 'ResetPasswordRequestMutationResponse';
+  body?: Maybe<Scalars['Boolean']>;
+  isError: Scalars['Boolean'];
+  message: Scalars['String'];
 };
 
 export type Subscription = {
