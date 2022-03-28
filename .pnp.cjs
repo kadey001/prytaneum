@@ -126,6 +126,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react-dom", "npm:17.0.2"],\
             ["@types/react-relay", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:13.0.1"],\
             ["@types/react-transition-group", "npm:4.4.2"],\
+            ["@types/react-virtualized", "npm:9.21.20"],\
             ["@types/react-window", "npm:1.8.3"],\
             ["@types/relay-runtime", "npm:13.0.1"],\
             ["@types/sharp", "npm:0.30.0"],\
@@ -167,6 +168,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-relay", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:13.0.2"],\
             ["react-test-renderer", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:17.0.2"],\
             ["react-transition-group", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:4.4.2"],\
+            ["react-virtualized", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:9.22.3"],\
             ["relay-compiler", "npm:13.0.2"],\
             ["relay-runtime", "npm:13.0.2"],\
             ["sharp", "npm:0.30.3"],\
@@ -12112,6 +12114,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-react-transition-group-npm-4.4.4-258f9685b8-86e9ff9731.zip/node_modules/@types/react-transition-group/",\
           "packageDependencies": [\
             ["@types/react-transition-group", "npm:4.4.4"],\
+            ["@types/react", "npm:17.0.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/react-virtualized", [\
+        ["npm:9.21.20", {\
+          "packageLocation": "./.yarn/cache/@types-react-virtualized-npm-9.21.20-2672997d63-70fd77d9a0.zip/node_modules/@types/react-virtualized/",\
+          "packageDependencies": [\
+            ["@types/react-virtualized", "npm:9.21.20"],\
+            ["@types/prop-types", "npm:15.7.3"],\
             ["@types/react", "npm:17.0.4"]\
           ],\
           "linkType": "HARD"\
@@ -28158,6 +28171,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["react-lifecycles-compat", [\
+        ["npm:3.0.4", {\
+          "packageLocation": "./.yarn/cache/react-lifecycles-compat-npm-3.0.4-d5e285a39e-a904b0fc0a.zip/node_modules/react-lifecycles-compat/",\
+          "packageDependencies": [\
+            ["react-lifecycles-compat", "npm:3.0.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["react-player", [\
         ["npm:1.15.3", {\
           "packageLocation": "./.yarn/cache/react-player-npm-1.15.3-10bf0dcac1-f61a261b8a.zip/node_modules/react-player/",\
@@ -28515,6 +28537,38 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prop-types", "npm:15.7.2"],\
             ["react", "npm:17.0.2"],\
             ["react-dom", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:17.0.2"]\
+          ],\
+          "packagePeers": [\
+            "@types/react-dom",\
+            "@types/react",\
+            "react-dom",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["react-virtualized", [\
+        ["npm:9.22.3", {\
+          "packageLocation": "./.yarn/cache/react-virtualized-npm-9.22.3-0fff3cbf64-5e3b566592.zip/node_modules/react-virtualized/",\
+          "packageDependencies": [\
+            ["react-virtualized", "npm:9.22.3"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:9.22.3", {\
+          "packageLocation": "./.yarn/__virtual__/react-virtualized-virtual-c76b749a74/0/cache/react-virtualized-npm-9.22.3-0fff3cbf64-5e3b566592.zip/node_modules/react-virtualized/",\
+          "packageDependencies": [\
+            ["react-virtualized", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:9.22.3"],\
+            ["@babel/runtime", "npm:7.14.0"],\
+            ["@types/react", "npm:17.0.2"],\
+            ["@types/react-dom", "npm:17.0.2"],\
+            ["clsx", "npm:1.1.1"],\
+            ["dom-helpers", "npm:5.2.1"],\
+            ["loose-envify", "npm:1.4.0"],\
+            ["prop-types", "npm:15.7.2"],\
+            ["react", "npm:17.0.2"],\
+            ["react-dom", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:17.0.2"],\
+            ["react-lifecycles-compat", "npm:3.0.4"]\
           ],\
           "packagePeers": [\
             "@types/react-dom",\

@@ -56,6 +56,7 @@ __metadata:
     "@types/react-dom": 17.0.2
     "@types/react-relay": ^13.0.1
     "@types/react-transition-group": ^4
+    "@types/react-virtualized": ^9
     "@types/react-window": ^1.8.2
     "@types/relay-runtime": ^13.0.1
     "@types/sharp": ^0
@@ -97,6 +98,7 @@ __metadata:
     react-relay: ^13.0.2
     react-test-renderer: ^17.0.2
     react-transition-group: ^4.4.2
+    react-virtualized: ^9.22.3
     relay-compiler: ^13.0.2
     relay-runtime: ^13.0.2
     sharp: ^0.30.3
@@ -7654,6 +7656,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-virtualized@npm:^9":
+  version: 9.21.20
+  resolution: "@types/react-virtualized@npm:9.21.20"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/react": "*"
+  checksum: 70fd77d9a0fc498b4eb29a195f218fd10f6ca935025813d53d3937e1464580bfbfd3a0c84806530f21cf810c1f6cf1789656052a9714b23de46702b1ac1b73c5
+  languageName: node
+  linkType: hard
+
 "@types/react-window@npm:^1.8.2":
   version: 1.8.3
   resolution: "@types/react-window@npm:1.8.3"
@@ -10971,7 +10983,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^1.1.0, clsx@npm:^1.1.1":
+"clsx@npm:^1.0.4, clsx@npm:^1.1.0, clsx@npm:^1.1.1":
   version: 1.1.1
   resolution: "clsx@npm:1.1.1"
   checksum: ff052650329773b9b245177305fc4c4dc3129f7b2be84af4f58dc5defa99538c61d4207be7419405a5f8f3d92007c954f4daba5a7b74e563d5de71c28c830063
@@ -12303,7 +12315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-helpers@npm:^5.0.1":
+"dom-helpers@npm:^5.0.1, dom-helpers@npm:^5.1.3":
   version: 5.2.1
   resolution: "dom-helpers@npm:5.2.1"
   dependencies:
@@ -21135,6 +21147,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"react-lifecycles-compat@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "react-lifecycles-compat@npm:3.0.4"
+  checksum: a904b0fc0a8eeb15a148c9feb7bc17cec7ef96e71188280061fc340043fd6d8ee3ff233381f0e8f95c1cf926210b2c4a31f38182c8f35ac55057e453d6df204f
+  languageName: node
+  linkType: hard
+
 "react-player@npm:^1.11.1":
   version: 1.15.3
   resolution: "react-player@npm:1.15.3"
@@ -21323,6 +21342,23 @@ fsevents@^1.2.7:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: b67bf5b3e86dbab72d658b9a52a3589e5960583ab28c7c66272427d8fe30d4c7de422d5046ae96bd2683cdf80cc3264b2516f5ce80cae1dbe6cf3ca6dda392c5
+  languageName: node
+  linkType: hard
+
+"react-virtualized@npm:^9.22.3":
+  version: 9.22.3
+  resolution: "react-virtualized@npm:9.22.3"
+  dependencies:
+    "@babel/runtime": ^7.7.2
+    clsx: ^1.0.4
+    dom-helpers: ^5.1.3
+    loose-envify: ^1.4.0
+    prop-types: ^15.7.2
+    react-lifecycles-compat: ^3.0.4
+  peerDependencies:
+    react: ^15.3.0 || ^16.0.0-alpha
+    react-dom: ^15.3.0 || ^16.0.0-alpha
+  checksum: 5e3b566592293bc0057bc6be4f6ee29c58c8931421d2882a3ef45ca9b24c6f3ea78bbc5a182c2916af6520845e5a90f569b3a63c9b5e89428720913e6d6239cc
   languageName: node
   linkType: hard
 
