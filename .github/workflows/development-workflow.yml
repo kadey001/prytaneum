@@ -77,7 +77,7 @@ jobs:
               run: yarn workspace @app/server generate
 
             - name: Install Playwright
-              run: yarn workspace @app/client run playwright install --with-deps
+              run: yarn workspace @app/client run playwright install --with-deps msedge
 
             - name: Run Playwright tests
               run: yarn workspace @app/client run test:e2e:ci
