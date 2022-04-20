@@ -1,9 +1,8 @@
 name: Development Workflow
 
 on:
-    pull_request_target:
-        branches: [dev]
-        types: [opened, edited, synchronize]
+    push:
+        branches: [e2e-tester]
 
 env:
     PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
