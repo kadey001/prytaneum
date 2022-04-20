@@ -89,7 +89,7 @@ jobs:
         name: Build Client
         runs-on: ubuntu-latest
         environment: development
-        needs: [linting, testing, typechecking]
+        needs: [linting, e2e-testing, typechecking]
 
         steps:
             - name: Checkout
@@ -130,7 +130,7 @@ jobs:
         name: Build Server
         runs-on: ubuntu-latest
         environment: development
-        needs: [linting, testing, typechecking]
+        needs: [linting, e2e-testing, typechecking]
 
         steps:
             - name: Checkout
