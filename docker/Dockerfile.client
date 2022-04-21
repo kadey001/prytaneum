@@ -17,6 +17,10 @@ ENV HOST 0.0.0.0
 ENV PORT 3000
 ARG DEPLOYMENT_ENV=production
 ENV DEPLOYMENT_ENV ${DEPLOYMENT_ENV}
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
 # Monorepo files
 COPY --from=build-stage /usr/monorepo/package.json ./
 COPY --from=build-stage /usr/monorepo/.yarnrc.yml ./
@@ -26,11 +30,10 @@ COPY --from=build-stage /usr/monorepo/.nvmrc ./
 COPY --from=build-stage /usr/monorepo/.yarn/releases ./.yarn/releases
 COPY --from=build-stage /usr/monorepo/.yarn/plugins ./.yarn/plugins
 # Client specific files
-COPY --from=build-stage /usr/monorepo/app/client ./app/client
-# COPY --from=build-stage /usr/monorepo/app/client/next.config.js ./app/client
-# COPY --from=build-stage /usr/monorepo/app/client/package.json ./app/client
-# COPY --from=build-stage /usr/monorepo/app/client/.next ./app/client/.next
-# COPY --from=build-stage /usr/monorepo/app/client/public ./app/client/public
+COPY --from=build-stage --chown=nextjs:nodejs /usr/monorepo/app/client ./app/client
 RUN yarn workspaces focus --production @app/client
+
+USER nextjs
+
 EXPOSE 3000
 CMD ["yarn", "workspace", "@app/client", "start"]
