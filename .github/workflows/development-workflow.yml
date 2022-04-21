@@ -13,6 +13,7 @@ env:
     SERVER_IMAGE: prytaneum-server
     NAMESPACE: development
     GRAPHQL_URL: https://dev.prytaneum.io/graphql
+    CI: 1
 
 jobs:
     linting:
