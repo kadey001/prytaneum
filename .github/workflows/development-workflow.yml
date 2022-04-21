@@ -110,20 +110,8 @@ jobs:
                       client:
                         - 'app/client/**'
 
-            # Configure Docker to use the gcloud command-line tool as a credential
-            # helper for authentication
-            - run: |-
-                  gcloud --quiet auth configure-docker
-            # Get the GKE credentials so we can deploy to the cluster
-            - uses: google-github-actions/get-gke-credentials@v0.2.1
-              with:
-                  cluster_name: ${{ env.GKE_CLUSTER }}
-                  location: ${{ env.GKE_ZONE }}
-                  credentials: ${{ secrets.GKE_SA_KEY }}
-
             # Build the Client
             - name: Build Client
-              if: steps.changes.outputs.client == 'true'
               run: |-
                   docker build \
                     -f ./docker/Dockerfile.client \
@@ -150,20 +138,8 @@ jobs:
                       server:
                         - 'app/server/**'
 
-            # Configure Docker to use the gcloud command-line tool as a credential
-            # helper for authentication
-            - run: |-
-                  gcloud --quiet auth configure-docker
-            # Get the GKE credentials so we can deploy to the cluster
-            - uses: google-github-actions/get-gke-credentials@v0.2.1
-              with:
-                  cluster_name: ${{ env.GKE_CLUSTER }}
-                  location: ${{ env.GKE_ZONE }}
-                  credentials: ${{ secrets.GKE_SA_KEY }}
-
             # Build the Server
             - name: Build Server
-              if: steps.changes.outputs.server == 'true'
               run: |-
                   docker build \
                     -f ./docker/Dockerfile.server \
