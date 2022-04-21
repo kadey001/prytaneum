@@ -127,7 +127,6 @@ jobs:
               run: |-
                   docker build \
                     -f ./docker/Dockerfile.client \
-                    --tag "gcr.io/$PROJECT_ID/$CLIENT_IMAGE:$GITHUB_SHA" \
                     --build-arg GITHUB_SHA="$GITHUB_SHA" \
                     --build-arg GITHUB_REF="$GITHUB_REF" \
                     --build-arg GRAPHQL_URL="$GRAPHQL_URL" \
