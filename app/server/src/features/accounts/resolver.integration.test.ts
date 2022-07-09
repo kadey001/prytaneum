@@ -17,7 +17,7 @@ const userData = {
     email: 'sallySmith@test.com',
     firstName: 'Sally',
     lastName: 'Smith',
-    password: 'testPassword',
+    password: 'Password1!',
     preferredLang: 'EN',
 };
 
@@ -40,6 +40,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await prisma.user.deleteMany();
+    await prisma.organization.deleteMany();
     await prisma.$disconnect();
     await server.close();
 });
@@ -131,6 +132,105 @@ describe('account resolvers', () => {
                     };
                     expect(queryResponse).toEqual(expectedResponse);
                 });
+            });
+        });
+    });
+    describe('Mutation', () => {
+        describe('register', () => {
+            test('should fail to register an account with an exisiting email', async () => {
+                // Arrange
+                const mutation = `mutation{
+                        register(input: { email: "${userData.email}", firstName: "New", lastName: "User", password: "Password1!", confirmPassword: "Password1!" })
+                        {
+                          isError
+                          message
+                          body {
+                            firstName
+                            lastName
+                            email
+                          }
+                        }
+                      }`;
+
+                // Act
+                const mutationResponse = await testClient.mutate(mutation);
+
+                // Assert
+                const expectedResponse = {
+                    data: {
+                        register: { isError: true, message: 'Account already exists.', body: null },
+                    },
+                };
+                expect(mutationResponse).toEqual(expectedResponse);
+            });
+            test('should register a new account and return registered user', async () => {
+                // Arrange
+                const mutation = `mutation{
+                        register(input: { email: "newUser@test.com", firstName: "New", lastName: "User", password: "Password1!", confirmPassword: "Password1!" })\
+                        {
+                          isError
+                          message
+                          body {
+                            firstName
+                            lastName
+                            email
+                          }
+                        }
+                      }`;
+
+                // Act
+                const mutationResponse = await testClient.mutate(mutation);
+
+                // Assert
+                const expectedResponse = {
+                    data: {
+                        register: {
+                            isError: false,
+                            message: '',
+                            body: { firstName: 'New', lastName: 'User', email: 'newUser@test.com' },
+                        },
+                    },
+                };
+                expect(mutationResponse).toEqual(expectedResponse);
+            });
+        });
+        describe('login', () => {
+            test('should login sucessfully and return user data', async () => {
+                // Arrange
+                const mutation = `mutation{
+                        login(input: { email: "${userData.email}", password: "${userData.password}" })
+                        {
+                            isError
+                            message
+                            body {
+                                id
+                                firstName
+                                lastName
+                                email
+                            }
+                        }
+                    }`;
+
+                // Act
+                const mutationResponse = await testClient.mutate(mutation);
+                console.log(mutationResponse);
+
+                // Assert
+                const expectedResponse = {
+                    data: {
+                        login: {
+                            isError: false,
+                            message: '',
+                            body: {
+                                id: toUserId(userData).id,
+                                firstName: userData.firstName,
+                                lastName: userData.lastName,
+                                email: userData.email,
+                            },
+                        },
+                    },
+                };
+                expect(mutationResponse).toEqual(expectedResponse);
             });
         });
     });
