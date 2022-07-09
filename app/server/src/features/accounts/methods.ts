@@ -157,6 +157,10 @@ export async function findOrgsByUserId(userId: string, prisma: PrismaClient) {
 export async function registerSelf(prisma: PrismaClient, input: RegistrationForm) {
     validatePasswordsMatch(input.password, input.confirmPassword);
 
+    // Validate account with email does not already exist
+    const user = await prisma.user.findUnique({ where: { email: input.email } });
+    if (user) throw new ProtectedError({ userMessage: 'Account already exists.' });
+
     const registeredUser = await register(prisma, input, input.password);
     const token = await jwt.sign({ id: toUserId(registeredUser).id });
 
