@@ -20,18 +20,20 @@ export const EVENT_VIDEO_FRAGMENT = graphql`
 
 interface EventVideoProps {
     fragmentRef: EventVideoFragment$key;
+    isModerator: boolean;
 }
 
 export function EventVideoLoader() {
     return <Skeleton variant='rectangular' style={{ width: '100%', height: '100%' }} />;
 }
 
-export function EventVideo({ fragmentRef }: EventVideoProps) {
+export function EventVideo({ fragmentRef, isModerator }: EventVideoProps) {
     const data = useFragment(EVENT_VIDEO_FRAGMENT, fragmentRef);
 
     // TODO: better system/user flow for this
-    if (!data || !data.videos || !data.videos.edges || data.videos.edges.length === 0) return <VideoPlayer url='' />;
+    if (!data || !data.videos || !data.videos.edges || data.videos.edges.length === 0)
+        return <VideoPlayer url='' isModerator={isModerator} />;
 
     // TODO: implement switcher for diff languages
-    return <VideoPlayer url={data.videos.edges[0].node.url ?? ''} />;
+    return <VideoPlayer url={data.videos.edges[0].node.url ?? ''} isModerator={isModerator} />;
 }

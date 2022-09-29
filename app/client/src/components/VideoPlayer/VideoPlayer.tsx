@@ -1,10 +1,11 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import makeStyles from '@mui/styles/makeStyles';
-import { Typography, Grid } from '@mui/material';
+import { Typography, Grid, useMediaQuery } from '@mui/material';
 import ReactPlayer, { ReactPlayerProps } from 'react-player';
+import { DefaultTheme } from '@mui/styles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     outerContainer: {
         position: 'relative',
         width: '100%',
@@ -22,7 +23,18 @@ const useStyles = makeStyles({
         height: '100%',
         backgroundColor: 'lightGrey',
     },
-});
+    moderatorPlaceholder: {
+        [theme.breakpoints.up('md')]: {
+            width: '35%',
+            height: '35%',
+        },
+        [theme.breakpoints.down('md')]: {
+            width: '100%',
+            height: '100%',
+        },
+        backgroundColor: 'lightGrey',
+    },
+}));
 
 export type VideoPlayerProps = ReactPlayerProps;
 
@@ -31,10 +43,20 @@ export type VideoPlayerProps = ReactPlayerProps;
  *  @constructor VideoPlayer
  *  @param ReactPlayerProps
  *  @param {string | string[] | SourceProps[] | MediaStream} ReactPlayerProps.url URL
+ *  @param {boolean} isModerator
  *  @param {any} ReactPlayerProps.rest rest of props to pass to ReactPlayer
  */
-export function VideoPlayer({ url, rest }: ReactPlayerProps) {
+export function VideoPlayer({ url, isModerator, rest }: ReactPlayerProps & { isModerator: boolean }) {
     const classes = useStyles();
+    const matches = useMediaQuery((theme: DefaultTheme) => theme.breakpoints.up('md'));
+
+    const getVideoSize = () => {
+        if (isModerator) {
+            return matches ? '35%' : '100%';
+        }
+        return '100%';
+    };
+
     return (
         <div className={classes.outerContainer}>
             <div className={classes.innerContainer}>
@@ -42,15 +64,20 @@ export function VideoPlayer({ url, rest }: ReactPlayerProps) {
                     <ReactPlayer
                         url={url}
                         playing={process.env.NODE_ENV === 'production'}
-                        width='100%'
-                        height='100%'
+                        width={getVideoSize()}
+                        height={getVideoSize()}
                         playsinline
                         controls
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...rest}
                     />
                 ) : (
-                    <Grid container justifyContent='center' alignContent='center' className={classes.placeholder}>
+                    <Grid
+                        container
+                        justifyContent='center'
+                        alignContent='center'
+                        className={isModerator ? classes.moderatorPlaceholder : classes.placeholder}
+                    >
                         <Typography>Prytaneum: A Crucial Tool for Democracy</Typography>
                     </Grid>
                 )}

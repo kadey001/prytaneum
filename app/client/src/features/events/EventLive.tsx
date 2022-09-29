@@ -120,7 +120,7 @@ export function EventLive({ eventLiveQueryRef, validateInviteQueryRef }: EventLi
                 {!isMdUp && <div ref={topRef} />}
                 <Grid container item md={8} direction='column' wrap='nowrap'>
                     <Grid item className={classes.video}>
-                        <EventVideo fragmentRef={node} />
+                        <EventVideo fragmentRef={node} isModerator={Boolean(node.isViewerModerator)} />
                     </Grid>
                     <EventDetailsCard fragmentRef={node} />
                     <SpeakerList fragmentRef={node} />
