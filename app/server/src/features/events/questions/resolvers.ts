@@ -26,7 +26,7 @@ export const resolvers: Resolvers = {
                     formattedQuestion.refQuestion = toQuestionId(formattedQuestion.refQuestion);
                 const edge = {
                     node: formattedQuestion,
-                    cursor: formattedQuestion.createdAt.getTime().toString(),
+                    cursor: formattedQuestion.id,
                 };
                 ctx.pubsub.publish({
                     topic: 'questionCreated',
@@ -52,7 +52,7 @@ export const resolvers: Resolvers = {
                 const formattedQuestion = toQuestionId(deletedQuestion);
                 const edge = {
                     node: formattedQuestion,
-                    cursor: formattedQuestion.createdAt.getTime().toString(),
+                    cursor: formattedQuestion.id,
                 };
                 ctx.pubsub.publish({
                     topic: 'questionDeleted',
@@ -75,9 +75,10 @@ export const resolvers: Resolvers = {
                     questionId,
                 });
                 if (!question) return question;
+                const formattedQuestion = toQuestionId(question);
                 const edge = {
-                    node: toQuestionId(question),
-                    cursor: question.createdAt.getTime().toString(),
+                    node: formattedQuestion,
+                    cursor: formattedQuestion.id,
                 };
                 ctx.pubsub.publish({
                     topic: 'questionUpdated',

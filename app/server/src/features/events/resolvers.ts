@@ -120,8 +120,29 @@ export const resolvers: Resolvers = {
         },
         async questions(parent, args, ctx, info) {
             const { id: eventId } = fromGlobalId(parent.id);
-            const questions = await Event.findQuestionsByEventId(eventId, ctx.prisma);
-            return connectionFromArray(questions.map(toQuestionId), args);
+            const { first, after } = args;
+            if (first === undefined || after === undefined)
+                throw new ProtectedError({
+                    userMessage: 'Unexpected Error Occured',
+                    internalMessage: 'first or after is undefined',
+                });
+            const { id: afterId } = fromGlobalId(after || '');
+            const { eventQuestions, hasNextPage, hasPreviousPage } = await Event.findQuestionsByEventId(
+                eventId,
+                first as number,
+                afterId,
+                ctx.prisma
+            );
+            const edges = eventQuestions.map(toQuestionId).map((question) => ({ node: question, cursor: question.id }));
+            return {
+                edges,
+                pageInfo: {
+                    hasNextPage: hasNextPage,
+                    hasPreviousPage: hasPreviousPage,
+                    startCursor: edges[0]?.cursor,
+                    endCursor: edges[edges.length - 1]?.cursor,
+                },
+            };
         },
         isViewerModerator(parent, args, ctx, info) {
             const { id: eventId } = fromGlobalId(parent.id);

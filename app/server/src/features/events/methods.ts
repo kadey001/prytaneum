@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { Event, PrismaClient } from '@local/__generated__/prisma';
+import { Event, EventQuestion, PrismaClient } from '@local/__generated__/prisma';
 import { errors, filterFields, toGlobalId } from '@local/features/utils';
 import { isMemberOfOrg } from '@local/features/permissions';
 import { ProtectedError } from '@local/lib/ProtectedError';
@@ -195,8 +195,44 @@ export async function findOrgByEventId(eventId: string, prisma: PrismaClient) {
 /**
  * find questions by event id
  */
-export async function findQuestionsByEventId(eventId: string, prisma: PrismaClient) {
-    return prisma.eventQuestion.findMany({ where: { eventId, isVisible: true }, orderBy: { createdAt: 'desc' } });
+// TODO: find solution for when the after cursor is not a valid cursor (deleted question)
+export async function findQuestionsByEventId(eventId: string, first: number, afterId: string, prisma: PrismaClient) {
+    let eventQuestions = [];
+    let previousQuestion: EventQuestion | null = null;
+    let nextQuestion: EventQuestion | null = null;
+    // If the afterId is empty string we can assume that the user is requesting the first page of questions
+    if (afterId === '') {
+        eventQuestions = await prisma.eventQuestion.findMany({
+            take: first,
+            where: { eventId, isVisible: true },
+            orderBy: { createdAt: 'desc' },
+        });
+    } else {
+        // Otherwise we can use the afterId to get the next page of questions
+        eventQuestions = await prisma.eventQuestion.findMany({
+            take: first,
+            skip: 1,
+            cursor: { id: afterId },
+            where: { eventId, isVisible: true },
+            orderBy: { createdAt: 'desc' },
+        });
+        // Only need to check for previous question if we are not on the first page
+        previousQuestion = await prisma.eventQuestion.findFirst({
+            take: -1,
+            skip: 1,
+            cursor: { id: eventQuestions[0].id },
+            where: { eventId, isVisible: true },
+            orderBy: { createdAt: 'desc' },
+        });
+    }
+    // Always check for next question to determine if there is a next page
+    nextQuestion = await prisma.eventQuestion.findFirst({
+        skip: 1,
+        cursor: { id: eventQuestions[eventQuestions.length - 1].id },
+        where: { eventId, isVisible: true },
+        orderBy: { createdAt: 'desc' },
+    });
+    return { eventQuestions, hasNextPage: !!nextQuestion, hasPreviousPage: !!previousQuestion };
 }
 
 /**
