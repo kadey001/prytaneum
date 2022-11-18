@@ -127,22 +127,25 @@ export const resolvers: Resolvers = {
                     internalMessage: 'first or after is undefined',
                 });
             const { id: afterId } = fromGlobalId(after || '');
-            const { eventQuestions, hasNextPage, hasPreviousPage } = await Event.findQuestionsByEventId(
+            const { eventQuestions, hasNextPage, hasPreviousPage } = await Event.findQuestionsByEventIdPagination(
                 eventId,
                 first as number,
                 afterId,
                 ctx.prisma
             );
-            const edges = eventQuestions.map(toQuestionId).map((question) => ({ node: question, cursor: question.id }));
-            return {
-                edges,
+            const formattedEventQuestions = eventQuestions
+                .map(toQuestionId)
+                .map((question) => ({ node: question, cursor: question.id }));
+            const connection = {
+                edges: formattedEventQuestions,
                 pageInfo: {
                     hasNextPage: hasNextPage,
                     hasPreviousPage: hasPreviousPage,
-                    startCursor: edges[0]?.cursor,
-                    endCursor: edges[edges.length - 1]?.cursor,
+                    startCursor: formattedEventQuestions[0]?.cursor,
+                    endCursor: formattedEventQuestions[formattedEventQuestions.length - 1]?.cursor,
                 },
             };
+            return connection;
         },
         isViewerModerator(parent, args, ctx, info) {
             const { id: eventId } = fromGlobalId(parent.id);
