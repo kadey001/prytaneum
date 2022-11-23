@@ -165,8 +165,8 @@ export const resolvers: Resolvers = {
                 pageInfo: {
                     hasNextPage: false,
                     hasPreviousPage: false,
-                    startCursor: edges[0]?.cursor.toString(),
-                    endCursor: edges[liveFeedback.length - 1]?.cursor.toString(),
+                    startCursor: edges[0]?.cursor,
+                    endCursor: edges[liveFeedback.length - 1]?.cursor,
                 },
             };
         },
@@ -175,15 +175,15 @@ export const resolvers: Resolvers = {
             const queryResult = await Event.findQuestionQueueByEventId(eventId, ctx.prisma);
             const toQuestionEdge = (question: EventQuestion) => ({
                 node: question,
-                cursor: question.position?.toString() ?? '',
+                cursor: question.id,
             });
             const makeConnection = <T extends ReturnType<typeof toQuestionEdge>[]>(edges: T) => ({
                 edges,
                 pageInfo: {
                     hasNextPage: false,
                     hasPreviousPage: false,
-                    startCursor: edges.length > 0 ? edges[0].cursor.toString() : '',
-                    endCursor: edges.length > 0 ? edges[edges.length - 1].cursor.toString() : '',
+                    startCursor: edges[0]?.cursor,
+                    endCursor: edges[edges.length - 1]?.cursor,
                 },
             });
             if (!queryResult) return null;

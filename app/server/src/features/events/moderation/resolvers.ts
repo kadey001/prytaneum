@@ -29,7 +29,7 @@ export const resolvers: Resolvers = {
                 const questionWithGlobalId = toQuestionId(updatedQuestion);
                 const edge = {
                     node: questionWithGlobalId,
-                    cursor: questionWithGlobalId.createdAt.getTime().toString(),
+                    cursor: questionWithGlobalId.id,
                 };
                 ctx.pubsub.publish({
                     topic: 'questionUpdated',
@@ -60,7 +60,7 @@ export const resolvers: Resolvers = {
                     enqueuedRemoveQuestion: {
                         edge: {
                             node: newCurrentQuestionWithGlobalId,
-                            cursor: newCurrentQuestionWithGlobalId.createdAt.getTime().toString(),
+                            cursor: newCurrentQuestionWithGlobalId.id,
                         },
                     },
                 },
@@ -72,7 +72,7 @@ export const resolvers: Resolvers = {
                     recordPushQuestion: {
                         edge: {
                             node: newCurrentQuestionWithGlobalId,
-                            cursor: newCurrentQuestionWithGlobalId.createdAt.getTime().toString(),
+                            cursor: newCurrentQuestionWithGlobalId.id,
                         },
                     },
                 },
@@ -97,7 +97,7 @@ export const resolvers: Resolvers = {
                     enqueuedUnshiftQuestion: {
                         edge: {
                             node: prevCurrentQuestionWithGlobalId,
-                            cursor: prevCurrentQuestion.createdAt.getTime().toString(),
+                            cursor: prevCurrentQuestionWithGlobalId.id,
                         },
                     },
                 },
@@ -108,7 +108,7 @@ export const resolvers: Resolvers = {
                     recordRemoveQuestion: {
                         edge: {
                             node: prevCurrentQuestionWithGlobalId,
-                            cursor: prevCurrentQuestion.createdAt.getTime().toString(),
+                            cursor: prevCurrentQuestionWithGlobalId.id,
                         },
                     },
                 },
@@ -160,7 +160,7 @@ export const resolvers: Resolvers = {
                 });
                 const questionWithGlobalId = toQuestionId(updatedQuestion);
                 const edge = {
-                    cursor: updatedQuestion.createdAt.getTime().toString(),
+                    cursor: questionWithGlobalId.id,
                     node: questionWithGlobalId,
                 };
                 ctx.pubsub.publish({
@@ -184,7 +184,7 @@ export const resolvers: Resolvers = {
                 });
                 const questionWithGlobalId = toQuestionId(updatedQuestion);
                 const edge = {
-                    cursor: updatedQuestion.createdAt.getTime().toString(),
+                    cursor: questionWithGlobalId.id,
                     node: questionWithGlobalId,
                 };
                 ctx.pubsub.publish({
