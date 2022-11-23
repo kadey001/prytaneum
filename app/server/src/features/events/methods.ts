@@ -197,7 +197,7 @@ export async function findOrgByEventId(eventId: string, prisma: PrismaClient) {
  * A cursor can be passed in to fetch the next page of results
  * Page length based on `first` argument
  */
-// TODO: find solution for when the after cursor is not a valid cursor (deleted question)
+// TODO: find better solution for when the after cursor is not a valid cursor (deleted question)
 export async function findQuestionsByEventIdPagination(
     eventId: string,
     first: number,
