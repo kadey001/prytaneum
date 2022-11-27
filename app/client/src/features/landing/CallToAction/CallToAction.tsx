@@ -1,53 +1,52 @@
 import * as React from 'react';
 import Image from 'next/image';
 import { Grid, Typography, Button } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useUser } from '@local/features/accounts';
 
-const useStyles = makeStyles((theme) => ({
-    header: {
-        marginBottom: theme.spacing(2),
-        display: 'flex',
-        flexDirection: 'column',
-        [theme.breakpoints.down('md')]: {
-            alignItems: 'center',
-        },
+const HeaderGrid = styled(Grid)(({ theme }) => ({
+    marginBottom: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    [theme.breakpoints.down('md')]: {
+        alignItems: 'center',
     },
-    subtitle: {
-        textAlign: 'right',
-        color: '#272C6C',
-        [theme.breakpoints.down('lg')]: {
-            textAlign: 'center',
-        },
-        [theme.breakpoints.down('sm')]: {
-            fontSize: 18,
-        },
+}));
+
+const SubtitleTypography = styled(Typography)(({ theme }) => ({
+    textAlign: 'right',
+    color: '#272C6C',
+    [theme.breakpoints.down('lg')]: {
+        textAlign: 'center',
     },
-    button: {
-        marginTop: theme.spacing(2),
-        minWidth: 300,
-        alignSelf: 'flex-start',
-        fontSize: 24,
-        [theme.breakpoints.down('lg')]: {
-            alignSelf: 'center',
-        },
-        [theme.breakpoints.down('sm')]: {
-            minWidth: 0,
-            width: '100%',
-            fontSize: 20,
-        },
+    [theme.breakpoints.down('sm')]: {
+        fontSize: 18,
+    },
+}));
+
+const ButtonStyled = styled(Button)(({ theme }) => ({
+    marginTop: theme.spacing(2),
+    minWidth: 300,
+    alignSelf: 'flex-start',
+    fontSize: 24,
+    [theme.breakpoints.down('lg')]: {
+        alignSelf: 'center',
+    },
+    [theme.breakpoints.down('sm')]: {
+        minWidth: 0,
+        width: '100%',
+        fontSize: 20,
     },
 }));
 
 export function CallToAction() {
-    const classes = useStyles();
     const router = useRouter();
     const [user] = useUser();
 
     return (
         <>
-            <Grid item xs={12} md={6} className={classes.header}>
+            <HeaderGrid item xs={12} md={6}>
                 <Image
                     data-test-id='landing-prytanum-logo'
                     alt='Prytaneum Logo'
@@ -56,30 +55,28 @@ export function CallToAction() {
                     height={665}
                     objectFit='contain'
                 />
-                <Typography variant='h5' className={classes.subtitle}>
+                <SubtitleTypography variant='h5'>
                     A crucial tool for a better democracy.
-                </Typography>
+                </SubtitleTypography>
                 {user ? (
-                    <Button
+                    <ButtonStyled
                         variant='contained'
                         color='secondary'
-                        className={classes.button}
                         onClick={() => router.push('/app/home')}
                     >
                         Go to Dashboard
-                    </Button>
+                    </ButtonStyled>
                 ) : (
-                    <Button
+                    <ButtonStyled
                         data-test-id='large-register-button'
                         variant='contained'
                         color='secondary'
-                        className={classes.button}
                         onClick={() => router.push('/register')}
                     >
                         Register
-                    </Button>
+                    </ButtonStyled>
                 )}
-            </Grid>
+            </HeaderGrid>
             <Grid item xs={12} md={6}>
                 <Image
                     alt='Prytaneum Landing Graphic'

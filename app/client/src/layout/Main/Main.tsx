@@ -5,46 +5,38 @@ import PropTypes from 'prop-types';
 import {
     Container as MUIContainer,
     ContainerProps,
-    Theme,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import clsx from 'clsx';
+import { styled } from '@mui/material/styles';
 
 type Props = {
     children?: React.ReactNodeArray | React.ReactNode;
     spacing?: number;
 } & Omit<ContainerProps, 'children'>;
 
-const useStyles = makeStyles<Theme, Props>((theme) => ({
-    root: {
-        height: '100%',
-        width: '100%',
-        flex: '1 1 100%',
-        display: 'flex',
-    },
-    main: {
-        flex: '1 1 100%',
-        position: 'relative',
-    },
-    spacing: ({ spacing }) => ({
-        padding: spacing ? theme.spacing(spacing) : 0,
-    }),
+const ContainerStyled = styled(MUIContainer)(() => ({
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    flex: '1 1 100%',
+}));
+
+const MainStyled = styled('main')(() => ({
+    flex: '1 1 100%',
+    position: 'relative',
 }));
 
 const Container = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
     const { children, className, ...passThroughProps } = props;
-    const classes = useStyles(props);
-    // console.log('main');
     return (
-        <MUIContainer
+        <ContainerStyled
             disableGutters
             maxWidth='lg'
             ref={ref}
-            className={clsx([classes.root, classes.spacing, className])}
+            className={className}
             {...passThroughProps}
         >
-            <main className={classes.main}>{children}</main>
-        </MUIContainer>
+            <MainStyled >{children}</MainStyled>
+        </ContainerStyled>
     );
 });
 

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import * as React from 'react';
 import { Grid, useMediaQuery, IconButton, ContainerProps } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useUser } from '@local/features/accounts';
 
@@ -31,13 +31,12 @@ export interface LayoutProps {
     disablePadding?: boolean;
 }
 
-const useStyles = makeStyles((theme) => ({
-    menuIcon: {
-        marginRight: theme.spacing(1),
-    },
-    main: {
-        padding: theme.spacing(3),
-    },
+const IconButtonStyled = styled(IconButton)(({ theme }) => ({
+    marginRight: theme.spacing(1),
+}));
+
+const MainStyled = styled(Main)(({ theme }) => ({
+    padding: theme.spacing(3),
 }));
 
 export function Layout({
@@ -47,7 +46,6 @@ export function Layout({
     disablePadding,
 }: LayoutProps) {
     const [open, setOpen] = React.useState(false);
-    const classes = useStyles();
     const [user] = useUser();
 
     // hardcode breakpoint based on when page resizes (default keys hid element too early or too late)
@@ -61,21 +59,24 @@ export function Layout({
         <Page>
             <AppBar sx={{ zIndex: (theme) => (!isSideNavHidden ? theme.zIndex.drawer + 1 : undefined) }}>
                 {isSideNavHidden && (
-                    <IconButton
-                        className={classes.menuIcon}
+                    <IconButtonStyled
                         onClick={() => setOpen(!open)}
                         color='inherit'
                         size='large'
                     >
                         <MenuIcon />
-                    </IconButton>
+                    </IconButtonStyled>
                 )}
             </AppBar>
             <Grid container alignItems='flex-start' item xs={12}>
                 <SideNav isOpen={open} close={() => setOpen(false)} isHidden={isSideNavHidden} />
-                <Main className={disablePadding ? undefined : classes.main} {..._ContainerProps}>
-                    {children}
-                </Main>
+                {
+                    disablePadding ? (
+                        <Main {..._ContainerProps}>{children}</Main>)
+                        : (
+                            <MainStyled {..._ContainerProps}>{children}</MainStyled>
+                        )
+                }
             </Grid>
             {/* <Footer /> */}
         </Page>
