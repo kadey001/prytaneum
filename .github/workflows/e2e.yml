@@ -4,11 +4,15 @@ name: Test end-to-end
 on:
     pull_request:
         branches:
-            - prod
+            - staging
+        paths:
+            - 'app/e2e/**'
+    push:
+        branches:
+            - staging
         paths:
             - 'app/client/**'
             - 'app/server/**'
-            - 'app/e2e/**'
 
 jobs:
     e2e:
