@@ -296,17 +296,5 @@ export const resolvers: Resolvers = {
             // Check if user is invited to the event
             return Event.isInvited(ctx.viewer.id, eventId, ctx.prisma);
         },
-        async isViewerInvited(parent, args, ctx, info) {
-            const { id: eventId } = fromGlobalId(parent.id);
-            ctx.app.log.debug(eventId);
-            if (!ctx.viewer.id) return false;
-            // Check if user is organizer or moderator (no need to check if invited when they are)
-            const isModerator = await Moderation.isModerator(ctx.viewer.id, eventId, ctx.prisma);
-            if (isModerator) return true;
-            const isMember = await Moderation.isMember(ctx.viewer.id, eventId, ctx.prisma);
-            if (isMember) return true;
-            // Check if user is invited to the event
-            return Event.isInvited(ctx.viewer.id, eventId, ctx.prisma);
-        },
     },
 };

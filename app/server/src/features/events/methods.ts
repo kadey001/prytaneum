@@ -341,9 +341,3 @@ export async function isInvited(userId: string, eventId: string, prisma: PrismaC
     console.log('RESULT: ', result);
     return Boolean(result);
 }
-
-export async function isInvited(userId: string, eventId: string, prisma: PrismaClient) {
-    const result = await prisma.eventInvited.findUnique({ where: { eventId_userId: { eventId, userId } } });
-    console.log('RESULT: ', result);
-    return Boolean(result);
-}
