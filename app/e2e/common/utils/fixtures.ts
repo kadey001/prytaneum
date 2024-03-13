@@ -1,5 +1,5 @@
 // From Playwright documentation: https://playwright.dev/docs/test-auth#testing-multiple-roles-with-pom-fixtures
-import { PlaywrightOrganizationsPage, PlaywrightDashboardPage } from '@local/common/pages';
+import { PlaywrightOrganizationsPage, PlaywrightDashboardPage, PlaywrightUserSettingsPage } from '@local/common/pages';
 import { test as base } from '@playwright/test';
 export { expect } from '@playwright/test';
 
@@ -9,6 +9,7 @@ export type Fixtures = {
     organizationsPage: PlaywrightOrganizationsPage;
     dashboardPageOrganizer: PlaywrightDashboardPage;
     dashboardPageUser: PlaywrightDashboardPage;
+    userSettingsPage: PlaywrightUserSettingsPage;
     device: Device;
 };
 
@@ -73,6 +74,12 @@ export const test = base.extend<Fixtures>({
         const device = getCurrentDevice(browserName, isMobile);
         const dashboardPage = await new PlaywrightDashboardPage(page, device).createWithUserContext(browser);
         await use(dashboardPage);
+        // Add any cleanup logic here
+    },
+    userSettingsPage: async ({ browser, page, browserName, isMobile }, use) => {
+        const device = getCurrentDevice(browserName, isMobile);
+        const userPage = await new PlaywrightUserSettingsPage(page, device).create(browser);
+        await use(userPage);
         // Add any cleanup logic here
     },
     device: async ({ browserName, isMobile }, use) => {
