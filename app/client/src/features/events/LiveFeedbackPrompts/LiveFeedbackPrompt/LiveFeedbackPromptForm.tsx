@@ -68,6 +68,16 @@ export function LiveFeedbackPromptForm({ onSubmit, onCancel }: LiveFeedbackPromp
         form.choices = newChoices;
     };
 
+    const isPromptValidForSubmission = () => {
+        if (!isFeedbackPromptValid) {
+            return false;
+        }
+        if (form.feedbackType === 'multiple-choice' && !isMultipleChoiceOptionsValid) {
+            return false;
+        }
+        return true;
+    };
+
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
             <FormTitle title='Feedback Prompt' />
@@ -158,12 +168,7 @@ export function LiveFeedbackPromptForm({ onSubmit, onCancel }: LiveFeedbackPromp
                         Cancel
                     </Button>
                 )}
-                <Button
-                    disabled={!isFeedbackPromptValid || !isMultipleChoiceOptionsValid}
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                >
+                <Button disabled={!isPromptValidForSubmission()} type='submit' variant='contained' color='primary'>
                     Create
                 </Button>
             </FormActions>
