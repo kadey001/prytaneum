@@ -96,6 +96,22 @@ export function LiveFeedbackPromptForm({ onSubmit, onCancel }: LiveFeedbackPromp
                         <FormControlLabel value='multiple-choice' control={<Radio />} label='Multiple Choice' />
                     </RadioGroup>
                 </Grid>
+                <Grid item container justifyContent='center'>
+                    {form.feedbackType === 'open-ended' && (
+                        <Typography>Ask participants to provide open ended feedback on a topic.</Typography>
+                    )}
+                    {form.feedbackType === 'vote' && (
+                        <Typography>
+                            Ask participants if they are <b>FOR</b>, <b>AGAINST</b>, or <b>CONFLICTED</b> about
+                            something and give their reasoning.
+                        </Typography>
+                    )}
+                    {form.feedbackType === 'multiple-choice' && (
+                        <Typography>
+                            Ask participants to choose from a list of options and give their reasoning.
+                        </Typography>
+                    )}
+                </Grid>
                 <TextField
                     id='feedback-prompt-field'
                     name='feedback-prompt'
