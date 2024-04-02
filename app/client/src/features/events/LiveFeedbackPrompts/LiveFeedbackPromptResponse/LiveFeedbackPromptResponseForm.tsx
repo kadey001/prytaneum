@@ -77,19 +77,21 @@ export function LiveFeedbackPromptResponseForm({ onSubmit, onCancel, promptRef }
                         </RadioGroup>
                     </Grid>
                 )}
-                <FormControl>
-                    <FormLabel component='legend'>Choose one:</FormLabel>
-                    <RadioGroup
-                        aria-label='feedback-prompt-multiple-choice'
-                        name='feedback-prompt-multiple-choice'
-                        value={form.multipleChoiceResponse}
-                        onChange={handleChange('multipleChoiceResponse')}
-                    >
-                        {promptRef.current.multipleChoiceOptions.map((option, index) => (
-                            <FormControlLabel key={index} value={option} control={<Radio />} label={option} />
-                        ))}
-                    </RadioGroup>
-                </FormControl>
+                {promptRef.current.isMultipleChoice && (
+                    <FormControl>
+                        <FormLabel component='legend'>Choose one:</FormLabel>
+                        <RadioGroup
+                            aria-label='feedback-prompt-multiple-choice'
+                            name='feedback-prompt-multiple-choice'
+                            value={form.multipleChoiceResponse}
+                            onChange={handleChange('multipleChoiceResponse')}
+                        >
+                            {promptRef.current.multipleChoiceOptions.map((option, index) => (
+                                <FormControlLabel key={index} value={option} control={<Radio />} label={option} />
+                            ))}
+                        </RadioGroup>
+                    </FormControl>
+                )}
                 <TextField
                     id='feedback-prompt-response-field'
                     name='feedback-prompt-response'
