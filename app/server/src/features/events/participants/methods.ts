@@ -53,12 +53,21 @@ export async function joinOrPingEvent(prisma: PrismaClient, eventId: string, use
 
 export async function leaveEvent(prisma: PrismaClient, eventId: string, userId: string): Promise<void> {
     try {
-        await prisma.eventParticipant.delete({
+        // Since we check for pings in the last 5 mins for active participants,
+        // we can adjust the last ping time to 6 mins ago to remove the user from the active list
+        const now = new Date();
+        const SIX_MINUTES = 1000 * 60 * 6;
+
+        // We do not want to delete the participant, as we want to keep their mute status and any other data
+        await prisma.eventParticipant.update({
             where: {
                 eventId_userId: {
                     eventId,
                     userId,
                 },
+            },
+            data: {
+                lastPingTime: new Date(now.getTime() - SIX_MINUTES),
             },
         });
     } catch (e) {
