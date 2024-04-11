@@ -128,8 +128,8 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
     }, [resumeEventDetailsRefresh, resumePingEvent]);
 
     React.useEffect(() => {
-        if (validationChecked) startPingEvent();
-    }, [startPingEvent, validationChecked]);
+        if (routeChecked && validationChecked) startPingEvent();
+    }, [routeChecked, startPingEvent, validationChecked]);
 
     // Handle private events and token validation
     React.useEffect(() => {
