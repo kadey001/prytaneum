@@ -114,6 +114,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
     const { id: eventId } = eventData;
 
     const { pausePingEvent, resumePingEvent, startPingEvent } = usePingEvent(eventId);
+    const { leaveEvent } = useLeaveEvent(eventId);
 
     const pauseParentRefreshing = React.useCallback(() => {
         pauseEventDetailsRefresh();
@@ -124,6 +125,13 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
         resumeEventDetailsRefresh();
         resumePingEvent();
     }, [resumeEventDetailsRefresh, resumePingEvent]);
+
+    React.useEffect(() => {
+        window.addEventListener('beforeunload', leaveEvent);
+        return () => {
+            window.removeEventListener('beforeunload', leaveEvent);
+        };
+    }, [leaveEvent]);
 
     React.useEffect(() => {
         if (routeChecked && validationChecked) startPingEvent();
