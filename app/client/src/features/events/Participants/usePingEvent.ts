@@ -24,12 +24,14 @@ export function usePingEvent(eventId: string) {
     const resumePingEvent = React.useCallback(() => {
         setPingPaused(false);
     }, [setPingPaused]);
-
-    useEffect(() => {
+    const startPingEvent = React.useCallback(() => {
         commit({
             variables: { eventId },
         });
+        setPingPaused(false);
+    }, [commit, eventId]);
 
+    useEffect(() => {
         const pingInterval = setInterval(() => {
             if (pingPaused) return;
             commit({
@@ -38,8 +40,7 @@ export function usePingEvent(eventId: string) {
         }, PING_INTERVAL);
 
         return () => clearInterval(pingInterval);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pingPaused, eventId, commit]);
 
-    return { pingEvent: commit, pausePingEvent, resumePingEvent };
+    return { pingEvent: commit, pausePingEvent, resumePingEvent, startPingEvent };
 }
