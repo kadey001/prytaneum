@@ -118,7 +118,7 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
                 resumeParentRefreshing,
             }}
         >
-            <PanelGroup direction='horizontal'>
+            <PanelGroup autoSaveId='mod-panels-persistence' direction='horizontal'>
                 <Panel defaultSize={25} minSize={20}>
                     <Grid container item direction='column' height='100%'>
                         <EventVideo fragmentRef={node} />
@@ -207,7 +207,7 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
                 <PanelResizeHandle />
                 {!smallBreakpoint && (
                     <Panel defaultSize={25} minSize={20}>
-                        <PanelGroup direction='vertical'>
+                        <PanelGroup autoSaveId='mod-panels-child-persistence' direction='vertical'>
                             <Grid container item direction='column' height='100%'>
                                 <Panel defaultSize={50} minSize={20}>
                                     <Grid
