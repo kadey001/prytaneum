@@ -289,6 +289,7 @@ __metadata:
     react-is: ^16.13.1
     react-player: ^2.12.0
     react-relay: ^13.0.2
+    react-resizable-panels: ^2.0.18
     react-test-renderer: ^17.0.2
     react-transition-group: ^4.4.2
     relay-compiler: ^14.0.0
@@ -25255,6 +25256,16 @@ fsevents@^1.2.7:
   peerDependencies:
     react: ^16.9.0 || ^17 || ^18
   checksum: 2fcf09cc9f7799c2c27f8a931e103651f26077088320e994e17171ffd18a249a5a64e0d314330497e3ed0530579b1987506df89fd5fb4e391d4e4bc4b66312ee
+  languageName: node
+  linkType: hard
+
+"react-resizable-panels@npm:^2.0.18":
+  version: 2.0.18
+  resolution: "react-resizable-panels@npm:2.0.18"
+  peerDependencies:
+    react: ^16.14.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.14.0 || ^17.0.0 || ^18.0.0
+  checksum: 1f4afd51d71fc7ad11134fa97ab897fa0ba3b3d5187acf771ad9bbe1c54bf9597d58f92639f30354917429f234272d6758d60cce8cfc3a35ff69c7d8bc3e19fb
   languageName: node
   linkType: hard
 
