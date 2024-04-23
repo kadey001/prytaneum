@@ -23,7 +23,7 @@
         "@fontsource/roboto": "^5.0.8",
         "@mui/icons-material": "^5.14.3",
         "@mui/material": "^5.14.0",
-        "@prisma/client": "^5.0.0",
+        "@prisma/client": "^5.12.1",
         "@types/node": "20.4.2",
         "@types/react": "18.2.15",
         "@types/react-dom": "18.2.7",
@@ -49,6 +49,6 @@
         "@yarnpkg/pnpify": "^4.0.0-rc.48",
         "eslint": "^8.47.0",
         "eslint-config-next": "13.4.18",
-        "prisma": "^5.0.0"
+        "prisma": "^5.12.1"
     }
 }
