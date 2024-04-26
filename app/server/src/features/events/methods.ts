@@ -340,3 +340,34 @@ export async function isInvited(userId: string, eventId: string, prisma: PrismaC
     const result = await prisma.eventInvited.findUnique({ where: { eventId_userId: { eventId, userId } } });
     return Boolean(result);
 }
+
+export async function findDashboardEvents(userId: string, prisma: PrismaClient) {
+    const results = await prisma.user.findUnique({ 
+        where: { id: userId }, 
+        include: {
+            moderatorOf: {
+                where: { event: {
+                    OR: [
+                        { isActive: true },
+                        { endDateTime: { gte: new Date() } }
+                    ]
+                }},
+                orderBy: { event: { startDateTime: 'asc' }},
+                select: { event: true }
+            },
+            invitedOf: {
+                where: { event: {
+                    OR: [
+                        { isActive: true },
+                        { endDateTime: { gte: new Date() } }
+                    ]
+                }},
+                orderBy: { event: { startDateTime: 'asc' }},
+                select: { event: true }
+            }
+        }
+    });
+    if (!results) return [];
+    const events = results.moderatorOf.map(({ event }) => event).concat(results.invitedOf.map(({ event }) => event));
+    return events;
+}

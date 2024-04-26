@@ -1097,6 +1097,7 @@ export type PostEventFeedbackMutationResponse = MutationResponse & {
 
 export type Query = {
   __typename?: 'Query';
+  dashboardEvents?: Maybe<Array<Event>>;
   /** Fetch a single event */
   event?: Maybe<Event>;
   eventBroadcastMessages?: Maybe<Array<EventBroadcastMessage>>;

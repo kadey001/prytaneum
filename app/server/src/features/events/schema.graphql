@@ -270,6 +270,7 @@ type Query {
     """
     event(eventId: ID!): Event
     eventBroadcastMessages(eventId: ID!): [EventBroadcastMessage!]
+    dashboardEvents: [Event!]
 }
 
 """
