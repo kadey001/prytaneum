@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<89a18e5ed98ac85ea80bcc8f175a23b0>>
+ * @generated SignedSource<<041fa4d2e2122066c8dca38a5f23c24e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,21 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Query } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
 export type DashboardQuery$variables = {};
 export type DashboardQuery$data = {
-  readonly me: {
-    readonly " $fragmentSpreads": FragmentRefs<"useDashboardEventsFragment">;
-  } | null;
+  readonly dashboardEvents: ReadonlyArray<{
+    readonly description: string | null;
+    readonly endDateTime: Date | null;
+    readonly id: string;
+    readonly isActive: boolean | null;
+    readonly isViewerModerator: boolean | null;
+    readonly organization: {
+      readonly name: string;
+    } | null;
+    readonly startDateTime: Date | null;
+    readonly title: string | null;
+    readonly topic: string | null;
+  }> | null;
 };
 export type DashboardQuery = {
   response: DashboardQuery$data;
@@ -29,18 +38,62 @@ var v0 = {
   "name": "id",
   "storageKey": null
 },
-v1 = [
-  {
-    "kind": "Literal",
-    "name": "after",
-    "value": ""
-  },
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 50
-  }
-];
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "startDateTime",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "endDateTime",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "title",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "topic",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "description",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isActive",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isViewerModerator",
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "name",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": [],
@@ -51,15 +104,30 @@ return {
       {
         "alias": null,
         "args": null,
-        "concreteType": "User",
+        "concreteType": "Event",
         "kind": "LinkedField",
-        "name": "me",
-        "plural": false,
+        "name": "dashboardEvents",
+        "plural": true,
         "selections": [
+          (v0/*: any*/),
+          (v1/*: any*/),
+          (v2/*: any*/),
+          (v3/*: any*/),
+          (v4/*: any*/),
+          (v5/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/),
           {
+            "alias": null,
             "args": null,
-            "kind": "FragmentSpread",
-            "name": "useDashboardEventsFragment"
+            "concreteType": "Organization",
+            "kind": "LinkedField",
+            "name": "organization",
+            "plural": false,
+            "selections": [
+              (v8/*: any*/)
+            ],
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -77,173 +145,31 @@ return {
       {
         "alias": null,
         "args": null,
-        "concreteType": "User",
+        "concreteType": "Event",
         "kind": "LinkedField",
-        "name": "me",
-        "plural": false,
+        "name": "dashboardEvents",
+        "plural": true,
         "selections": [
           (v0/*: any*/),
+          (v1/*: any*/),
+          (v2/*: any*/),
+          (v3/*: any*/),
+          (v4/*: any*/),
+          (v5/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/),
           {
             "alias": null,
-            "args": (v1/*: any*/),
-            "concreteType": "EventConnection",
+            "args": null,
+            "concreteType": "Organization",
             "kind": "LinkedField",
-            "name": "events",
+            "name": "organization",
             "plural": false,
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "EventEdge",
-                "kind": "LinkedField",
-                "name": "edges",
-                "plural": true,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Event",
-                    "kind": "LinkedField",
-                    "name": "node",
-                    "plural": false,
-                    "selections": [
-                      (v0/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "title",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "description",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "startDateTime",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "endDateTime",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "isViewerModerator",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "isActive",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "Organization",
-                        "kind": "LinkedField",
-                        "name": "organization",
-                        "plural": false,
-                        "selections": [
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "name",
-                            "storageKey": null
-                          },
-                          (v0/*: any*/)
-                        ],
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "__typename",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "cursor",
-                    "storageKey": null
-                  }
-                ],
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "PageInfo",
-                "kind": "LinkedField",
-                "name": "pageInfo",
-                "plural": false,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "startCursor",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "endCursor",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "hasNextPage",
-                    "storageKey": null
-                  }
-                ],
-                "storageKey": null
-              },
-              {
-                "kind": "ClientExtension",
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "__id",
-                    "storageKey": null
-                  }
-                ]
-              }
+              (v8/*: any*/),
+              (v0/*: any*/)
             ],
-            "storageKey": "events(after:\"\",first:50)"
-          },
-          {
-            "alias": null,
-            "args": (v1/*: any*/),
-            "filters": null,
-            "handle": "connection",
-            "key": "useDashboardEventsFragment_events",
-            "kind": "LinkedHandle",
-            "name": "events"
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -251,16 +177,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8468a9cff02e9250079fe7a1ce56cd16",
+    "cacheID": "600cd77117edbb1828300d9dab38c11e",
     "id": null,
     "metadata": {},
     "name": "DashboardQuery",
     "operationKind": "query",
-    "text": "query DashboardQuery {\n  me {\n    ...useDashboardEventsFragment\n    id\n  }\n}\n\nfragment useDashboardEventsFragment on User {\n  id\n  events(first: 50, after: \"\") {\n    edges {\n      node {\n        id\n        title\n        description\n        startDateTime\n        endDateTime\n        isViewerModerator\n        isActive\n        organization {\n          name\n          id\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query DashboardQuery {\n  dashboardEvents {\n    id\n    startDateTime\n    endDateTime\n    title\n    topic\n    description\n    isActive\n    isViewerModerator\n    organization {\n      name\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "48e573911902d176c175a57b8b074e14";
+(node as any).hash = "36938619379a73874f30e88888d5cb94";
 
 export default node;
