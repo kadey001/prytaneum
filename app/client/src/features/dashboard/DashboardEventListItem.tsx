@@ -3,19 +3,10 @@ import { useRouter } from 'next/router';
 import { ListItem, ListItemAvatar } from '@mui/material';
 import { Shield } from '@mui/icons-material';
 import { DashboardEvent } from '@local/features/dashboard/DashboardEvent';
+import type { TDashboardEvent } from '@local/features/dashboard/DashboardEvents';
 
 interface DashboardEventListItemProps {
-    event: {
-        id: string;
-        title: string | null;
-        description: string | null;
-        startDateTime: Date | null;
-        endDateTime: Date | null;
-        isViewerModerator: boolean | null;
-        organization: {
-            name: string;
-        } | null;
-    };
+    event: TDashboardEvent;
     divider: boolean;
     children: React.ReactNode;
 }
@@ -46,6 +37,7 @@ export function DashboardEventListItem({ event, divider, children }: DashboardEv
             onClick={handleClick}
             disableRipple={!event.isViewerModerator}
             disableTouchRipple={!event.isViewerModerator}
+            data-test-id={`dashboard-event-list-item-${event.title}`}
         >
             <ModeratorIcon isModerator={!!event.isViewerModerator} />
             <DashboardEvent

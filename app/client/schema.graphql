@@ -755,6 +755,8 @@ type PostEventFeedbackMutationResponse implements MutationResponse {
 }
 
 type Query {
+  dashboardEvents: [Event!]
+
   """Fetch a single event"""
   event(eventId: ID!): Event
   eventBroadcastMessages(eventId: ID!): [EventBroadcastMessage!]

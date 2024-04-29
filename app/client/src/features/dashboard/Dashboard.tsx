@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { graphql, PreloadedQuery, usePreloadedQuery, useQueryLoader } from 'react-relay';
+import {
+    fetchQuery,
+    graphql,
+    PreloadedQuery,
+    usePreloadedQuery,
+    useQueryLoader,
+    useRelayEnvironment,
+} from 'react-relay';
 
 import type { DashboardQuery } from '@local/__generated__/DashboardQuery.graphql';
 import { ConditionalRender } from '@local/components/ConditionalRender';
@@ -8,8 +15,18 @@ import { DashboardEvents } from './DashboardEvents';
 
 export const DASHBOARD_QUERY = graphql`
     query DashboardQuery {
-        me {
-            ...useDashboardEventsFragment
+        dashboardEvents {
+            id
+            startDateTime
+            endDateTime
+            title
+            topic
+            description
+            isActive
+            isViewerModerator
+            organization {
+                name
+            }
         }
     }
 `;
@@ -19,23 +36,42 @@ interface DashboardContainerProps {
 }
 
 export function DashboardContainer({ queryRef }: DashboardContainerProps) {
-    const { me: queryResponse } = usePreloadedQuery(DASHBOARD_QUERY, queryRef);
+    const { dashboardEvents } = usePreloadedQuery(DASHBOARD_QUERY, queryRef);
 
-    if (!queryResponse) return <Loader />;
-    return (
-        <React.Suspense fallback={<Loader />}>
-            <DashboardEvents fragmentRef={queryResponse} />
-        </React.Suspense>
-    );
+    if (!dashboardEvents) return <Loader />;
+    return <DashboardEvents dashboardEvents={dashboardEvents} />;
 }
 
 export function PreloadedDashboard() {
     const [queryRef, loadQuery, dispose] = useQueryLoader<DashboardQuery>(DASHBOARD_QUERY);
+    const [isRefreshing, setIsRefreshing] = React.useState(false);
+    const environment = useRelayEnvironment();
+    const REFRESH_INTERVAL = 60000; // 60 seconds
+
+    const refresh = React.useCallback(() => {
+        if (isRefreshing) return;
+        setIsRefreshing(true);
+        fetchQuery(environment, DASHBOARD_QUERY, {}).subscribe({
+            complete: () => {
+                setIsRefreshing(false);
+                loadQuery({}, { fetchPolicy: 'store-or-network' });
+            },
+            error: (error: any) => {
+                console.error(error);
+                setIsRefreshing(false);
+            },
+        });
+    }, [environment, isRefreshing, loadQuery]);
 
     React.useEffect(() => {
         // Load the query on initial render
         if (!queryRef) loadQuery({}, { fetchPolicy: 'network-only' });
-        return () => dispose();
+        // Refresh the query every 20 seconds
+        const interval = setInterval(refresh, REFRESH_INTERVAL);
+        return () => {
+            clearInterval(interval);
+            dispose();
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

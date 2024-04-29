@@ -32,9 +32,9 @@ export default function organizerTests() {
             // Go to Dashboard
             await dashboardPageOrganizer.goto();
 
-            // Select Live Feed
-            await dashboardPageOrganizer.clickOnLiveFeed();
-            await expect(dashboardPageOrganizer.page).toHaveURL(/.*live/);
+            // Join ongoing event
+            await dashboardPageOrganizer.clickOnJoinOngoingEventButton();
+            await expect(dashboardPageOrganizer.page).toHaveURL(/.*mod/);
         });
 
         test('I am directed back to dashboard upon refresh.', async ({ dashboardPageOrganizer }) => {

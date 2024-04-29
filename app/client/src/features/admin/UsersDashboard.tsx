@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { graphql, useQueryLoader, PreloadedQuery, usePreloadedQuery } from 'react-relay';
-import { Grid, Paper, Typography } from '@mui/material';
+import { Grid, Paper, Typography, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/styles';
 
 import { ConditionalRender, Loader } from '@local/components';
 import type { UsersDashboardQuery } from '@local/__generated__/UsersDashboardQuery.graphql';
@@ -22,11 +23,7 @@ function UsersList({ queryRef }: UsersListProps) {
     const { me } = usePreloadedQuery(USERS_DASHBOARD_QUERY, queryRef);
 
     if (!me) return <Loader />;
-    return (
-        <Grid container>
-            <UsersTable fragmentRef={me} />
-        </Grid>
-    );
+    return <UsersTable fragmentRef={me} />;
 }
 
 function PreloadedUsersList() {
@@ -46,16 +43,21 @@ function PreloadedUsersList() {
 }
 
 export function UsersDashboard() {
+    const theme = useTheme();
+    const lgUpBreakpoint = useMediaQuery(theme.breakpoints.up('lg'));
+
     return (
-        <Paper>
-            <Grid paddingLeft='1rem'>
-                <Typography variant='h4'>Admin Dashboard: Users</Typography>
-            </Grid>
-            <ConditionalRender client>
-                <React.Suspense fallback={<Loader />}>
-                    <PreloadedUsersList />
-                </React.Suspense>
-            </ConditionalRender>
-        </Paper>
+        <Grid container width={lgUpBreakpoint ? '80%' : '100%'} marginLeft={lgUpBreakpoint ? '250px' : '0px'}>
+            <Paper>
+                <Grid paddingLeft='1rem'>
+                    <Typography variant='h4'>Admin Dashboard: Users</Typography>
+                </Grid>
+                <ConditionalRender client>
+                    <React.Suspense fallback={<Loader />}>
+                        <PreloadedUsersList />
+                    </React.Suspense>
+                </ConditionalRender>
+            </Paper>
+        </Grid>
     );
 }

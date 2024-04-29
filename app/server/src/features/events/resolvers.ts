@@ -32,11 +32,11 @@ export const resolvers: Resolvers = {
             const foundEvent = await Event.findEventById(eventId, ctx.prisma);
             return foundEvent ? toEventId(foundEvent) : null;
         },
-        // async isEventPrivate(parent, args, ctx, info) {
-        //     const isPrivateEvent = await Event.isEventPrivate(ctx.prisma,{ ...args.event, eventId }, status);
-        //     if
-        //     return isPrivateEvent.map(toEventId);
-        // },
+        async dashboardEvents(parent, args, ctx, info) {
+            if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+            const foundEvents = await Event.findDashboardEvents(ctx.viewer.id, ctx.prisma);
+            return foundEvents.map(toEventId);
+        }
     },
     Mutation: {
         async createEvent(parent, args, ctx, info) {

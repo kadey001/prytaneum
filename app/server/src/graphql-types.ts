@@ -47,6 +47,7 @@ export type Query = {
     /** Fetch a single event */
     event?: Maybe<Event>;
     eventBroadcastMessages?: Maybe<Array<EventBroadcastMessage>>;
+    dashboardEvents?: Maybe<Array<Event>>;
     isOrganizer: Scalars['Boolean'];
     myFeedback?: Maybe<Array<Maybe<EventLiveFeedback>>>;
     promptResponses?: Maybe<Array<EventLiveFeedbackPromptResponse>>;
@@ -1911,6 +1912,7 @@ export type QueryResolvers<
         ContextType,
         RequireFields<QueryeventBroadcastMessagesArgs, 'eventId'>
     >;
+    dashboardEvents?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
     isOrganizer?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     myFeedback?: Resolver<
         Maybe<Array<Maybe<ResolversTypes['EventLiveFeedback']>>>,
