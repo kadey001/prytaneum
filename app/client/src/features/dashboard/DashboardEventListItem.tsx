@@ -37,6 +37,7 @@ export function DashboardEventListItem({ event, divider, children }: DashboardEv
             onClick={handleClick}
             disableRipple={!event.isViewerModerator}
             disableTouchRipple={!event.isViewerModerator}
+            data-test-id={`dashboard-event-list-item-${event.title}`}
         >
             <ModeratorIcon isModerator={!!event.isViewerModerator} />
             <DashboardEvent
