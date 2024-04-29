@@ -115,84 +115,88 @@ export function QuestionList({ fragmentRef, ActionButtons, isVisible }: Question
         <Grid container data-test-id='question-list' height={0} flex='1 1 100%' justifyContent='center'>
             {isVisible && (
                 <Grid item paddingTop='1rem' width='100%'>
-                    {ActionButtons}
-                    <ListFilter
-                        className={classes.listFilter}
-                        // filterMap={filterFuncs}
-                        onFilterChange={handleFilterChange}
-                        onSearch={handleSearch}
-                        length={filteredList.length}
-                        // menuIcons={[
-                        //     <Tooltip title='Load New'>
-                        //         <span>
-                        //             <IconButton color='inherit' onClick={togglePause}>
-                        //                 <Badge badgeContent={isPaused ? 0 : 0} color='secondary'>
-                        //                     {isPaused ? <PlayArrow /> : <Pause />}
-                        //                 </Badge>
-                        //             </IconButton>
-                        //         </span>
-                        //     </Tooltip>,
-                        // ]}
-                    />
-                    {/* <List disablePadding> */}
-                    {/* TODO: Restore Later 
+                    <React.Fragment>
+                        {ActionButtons}
+                        <ListFilter
+                            className={classes.listFilter}
+                            // filterMap={filterFuncs}
+                            onFilterChange={handleFilterChange}
+                            onSearch={handleSearch}
+                            length={filteredList.length}
+                            // menuIcons={[
+                            //     <Tooltip title='Load New'>
+                            //         <span>
+                            //             <IconButton color='inherit' onClick={togglePause}>
+                            //                 <Badge badgeContent={isPaused ? 0 : 0} color='secondary'>
+                            //                     {isPaused ? <PlayArrow /> : <Pause />}
+                            //                 </Badge>
+                            //             </IconButton>
+                            //         </span>
+                            //     </Tooltip>,
+                            // ]}
+                        />
+                        {/* <List disablePadding> */}
+                        {/* TODO: Restore Later 
                             <Grid container alignItems='center'>
                                 <Typography className={classes.text} variant='body2'>
                                     <b>{filteredList.length <= MAX_QUESTIONS_DISPLAYED ? filteredList.length : MAX_QUESTIONS_DISPLAYED}</b>
                                     &nbsp; Questions Displayed
                                 </Typography>
                             </Grid> */}
-                    <InfiniteScroller
-                        isModerator={isModerator}
-                        filteredList={filteredList}
-                        hasNext={hasNext}
-                        loadNext={loadNext}
-                    >
-                        {(isModerator ? filteredList : filteredList.slice(0, MAX_QUESTIONS_DISPLAYED)).map(
-                            (question) => (
-                                <ListItem disableGutters key={question.id} sx={{ paddingX: '0.5rem' }}>
-                                    <Card className={classes.item}>
-                                        <QuestionAuthor fragmentRef={question} />
-                                        {question.refQuestion && <QuestionQuote fragmentRef={question.refQuestion} />}
-                                        <QuestionContent fragmentRef={question} />
-                                        <Grid container alignItems='center' justifyContent='space-between'>
-                                            {isModerator && <QuestionStats fragmentRef={question} />}
-                                            <QuestionActions
-                                                style={
-                                                    !isModerator
-                                                        ? { width: '100%' }
-                                                        : { width: '100%', maxWidth: '10rem' }
-                                                }
-                                                className={classes.questionActions}
-                                                likeEnabled={!isModerator && Boolean(user)}
-                                                quoteEnabled={!isModerator && Boolean(user)}
-                                                queueEnabled={isModerator && Boolean(user)}
-                                                deleteEnabled={isModerator && Boolean(user)}
-                                                connections={connections}
-                                                fragmentRef={question}
-                                            />
-                                            {isModerator && ( // filler to justify moderator queue button
-                                                <span className={classes.filler}>
-                                                    <QuestionStats fragmentRef={question} />
-                                                </span>
+                        <InfiniteScroller
+                            isModerator={isModerator}
+                            filteredList={filteredList}
+                            hasNext={hasNext}
+                            loadNext={loadNext}
+                        >
+                            {(isModerator ? filteredList : filteredList.slice(0, MAX_QUESTIONS_DISPLAYED)).map(
+                                (question) => (
+                                    <ListItem disableGutters key={question.id} sx={{ paddingX: '0.5rem' }}>
+                                        <Card className={classes.item}>
+                                            <QuestionAuthor fragmentRef={question} />
+                                            {question.refQuestion && (
+                                                <QuestionQuote fragmentRef={question.refQuestion} />
                                             )}
-                                        </Grid>
-                                    </Card>
-                                </ListItem>
-                            )
+                                            <QuestionContent fragmentRef={question} />
+                                            <Grid container alignItems='center' justifyContent='space-between'>
+                                                {isModerator && <QuestionStats fragmentRef={question} />}
+                                                <QuestionActions
+                                                    style={
+                                                        !isModerator
+                                                            ? { width: '100%' }
+                                                            : { width: '100%', maxWidth: '10rem' }
+                                                    }
+                                                    className={classes.questionActions}
+                                                    likeEnabled={!isModerator && Boolean(user)}
+                                                    quoteEnabled={!isModerator && Boolean(user)}
+                                                    queueEnabled={isModerator && Boolean(user)}
+                                                    deleteEnabled={isModerator && Boolean(user)}
+                                                    connections={connections}
+                                                    fragmentRef={question}
+                                                />
+                                                {isModerator && ( // filler to justify moderator queue button
+                                                    <span className={classes.filler}>
+                                                        <QuestionStats fragmentRef={question} />
+                                                    </span>
+                                                )}
+                                            </Grid>
+                                        </Card>
+                                    </ListItem>
+                                )
+                            )}
+                        </InfiniteScroller>
+                        {filteredList.length === 0 && questions.length !== 0 && (
+                            <Typography align='center' variant='body2'>
+                                No results to display
+                            </Typography>
                         )}
-                    </InfiniteScroller>
-                    {filteredList.length === 0 && questions.length !== 0 && (
-                        <Typography align='center' variant='body2'>
-                            No results to display
-                        </Typography>
-                    )}
-                    {questions.length === 0 && (
-                        <Typography align='center' variant='h5'>
-                            No Questions to display :(
-                        </Typography>
-                    )}
-                    {/* </List> */}
+                        {questions.length === 0 && (
+                            <Typography align='center' variant='h5'>
+                                No Questions to display :(
+                            </Typography>
+                        )}
+                        {/* </List> */}
+                    </React.Fragment>
                 </Grid>
             )}
         </Grid>
