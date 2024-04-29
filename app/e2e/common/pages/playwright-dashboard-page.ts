@@ -55,18 +55,12 @@ export class PlaywrightDashboardPage {
     }
 
     async clickOnEvent(eventName: string, orgName: string, ongoing: boolean) {
-        const formattedDate = this.today.toLocaleDateString('en-US', {
-            month: '2-digit',
-            day: '2-digit',
-            year: 'numeric',
-        });
-        const buttonName = `${eventName} ${formattedDate} ${ongoing ? '12:00 AM' : '11:59 PM'} ${orgName}`;
-        await this.page.getByRole('button', { name: buttonName }).click();
+        await this.page.locator(`[data-test-id="dashboard-event-list-item-${eventName}"]`).click({ force: true});
         await this.page.waitForTimeout(5000); // Using this over waitForNavigation because it was not working with firefox.
     }
 
-    async clickOnLiveFeed() {
-        await this.page.getByRole('button', { name: 'view live feed of current event' }).first().click();
+    async clickOnJoinOngoingEventButton() {
+        await this.page.locator('[data-test-id="dashboard-ongoing-event-join-button"]').first().click();
         await this.page.waitForTimeout(5000); // Using this over waitForNavigation because it was not working with firefox.
     }
 }
