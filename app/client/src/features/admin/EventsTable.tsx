@@ -132,7 +132,7 @@ export function EventsTable({ fragmentRef }: EventsTableProps) {
     }, [handleLoadNext, nextPageIsLastPage]);
 
     return (
-        <React.Fragment>
+        <Grid container>
             <Grid container justifyContent='center'>
                 <SearchBar handleSearchFilter={handleSearchFilter} />
             </Grid>
@@ -235,6 +235,6 @@ export function EventsTable({ fragmentRef }: EventsTableProps) {
                     </TableFooter>
                 </Table>
             </TableContainer>
-        </React.Fragment>
+        </Grid>
     );
 }

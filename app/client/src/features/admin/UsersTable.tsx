@@ -134,7 +134,7 @@ export function UsersTable({ fragmentRef }: UsersTableProps) {
     }, [handleLoadNext, nextPageIsLastPage]);
 
     return (
-        <React.Fragment>
+        <Grid container>
             <Grid container justifyContent='center'>
                 <SearchBar handleSearchFilter={handleSearchFilter} />
             </Grid>
@@ -227,6 +227,6 @@ export function UsersTable({ fragmentRef }: UsersTableProps) {
                     </TableFooter>
                 </Table>
             </TableContainer>
-        </React.Fragment>
+        </Grid>
     );
 }
