@@ -9,6 +9,7 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import type { ModeratorActionsStartEventMutation } from '@local/__generated__/ModeratorActionsStartEventMutation.graphql';
 import type { ModeratorActionsEndEventMutation } from '@local/__generated__/ModeratorActionsEndEventMutation.graphql';
 import { useSnack } from '@local/core';
+import { ConfirmationDialog } from '@local/components/ConfirmationDialog';
 
 export const START_EVENT_MUTATION = graphql`
     mutation ModeratorActionsStartEventMutation($eventId: String!) {
@@ -36,6 +37,15 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
     const theme = useTheme();
     const { displaySnack } = useSnack();
     const router = useRouter();
+    const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = React.useState(false);
+
+    const openConfirmationDialog = React.useCallback(() => {
+        setIsConfirmationDialogOpen(true);
+    }, []);
+
+    const closeConfirmationDialog = React.useCallback(() => {
+        setIsConfirmationDialogOpen(false);
+    }, []);
 
     const [commitEventEndMutation] = useMutation<ModeratorActionsStartEventMutation>(END_EVENT_MUTATION);
     const [commitEventStartMutation] = useMutation<ModeratorActionsEndEventMutation>(START_EVENT_MUTATION);
@@ -47,6 +57,7 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
                     eventId,
                 },
                 onCompleted() {
+                    closeConfirmationDialog();
                     displaySnack(
                         'Event has ended! Please note that it may take up to 30 seconds for participants to be routed to the post event page.',
                         { variant: 'error' }
@@ -60,6 +71,7 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
                     eventId,
                 },
                 onCompleted() {
+                    closeConfirmationDialog();
                     displaySnack(
                         'Event has started! Please note that it may take up to 30 seconds for participants to enter.',
                         { variant: 'success' }
@@ -99,10 +111,18 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
                 </Button>
             </Grid> */}
             <Grid item>
-                <Button variant='contained' color={isLive ? 'error' : 'success'} onClick={updateEventStatus}>
+                <Button variant='contained' color={isLive ? 'error' : 'success'} onClick={openConfirmationDialog}>
                     {isLive ? 'End Event' : 'Start Event'}
                 </Button>
             </Grid>
+            <ConfirmationDialog
+                title='Update Event Status'
+                open={isConfirmationDialogOpen}
+                onConfirm={updateEventStatus}
+                onClose={closeConfirmationDialog}
+            >
+                <React.Fragment>Are you sure you want to {isLive ? 'end' : 'start'} the event?</React.Fragment>
+            </ConfirmationDialog>
         </Grid>
     );
 }
