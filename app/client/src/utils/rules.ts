@@ -6,3 +6,6 @@ export const BROADCAST_MESSAGE_MAX_LENGTH = 500;
 export const CHOICE_MAX_LENGTH = 250;
 export const CHOICES_MAX_AMOUNT = 20;
 export const STARTING_CHOICE_AMOUNT = 4;
+export const EVENT_TOPIC_MAX_LENGTH = 100;
+export const EVENT_TITLE_MAX_LENGTH = 100;
+export const EVENT_DESCRIPTION_MAX_LENGTH = 500;
