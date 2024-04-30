@@ -2,6 +2,7 @@ import { graphql, useMutation } from 'react-relay';
 
 import type { UpdateEventMutation, UpdateEventMutation$data } from '@local/__generated__/UpdateEventMutation.graphql';
 import { EventForm, TEventForm, EventFormProps } from './EventForm';
+import { useSnack } from '@local/core';
 
 export const UPDATE_EVENT_MUTATION = graphql`
     mutation UpdateEventMutation($input: UpdateEvent!) {
@@ -23,12 +24,13 @@ export const UPDATE_EVENT_MUTATION = graphql`
 export type TUpdatedEvent = NonNullable<UpdateEventMutation$data['updateEvent']>;
 export type UpdateEventProps = {
     eventId: string;
-    onSubmit: (event: TUpdatedEvent) => void;
+    onSubmit: () => void;
     form: TEventForm;
 } & Omit<EventFormProps, 'onSubmit' | 'form' | 'formType'>;
 
 export function UpdateEvent({ eventId, onSubmit, ...eventFormProps }: UpdateEventProps) {
     const [commit] = useMutation<UpdateEventMutation>(UPDATE_EVENT_MUTATION);
+    const { displaySnack } = useSnack();
 
     function handleSubmit(submittedForm: TEventForm) {
         commit({
@@ -39,7 +41,11 @@ export function UpdateEvent({ eventId, onSubmit, ...eventFormProps }: UpdateEven
                 },
             },
             onCompleted(results) {
-                if (results.updateEvent) onSubmit(results.updateEvent);
+                if (results.updateEvent.isError) displaySnack(results.updateEvent.message, { variant: 'error' });
+                else onSubmit();
+            },
+            onError(err) {
+                displaySnack(err.message, { variant: 'error' });
             },
         });
     }
