@@ -84,7 +84,7 @@ model Event {
     startDateTime DateTime
     endDateTime DateTime
     description String @db.VarChar(500)
-    topic String @db.VarChar(50)
+    topic String @db.VarChar(100)
     currentQuestion String @db.VarChar(14) @default("-1")
     // settings defaults are built into the business logic layer rather than the db layer
     isActive Boolean
