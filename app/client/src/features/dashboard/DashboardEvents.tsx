@@ -80,6 +80,11 @@ export function DashboardEvents({ dashboardEvents }: DashboardEventsProps) {
                             Current Events
                         </Typography>
                         <List>
+                            {ongoingEvents.length === 0 && (
+                                <Grid container justifyContent='center'>
+                                    <Typography variant='subtitle2'>No Ongoing Events To Display</Typography>
+                                </Grid>
+                            )}
                             {ongoingEvents.map((event, idx) => (
                                 <DashboardEventListItem
                                     key={event.id}
@@ -116,6 +121,11 @@ export function DashboardEvents({ dashboardEvents }: DashboardEventsProps) {
                             Upcoming Events
                         </Typography>
                         <List>
+                            {upcomingEvents.length === 0 && (
+                                <Grid container justifyContent='center'>
+                                    <Typography variant='subtitle2'>No Upcoming Events To Display</Typography>
+                                </Grid>
+                            )}
                             {upcomingEvents.map((event, idx) => (
                                 <DashboardEventListItem
                                     key={event.id}
