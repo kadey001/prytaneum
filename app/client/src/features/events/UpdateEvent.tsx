@@ -44,6 +44,9 @@ export function UpdateEvent({ eventId, onSubmit, ...eventFormProps }: UpdateEven
                 if (results.updateEvent.isError) displaySnack(results.updateEvent.message, { variant: 'error' });
                 else onSubmit();
             },
+            onError(err) {
+                displaySnack(err.message, { variant: 'error' });
+            },
         });
     }
 

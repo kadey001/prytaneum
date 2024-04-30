@@ -38,6 +38,9 @@ export function DeleteModerator(props: DeleteModeratorProps) {
                     onConfirm();
                 }
             },
+            onError: (err) => {
+                displaySnack(err.message, { variant: 'error' });
+            },
         });
     };
     return (

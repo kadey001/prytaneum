@@ -6,6 +6,7 @@ import type {
 } from '@local/__generated__/UpdateSpeakerMutation.graphql';
 import { NullableFields } from '@local/utils/ts-utils';
 import { SpeakerForm, TSpeakerForm } from './SpeakerForm';
+import { useSnack } from '@local/core';
 
 const UPDATE_SPEAKER_MUTATION = graphql`
     mutation UpdateSpeakerMutation($input: UpdateSpeaker!) {
@@ -35,6 +36,7 @@ export interface UpdateSpeakerProps {
 
 export function UpdateSpeaker({ form, speakerId, eventId, onSubmit }: UpdateSpeakerProps) {
     const [commit] = useMutation<UpdateSpeakerMutation>(UPDATE_SPEAKER_MUTATION);
+    const { displaySnack } = useSnack();
 
     function handleSubmit(submittedForm: TSpeakerForm) {
         if (!eventId) return;
@@ -47,7 +49,11 @@ export function UpdateSpeaker({ form, speakerId, eventId, onSubmit }: UpdateSpea
                 },
             },
             onCompleted(results) {
-                if (results.updateSpeaker) onSubmit(results.updateSpeaker);
+                if (results.updateSpeaker.isError) displaySnack(results.updateSpeaker.message, { variant: 'error' });
+                else if (results.updateSpeaker) onSubmit(results.updateSpeaker);
+            },
+            onError(err) {
+                displaySnack(err.message, { variant: 'error' });
             },
         });
     }

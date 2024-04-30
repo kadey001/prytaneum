@@ -5,6 +5,7 @@ import type {
     CreateSpeakerMutation$data,
 } from '@local/__generated__/CreateSpeakerMutation.graphql';
 import { SpeakerForm, TSpeakerForm } from './SpeakerForm';
+import { useSnack } from '@local/core';
 
 const CREATE_SPEAKER_MUTATION = graphql`
     mutation CreateSpeakerMutation($input: CreateSpeaker!, $connections: [ID!]!) {
@@ -33,6 +34,7 @@ export interface CreateSpeakerProps {
 
 export function CreateSpeaker({ eventId, onSubmit, connections }: CreateSpeakerProps) {
     const [commit] = useMutation<CreateSpeakerMutation>(CREATE_SPEAKER_MUTATION);
+    const { displaySnack } = useSnack();
 
     function handleSubmit(form: TSpeakerForm) {
         commit({
@@ -44,7 +46,11 @@ export function CreateSpeaker({ eventId, onSubmit, connections }: CreateSpeakerP
                 connections: connections ?? [],
             },
             onCompleted(results) {
-                if (results.createSpeaker) onSubmit(results.createSpeaker);
+                if (results.createSpeaker.isError) displaySnack(results.createSpeaker.message, { variant: 'error' });
+                else if (results.createSpeaker) onSubmit(results.createSpeaker);
+            },
+            onError(err) {
+                displaySnack(err.message, { variant: 'error' });
             },
         });
     }
