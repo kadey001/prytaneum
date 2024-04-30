@@ -405,6 +405,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-is", "npm:16.13.1"],\
             ["react-player", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:2.12.0"],\
             ["react-relay", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:13.2.0"],\
+            ["react-resizable-panels", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:2.0.18"],\
             ["react-test-renderer", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:17.0.2"],\
             ["react-transition-group", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:4.4.2"],\
             ["relay-compiler", "npm:14.0.0"],\
@@ -33781,6 +33782,32 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "packagePeers": [\
             "@types/react",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["react-resizable-panels", [\
+        ["npm:2.0.18", {\
+          "packageLocation": "./.yarn/cache/react-resizable-panels-npm-2.0.18-8f92f9df86-1f4afd51d7.zip/node_modules/react-resizable-panels/",\
+          "packageDependencies": [\
+            ["react-resizable-panels", "npm:2.0.18"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:2.0.18", {\
+          "packageLocation": "./.yarn/__virtual__/react-resizable-panels-virtual-e454fcd27e/0/cache/react-resizable-panels-npm-2.0.18-8f92f9df86-1f4afd51d7.zip/node_modules/react-resizable-panels/",\
+          "packageDependencies": [\
+            ["react-resizable-panels", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:2.0.18"],\
+            ["@types/react", "npm:17.0.2"],\
+            ["@types/react-dom", "npm:17.0.2"],\
+            ["react", "npm:17.0.2"],\
+            ["react-dom", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:17.0.2"]\
+          ],\
+          "packagePeers": [\
+            "@types/react-dom",\
+            "@types/react",\
+            "react-dom",\
             "react"\
           ],\
           "linkType": "HARD"\
