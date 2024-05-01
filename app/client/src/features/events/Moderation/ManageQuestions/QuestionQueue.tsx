@@ -4,7 +4,6 @@ import { useTheme } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 import { Select, MenuItem, Grid, Typography, Card, List, ListItem, IconButton, SelectProps } from '@mui/material';
 import { graphql, useMutation } from 'react-relay';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ListFilter, { useFilters, Accessors } from '@local/components/ListFilter';
 import type { QuestionQueueMutation } from '@local/__generated__/QuestionQueueMutation.graphql';
@@ -12,12 +11,12 @@ import type {
     useQuestionQueueFragment$data,
     useQuestionQueueFragment$key,
 } from '@local/__generated__/useQuestionQueueFragment.graphql';
-import DragArea from '@local/components/DragArea';
-import DropArea from '@local/components/DropArea';
 import { ArrayElement } from '@local/utils/ts-utils';
+import { closestCenter, DndContext, DragEndEvent, useSensors, PointerSensor, useSensor } from '@dnd-kit/core';
+import { SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 import { QuestionAuthor, QuestionStats, QuestionContent, QuestionQuote } from '../../Questions';
-import { NextQuestionButton } from './NextQuestionButton';
 import { useEvent } from '../../useEvent';
 import { useQuestionQueue } from './useQuestionQueue';
 import { useRecordPush } from './useRecordPush';
@@ -26,8 +25,9 @@ import { useRecordUnshift } from './useRecordUnshift';
 import { useEnqueuedPush } from './useEnqueuedPush';
 import { useEnqueuedRemove } from './useEnqueuedRemove';
 import { useEnqueuedUnshift } from './useEnqueuedUnshift';
-import { QuestionActions } from '../../Questions/QuestionActions';
 import { useSnack } from '@local/core';
+import { FragmentRefs } from 'relay-runtime';
+import { QuestionActions } from '../../Questions/QuestionActions';
 
 const useStyles = makeStyles((theme) => ({
     item: {
@@ -118,6 +118,58 @@ export const QUESTION_QUEUE_MUTATION = graphql`
         }
     }
 `;
+
+type ProcessedQuestion = {
+    id: string;
+    cursor: string;
+    node: {
+        readonly createdBy: {
+            readonly firstName: string | null;
+        } | null;
+        readonly id: string;
+        readonly position: string;
+        readonly question: string | null;
+        readonly refQuestion: {
+            readonly ' $fragmentSpreads': FragmentRefs<any>;
+        } | null;
+        readonly ' $fragmentSpreads': FragmentRefs<any>;
+    };
+};
+
+const SortableQuestion = ({ question, connections }: { question: ProcessedQuestion; connections: string[] }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: question.node.id });
+    const style = { transition, transform: CSS.Transform.toString(transform) };
+
+    return (
+        <div
+            ref={setNodeRef}
+            {...attributes}
+            {...listeners}
+            style={{ ...style, padding: '0.5rem', width: '100%', borderRadius: '10px', position: 'relative' }}
+        >
+            <Card sx={{ paddingBottom: '.5rem' }}>
+                <QuestionAuthor fragmentRef={question.node} />
+                {question.node.refQuestion && <QuestionQuote fragmentRef={question.node.refQuestion} />}
+                <QuestionContent fragmentRef={question.node} />
+                <Grid container alignItems='center' justifyContent='space-between'>
+                    <QuestionStats fragmentRef={question.node} />
+                    <QuestionActions
+                        style={{ display: 'flex', justifyContent: 'center', width: '10rem' }}
+                        likeEnabled={Boolean(false)}
+                        quoteEnabled={Boolean(false)}
+                        queueEnabled={Boolean(true)}
+                        deleteEnabled={Boolean(false)}
+                        connections={connections}
+                        fragmentRef={question.node}
+                    />
+                    <span style={{ visibility: 'hidden' }}>
+                        <QuestionStats fragmentRef={question.node} />
+                    </span>
+                </Grid>
+            </Card>
+        </div>
+    );
+};
 
 /**
  * abstracting most of the styling/generic logic away
@@ -210,6 +262,14 @@ interface QuestionQueueProps {
 }
 
 export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
+    const { displaySnack } = useSnack();
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        })
+    );
     //
     // ─── HOOKS ──────────────────────────────────────────────────────────────────────
     //
@@ -233,7 +293,7 @@ export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
 
     const { eventId } = useEvent();
     const classes = useStyles();
-    const [reorder, getListStyle, itemStyle] = useStyledQueue({ eventId });
+    const [reorder] = useStyledQueue({ eventId });
 
     //
     // ─── SUBSCRIPTION HOOKS ─────────────────────────────────────────────────────────
@@ -263,7 +323,7 @@ export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
         [questionQueue]
     );
     // const canGoBackward = React.useMemo(() => questionRecord.length > 0, [questionRecord]);
-    const canGoForward = React.useMemo(() => enqueuedQuestions.length > 0, [enqueuedQuestions]);
+    // const canGoForward = React.useMemo(() => enqueuedQuestions.length > 0, [enqueuedQuestions]);
     const currentQuestion = React.useMemo(
         () => (questionRecord.length > 0 ? questionRecord[questionRecord.length - 1] : null),
         [questionRecord]
@@ -272,28 +332,10 @@ export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
         () => (questionRecord.length > 0 ? questionRecord.slice(0, -1) : []), // removes current question from display in tab for previous questions
         [questionRecord]
     );
-    const nextQuestion = React.useMemo(
-        () => (canGoForward ? enqueuedQuestions[0] : null),
-        [canGoForward, enqueuedQuestions]
-    );
 
     //
     // ─── UTILITIES ──────────────────────────────────────────────────────────────────
     //
-
-    const onDragEnd = React.useCallback(
-        (result: DropResult) => {
-            // dropped outside the list
-            if (!result.destination || !enqueuedQuestions) return;
-            reorder(
-                enqueuedQuestions,
-                result.source.index,
-                result.destination.index,
-                parseInt(currentQuestion?.node.position || '0')
-            );
-        },
-        [enqueuedQuestions, reorder, currentQuestion]
-    );
 
     const accessors = React.useMemo<Accessors<ArrayElement<typeof enqueuedQuestions>>[]>(
         () => [
@@ -313,6 +355,32 @@ export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
 
     const [filteredList, handleSearch, handleFilterChange] = useFilters(enqueuedQuestions, accessors);
     const [prevFilteredList, prevHandleSearch, prevHandleFilterChange] = useFilters(prevQuestions, prevAccessors);
+
+    // need id at root of oject for dnd-kit sortable
+    const processedList = React.useMemo(() => {
+        return filteredList.map((question) => ({
+            ...question,
+            id: question.node.id,
+        }));
+    }, [filteredList]);
+
+    const onDragEnd = React.useCallback(
+        (event: DragEndEvent) => {
+            const { active, over } = event;
+            if (!over) return;
+            if (active.id === over.id) return;
+            if (filteredList.length !== enqueuedQuestions.length) {
+                displaySnack('Cannot reorder while searching, please clear the search and try again.', {
+                    variant: 'error',
+                });
+                return;
+            }
+            const oldIndex = enqueuedQuestions.findIndex((question) => question.node.id === active.id);
+            const newIndex = enqueuedQuestions.findIndex((question) => question.node.id === over.id);
+            reorder(enqueuedQuestions, oldIndex, newIndex, parseInt(currentQuestion?.node.position || '0'));
+        },
+        [currentQuestion?.node.position, displaySnack, enqueuedQuestions, filteredList.length, reorder]
+    );
 
     if (!isVisible) return <React.Fragment />;
 
@@ -344,55 +412,17 @@ export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
                         <Grid className={classes.helperText}>
                             <Typography variant='caption'>Drag and drop questions to re-order queue</Typography>
                         </Grid>
-                        <DragDropContext onDragEnd={onDragEnd}>
-                            <DropArea getStyle={getListStyle} droppableId='droppable'>
-                                {filteredList.map((question, idx) => (
-                                    <DragArea
-                                        getStyle={itemStyle}
+                        <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd} sensors={sensors}>
+                            <SortableContext items={processedList}>
+                                {processedList.map((question) => (
+                                    <SortableQuestion
                                         key={question.node.id}
-                                        index={idx}
-                                        draggableId={question.node.id}
-                                    >
-                                        <ListItem
-                                            disableGutters
-                                            className={classes.relative}
-                                            sx={{ paddingX: '0.5rem' }}
-                                        >
-                                            {question === nextQuestion && (
-                                                <NextQuestionButton
-                                                    color='primary'
-                                                    disabled={!canGoForward}
-                                                    variant='contained'
-                                                    className={classes.nextQuestion}
-                                                />
-                                            )}
-                                            <Card className={classes.item}>
-                                                <QuestionAuthor fragmentRef={question.node} />
-                                                {question.node.refQuestion && (
-                                                    <QuestionQuote fragmentRef={question.node.refQuestion} />
-                                                )}
-                                                <QuestionContent fragmentRef={question.node} />
-                                                <Grid container alignItems='center' justifyContent='space-between'>
-                                                    <QuestionStats fragmentRef={question.node} />
-                                                    <QuestionActions
-                                                        className={classes.questionActions}
-                                                        likeEnabled={Boolean(false)}
-                                                        quoteEnabled={Boolean(false)}
-                                                        queueEnabled={Boolean(true)}
-                                                        deleteEnabled={Boolean(false)}
-                                                        connections={connections}
-                                                        fragmentRef={question.node}
-                                                    />
-                                                    <span className={classes.filler}>
-                                                        <QuestionStats fragmentRef={question.node} />
-                                                    </span>
-                                                </Grid>
-                                            </Card>
-                                        </ListItem>
-                                    </DragArea>
-                                )) ?? []}
-                            </DropArea>
-                        </DragDropContext>
+                                        question={question}
+                                        connections={connections}
+                                    />
+                                ))}
+                            </SortableContext>
+                        </DndContext>
                     </React.Fragment>
                 ) : (
                     <List>
