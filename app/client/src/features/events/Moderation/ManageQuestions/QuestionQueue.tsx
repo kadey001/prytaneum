@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
 import { Select, MenuItem, Grid, Typography, Card, List, ListItem, IconButton, SelectProps } from '@mui/material';
 import { graphql, useMutation } from 'react-relay';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -28,72 +27,6 @@ import { useEnqueuedUnshift } from './useEnqueuedUnshift';
 import { useSnack } from '@local/core';
 import { FragmentRefs } from 'relay-runtime';
 import { QuestionActions } from '../../Questions/QuestionActions';
-
-const useStyles = makeStyles((theme) => ({
-    item: {
-        width: '100%',
-        paddingTop: theme.spacing(0.5),
-        borderRadius: '10px',
-    },
-    questionActions: {
-        display: 'flex',
-        justifyContent: 'center',
-        padding: 'theme.spacing(1) 0',
-        width: '10rem',
-    },
-    filler: {
-        visibility: 'hidden',
-    },
-    relative: {
-        position: 'relative',
-    },
-    nextQuestion: {
-        paddingTop: theme.spacing(0.5),
-        paddingBottom: theme.spacing(0.5),
-        position: 'absolute',
-        top: theme.spacing(-1),
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: '#F5C64F',
-        '&:hover': {
-            background: '#E6B035',
-        },
-    },
-    previousQuestion: {
-        paddingBottom: theme.spacing(2),
-    },
-    helperText: {
-        width: '100%',
-        paddingBottom: theme.spacing(2),
-        textAlign: 'center',
-        color: '#B5B5B5',
-    },
-    select: {
-        width: '7.5rem',
-        height: 'min-content',
-        textAlign: 'center',
-        textTransform: 'uppercase',
-        fontSize: 'small',
-        fontWeight: 600,
-        '& fieldset': {
-            borderRadius: '7px',
-        },
-    },
-    menuItem: {
-        textTransform: 'uppercase',
-        fontSize: 'small',
-        fontWeight: 600,
-        borderRadius: '5px',
-    },
-    listFilter: {
-        flex: 1,
-        marginLeft: theme.spacing(0.5),
-    },
-    filterIcon: {
-        height: 'min-content',
-        marginLeft: theme.spacing(0.5),
-    },
-}));
 
 type QuestionNode = ArrayElement<
     NonNullable<NonNullable<NonNullable<useQuestionQueueFragment$data['questionQueue']>['questionRecord']>['edges']>
@@ -262,6 +195,7 @@ interface QuestionQueueProps {
 }
 
 export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
+    const theme = useTheme();
     const { displaySnack } = useSnack();
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -292,7 +226,6 @@ export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
     );
 
     const { eventId } = useEvent();
-    const classes = useStyles();
     const [reorder] = useStyledQueue({ eventId });
 
     //
@@ -388,20 +321,40 @@ export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
         <Grid container height={0} flex='1 1 100%'>
             <Grid item paddingTop='1rem' xs={12}>
                 <Grid item container sx={{ paddingX: '0.5rem' }}>
-                    <Select value={queueIndex} onChange={handleQueueChange} className={classes.select}>
-                        <MenuItem value={0} className={classes.menuItem}>
+                    <Select
+                        value={queueIndex}
+                        onChange={handleQueueChange}
+                        sx={{
+                            width: '7.5rem',
+                            height: 'min-content',
+                            textAlign: 'center',
+                            textTransform: 'uppercase',
+                            fontSize: 'small',
+                            fontWeight: 600,
+                            '& fieldset': {
+                                borderRadius: '7px',
+                            },
+                        }}
+                    >
+                        <MenuItem
+                            value={0}
+                            sx={{ textTransform: 'uppercase', fontSize: 'small', fontWeight: 600, borderRadius: '5px' }}
+                        >
                             Upcoming
                         </MenuItem>
-                        <MenuItem value={1} className={classes.menuItem}>
+                        <MenuItem
+                            value={1}
+                            sx={{ textTransform: 'uppercase', fontSize: 'small', fontWeight: 600, borderRadius: '5px' }}
+                        >
                             Previous
                         </MenuItem>
                     </Select>
                     {/* TODO: add filter functionality */}
-                    <IconButton className={classes.filterIcon} size='large'>
+                    <IconButton sx={{ height: 'min-content', marginLeft: theme.spacing(0.5) }} size='large'>
                         <FilterListIcon />
                     </IconButton>
                     <ListFilter
-                        className={classes.listFilter}
+                        style={{ flex: 1, marginLeft: theme.spacing(0.5) }}
                         onFilterChange={queueIndex === 0 ? () => handleFilterChange : () => prevHandleFilterChange}
                         onSearch={queueIndex === 0 ? handleSearch : prevHandleSearch}
                         length={queueIndex === 0 ? filteredList.length : prevFilteredList.length}
@@ -409,7 +362,14 @@ export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
                 </Grid>
                 {queueIndex === 0 ? (
                     <React.Fragment>
-                        <Grid className={classes.helperText}>
+                        <Grid
+                            sx={{
+                                width: '100%',
+                                paddingBottom: theme.spacing(2),
+                                textAlign: 'center',
+                                color: '#B5B5B5',
+                            }}
+                        >
                             <Typography variant='caption'>Drag and drop questions to re-order queue</Typography>
                         </Grid>
                         <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd} sensors={sensors}>
@@ -428,7 +388,14 @@ export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
                     <List>
                         {prevFilteredList.reverse().map((question) => (
                             <ListItem key={question.node.id} disableGutters>
-                                <Card className={`${classes.item} ${classes.previousQuestion}`}>
+                                <Card
+                                    sx={{
+                                        width: '100%',
+                                        paddingTop: theme.spacing(0.5),
+                                        borderRadius: '10px',
+                                        paddingBottom: theme.spacing(2),
+                                    }}
+                                >
                                     <QuestionAuthor fragmentRef={question.node} />
                                     {question.node.refQuestion && (
                                         <QuestionQuote fragmentRef={question.node.refQuestion} />
