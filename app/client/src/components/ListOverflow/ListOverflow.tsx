@@ -1,18 +1,7 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { List, Divider, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import ListCell from './ListCell';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        height: '100%',
-        backgroundColor: theme.palette.background.paper,
-        overflow: 'auto',
-    },
-}));
 
 export interface Props {
     rowProps: Array<{
@@ -24,8 +13,6 @@ export interface Props {
 }
 
 const ListOverflow = ({ rowProps, emptyMessage }: Props) => {
-    const classes = useStyles();
-
     if (rowProps.length === 0) {
         return <Typography>{emptyMessage}</Typography>;
     }
@@ -39,22 +26,18 @@ const ListOverflow = ({ rowProps, emptyMessage }: Props) => {
         </Fragment>
     ));
 
-    return <List className={classes.root}>{structuredUserList}</List>;
-};
-
-ListOverflow.defaultProps = {
-    emptyMessage: 'Empty List',
-};
-
-ListOverflow.propTypes = {
-    rowProps: PropTypes.arrayOf(
-        PropTypes.shape({
-            _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-            primary: PropTypes.string.isRequired,
-            secondary: PropTypes.string,
-        })
-    ).isRequired,
-    emptyMessage: PropTypes.string,
+    return (
+        <List
+            sx={{
+                width: '100%',
+                height: '100%',
+                backgroundColor: (theme) => theme.palette.background.paper,
+                overflow: 'auto',
+            }}
+        >
+            {structuredUserList}
+        </List>
+    );
 };
 
 export default ListOverflow;

@@ -7,7 +7,6 @@ import { SettingsMenu } from '@local/components/SettingsMenu/SettingsMenu';
 import { ModifyUserEmailDemo, ModifyUserPasswordDemo, DeleteAccountDemo } from '../UserSettings/components';
 
 export function UserSettingsDemo() {
-    // const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [cont, setContent] = React.useState<JSX.Element | null>(null);
     React.useEffect(() => {

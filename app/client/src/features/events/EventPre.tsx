@@ -78,13 +78,13 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                 resumeParentRefreshing: () => {},
             }}
         >
-            <Paper style={{ width: '100%', height: '100%', padding: '1rem' }}>
+            <Paper sx={{ width: '100%', height: '100%', padding: '1rem' }}>
                 <Grid container spacing={2} columns={16} height='100%'>
                     {/* Column 1 */}
                     <Grid
                         item
                         container
-                        xs={mdDownBreakpoint ? 16 : 7}
+                        xs={mdDownBreakpoint ? 16 : 6}
                         direction='column'
                         justifyContent='space-around'
                         marginLeft={mdDownBreakpoint ? '0' : '3rem'}
@@ -160,7 +160,7 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                     <Grid
                         item
                         container
-                        xs={mdDownBreakpoint ? 16 : 8}
+                        xs={mdDownBreakpoint ? 16 : 5}
                         direction='column'
                         wrap='nowrap'
                         marginLeft={lgDownBreakpoint ? 0 : 2}

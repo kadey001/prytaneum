@@ -3,7 +3,6 @@ import * as React from 'react';
 import { OperationType } from 'relay-runtime';
 import { LoadMoreFn } from 'react-relay';
 import { Grid, Card, List, ListItem, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import type { useViewerOnlyQuestionListFragment$key } from '@local/__generated__/useViewerOnlyQuestionListFragment.graphql';
@@ -22,35 +21,6 @@ import { useViewerOnlyQuestionList } from './useViewerOnlyQuestionList';
 import { useViewerOnlyQuestionCreated } from './useViewerOnlyQuestionCreated';
 import { useViewerOnlyQuestionUpdated } from './useViewerOnlyQuestionUpdated';
 import { useViewerOnlyQuestionDeleted } from './useViewerOnlyQuestionDeleted';
-
-const useStyles = makeStyles((theme) => ({
-    listFilter: {
-        flex: 1,
-        paddingLeft: '0.5rem',
-        paddingRight: '0.5rem',
-    },
-    content: {
-        height: 0, // flex box recalculates this -- explanation:  https://stackoverflow.com/a/14964944
-        flex: '1 1 100%',
-    },
-    questionActions: {
-        display: 'flex',
-        justifyContent: 'center',
-    },
-    item: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        paddingTop: theme.spacing(0.5),
-        borderRadius: '10px',
-    },
-    filler: {
-        visibility: 'hidden',
-    },
-    text: {
-        margin: 'auto',
-    },
-}));
 
 interface InfiniteScrollerProps {
     children: React.ReactNode | React.ReactNodeArray;
@@ -84,7 +54,6 @@ interface ViewerOnlyQuestionListProps {
 }
 
 export function ViewerOnlyQuestionList({ fragmentRef, ActionButtons, isVisible }: ViewerOnlyQuestionListProps) {
-    const classes = useStyles();
     const { user } = useUser();
     const { isModerator } = useEvent();
     const { questions, connections, loadNext, hasNext } = useViewerOnlyQuestionList({ fragmentRef });
@@ -113,7 +82,7 @@ export function ViewerOnlyQuestionList({ fragmentRef, ActionButtons, isVisible }
             <Grid item paddingTop='1rem' width='100%'>
                 {ActionButtons}
                 <ListFilter
-                    className={classes.listFilter}
+                    style={{ flex: 1, paddingLeft: '0.5rem', paddingRight: '0.5rem' }}
                     // filterMap={filterFuncs}
                     onFilterChange={handleFilterChange}
                     onSearch={handleSearch}
@@ -147,7 +116,10 @@ export function ViewerOnlyQuestionList({ fragmentRef, ActionButtons, isVisible }
                         {(isModerator ? filteredList : filteredList.slice(0, MAX_QUESTIONS_DISPLAYED)).map(
                             (question) => (
                                 <ListItem disableGutters key={question.id} sx={{ paddingX: '0.5rem' }}>
-                                    <Card className={classes.item}>
+                                    <Card
+                                        style={{ flex: 1, flexDirection: 'column', borderRadius: '10px' }}
+                                        sx={{ paddingTop: (theme) => theme.spacing(0.5) }}
+                                    >
                                         <QuestionAuthor fragmentRef={question} />
                                         {question.refQuestion && <QuestionQuote fragmentRef={question.refQuestion} />}
                                         <QuestionContent fragmentRef={question} />
@@ -156,10 +128,10 @@ export function ViewerOnlyQuestionList({ fragmentRef, ActionButtons, isVisible }
                                             <QuestionActions
                                                 style={
                                                     !isModerator
-                                                        ? { width: '100%' }
-                                                        : { width: '100%', maxWidth: '10rem' }
+                                                        ? { display: 'flex', width: '100%' }
+                                                        : { display: 'flex', width: '100%', maxWidth: '10rem' }
                                                 }
-                                                className={classes.questionActions}
+                                                sx={{ justifyContent: 'center' }}
                                                 likeEnabled={!isModerator && Boolean(user)}
                                                 quoteEnabled={!isModerator && Boolean(user)}
                                                 queueEnabled={isModerator && Boolean(user)}
@@ -168,7 +140,7 @@ export function ViewerOnlyQuestionList({ fragmentRef, ActionButtons, isVisible }
                                                 fragmentRef={question}
                                             />
                                             {isModerator && ( // filler to justify moderator queue button
-                                                <span className={classes.filler}>
+                                                <span style={{ visibility: 'hidden' }}>
                                                     <QuestionStats fragmentRef={question} />
                                                 </span>
                                             )}

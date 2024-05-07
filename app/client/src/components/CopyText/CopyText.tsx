@@ -39,8 +39,3 @@ export const CopyText = React.forwardRef<HTMLDivElement, Props>(
         );
     }
 );
-
-CopyText.defaultProps = {
-    className: undefined,
-    TextFieldProps: {},
-};

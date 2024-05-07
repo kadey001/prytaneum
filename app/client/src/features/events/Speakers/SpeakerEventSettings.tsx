@@ -16,7 +16,6 @@ import {
     Avatar,
 } from '@mui/material';
 import { Add, MoreVert } from '@mui/icons-material';
-import makeStyles from '@mui/styles/makeStyles';
 import { graphql, useFragment } from 'react-relay';
 
 import type {
@@ -33,15 +32,6 @@ interface EventSettingsProps {
     fragmentRef: SpeakerEventSettingsFragment$key;
     className?: string;
 }
-
-const useStyles = makeStyles(() => ({
-    listRoot: {
-        width: '100%',
-    },
-    red: {
-        color: 'red',
-    },
-}));
 
 // all this for an array element type :\
 export type TSpeaker = ArrayElement<
@@ -141,7 +131,6 @@ export const SpeakerEventSettings = ({ fragmentRef, className }: EventSettingsPr
         anchorEl: null,
         focusedSpeaker: null,
     });
-    const classes = useStyles();
 
     // close all dialogs
     const close = () => dispatch({ type: 'dialog/close-all' });
@@ -191,7 +180,7 @@ export const SpeakerEventSettings = ({ fragmentRef, className }: EventSettingsPr
             </ResponsiveDialog>
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={close}>
                 <MenuItem onClick={openUpdateForm}>Update</MenuItem>
-                <MenuItem className={classes.red} onClick={promptDelete}>
+                <MenuItem sx={{ color: 'red' }} onClick={promptDelete}>
                     Delete
                 </MenuItem>
             </Menu>
@@ -210,7 +199,7 @@ export const SpeakerEventSettings = ({ fragmentRef, className }: EventSettingsPr
                 </>
             </DeleteSpeaker>
             {speakerEdges.length > 0 ? (
-                <List className={classes.listRoot} disablePadding>
+                <List sx={{ width: '100%' }} disablePadding>
                     {speakerEdges.map(({ node }) => (
                         <ListItem key={node.id} disableGutters>
                             <ListItemAvatar>

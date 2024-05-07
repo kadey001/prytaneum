@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, DialogContent, Grid, IconButton, Typography } from '@mui/material';
+import { Button, DialogContent, Grid, IconButton, Paper, Typography } from '@mui/material';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 
@@ -59,6 +59,24 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
 
     return (
         <React.Fragment>
+            <Paper style={{ width: '100%' }}>
+                <Grid container direction='row' alignItems='center' display='grid'>
+                    <Grid item justifySelf='center' width='50px'>
+                        <img src='/static/participant_icon.svg' alt='avatar' width='50px' height='50px' />
+                    </Grid>
+                    <Grid item maxWidth='200px' minWidth='100px' gridColumn='2/5'>
+                        <Typography variant='body1'>{participant.firstName + ' ' + participant.lastName}</Typography>
+                        <Typography variant='body2' color='text.secondary'>
+                            {participant.moderatorOf ? 'Moderator' : 'Participant'}
+                        </Typography>
+                    </Grid>
+                    <Grid item gridColumn='5/6' justifySelf='center' width='50px'>
+                        <IconButton disabled={participant.moderatorOf} onClick={open}>
+                            {participant.isMuted ? <VolumeOffIcon color='error' /> : <VolumeUpIcon color='success' />}
+                        </IconButton>
+                    </Grid>
+                </Grid>
+            </Paper>
             <ResponsiveDialog open={isOpen} onClose={close}>
                 <DialogContent>
                     <Typography variant='h6'>
@@ -73,9 +91,6 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
                     </Grid>
                 </DialogContent>
             </ResponsiveDialog>
-            <IconButton disabled={participant.moderatorOf} onClick={open}>
-                {participant.isMuted ? <VolumeOffIcon color='error' /> : <VolumeUpIcon color='success' />}
-            </IconButton>
         </React.Fragment>
     );
 }

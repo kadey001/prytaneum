@@ -30,10 +30,9 @@ const DELETE_QUESTION_MUTATION = graphql`
 
 interface Props {
     fragmentRef: DeleteButtonFragment$key;
-    className?: string;
 }
 
-export function DeleteButton({ className = undefined, fragmentRef }: Props) {
+export function DeleteButton({ fragmentRef }: Props) {
     const { id: questionId, position } = useFragment(DELETE_QUESTION_FRAGMENT, fragmentRef);
     const [commit] = useMutation<DeleteButtonMutation>(DELETE_QUESTION_MUTATION);
     const { displaySnack } = useSnack();
@@ -62,7 +61,12 @@ export function DeleteButton({ className = undefined, fragmentRef }: Props) {
             {isQueued ? (
                 <></>
             ) : (
-                <Button onClick={handleClick} endIcon={<DeleteIcon fontSize='small' />} fullWidth className={className}>
+                <Button
+                    onClick={handleClick}
+                    endIcon={<DeleteIcon fontSize='small' />}
+                    fullWidth
+                    sx={{ color: (theme) => theme.palette.custom.danger }}
+                >
                     Delete
                 </Button>
             )}

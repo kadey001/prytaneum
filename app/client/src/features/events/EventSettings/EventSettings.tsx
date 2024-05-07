@@ -53,12 +53,19 @@ interface Props {
 
 export function EventSettings({ queryRef }: Props) {
     const theme = useTheme();
-    const lgUpBreakpoint = useMediaQuery(theme.breakpoints.up('lg'));
+    const xlBreakpointUp = useMediaQuery(theme.breakpoints.up('xl'));
+    const lgBreakpointUp = useMediaQuery(theme.breakpoints.up('lg'));
     const router = useRouter();
     const { displaySnack } = useSnack();
     const data = usePreloadedQuery(EVENT_SETTINGS_QUERY, queryRef);
     const { user, isLoading } = useUser();
     const [canView, setCanView] = React.useState(false);
+
+    const getContainerStyles = React.useMemo(() => {
+        if (xlBreakpointUp) return { width: '80%', marginLeft: '300px' };
+        if (lgBreakpointUp) return { width: '80%', marginLeft: '250px' };
+        return { width: '100%' };
+    }, [xlBreakpointUp, lgBreakpointUp]);
 
     React.useEffect(() => {
         if (!isLoading && !user) router.push('/');
@@ -81,7 +88,7 @@ export function EventSettings({ queryRef }: Props) {
                 resumeParentRefreshing: () => {},
             }}
         >
-            <div style={{ width: lgUpBreakpoint ? '80%' : '100%', marginLeft: lgUpBreakpoint ? '250px' : 0 }}>
+            <div style={getContainerStyles}>
                 <Typography variant='h2' margin={theme.spacing(0, 0, 2, 0)}>
                     Event Settings
                 </Typography>

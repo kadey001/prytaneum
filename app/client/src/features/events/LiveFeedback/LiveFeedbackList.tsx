@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Card, CardContent, Grid, List, ListItem, Typography, CardActions } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { useLiveFeedbackListFragment$key } from '@local/__generated__/useLiveFeedbackListFragment.graphql';
 import ListFilter, { useFilters, Accessors } from '@local/components/ListFilter';
@@ -12,32 +11,6 @@ import { useEvent } from '../useEvent';
 import { LiveFeedbackReplyAction } from './LiveFeedbackReplyAction';
 import { LiveFeedbackReply } from './LiveFeedbackReply';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        // padding: theme.spacing(1.5),
-    },
-    listFilter: {
-        flex: 1,
-        paddingLeft: '0.5rem',
-        paddingRight: '0.5rem',
-    },
-    content: {
-        height: 0, // flex box recalculates this -- explanation:  https://stackoverflow.com/a/14964944
-        flex: '1 1 100%',
-    },
-    item: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    body: {
-        margin: theme.spacing(-2, 0, -1, 0), // removes extra padding in cards
-    },
-    notSignedInMessage: {
-        paddingTop: theme.spacing(2), // add padding since number of results were hidden
-    },
-}));
-
 interface LiveFeedbackListProps {
     fragmentRef: useLiveFeedbackListFragment$key;
     ActionButtons: React.ReactNode;
@@ -45,7 +18,6 @@ interface LiveFeedbackListProps {
 }
 
 export function LiveFeedbackList({ fragmentRef, ActionButtons, isVisible }: LiveFeedbackListProps) {
-    const classes = useStyles();
     const { user } = useUser();
     const [displayLiveFeedback, setDisplayLiveFeedback] = React.useState(false);
     const { liveFeedback } = useLiveFeedbackList({ fragmentRef });
@@ -73,7 +45,7 @@ export function LiveFeedbackList({ fragmentRef, ActionButtons, isVisible }: Live
             <Grid item paddingTop='1rem' width='100%'>
                 {ActionButtons}
                 <ListFilter
-                    className={classes.listFilter}
+                    style={{ flex: 1, paddingLeft: '0.5rem', paddingRight: '0.5rem' }}
                     onFilterChange={handleFilterChange}
                     onSearch={handleSearch}
                     length={filteredList.length}
@@ -83,10 +55,10 @@ export function LiveFeedbackList({ fragmentRef, ActionButtons, isVisible }: Live
                     {displayLiveFeedback ? (
                         filteredList.map((feedback) => (
                             <ListItem disableGutters key={feedback.id} sx={{ paddingX: '0.5rem' }}>
-                                <Card className={classes.item}>
+                                <Card style={{ flex: 1, flexDirection: 'column' }}>
                                     <LiveFeedbackAuthor fragmentRef={feedback} />
                                     {feedback.refFeedback && <LiveFeedbackReply fragmentRef={feedback.refFeedback} />}
-                                    <CardContent className={classes.body}>
+                                    <CardContent sx={{ margin: (theme) => theme.spacing(-2, 0, -1, 0) }}>
                                         <Typography variant='inherit' style={{ wordBreak: 'break-word' }}>
                                             {feedback.message}
                                         </Typography>
@@ -102,7 +74,7 @@ export function LiveFeedbackList({ fragmentRef, ActionButtons, isVisible }: Live
                             </ListItem>
                         ))
                     ) : (
-                        <Typography align='center' className={classes.notSignedInMessage}>
+                        <Typography align='center' sx={{ paddingTop: (theme) => theme.spacing(2) }}>
                             Sign in to submit Live Feedback
                         </Typography>
                     )}

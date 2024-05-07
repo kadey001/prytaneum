@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -37,13 +36,3 @@ export function LoadingButton({ loading, children, className, style }: Props) {
     }
     return children;
 }
-
-LoadingButton.defaultProps = {
-    className: undefined,
-    style: undefined,
-};
-
-LoadingButton.propTypes = {
-    loading: PropTypes.bool.isRequired,
-    children: PropTypes.node.isRequired,
-};

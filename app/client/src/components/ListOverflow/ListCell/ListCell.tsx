@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 
 import { ListItem, ListItemAvatar, Avatar, ListItemText } from '@mui/material';
 
@@ -20,16 +19,5 @@ const ListCell = ({ primary, secondary, avatar }: Props) => (
         </ListItem>
     </li>
 );
-
-ListCell.defaultProps = {
-    secondary: '',
-    avatar: '',
-};
-
-ListCell.propTypes = {
-    primary: PropTypes.string.isRequired,
-    secondary: PropTypes.string,
-    avatar: PropTypes.string,
-};
 
 export default ListCell;

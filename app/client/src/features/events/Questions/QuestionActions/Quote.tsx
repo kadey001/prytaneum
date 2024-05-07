@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Button, DialogContent, Card } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import { graphql, useMutation, useFragment } from 'react-relay';
 
@@ -20,13 +19,6 @@ interface QuoteProps {
     className?: string;
     fragmentRef: QuoteFragment$key;
 }
-
-const useStyles = makeStyles((theme) => ({
-    card: {
-        width: '100%',
-        marginBottom: theme.spacing(3),
-    },
-}));
 
 const QUOTE_MUTATION = graphql`
     mutation QuoteMutation($input: CreateQuestion!) {
@@ -56,7 +48,6 @@ export const QUOTE_FRAGMENT = graphql`
 export function Quote({ className, fragmentRef }: QuoteProps) {
     const [isOpen, open, close] = useResponsiveDialog(false);
     const { eventId } = useEvent();
-    const classes = useStyles();
     const { displaySnack } = useSnack();
     const [commit] = useMutation<QuoteMutation>(QUOTE_MUTATION);
     const data = useFragment(QUOTE_FRAGMENT, fragmentRef);
@@ -100,12 +91,12 @@ export function Quote({ className, fragmentRef }: QuoteProps) {
 
     const quote = React.useMemo(
         () => (
-            <Card className={classes.card}>
+            <Card sx={{ width: '100%', marginBottom: (theme) => theme.spacing(3) }}>
                 <QuestionAuthor fragmentRef={data} />
                 <QuestionContent fragmentRef={data} />
             </Card>
         ),
-        [data, classes]
+        [data]
     );
 
     return (

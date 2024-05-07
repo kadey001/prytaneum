@@ -13,8 +13,8 @@ export class PlaywrightDashboardPage {
         this.page = page;
         this.device = device;
 
-        this.currentEventsSection = page.locator('text=Current Events');
-        this.upcomingEventsSection = page.locator('text=Upcoming Events');
+        this.currentEventsSection = page.locator('[data-test-id="dashboard-current-events-header"]');
+        this.upcomingEventsSection = page.locator('[data-test-id="dashboard-upcoming-events-header"]');
         this.today = new Date();
     }
 
@@ -55,7 +55,7 @@ export class PlaywrightDashboardPage {
     }
 
     async clickOnEvent(eventName: string, orgName: string, ongoing: boolean) {
-        await this.page.locator(`[data-test-id="dashboard-event-list-item-${eventName}"]`).click({ force: true});
+        await this.page.locator(`[data-test-id="dashboard-event-list-item-${eventName}"]`).click({ force: true });
         await this.page.waitForTimeout(5000); // Using this over waitForNavigation because it was not working with firefox.
     }
 

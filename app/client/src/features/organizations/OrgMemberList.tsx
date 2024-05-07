@@ -14,7 +14,6 @@ import { DeleteMember } from './DeleteMember';
 
 interface OrgMemberListProps {
     fragmentRef: OrgMemberListFragment$key;
-    className?: string;
 }
 
 const CreateMemberDialog = (props: Omit<CreateMemberProps, 'onSubmit'>) => {
@@ -58,7 +57,7 @@ export interface SelectedMember {
     readonly lastName: string | null;
 }
 
-export function OrgMemberList({ fragmentRef, className }: OrgMemberListProps) {
+export function OrgMemberList({ fragmentRef }: OrgMemberListProps) {
     const [isConfDialogOpen, setIsConfDialogOpen] = React.useState(false);
     const [selectedMember, setSelectedMember] = React.useState({
         id: '',
@@ -88,7 +87,7 @@ export function OrgMemberList({ fragmentRef, className }: OrgMemberListProps) {
     if (!canView) return <Loader />;
 
     return (
-        <Grid container item direction='column' className={className}>
+        <Grid container item direction='column'>
             <Grid item xs={12}>
                 <List>
                     {members.length > 0 ? (

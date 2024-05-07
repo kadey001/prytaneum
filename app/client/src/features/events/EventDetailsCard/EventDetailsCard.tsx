@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Grid, Typography, Divider } from '@mui/material';
-import { useTheme } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 
 import { formatDate } from '@local/utils/format';
 import { useEventDetailsFragment$data } from '@local/__generated__/useEventDetailsFragment.graphql';

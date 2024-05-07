@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Yup from 'yup';
 import { Typography, Button, Grid, TextField } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { useTheme } from '@mui/material/styles';
 import { useMutation, useFragment } from 'react-relay';
 import { useFormik } from 'formik';
 import { graphql } from 'react-relay';
@@ -53,19 +53,6 @@ const intialDeleteEvent: TDeleteEvent = {
     confirmTitle: '',
 };
 
-const useStyles = makeStyles((theme) => ({
-    form: {
-        margin: theme.spacing(1, 0),
-    },
-    link: {
-        paddingLeft: theme.spacing(1),
-    },
-    button: {
-        color: theme.palette.custom.danger,
-        borderColor: theme.palette.custom.danger,
-    },
-}));
-
 export const DeleteEvent = ({ fragmentRef }: DeleteEventProps) => {
     // form state hooks
     const [commit] = useMutation<DeleteEventMutation>(DELETE_EVENT_MUTATION);
@@ -76,7 +63,7 @@ export const DeleteEvent = ({ fragmentRef }: DeleteEventProps) => {
     const { displaySnack } = useSnack();
 
     // styling hook
-    const classes = useStyles();
+    const theme = useTheme();
 
     function handleCommit(submittedForm: TDeleteEvent) {
         // add eventId to input passed into the commit
@@ -114,7 +101,7 @@ export const DeleteEvent = ({ fragmentRef }: DeleteEventProps) => {
                     <b>This action is irreversible.</b> Please enter <b>{eventTitle}</b> below twice to confirm.
                 </Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={handleSubmit}>
+            <Form styles={{ margin: theme.spacing(1, 0) }} onSubmit={handleSubmit}>
                 <FormContent>
                     <TextField
                         inputProps={{ 'aria-label': `Enter ${eventTitle} to delete event` }}
@@ -142,7 +129,11 @@ export const DeleteEvent = ({ fragmentRef }: DeleteEventProps) => {
                     />
                 </FormContent>
                 <Grid item xs={12}>
-                    <Button className={classes.button} type='submit' variant='outlined'>
+                    <Button
+                        style={{ color: theme.palette.custom.danger, borderColor: theme.palette.custom.danger }}
+                        type='submit'
+                        variant='outlined'
+                    >
                         Delete Event
                     </Button>
                 </Grid>

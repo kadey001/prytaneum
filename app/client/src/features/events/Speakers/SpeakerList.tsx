@@ -12,11 +12,10 @@ import {
     Collapse,
     IconButton,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { useTheme } from '@mui/material/styles';
 import { graphql, useRefetchableFragment } from 'react-relay';
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import clsx from 'clsx';
 
 import { SpeakerListFragment$key } from '@local/__generated__/SpeakerListFragment.graphql';
 import { SpeakerCard } from './SpeakerCard';
@@ -44,39 +43,8 @@ export const SPEAKER_LIST_FRAGMENT = graphql`
     }
 `;
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        marginTop: theme.spacing(0.5),
-        fontSize: '2.5rem',
-    },
-    speakers: {
-        marginLeft: theme.spacing(2),
-        fontWeight: 600,
-    },
-    noSpeakers: {
-        marginLeft: theme.spacing(2),
-    },
-    expand: {
-        padding: theme.spacing(1),
-        transform: 'rotate(0deg)',
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-    },
-    expandOpen: {
-        transform: 'rotate(180deg)',
-    },
-    arrow: {
-        fontSize: '1.5rem',
-        color: 'black',
-    },
-    item: {
-        padding: theme.spacing(1),
-    },
-}));
-
 export function SpeakerList({ fragmentRef, className }: SpeakerItemProps) {
-    const classes = useStyles();
+    const theme = useTheme();
     const [data, refetch] = useRefetchableFragment(SPEAKER_LIST_FRAGMENT, fragmentRef);
     const { speakers } = data;
 
@@ -91,27 +59,45 @@ export function SpeakerList({ fragmentRef, className }: SpeakerItemProps) {
 
     const speakerEdges = React.useMemo(() => speakers?.edges ?? [], [speakers]);
 
-    return speakers && speakerEdges.length !== 0 ? (
+    const getIconTransform = () => {
+        return isIn ? 'rotate(180deg)' : 'rotate(0deg)';
+    };
+
+    return (
         <React.Fragment>
-            <Grid container alignItems='center' className={classes.root}>
+            <Grid container alignItems='center' style={{ marginTop: theme.spacing(0.5), fontSize: '1.5rem' }}>
                 <PeopleOutlineIcon fontSize='inherit' />
-                <Typography variant='h5' className={classes.speakers}>
-                    {speakerEdges.length} Speaker(s)
-                </Typography>
-                <IconButton
-                    className={clsx(classes.expand, { [classes.expandOpen]: isIn })}
-                    aria-label='show more'
-                    onClick={() => setIsIn((prev) => !prev)}
-                    size='large'
-                >
-                    <ArrowDropDownIcon className={classes.arrow} />
-                </IconButton>
+                {speakerEdges.length === 0 ? (
+                    <Typography color='textSecondary' variant='body1' style={{ marginLeft: theme.spacing(2) }}>
+                        No Speakers to display
+                    </Typography>
+                ) : (
+                    <React.Fragment>
+                        <Typography variant='h5' style={{ marginLeft: theme.spacing(2), fontWeight: 600 }}>
+                            {speakerEdges.length} Speaker(s)
+                        </Typography>
+                        <IconButton
+                            style={{
+                                padding: theme.spacing(1),
+                                transform: getIconTransform(),
+                                transition: theme.transitions.create('transform', {
+                                    duration: theme.transitions.duration.shortest,
+                                }),
+                            }}
+                            aria-label='show more'
+                            onClick={() => setIsIn((prev) => !prev)}
+                            size='large'
+                        >
+                            <ArrowDropDownIcon style={{ fontSize: '1.5rem', color: 'black' }} />
+                        </IconButton>
+                    </React.Fragment>
+                )}
             </Grid>
             <Collapse in={isIn}>
                 <List className={className}>
                     {speakerEdges.map(({ node }) => (
                         <li key={node.id}>
-                            <ListItem button onClick={() => setOpenCard(node.id)} className={classes.item}>
+                            <ListItem button onClick={() => setOpenCard(node.id)} style={{ padding: theme.spacing(1) }}>
                                 {node.pictureUrl && (
                                     <ListItemAvatar>
                                         <Avatar alt={`${node.name}-avatar`} src={node.pictureUrl} />
@@ -134,16 +120,5 @@ export function SpeakerList({ fragmentRef, className }: SpeakerItemProps) {
                 </List>
             </Collapse>
         </React.Fragment>
-    ) : (
-        <Grid container alignItems='center' className={classes.root}>
-            <PeopleOutlineIcon fontSize='inherit' />
-            <Typography color='textSecondary' variant='body1' className={classes.noSpeakers}>
-                No Speakers to display
-            </Typography>
-        </Grid>
     );
 }
-
-SpeakerList.defaultProps = {
-    className: undefined,
-};

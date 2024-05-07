@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { graphql } from 'relay-runtime';
 import { Card, Grid, List, ListItem, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { useTheme } from '@mui/material/styles';
 
 import ListFilter, { useFilters, Accessors } from '@local/components/ListFilter';
 import { ArrayElement } from '@local/utils/ts-utils';
@@ -14,21 +14,6 @@ import { useBroadcastMessageCreated } from './useBroadcastMessageCreated';
 import { useBroadcastMessageList } from './useBroadcastMessageList';
 import { useBroadcastMessageDeleted } from './useBroadcastMessageDeleted';
 import { useBroadcastMessageListFragment$key } from '@local/__generated__/useBroadcastMessageListFragment.graphql';
-
-const useStyles = makeStyles((theme) => ({
-    listFilter: {
-        flex: 1,
-        paddingLeft: '0.5rem',
-        paddingRight: '0.5rem',
-    },
-    item: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        paddingTop: theme.spacing(0.5),
-        borderRadius: '10px',
-    },
-}));
 
 export const BROADCAST_MESSAGE_LIST_QUERY = graphql`
     query BroadcastMessageListQuery($eventId: ID!) {
@@ -52,7 +37,7 @@ interface MessageListProps {
 }
 
 export function BroadcastMessageList({ fragmentRef, isVisible }: MessageListProps) {
-    const classes = useStyles();
+    const theme = useTheme();
     const { broadcastMessages, connections } = useBroadcastMessageList({ fragmentRef });
     useBroadcastMessageCreated({ connections });
     useBroadcastMessageDeleted({ connections });
@@ -80,7 +65,7 @@ export function BroadcastMessageList({ fragmentRef, isVisible }: MessageListProp
                     </Grid>
                     <Grid item xs={12}>
                         <ListFilter
-                            className={classes.listFilter}
+                            style={{ flex: 1, paddingLeft: '0.5rem', paddingRight: '0.5rem' }}
                             onFilterChange={handleFilterChange}
                             onSearch={handleSearch}
                             length={filteredList.length}
@@ -91,7 +76,15 @@ export function BroadcastMessageList({ fragmentRef, isVisible }: MessageListProp
                             {filteredList.map((broadcastMessage) => (
                                 <React.Fragment key={broadcastMessage.id}>
                                     <ListItem disableGutters sx={{ paddingX: '0.5rem' }}>
-                                        <Card className={classes.item}>
+                                        <Card
+                                            style={{
+                                                flex: 1,
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                paddingTop: theme.spacing(0.5),
+                                                borderRadius: '10px',
+                                            }}
+                                        >
                                             <BroadcastMessageAuthor fragmentRef={broadcastMessage} />
                                             <BroadcastMessageContent fragmentRef={broadcastMessage} />
                                             <Grid container alignItems='center' justifyContent='space-between'>

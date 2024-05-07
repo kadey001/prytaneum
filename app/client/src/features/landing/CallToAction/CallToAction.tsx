@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Grid, Typography, Button, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
-import useTheme from '@mui/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 
 export function CallToAction() {
     const theme = useTheme();

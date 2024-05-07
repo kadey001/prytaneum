@@ -13,6 +13,7 @@ import {
     InputAdornment,
     TextField,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { User, UserSettings } from '@local/graphql-types';
@@ -23,7 +24,6 @@ import SettingsList from '@local/components/SettingsList';
 import SettingsItem from '@local/components/SettingsItem';
 import { useUser } from '@local/features/accounts';
 import { useSnack } from '@local/core';
-import makeStyles from '@mui/styles/makeStyles';
 import { useMutation } from 'react-relay';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -91,21 +91,6 @@ const intiialDeleteAccount: TDeleteAccountForm = {
     confirmPassword: '',
 };
 
-const useStyles = makeStyles((theme) => ({
-    // indent: {
-    //     paddingLeft: theme.spacing(4),
-    // },
-    // fullWidth: {
-    //     width: '100%',
-    // },
-    form: {
-        margin: theme.spacing(0, 1, 0, 1),
-    },
-    link: {
-        paddingLeft: theme.spacing(1),
-    },
-}));
-
 // all really small one time user @local/components go here
 interface DisplayItem {
     title: string;
@@ -164,7 +149,7 @@ export function ModifyUserEmail({ user, demo }: { user: User; demo?: boolean }) 
     const { setUser } = useUser();
 
     // styling hook
-    const classes = useStyles();
+    const theme = useTheme();
 
     const { handleSubmit, handleChange, values, errors, resetForm } = useFormik<TUpdateEmailForm>({
         initialValues: makeInitialState(initialModifyUserEmail),
@@ -205,7 +190,7 @@ export function ModifyUserEmail({ user, demo }: { user: User; demo?: boolean }) 
                     A verification email will be sent to the new email to confirm the update.
                 </Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={!demo ? handleSubmit : () => {}}>
+            <Form styles={{ margin: theme.spacing(0, 1, 0, 1) }} onSubmit={!demo ? handleSubmit : () => {}}>
                 <FormContent>
                     <TextField
                         inputProps={{ 'aria-label': 'Enter your new email' }}
@@ -241,7 +226,7 @@ export function ModifyUserPassword({ user }: { user: User }) {
     const { setUser } = useUser();
 
     // styling hook
-    const classes = useStyles();
+    const theme = useTheme();
 
     const { handleSubmit, handleChange, values, errors, resetForm } = useFormik<TUpdatePasswordForm>({
         initialValues: makeInitialState(initialModifyUserPassword),
@@ -279,7 +264,7 @@ export function ModifyUserPassword({ user }: { user: User }) {
                 </Typography>
             </Grid>
 
-            <Form className={classes.form} onSubmit={handleSubmit}>
+            <Form styles={{ margin: theme.spacing(0, 1, 0, 1) }} onSubmit={handleSubmit}>
                 <FormContent>
                     <TextField
                         inputProps={{ 'aria-label': 'Enter your old password' }}
@@ -361,7 +346,7 @@ export function ModifyUserPassword({ user }: { user: User }) {
                         Update password
                     </Button>
                     <Link href='/forgot-password' passHref>
-                        <MUILink className={classes.link} color='primary' underline='hover'>
+                        <MUILink sx={{ paddingLeft: theme.spacing(1) }} color='primary' underline='hover'>
                             Forgot Password?
                         </MUILink>
                     </Link>
@@ -458,7 +443,7 @@ export function DeleteAccount({ user }: { user: User }) {
     const router = useRouter();
 
     // styling hook
-    const classes = useStyles();
+    const theme = useTheme();
 
     const { handleSubmit, handleChange, values, errors, resetForm } = useFormik<TDeleteAccountForm>({
         initialValues: makeInitialState(intiialDeleteAccount),
@@ -498,7 +483,7 @@ export function DeleteAccount({ user }: { user: User }) {
                     <b>This action is irreversible.</b> Please enter your password below twice to confirm.
                 </Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={handleSubmit}>
+            <Form styles={{ margin: theme.spacing(0, 1, 0, 1) }} onSubmit={handleSubmit}>
                 <FormContent>
                     <TextField
                         inputProps={{ 'aria-label': 'Enter your password' }}
@@ -561,7 +546,7 @@ export const TermsOfService = () => (
 
 export function ModifyUserEmailDemo() {
     // styling hook
-    const classes = useStyles();
+    const theme = useTheme();
 
     const { handleSubmit, handleChange, values, errors } = useFormik<TUpdateEmailForm>({
         initialValues: makeInitialState(initialModifyUserEmail),
@@ -585,7 +570,7 @@ export function ModifyUserEmailDemo() {
                     A verification email will be sent to the new email to confirm the update.
                 </Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={handleSubmit}>
+            <Form styles={{ margin: theme.spacing(0, 1, 0, 1) }} onSubmit={handleSubmit}>
                 <FormContent>
                     <TextField
                         inputProps={{ 'aria-label': 'Enter your new email' }}
@@ -615,7 +600,7 @@ export function ModifyUserPasswordDemo() {
     const [isPassVisible, setIsPassVisible] = React.useState(false);
 
     // styling hook
-    const classes = useStyles();
+    const theme = useTheme();
 
     const { handleSubmit, handleChange, values, errors } = useFormik<TUpdatePasswordForm>({
         initialValues: makeInitialState(initialModifyUserPassword),
@@ -635,7 +620,7 @@ export function ModifyUserPasswordDemo() {
                 </Typography>
             </Grid>
 
-            <Form className={classes.form} onSubmit={handleSubmit}>
+            <Form styles={{ margin: theme.spacing(0, 1, 0, 1) }} onSubmit={handleSubmit}>
                 <FormContent>
                     <TextField
                         inputProps={{ 'aria-label': 'Enter your old password' }}
@@ -716,7 +701,7 @@ export function ModifyUserPasswordDemo() {
                     <Button type='submit' variant='outlined' color='primary'>
                         Update password
                     </Button>
-                    <MUILink className={classes.link} color='primary' underline='hover'>
+                    <MUILink sx={{ paddingLeft: theme.spacing(1) }} color='primary' underline='hover'>
                         Forgot Password?
                     </MUILink>
                 </Grid>
@@ -727,7 +712,7 @@ export function ModifyUserPasswordDemo() {
 
 export function DeleteAccountDemo() {
     // styling hook
-    const classes = useStyles();
+    const theme = useTheme();
 
     const { handleSubmit, handleChange, values, errors } = useFormik<TDeleteAccountForm>({
         initialValues: makeInitialState(intiialDeleteAccount),
@@ -748,7 +733,7 @@ export function DeleteAccountDemo() {
                     <b>This action is irreversible.</b> Please enter your password below twice to confirm.
                 </Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={handleSubmit}>
+            <Form styles={{ margin: theme.spacing(0, 1, 0, 1) }} onSubmit={handleSubmit}>
                 <FormContent>
                     <TextField
                         inputProps={{ 'aria-label': 'Enter your password' }}

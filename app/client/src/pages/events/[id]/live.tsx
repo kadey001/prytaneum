@@ -1,27 +1,16 @@
 import * as React from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
+import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import { ConditionalRender } from '@local/components';
 import { PreloadedEventLive, EventLiveLoader } from '@local/features/events';
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        width: '100%',
-        height: '100%',
-        padding: theme.spacing(0, 3), // add side padding since layout padding is disabled
-        [theme.breakpoints.down('lg')]: {
-            padding: theme.spacing(3, 3, 0, 3), // add top padding so event video doesn't touch navbar
-        },
-    },
-}));
-
 export async function getServerSideProps() {
     const baseProps = {
         hideSideNav: true,
-        containerProps: { maxWidth: 'xl' },
+        containerProps: { maxWidth: '100%' },
         disablePadding: true,
     };
 
@@ -29,13 +18,20 @@ export async function getServerSideProps() {
 }
 
 const Live: NextPage = () => {
+    const theme = useTheme();
+    const lgDownBreakpoint = useMediaQuery(theme.breakpoints.down('lg'));
     const router = useRouter();
-    const classes = useStyles();
 
     if (!router.isReady) return <EventLiveLoader />;
 
     return (
-        <div className={classes.root}>
+        <div
+            style={{
+                width: '100%',
+                height: '100%',
+                padding: lgDownBreakpoint ? theme.spacing(0) : theme.spacing(0, 3),
+            }}
+        >
             <ConditionalRender client>
                 <React.Suspense fallback={<EventLiveLoader />}>
                     <PreloadedEventLive eventId={router.query.id as string} token={router.query.token as string} />

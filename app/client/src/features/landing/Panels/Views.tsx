@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Grid, Typography, useMediaQuery } from '@mui/material';
-import useTheme from '@mui/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 
 import { Blurb } from '@local/features/landing/Blurb';
 export function Views() {

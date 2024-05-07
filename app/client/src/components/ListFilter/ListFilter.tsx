@@ -11,13 +11,11 @@ import {
     Tooltip,
     TextField,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import FilterIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { Skeleton } from '@mui/material';
-import { SkeletonProps } from '@mui/lab';
+import { Skeleton, SkeletonProps } from '@mui/material';
 
 import { FilterFunc } from '@local/utils/filters';
 
@@ -33,26 +31,6 @@ export interface Props<T> {
     displayNumResults?: boolean;
     style?: React.CSSProperties;
 }
-
-const useStyles = makeStyles((theme) => ({
-    resultsText: {
-        padding: theme.spacing(1, 0),
-    },
-    search: {
-        flex: 1,
-        marginBottom: theme.spacing(2),
-    },
-    iconContainer: {
-        flexBasis: 'auto',
-        width: 'auto',
-        marginLeft: theme.spacing(0.5),
-    },
-    input: {
-        '& fieldset': {
-            borderRadius: 9999, // rounded text field
-        },
-    },
-}));
 
 type Filters = Set<string>;
 type Op = (s: Filters) => void;
@@ -80,7 +58,6 @@ export default function ListFilter<T>({
     className,
     style,
 }: Props<T>) {
-    const classes = useStyles();
     const [filters, setFilters] = React.useState<Filters>(new Set());
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     const [search, setSearch] = React.useState('');
@@ -133,13 +110,13 @@ export default function ListFilter<T>({
     return (
         <div style={style} className={className}>
             <Grid container alignItems='center'>
-                <Grid item xs='auto' className={classes.search}>
+                <Grid item xs='auto' style={{ flex: 1 }} sx={{ marginBottom: (theme) => theme.spacing(2) }}>
                     <TextField
                         label='Search'
                         value={search}
                         onChange={handleSearch}
                         onKeyDown={handleKeyPress}
-                        className={classes.input}
+                        sx={{ '& fieldset': { borderRadius: 9999 } }}
                         InputProps={{
                             // TODO: animation change here
                             startAdornment: (
@@ -171,7 +148,7 @@ export default function ListFilter<T>({
                     justifyContent='space-evenly'
                     xs='auto'
                     alignItems='center'
-                    className={classes.iconContainer}
+                    sx={{ flexBasis: 'auto', width: 'auto', marginLeft: (theme) => theme.spacing(0.5) }}
                 >
                     {filterMap && (
                         <Grid item xs='auto'>
@@ -208,10 +185,3 @@ export default function ListFilter<T>({
         </div>
     );
 }
-
-ListFilter.defaultProps = {
-    menuIcons: [],
-    className: undefined,
-    filterMap: undefined,
-    displayNumResults: true,
-};

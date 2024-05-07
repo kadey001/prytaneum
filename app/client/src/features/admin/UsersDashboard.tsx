@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { graphql, useQueryLoader, PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import { Grid, Paper, Typography, useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 
 import { ConditionalRender, Loader } from '@local/components';
 import type { UsersDashboardQuery } from '@local/__generated__/UsersDashboardQuery.graphql';

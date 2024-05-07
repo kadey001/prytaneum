@@ -22,7 +22,7 @@ export class PlaywrightLandingPage {
         this.emailInput = page.getByLabel('Email *');
         this.passwordInput = page.getByLabel('Password *');
         this.forgotPasswordLink = page.getByRole('link', { name: 'Forgot Password?' });
-        this.registerAccountLink = page.getByRole('link', { name: 'Or, register an account' });
+        this.registerAccountLink = page.getByRole('link', { name: "Don't have an account?" });
         this.failedSnack = page.getByText('Login failed; Invalid user ID or password.');
         // Logos/Graphics
         this.loginIllustation = page.getByRole('img', { name: 'Login Illustation' });

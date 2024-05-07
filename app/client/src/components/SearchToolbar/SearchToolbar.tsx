@@ -1,20 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import makeStyles from '@mui/styles/makeStyles';
 import { Paper, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-        borderRadius: '12px',
-        // flexBasis: 420,
-        margin: theme.spacing(1),
-    },
-    icon: {
-        alignSelf: 'center',
-    },
-}));
 
 export interface Props {
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
@@ -22,15 +9,14 @@ export interface Props {
 }
 
 const SearchToolbar = ({ onChange, label }: Props) => {
-    const classes = useStyles();
     return (
-        <Paper className={classes.root}>
+        <Paper sx={{ display: 'flex', borderRadius: '12px', margin: (theme) => theme.spacing(1) }}>
             <TextField
                 // disableUnderline
                 onChange={onChange}
                 label={label}
             />
-            <SearchIcon className={classes.icon} aria-label='SearchIcon' />
+            <SearchIcon style={{ alignSelf: 'center' }} aria-label='SearchIcon' />
         </Paper>
     );
 };

@@ -50,7 +50,7 @@ export function Like({ className = undefined, fragmentRef }: Props) {
 
     return (
         <Button
-            color={isLikedByViewer ? 'secondary' : 'inherit'}
+            color={isLikedByViewer ? 'primary' : 'inherit'}
             onClick={handleClick}
             endIcon={<ThumbUp fontSize='small' />}
             fullWidth

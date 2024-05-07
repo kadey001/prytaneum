@@ -1,6 +1,5 @@
 import React from 'react';
 import { CardActions, CardActionsProps } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { graphql, useFragment } from 'react-relay';
 
 import type { QuestionActionsFragment$key } from '@local/__generated__/QuestionActionsFragment.graphql';
@@ -8,16 +7,6 @@ import { Like } from './Like';
 import { Quote } from './Quote';
 import { QueueButton } from './QueueButton';
 import { DeleteButton } from './DeleteButton';
-
-const useStyles = makeStyles((theme) => ({
-    actions: {
-        display: 'flex',
-        justifyContent: 'space-between',
-    },
-    delete: {
-        color: theme.palette.custom.danger,
-    },
-}));
 
 const QUESTION_ACTIONS_FRAGMENT = graphql`
     fragment QuestionActionsFragment on EventQuestion {
@@ -48,13 +37,12 @@ export function QuestionActions({
     ...props
 }: QuestionActionProps) {
     const data = useFragment(QUESTION_ACTIONS_FRAGMENT, fragmentRef);
-    const classes = useStyles();
     return (
-        <CardActions {...props} className={classes.actions}>
+        <CardActions {...props} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             {likeEnabled && <Like fragmentRef={data} />}
             {quoteEnabled && <Quote fragmentRef={data} />}
             {queueEnabled && <QueueButton fragmentRef={data} />}
-            {deleteEnabled && <DeleteButton fragmentRef={data} className={classes.delete} />}
+            {deleteEnabled && <DeleteButton fragmentRef={data} />}
         </CardActions>
     );
 }

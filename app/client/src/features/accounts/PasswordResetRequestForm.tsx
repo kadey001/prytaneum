@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Grid, Typography, TextField } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import { Form } from '@local/components/Form';
 import { useForm, useSnack } from '@local/core';
 import { graphql } from 'relay-runtime';
@@ -9,36 +8,11 @@ import { PasswordResetRequestFormMutation } from '@local/__generated__/PasswordR
 import { LoadingButton } from '@local/components/LoadingButton';
 import { FormContent } from '@local/components/FormContent';
 
-interface Props {
-    onSuccess: () => void;
-    onFailure: () => void;
-}
-
 const initialState = {
     email: '',
 };
 
 export type TPasswordResetRequestForm = typeof initialState;
-
-const useStyles = makeStyles((theme) => ({
-    btnGroup: {
-        '& > *': {
-            margin: theme.spacing(1, 0),
-        },
-    },
-    divider: {
-        width: '75%',
-        marginLeft: '12.5%',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(4),
-    },
-}));
 
 const PASSWORD_RESET_REQUEST_FORM_MUTATION = graphql`
     mutation PasswordResetRequestFormMutation($input: ResetPasswordRequestForm!) {
@@ -50,8 +24,12 @@ const PASSWORD_RESET_REQUEST_FORM_MUTATION = graphql`
     }
 `;
 
+interface Props {
+    onSuccess: () => void;
+    onFailure: () => void;
+}
+
 export function PasswordResetRequestForm({ onSuccess, onFailure }: Props) {
-    const classes = useStyles();
     const [form, errors, handleSubmit, handleChange] = useForm(initialState);
     const [commit, isLoading] = useMutation<PasswordResetRequestFormMutation>(PASSWORD_RESET_REQUEST_FORM_MUTATION);
     const { displaySnack } = useSnack();
@@ -80,7 +58,7 @@ export function PasswordResetRequestForm({ onSuccess, onFailure }: Props) {
                     Reset Password Request
                 </Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={handleSubmit(handleCommit)}>
+            <Form onSubmit={handleSubmit(handleCommit)}>
                 <FormContent>
                     <TextField
                         aria-label='Enter your email'
@@ -95,7 +73,16 @@ export function PasswordResetRequestForm({ onSuccess, onFailure }: Props) {
                         spellCheck={false}
                     />
                 </FormContent>
-                <Grid container item direction='column' className={classes.btnGroup}>
+                <Grid
+                    container
+                    item
+                    direction='column'
+                    sx={{
+                        '& > *': {
+                            margin: (theme) => theme.spacing(1, 0),
+                        },
+                    }}
+                >
                     <LoadingButton loading={isLoading}>
                         <Button fullWidth type='submit' variant='contained' color='secondary'>
                             Submit

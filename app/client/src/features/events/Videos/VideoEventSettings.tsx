@@ -13,7 +13,6 @@ import {
     IconButton,
 } from '@mui/material';
 import { Add, MoreVert } from '@mui/icons-material';
-import makeStyles from '@mui/styles/makeStyles';
 import { graphql, useFragment } from 'react-relay';
 
 import type { VideoEventSettingsFragment$key } from '@local/__generated__/VideoEventSettingsFragment.graphql';
@@ -22,20 +21,6 @@ import { ResponsiveDialog } from '@local/components/ResponsiveDialog';
 import { CreateVideo } from './CreateVideo';
 import { UpdateVideo } from './UpdateVideo';
 import { DeleteVideo } from './DeleteVideo';
-
-interface EventSettingsProps {
-    fragmentRef: VideoEventSettingsFragment$key;
-    className?: string;
-}
-
-const useStyles = makeStyles(() => ({
-    listRoot: {
-        width: '100%',
-    },
-    red: {
-        color: 'red',
-    },
-}));
 
 export const VIDEO_EVENT_SETTINGS_FRAGMENT = graphql`
     fragment VideoEventSettingsFragment on Event
@@ -114,6 +99,11 @@ const reducer = (state: TState, action: Action): TState => {
     }
 };
 
+interface EventSettingsProps {
+    fragmentRef: VideoEventSettingsFragment$key;
+    className?: string;
+}
+
 export const VideoEventSettings = ({ fragmentRef, className }: EventSettingsProps) => {
     const { videos, id: eventId } = useFragment(VIDEO_EVENT_SETTINGS_FRAGMENT, fragmentRef);
     const videoEdges = React.useMemo(() => videos?.edges?.map(({ node }) => node) || [], [videos?.edges]);
@@ -124,7 +114,6 @@ export const VideoEventSettings = ({ fragmentRef, className }: EventSettingsProp
         anchorEl: null,
         focusedVideo: null,
     });
-    const classes = useStyles();
 
     // close all dialogs
     const close = () => dispatch({ type: 'dialog/close-all' });
@@ -136,10 +125,10 @@ export const VideoEventSettings = ({ fragmentRef, className }: EventSettingsProp
     // open the update form
     const openUpdateForm = () => dispatch({ type: 'dialog/update-video' });
 
-    // // open the deletion prompt
+    // open the deletion prompt
     const promptDelete = () => dispatch({ type: 'dialog/delete-video' });
 
-    // // open the form for creating a new video
+    // open the form for creating a new video
     const openFormDialog = () => dispatch({ type: 'dialog/create-video' });
 
     return (
@@ -159,7 +148,7 @@ export const VideoEventSettings = ({ fragmentRef, className }: EventSettingsProp
             </ResponsiveDialog>
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={close}>
                 <MenuItem onClick={openUpdateForm}>Update</MenuItem>
-                <MenuItem className={classes.red} onClick={promptDelete}>
+                <MenuItem sx={{ color: 'red' }} onClick={promptDelete}>
                     Delete
                 </MenuItem>
             </Menu>
@@ -178,7 +167,7 @@ export const VideoEventSettings = ({ fragmentRef, className }: EventSettingsProp
                 </>
             </DeleteVideo>
             {videoEdges.length > 0 ? (
-                <List className={classes.listRoot} disablePadding>
+                <List sx={{ width: '100%' }} disablePadding>
                     {videoEdges.map(({ id, url, lang }) => (
                         <ListItem key={id} disableGutters>
                             <ListItemText primary={lang} secondary={url} />

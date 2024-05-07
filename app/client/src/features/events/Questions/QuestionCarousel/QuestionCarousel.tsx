@@ -1,6 +1,5 @@
 import { useMemo, useReducer, useEffect } from 'react';
 import { Card, Paper, Button, IconButton, Grid, CardContent, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { graphql, useFragment } from 'react-relay';
 
@@ -10,18 +9,6 @@ import { QuestionContent } from '../QuestionContent';
 import { useRecordPush } from '../../Moderation/ManageQuestions/useRecordPush';
 import { useRecordRemove } from '../../Moderation/ManageQuestions/useRecordRemove';
 import { QuestionQuote } from '../QuestionQuote';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.primary.light,
-    },
-    btn: {
-        color: 'white',
-    },
-    card: {
-        minHeight: 150,
-    },
-}));
 
 const QUESTION_CAROUSEL_FRAGMENT = graphql`
     fragment QuestionCarouselFragment on Event
@@ -84,7 +71,6 @@ function reducer(state: TState, action: TActions): TState {
 }
 
 export function QuestionCarousel({ fragmentRef }: QuestionCarouselProps) {
-    const classes = useStyles();
     const data = useFragment(QUESTION_CAROUSEL_FRAGMENT, fragmentRef);
     const [state, dispatch] = useReducer<typeof reducer>(reducer, { idx: -1, currQuestionIdx: -1 });
     const recordConnection = useMemo(
@@ -122,22 +108,22 @@ export function QuestionCarousel({ fragmentRef }: QuestionCarouselProps) {
     );
 
     return (
-        <Paper className={classes.root}>
+        <Paper sx={{ backgroundColor: (theme) => theme.palette.primary.light }}>
             <Grid container justifyContent='space-between'>
                 <IconButton
                     disabled={state.idx === 0 || state.idx === -1}
-                    className={classes.btn}
+                    style={{ color: 'white' }}
                     onClick={() => dispatch({ type: 'previous' })}
                     size='large'
                 >
                     <ChevronLeft />
                 </IconButton>
-                <Button onClick={() => dispatch({ type: 'goToCurrent' })} className={classes.btn}>
+                <Button onClick={() => dispatch({ type: 'goToCurrent' })} style={{ color: 'white' }}>
                     {state.idx === state.currQuestionIdx ? 'Upcoming Question' : 'Go To Current'}
                 </Button>
                 <IconButton
                     disabled={state.currQuestionIdx === state.idx || state.idx === -1}
-                    className={classes.btn}
+                    style={{ color: 'white' }}
                     onClick={() => dispatch({ type: 'next' })}
                     size='large'
                 >
@@ -147,7 +133,7 @@ export function QuestionCarousel({ fragmentRef }: QuestionCarouselProps) {
             <Grid
                 component={Card}
                 elevation={0}
-                className={classes.card}
+                style={{ minHeight: 150 }}
                 container
                 alignItems='center'
                 justifyContent='center'
@@ -163,7 +149,7 @@ export function QuestionCarousel({ fragmentRef }: QuestionCarouselProps) {
                 ) : (
                     <CardContent>
                         <Typography variant='body2' color='textSecondary' align='center'>
-                            No question to display :(
+                            No question to display yet...
                         </Typography>
                     </CardContent>
                 )}

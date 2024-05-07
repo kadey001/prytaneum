@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import { Avatar, TextField } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { useTheme } from '@mui/material/styles';
 // import DoneIcon from '@mui/icons-material/Done';
 
 interface Props {
@@ -9,19 +9,11 @@ interface Props {
     img?: string;
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        padding: theme.spacing(0, 1, 1, 1),
-        height: '100%',
-        width: '100%',
-    },
-}));
-
 export default function UserProfile({ img }: Props) {
-    const classes = useStyles();
+    const theme = useTheme();
 
     return (
-        <div className={classes.root}>
+        <div style={{ padding: theme.spacing(0, 1, 1, 1), height: '100%', width: '100%' }}>
             <Grid container alignContent='center' spacing={2}>
                 <Grid component='span' item xs={12}>
                     <Avatar src={img} alt='Profile Avatar' />

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
 import { Grid, Button, DialogContent, Collapse, Tooltip, IconButton, Typography } from '@mui/material';
-import { useTheme } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 import { Add } from '@mui/icons-material';
 import { useFragment } from 'react-relay';
 import InfoIcon from '@mui/icons-material/Info';

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
 import MUIAppBar, { AppBarProps } from '@mui/material/AppBar';
+import { useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import { useQueryLoader } from 'react-relay';
 
@@ -9,28 +9,7 @@ import { UserMenu, UserMenuLoader } from '@local/features/accounts';
 import Title from './Title';
 import { USER_CONTEXT_QUERY } from '@local/features/accounts/UserContext';
 import { UserContextQuery } from '@local/__generated__/UserContextQuery.graphql';
-
-const useStyles = makeStyles((theme) => ({
-    appbar: {
-        backgroundColor: '#fff',
-        flexGrow: 0,
-        color: theme.palette.getContrastText('#fff'),
-        overscrollBehavior: 'contain',
-        '&::after': {
-            content: '""',
-            width: '95%',
-            margin: '0 2.5%',
-            position: 'absolute',
-            height: '6px',
-            bottom: '-1px',
-            borderRadius: '4px',
-            // borderBottom: `3px solid ${theme.palette.primary.light}`,
-        },
-        [theme.breakpoints.up('lg')]: {
-            marginBottom: theme.spacing(3),
-        },
-    },
-}));
+import { useMediaQuery } from '@mui/material';
 
 function PreloadedUserMenu() {
     const [queryRef, loadQuery] = useQueryLoader<UserContextQuery>(USER_CONTEXT_QUERY);
@@ -44,9 +23,33 @@ function PreloadedUserMenu() {
 }
 
 export function AppBar({ children, ...rest }: AppBarProps) {
-    const classes = useStyles();
+    const theme = useTheme();
+    const lgBreakpoint = useMediaQuery(theme.breakpoints.up('lg'));
+
     return (
-        <MUIAppBar className={classes.appbar} position='sticky' {...rest}>
+        <MUIAppBar
+            style={{
+                backgroundColor: '#fff',
+                color: theme.palette.getContrastText('#fff'),
+                flexGrow: 0,
+                overscrollBehavior: 'contain',
+                marginBottom: lgBreakpoint ? theme.spacing(3) : theme.spacing(0),
+            }}
+            sx={{
+                '&::after': {
+                    content: '""',
+                    width: '95%',
+                    margin: '0 2.5%',
+                    position: 'absolute',
+                    height: '6px',
+                    bottom: '-1px',
+                    borderRadius: '4px',
+                    // borderBottom: `3px solid ${theme.palette.primary.light}`,
+                },
+            }}
+            position='sticky'
+            {...rest}
+        >
             <Toolbar>
                 {children}
                 <Title />

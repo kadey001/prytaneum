@@ -116,8 +116,8 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
         <Grid
             container
             height='100%'
-            padding={mdUpBreakpoint ? theme.spacing(0, 1, 1, 1) : theme.spacing(1)}
-            maxWidth={mdUpBreakpoint ? 600 : '100%'}
+            padding={mdUpBreakpoint ? theme.spacing(0, 0, 0, 1) : theme.spacing(0)}
+            maxWidth={'100%'}
             sx={{
                 '& > *': {
                     marginBottom: theme.spacing(1),

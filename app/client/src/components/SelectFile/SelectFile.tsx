@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 
 import UploadField from '@local/components/UploadField';
 
@@ -15,15 +14,3 @@ export default function SelectFile({ initialState, onComplete }: Props) {
     }, [state, onComplete]);
     return <UploadField onChange={setState} fileName={state.name} />;
 }
-
-SelectFile.defaultProps = {
-    initialState: {
-        name: '',
-    },
-} as Partial<Props>;
-
-SelectFile.propTypes = {
-    // eslint-disable-next-line react/no-unused-prop-types
-    intialState: PropTypes.object,
-    onComplete: PropTypes.func.isRequired,
-};
