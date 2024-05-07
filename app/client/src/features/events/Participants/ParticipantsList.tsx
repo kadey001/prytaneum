@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FragmentRefs, graphql } from 'relay-runtime';
 import { useQueryLoader, PreloadedQuery, usePreloadedQuery } from 'react-relay';
-import { Grid, List, ListItem, Paper, Typography } from '@mui/material';
+import { Grid, List, ListItem, Typography } from '@mui/material';
 
 import type { ParticipantsListQuery } from '@local/__generated__/ParticipantsListQuery.graphql';
 import { ConditionalRender, Loader } from '@local/components';
@@ -59,47 +59,29 @@ export function ParticipantsList({ node, isVisible }: ParticipantsListProps) {
 
     return (
         <Grid container display='grid' height={0} width='100%'>
-            <Grid item paddingTop='1rem'>
-                <Grid item container alignItems='center' justifyContent='center'>
-                    <Typography variant='h6'>Participants List</Typography>
-                </Grid>
-                {participants.length === 0 && <p>No participants yet</p>}
+            <Grid item container alignItems='center' justifyContent='center' paddingY='.5rem'>
+                <Typography variant='h6'>Participants List</Typography>
+            </Grid>
+            {participants.length > 0 && (
                 <ListFilter
                     style={{ flex: 1, marginLeft: '1rem', marginBottom: '-1rem' }}
                     onFilterChange={handleFilterChange}
                     onSearch={handleSearch}
                     length={filteredList.length}
                 />
-                <List>
-                    {filteredList.map((participant) => (
-                        <ListItem key={participant.id}>
-                            <Paper style={{ width: '100%' }}>
-                                <Grid container direction='row' alignItems='center' display='grid'>
-                                    <Grid item justifySelf='center' width='50px'>
-                                        <img
-                                            src='/static/participant_icon.svg'
-                                            alt='avatar'
-                                            width='50px'
-                                            height='50px'
-                                        />
-                                    </Grid>
-                                    <Grid item maxWidth='200px' minWidth='100px' gridColumn='2/5'>
-                                        <Typography variant='body1'>
-                                            {participant.firstName + ' ' + participant.lastName}
-                                        </Typography>
-                                        <Typography variant='body2' color='text.secondary'>
-                                            {participant.moderatorOf ? 'Moderator' : 'Participant'}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item gridColumn='5/6' justifySelf='center' width='50px'>
-                                        <ParticipantCard participant={participant} />
-                                    </Grid>
-                                </Grid>
-                            </Paper>
-                        </ListItem>
-                    ))}
-                </List>
-            </Grid>
+            )}
+            {participants.length === 0 && (
+                <Grid item container justifyContent='center'>
+                    <Typography variant='body1'>No participants found...</Typography>
+                </Grid>
+            )}
+            <List>
+                {filteredList.map((participant) => (
+                    <ListItem key={participant.id}>
+                        <ParticipantCard participant={participant} />
+                    </ListItem>
+                ))}
+            </List>
         </Grid>
     );
 }
