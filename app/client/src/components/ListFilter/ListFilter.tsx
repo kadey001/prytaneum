@@ -15,8 +15,7 @@ import FilterIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { Skeleton } from '@mui/material';
-import { SkeletonProps } from '@mui/lab';
+import { Skeleton, SkeletonProps } from '@mui/material';
 
 import { FilterFunc } from '@local/utils/filters';
 

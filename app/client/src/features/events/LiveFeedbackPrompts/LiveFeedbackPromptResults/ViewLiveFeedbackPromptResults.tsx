@@ -2,7 +2,7 @@ import * as React from 'react';
 import { graphql } from 'relay-runtime';
 import { useQueryLoader, PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import { Button, DialogContent, Grid, Typography, useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 
 import { Prompt } from './useLiveFeedbackPromptResultsShared';
 import { ConditionalRender, Loader, StyledDialog, StyledDialogTitle } from '@local/components';

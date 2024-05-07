@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { Button, TextField, Typography } from '@mui/material';
-import { MobileDateTimePicker } from '@mui/lab';
+import { Button, TextField, Typography, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { MobileDateTimePicker, DesktopDateTimePicker } from '@mui/x-date-pickers';
+import { DateTimeValidationError } from '@mui/x-date-pickers/models';
 import * as Yup from 'yup';
 
 import { Form } from '@local/components';
@@ -53,10 +55,47 @@ const initialState: TEventForm = {
 };
 
 export function EventForm({ onCancel, onSubmit, title, className, form, formType }: EventFormProps) {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [startDateError, setStartDateError] = React.useState<DateTimeValidationError | null>(null);
+    const [endDateError, setEndDateError] = React.useState<DateTimeValidationError | null>(null);
     const [state, errors, handleSubmit, handleChange, setState] = useForm<TEventForm>(
         form || initialState,
         validationSchema
     );
+
+    console.log(startDateError);
+
+    const startDateErrorMessage = React.useMemo(() => {
+        switch (startDateError) {
+            case 'maxDate':
+                return 'Start date must be less than end date & time!';
+            case 'maxTime':
+                return 'Start time must be less than end date & time!';
+            case 'minDate':
+                return 'Please select a date that is now or in the future';
+            case 'minTime':
+                return 'Please select a time that is now or in the future';
+            case 'invalidDate':
+                return 'Your date is not valid';
+            default:
+                return '';
+        }
+    }, [startDateError]);
+
+    const endDateErrorMessage = React.useMemo(() => {
+        switch (endDateError) {
+            case 'minDate':
+                return 'End date must be greater than start date & time!';
+            case 'minTime':
+                return 'End time must be greater than start date & time!';
+            case 'invalidDate':
+                return 'Your date is not valid';
+
+            default:
+                return '';
+        }
+    }, [endDateError]);
 
     return (
         <Form onSubmit={handleSubmit(onSubmit)} className={className}>
@@ -119,38 +158,56 @@ export function EventForm({ onCancel, onSubmit, title, className, form, formType
                 >
                     {state.description.length}/{EVENT_DESCRIPTION_MAX_LENGTH}
                 </Typography>
-                <MobileDateTimePicker
-                    value={state.startDateTime}
-                    onChange={(value) =>
-                        setState((currentState) => ({ ...currentState, startDateTime: value || new Date() }))
-                    }
-                    renderInput={(innerProps) => (
-                        <TextField
-                            {...innerProps}
-                            label='Start Date & Time'
-                            name='startDateTime'
-                            required
-                            error={Boolean(errors.startDateTime)}
-                            helperText={errors.startDateTime}
+                {isMobile && (
+                    <React.Fragment>
+                        <Typography variant='caption'>Start Date & Time</Typography>
+                        <MobileDateTimePicker
+                            value={state.startDateTime}
+                            onChange={(value) =>
+                                setState((currentState) => ({ ...currentState, startDateTime: value || new Date() }))
+                            }
+                            disablePast={true}
+                            maxDate={state.endDateTime}
                         />
-                    )}
-                />
-                <MobileDateTimePicker
-                    value={state.endDateTime}
-                    onChange={(value) =>
-                        setState((currentState) => ({ ...currentState, endDateTime: value || new Date() }))
-                    }
-                    renderInput={(innerProps) => (
-                        <TextField
-                            {...innerProps}
-                            label='End Date & Time'
-                            name='endDateTime'
-                            required
-                            error={Boolean(errors.endDateTime)}
-                            helperText={errors.endDateTime}
+                        <div style={{ height: theme.spacing(2) }} />
+                        <Typography variant='caption'>End Date & Time</Typography>
+                        <MobileDateTimePicker
+                            value={state.endDateTime}
+                            onChange={(value) =>
+                                setState((currentState) => ({ ...currentState, endDateTime: value || new Date() }))
+                            }
+                            minDate={state.startDateTime}
                         />
-                    )}
-                />
+                    </React.Fragment>
+                )}
+                {!isMobile && (
+                    <React.Fragment>
+                        <Typography variant='caption'>Start Date & Time</Typography>
+                        <DesktopDateTimePicker
+                            value={state.startDateTime}
+                            onChange={(value) =>
+                                setState((currentState) => ({ ...currentState, startDateTime: value || new Date() }))
+                            }
+                            onError={(error) => setStartDateError(error)}
+                            slotProps={{
+                                textField: { placeholder: 'Start Date & Time', helperText: startDateErrorMessage },
+                            }}
+                        />
+                        <div style={{ height: theme.spacing(2) }} />
+                        <Typography variant='caption'>End Date & Time</Typography>
+                        <DesktopDateTimePicker
+                            value={state.endDateTime}
+                            onChange={(value) =>
+                                setState((currentState) => ({ ...currentState, endDateTime: value || new Date() }))
+                            }
+                            onError={(error) => setEndDateError(error)}
+                            minDateTime={state.startDateTime}
+                            slotProps={{
+                                textField: { placeholder: 'End Date & Time', helperText: endDateErrorMessage },
+                            }}
+                        />
+                    </React.Fragment>
+                )}
             </FormContent>
             <FormActions disableGrow gridProps={{ justifyContent: 'flex-end' }}>
                 {onCancel && (
@@ -159,7 +216,7 @@ export function EventForm({ onCancel, onSubmit, title, className, form, formType
                     </Button>
                 )}
 
-                <Button type='submit' variant='contained' color='primary'>
+                <Button disabled={!!startDateError || !!endDateError} type='submit' variant='contained' color='primary'>
                     {formType}
                 </Button>
             </FormActions>

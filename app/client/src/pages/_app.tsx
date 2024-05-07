@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { StyledEngineProvider, Theme } from '@mui/material/styles';
 import { AppProps } from 'next/app';
-import { LocalizationProvider } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Head from 'next/head';
 import { RelayEnvironmentProvider } from 'react-relay';
 
@@ -14,7 +14,7 @@ import '@local/index.css';
 import { useRouter } from 'next/router';
 import * as ga from '@local/utils/ga/index';
 
-declare module '@mui/styles/defaultTheme' {
+declare module '@mui/material/styles' {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface DefaultTheme extends Theme {}
 }
@@ -51,31 +51,37 @@ export default function App({ Component, pageProps }: AppProps & { pageProps: an
         }
     }, []);
 
-    return (
-        <>
-            <Head>
-                <title>Prytaneum</title>
-            </Head>
+    function Providers({ children }: { children: React.ReactNode }) {
+        return (
             <RelayEnvironmentProvider environment={env}>
                 <StyledEngineProvider injectFirst>
                     <ThemeProvider>
                         <CssBaseline />
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <SnackContext maxSnack={3}>
-                                <UserProvider userInfo={pageProps.userInfo}>
-                                    <Layout
-                                        hideSideNav={pageProps.hideSideNav}
-                                        ContainerProps={pageProps.containerProps}
-                                        disablePadding={pageProps.disablePadding}
-                                    >
-                                        <Component {...pageProps} />
-                                    </Layout>
-                                </UserProvider>
+                                <UserProvider userInfo={pageProps.userInfo}>{children}</UserProvider>
                             </SnackContext>
                         </LocalizationProvider>
                     </ThemeProvider>
                 </StyledEngineProvider>
             </RelayEnvironmentProvider>
+        );
+    }
+
+    return (
+        <>
+            <Head>
+                <title>Prytaneum</title>
+            </Head>
+            <Providers>
+                <Layout
+                    hideSideNav={pageProps.hideSideNav}
+                    ContainerProps={pageProps.containerProps}
+                    disablePadding={pageProps.disablePadding}
+                >
+                    <Component {...pageProps} />
+                </Layout>
+            </Providers>
         </>
     );
 }

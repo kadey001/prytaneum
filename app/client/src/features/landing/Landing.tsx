@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/router';
 import { Button, Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
-import useTheme from '@mui/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 
 import { CallToAction } from '@local/features/landing/CallToAction';
 import { Blurb } from '@local/features/landing/Blurb';
