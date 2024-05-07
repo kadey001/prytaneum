@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import * as React from 'react';
-import { Grid, Tab } from '@mui/material';
+import { Grid, Tab, Divider } from '@mui/material';
 import { useQueryLoader, PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import { FragmentRefs, graphql } from 'relay-runtime';
 import { Loader } from '@local/components/Loader';
@@ -136,7 +136,9 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
                                 <SpeakerList fragmentRef={node} />
                             </Grid>
                         </Panel>
-                        <PanelResizeHandle />
+                        <PanelResizeHandle>
+                            <Divider sx={{ width: '100%', height: '0.5rem', transform: 'translateY(-0.5rem)' }} />
+                        </PanelResizeHandle>
                         <Panel defaultSize={50} minSize={20}>
                             <Grid
                                 item
@@ -156,79 +158,77 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
                                     <Tab label='Broadcast' value='Broadcast' />
                                 </StyledTabs>
                                 <StyledColumnGrid props={{ width: '98%', display: 'flex', flexGrow: 1 }}>
-                                    <Grid item width='100%'>
-                                        {tab === 'Moderator' && (
-                                            <React.Fragment>
-                                                <ModeratorActions
-                                                    isLive={isLive}
-                                                    setIsLive={setIsLive}
-                                                    eventId={eventId}
-                                                />
-                                                <PreloadedParticipantsList
-                                                    eventId={eventData.id}
-                                                    isVisible={tab === 'Moderator'}
-                                                />
-                                            </React.Fragment>
-                                        )}
-                                        <LiveFeedbackList
-                                            fragmentRef={node}
-                                            ActionButtons={feedbackActionButtons}
-                                            isVisible={tab === 'Feedback'}
-                                        />
-                                        <BroadcastMessageList fragmentRef={node} isVisible={tab === 'Broadcast'} />
-                                    </Grid>
+                                    {tab === 'Moderator' && (
+                                        <Grid item width='100%'>
+                                            <ModeratorActions isLive={isLive} setIsLive={setIsLive} eventId={eventId} />
+                                            <PreloadedParticipantsList
+                                                eventId={eventData.id}
+                                                isVisible={tab === 'Moderator'}
+                                            />
+                                        </Grid>
+                                    )}
+                                    <LiveFeedbackList
+                                        fragmentRef={node}
+                                        ActionButtons={feedbackActionButtons}
+                                        isVisible={tab === 'Feedback'}
+                                    />
+                                    <BroadcastMessageList fragmentRef={node} isVisible={tab === 'Broadcast'} />
                                 </StyledColumnGrid>
                             </Grid>
                         </Panel>
                     </PanelGroup>
                 </Panel>
-                <PanelResizeHandle />
+                <PanelResizeHandle>
+                    <Grid container justifyContent='center' height='100%' width='0.5rem'>
+                        <Divider orientation='vertical' />
+                    </Grid>
+                </PanelResizeHandle>
                 <Panel defaultSize={33} minSize={20}>
-                    <Grid container item direction='column' height='100%'>
+                    <Grid
+                        container
+                        direction='column'
+                        height='100%'
+                        flexGrow={1}
+                        justifyContent='center'
+                        alignContent='center'
+                    >
                         <Grid item>
                             <CurrentQuestionCard isViewerModerator={true} fragmentRef={node} />
                         </Grid>
-                        <Grid
-                            item
-                            container
-                            direction='column'
-                            flexGrow={1}
-                            justifyContent='center'
-                            alignContent='center'
+                        <StyledTabs value='Queue'>
+                            <Tab label='Queue' value='Queue' />
+                        </StyledTabs>
+                        <StyledColumnGrid
+                            props={{
+                                display: 'flex',
+                                flexGrow: 1,
+                                width: '98%',
+                            }}
                         >
-                            <StyledTabs value='Queue'>
-                                <Tab label='Queue' value='Queue' />
-                            </StyledTabs>
-                            <StyledColumnGrid
-                                props={{
-                                    display: 'flex',
-                                    flexGrow: 1,
-                                    width: '98%',
-                                }}
-                            >
-                                <QuestionQueue fragmentRef={node} isVisible={true} />
-                            </StyledColumnGrid>
-                        </Grid>
+                            <QuestionQueue fragmentRef={node} isVisible={true} />
+                        </StyledColumnGrid>
                     </Grid>
                 </Panel>
-                <PanelResizeHandle />
+                <PanelResizeHandle>
+                    <Grid container justifyContent='center' height='100%' width='0.5rem'>
+                        <Divider orientation='vertical' />
+                    </Grid>
+                </PanelResizeHandle>
                 <Panel defaultSize={33} minSize={20}>
-                    <Grid container item direction='column' height='100%'>
-                        <Grid item container direction='column' flexGrow={1} alignContent='center'>
-                            <StyledTabs value='Questions'>
-                                <Tab label='Questions' value='Questions' />
-                            </StyledTabs>
-                            <StyledColumnGrid
-                                props={{
-                                    id: 'scrollable-tab',
-                                    display: 'flex',
-                                    flexGrow: 1,
-                                    width: '98%',
-                                }}
-                            >
-                                <QuestionList fragmentRef={node} ActionButtons={true} isVisible={true} />
-                            </StyledColumnGrid>
-                        </Grid>
+                    <Grid container direction='column' height='100%' flexGrow={1} alignContent='center'>
+                        <StyledTabs value='Questions'>
+                            <Tab label='Questions' value='Questions' />
+                        </StyledTabs>
+                        <StyledColumnGrid
+                            props={{
+                                id: 'scrollable-tab',
+                                display: 'flex',
+                                flexGrow: 1,
+                                width: '98%',
+                            }}
+                        >
+                            <QuestionList fragmentRef={node} ActionButtons={true} isVisible={true} />
+                        </StyledColumnGrid>
                     </Grid>
                 </Panel>
             </PanelGroup>
