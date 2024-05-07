@@ -144,6 +144,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
 
     // styles
     const theme = useTheme();
+    const mdBreakpointUp = useMediaQuery(theme.breakpoints.up('md'));
 
     // references for scrolling
     const topRef = React.useRef<HTMLDivElement | null>(null);
@@ -187,18 +188,17 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
                 component={motion.div}
                 key='townhall-live'
                 container
-                sx={{
-                    height: '100%',
-                    [theme.breakpoints.up('md')]: {
+                sx={[
+                    {
+                        height: '100%',
+                        flexDirection: 'column',
+                        flexWrap: 'nowrap',
+                    },
+                    mdBreakpointUp && {
                         flexDirection: 'row',
                         flexWrap: 'nowrap',
                     },
-                    [theme.breakpoints.down('md')]: {
-                        flexDirection: 'column',
-                        overflowY: 'scroll',
-                        flexWrap: 'nowrap',
-                    },
-                }}
+                ]}
                 onScroll={handleScroll}
             >
                 {!isMdUp && <div ref={topRef} />}

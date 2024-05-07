@@ -10,7 +10,7 @@ import { PreloadedEventLive, EventLiveLoader } from '@local/features/events';
 export async function getServerSideProps() {
     const baseProps = {
         hideSideNav: true,
-        containerProps: { maxWidth: 'xl' },
+        containerProps: { maxWidth: '100%' },
         disablePadding: true,
     };
 
@@ -29,7 +29,7 @@ const Live: NextPage = () => {
             style={{
                 width: '100%',
                 height: '100%',
-                padding: lgDownBreakpoint ? theme.spacing(3, 3, 0, 3) : theme.spacing(0, 3),
+                padding: lgDownBreakpoint ? theme.spacing(0) : theme.spacing(0, 3),
             }}
         >
             <ConditionalRender client>
