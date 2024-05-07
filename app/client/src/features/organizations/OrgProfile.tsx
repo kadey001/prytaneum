@@ -36,22 +36,31 @@ export const OrgProfile = ({ queryRef }: Props) => {
     return (
         <Grid
             container
-            style={lgBreakpointUp ? { width: '80%', marginLeft: 250 } : { width: '100%', marginLeft: 0 }}
-            sx={{
-                height: '100%',
-                '& > *': {
-                    margin: theme.spacing(2, 0),
+            sx={[
+                {
+                    height: '100%',
+                    width: '100%',
+                    marginLeft: 0,
                 },
-            }}
+                {
+                    '& > *': {
+                        margin: theme.spacing(2, 0),
+                    },
+                },
+                lgBreakpointUp && {
+                    width: '80%',
+                    marginLeft: '250px',
+                },
+            ]}
             alignItems='flex-start'
             alignContent='flex-start'
         >
             <Typography variant='h4'>{node?.name ?? 'Unknown Organization'}</Typography>
-            <Grid component={Paper} container item direction='column' style={{ padding: theme.spacing(3) }}>
+            <Grid component={Paper} container item direction='column' sx={{ padding: theme.spacing(3) }}>
                 <Typography variant='h5'>Events</Typography>
                 {node && <OrgEventList fragementRef={node} />}
             </Grid>
-            <Grid component={Paper} container item direction='column' style={{ padding: theme.spacing(3) }}>
+            <Grid component={Paper} container item direction='column' sx={{ padding: theme.spacing(3) }}>
                 <Typography variant='h5'>Members</Typography>
                 {node && <OrgMemberList fragmentRef={node} />}
             </Grid>
