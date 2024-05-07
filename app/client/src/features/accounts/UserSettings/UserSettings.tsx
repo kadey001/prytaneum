@@ -28,7 +28,6 @@ interface Props {
 export default function UserSettings({ id }: Props) {
     const theme = useTheme();
     const lgUpBreakpoint = useMediaQuery(theme.breakpoints.up('lg'));
-    // const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [cont, setContent] = React.useState<JSX.Element | null>(null);
     const { user } = useUser();
