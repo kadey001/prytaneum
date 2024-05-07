@@ -36,7 +36,3 @@ export default function NotFound({ errorMessage }: Props) {
         </div>
     );
 }
-
-NotFound.defaultProps = {
-    errorMessage: undefined,
-};

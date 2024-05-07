@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import * as React from 'react';
-import PropTypes from 'prop-types';
 
 import { Container as MUIContainer, ContainerProps, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -38,15 +37,5 @@ const Container = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
         </MUIContainer>
     );
 });
-
-Container.defaultProps = {
-    children: undefined,
-    className: undefined,
-};
-
-Container.propTypes = {
-    children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
-    className: PropTypes.string,
-};
 
 export default Container;

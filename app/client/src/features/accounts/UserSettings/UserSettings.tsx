@@ -81,7 +81,3 @@ export default function UserSettings({ id }: Props) {
         </div>
     );
 }
-
-UserSettings.defaultProps = {
-    id: 'UserSettings',
-};

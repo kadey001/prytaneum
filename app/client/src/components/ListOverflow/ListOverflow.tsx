@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { List, Divider, Typography } from '@mui/material';
 
 import ListCell from './ListCell';
@@ -39,21 +38,6 @@ const ListOverflow = ({ rowProps, emptyMessage }: Props) => {
             {structuredUserList}
         </List>
     );
-};
-
-ListOverflow.defaultProps = {
-    emptyMessage: 'Empty List',
-};
-
-ListOverflow.propTypes = {
-    rowProps: PropTypes.arrayOf(
-        PropTypes.shape({
-            _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-            primary: PropTypes.string.isRequired,
-            secondary: PropTypes.string,
-        })
-    ).isRequired,
-    emptyMessage: PropTypes.string,
 };
 
 export default ListOverflow;

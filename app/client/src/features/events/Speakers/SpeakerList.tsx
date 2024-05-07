@@ -122,7 +122,3 @@ export function SpeakerList({ fragmentRef, className }: SpeakerItemProps) {
         </React.Fragment>
     );
 }
-
-SpeakerList.defaultProps = {
-    className: undefined,
-};

@@ -27,7 +27,3 @@ export function Fab({ children, ZoomProps, ...rest }: FabProps & { ZoomProps?: O
         </Zoom>
     );
 }
-
-Fab.defaultProps = {
-    ZoomProps: {},
-};

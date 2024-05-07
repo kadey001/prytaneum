@@ -79,10 +79,3 @@ export function Layout({
         </Page>
     );
 }
-
-Layout.defaultProps = {
-    showAsLoggedIn: false,
-    noSideNav: false,
-    ContainerProps: {},
-    disablePadding: false,
-};

@@ -38,8 +38,4 @@ function Tab(props: TabProps & Props) {
     );
 }
 
-Tab.defaultProps = {
-    variant: 'primary',
-};
-
 export default Tab;

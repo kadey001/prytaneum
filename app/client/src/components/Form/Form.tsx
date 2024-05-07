@@ -33,10 +33,6 @@ export function Form({ onSubmit, children, styles }: Props) {
     );
 }
 
-Form.defaultProps = {
-    className: '',
-};
-
 Form.propTypes = {
     className: PropTypes.string,
 };

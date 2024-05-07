@@ -185,10 +185,3 @@ export default function ListFilter<T>({
         </div>
     );
 }
-
-ListFilter.defaultProps = {
-    menuIcons: [],
-    className: undefined,
-    filterMap: undefined,
-    displayNumResults: true,
-};

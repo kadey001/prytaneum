@@ -1,7 +1,6 @@
 import * as React from 'react';
 // original code here: https://github.com/sghall/react-compound-slider/blob/master/docs/src/demos/horizontal/@local/components.tsx
 import { GetRailProps, GetHandleProps, GetTrackProps, SliderItem } from 'react-compound-slider';
-import PropTypes from 'prop-types';
 
 // *******************************************************
 // RAIL
@@ -93,15 +92,6 @@ export const Handle = ({
     </>
 );
 
-Handle.propTypes = {
-    domain: PropTypes.array.isRequired,
-    disabled: PropTypes.bool,
-};
-
-Handle.defaultProps = {
-    disabled: false,
-};
-
 // *******************************************************
 // KEYBOARD HANDLE COMPONENT
 // Uses a button to allow keyboard events
@@ -135,14 +125,6 @@ export const KeyboardHandle = ({
         {...getHandleProps(id)}
     />
 );
-KeyboardHandle.propTypes = {
-    domain: PropTypes.array.isRequired,
-    disabled: PropTypes.bool,
-};
-
-KeyboardHandle.defaultProps = {
-    disabled: false,
-};
 
 // *******************************************************
 // TRACK COMPONENT
@@ -181,13 +163,6 @@ export const Track = ({
         {...getTrackProps()}
     />
 );
-Track.propTypes = {
-    disabled: PropTypes.bool,
-};
-
-Track.defaultProps = {
-    disabled: false,
-};
 
 // *******************************************************
 // TICK COMPONENT
@@ -232,11 +207,3 @@ export const Tick = ({
         />
     </div>
 );
-Tick.propTypes = {
-    count: PropTypes.number.isRequired,
-    format: PropTypes.func,
-};
-
-Tick.defaultProps = {
-    format: undefined,
-};
