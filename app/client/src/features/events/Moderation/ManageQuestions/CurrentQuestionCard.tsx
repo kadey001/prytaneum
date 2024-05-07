@@ -1,6 +1,6 @@
 import * as React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
 import { Grid, Chip, Card, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 import type { useQuestionQueueFragment$key } from '@local/__generated__/useQuestionQueueFragment.graphql';
@@ -15,47 +15,13 @@ import { useEnqueuedPush } from './useEnqueuedPush';
 import { useEnqueuedRemove } from './useEnqueuedRemove';
 import { useEnqueuedUnshift } from './useEnqueuedUnshift';
 
-const useStyles = makeStyles((theme) => ({
-    item: {
-        width: '100%',
-        paddingTop: theme.spacing(0.5),
-        borderRadius: '10px',
-    },
-    relative: {
-        position: 'relative',
-        overflow: 'visible',
-        marginTop: theme.spacing(3),
-    },
-    answeringNow: {
-        padding: theme.spacing(0.5),
-        position: 'absolute',
-        top: theme.spacing(-2),
-        left: '50%',
-        transform: 'translateX(-50%)',
-        backgroundColor: theme.palette.custom.creamCan,
-        background: theme.palette.background.default,
-        color: 'white',
-        textTransform: 'uppercase',
-        fontWeight: 600,
-    },
-    currentQuestionActions: {
-        padding: theme.spacing(0, 1, 1, 1),
-    },
-    text: {
-        margin: 'auto',
-        paddingTop: '20px',
-    },
-    typographyContainer: {
-        alignItems: 'center',
-    },
-}));
-
 interface QuestionQueueProps {
     isViewerModerator: boolean;
     fragmentRef: useQuestionQueueFragment$key;
 }
 
 export function CurrentQuestionCard({ isViewerModerator, fragmentRef }: QuestionQueueProps) {
+    const theme = useTheme();
     //
     // ─── HOOKS ──────────────────────────────────────────────────────────────────────
     //
@@ -68,8 +34,6 @@ export function CurrentQuestionCard({ isViewerModerator, fragmentRef }: Question
         () => ({ connection: questionQueue?.enqueuedQuestions?.__id ?? '' }),
         [questionQueue?.enqueuedQuestions]
     );
-
-    const classes = useStyles();
 
     //
     // ─── SUBSCRIPTION HOOKS ─────────────────────────────────────────────────────────
@@ -106,34 +70,54 @@ export function CurrentQuestionCard({ isViewerModerator, fragmentRef }: Question
     );
 
     return (
-        <>
-            <Card className={`${classes.item} ${classes.relative}`}>
-                <Chip
-                    color='secondary'
-                    icon={<BookmarkIcon fontSize='small' />}
-                    label='Answering Now'
-                    className={classes.answeringNow}
-                />
-                {currentQuestion && <QuestionAuthor fragmentRef={currentQuestion.node} />}
-                {currentQuestion && currentQuestion.node.refQuestion && (
-                    <QuestionQuote fragmentRef={currentQuestion.node.refQuestion} />
+        <Card
+            style={{
+                width: '100%',
+                borderRadius: '10px',
+                position: 'relative',
+                overflow: 'visible',
+                paddingTop: theme.spacing(0.5),
+                marginTop: theme.spacing(3),
+            }}
+        >
+            <Chip
+                color='secondary'
+                icon={<BookmarkIcon fontSize='small' />}
+                label='Answering Now'
+                style={{
+                    padding: theme.spacing(0.5),
+                    position: 'absolute',
+                    top: theme.spacing(-2),
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    backgroundColor: theme.palette.custom.creamCan,
+                    background: theme.palette.custom.creamCan,
+                    color: 'white',
+                    textTransform: 'uppercase',
+                    fontWeight: 600,
+                }}
+            />
+            {currentQuestion && <QuestionAuthor fragmentRef={currentQuestion.node} />}
+            {currentQuestion && currentQuestion.node.refQuestion && (
+                <QuestionQuote fragmentRef={currentQuestion.node.refQuestion} />
+            )}
+            {currentQuestion && <QuestionContent fragmentRef={currentQuestion.node} />}
+            <Grid container alignItems='center' style={{ alignItems: 'center' }}>
+                {!currentQuestion && (
+                    <Typography style={{ margin: 'auto', paddingTop: '20px' }}>No Current Question</Typography>
                 )}
-                {currentQuestion && <QuestionContent fragmentRef={currentQuestion.node} />}
-                <Grid container alignItems='center' className={classes.typographyContainer}>
-                    {!currentQuestion && <Typography className={classes.text}>No Current Question</Typography>}
+            </Grid>
+            {isViewerModerator && (
+                <Grid
+                    container
+                    alignItems='center'
+                    justifyContent='space-between'
+                    style={{ padding: theme.spacing(0, 1, 1, 1) }}
+                >
+                    <PreviousQuestionButton disabled={!canGoBackward} />
+                    <NextQuestionButton disabled={!canGoForward} />
                 </Grid>
-                {isViewerModerator && (
-                    <Grid
-                        container
-                        alignItems='center'
-                        justifyContent='space-between'
-                        className={classes.currentQuestionActions}
-                    >
-                        <PreviousQuestionButton disabled={!canGoBackward} />
-                        <NextQuestionButton disabled={!canGoForward} />
-                    </Grid>
-                )}
-            </Card>
-        </>
+            )}
+        </Card>
     );
 }

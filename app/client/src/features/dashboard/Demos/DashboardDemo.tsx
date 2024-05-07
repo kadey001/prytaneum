@@ -16,54 +16,7 @@ import {
     DialogActions,
 } from '@mui/material';
 import { ChevronRight } from '@mui/icons-material';
-import makeStyles from '@mui/styles/makeStyles';
 import HelpIcon from '@mui/icons-material/Help';
-
-const useStyles = makeStyles((theme) => ({
-    item: {
-        margin: theme.spacing(0, 0, 4, 0),
-    },
-    card: {
-        padding: theme.spacing(1, 1, 1, 1),
-    },
-    title: {
-        marginBottom: theme.spacing(1),
-    },
-    text: {
-        marginLeft: theme.spacing(1),
-    },
-    secondaryText: {
-        color: theme.palette.text.secondary,
-    },
-    chip: {
-        paddingLeft: theme.spacing(1),
-        paddingRight: theme.spacing(1),
-        textTransform: 'uppercase',
-    },
-    relative: {
-        position: 'relative',
-        width: '100%',
-    },
-    topleft: {
-        position: 'absolute',
-        top: '-0.75rem',
-        left: '-1.25rem',
-        zIndex: 100,
-    },
-    topright: {
-        position: 'absolute',
-        top: '-0.75rem',
-        right: '-1.25rem',
-        zIndex: 100,
-    },
-    topmid: {
-        position: 'absolute',
-        top: '-0.75rem',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 100,
-    },
-}));
 
 const dummyCurrentEvents = [
     {
@@ -99,7 +52,6 @@ const dummyFutureEvents = [
 ];
 
 export function DashboardDemo() {
-    const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [infoIndex, setInfoIndex] = React.useState(0);
 
@@ -125,10 +77,10 @@ export function DashboardDemo() {
 
     return (
         <Grid container>
-            <Grid item xs={12} className={classes.item}>
-                <Card className={classes.card}>
+            <Grid item xs={12} sx={{ margin: (theme) => theme.spacing(0, 0, 4, 0) }}>
+                <Card sx={{ padding: (theme) => theme.spacing(1, 1, 1, 1) }}>
                     <CardContent>
-                        <div className={classes.relative}>
+                        <div style={{ position: 'relative', width: '100%' }}>
                             <Chip
                                 color='secondary'
                                 icon={<HelpIcon />}
@@ -137,16 +89,19 @@ export function DashboardDemo() {
                                 onClick={() => handleClickOpen(1)}
                             />
 
-                            <Typography variant='h6' className={classes.title}>
+                            <Typography variant='h6' sx={{ marginBottom: (theme) => theme.spacing(1) }}>
                                 Current Events
                             </Typography>
                         </div>
                         <Grid container justifyContent='space-between' alignItems='center' spacing={1}>
                             {dummyCurrentEvents.map(({ title, description }, idx) => (
                                 <React.Fragment key={idx}>
-                                    <Grid item xs={12} sm={8} className={classes.text}>
+                                    <Grid item xs={12} sm={8} sx={{ marginLeft: (theme) => theme.spacing(1) }}>
                                         <Typography variant='subtitle2'>{title}</Typography>
-                                        <Typography variant='body2' className={classes.secondaryText}>
+                                        <Typography
+                                            variant='body2'
+                                            sx={{ color: (theme) => theme.palette.text.secondary }}
+                                        >
                                             {description}
                                         </Typography>
                                     </Grid>
@@ -170,10 +125,10 @@ export function DashboardDemo() {
                     </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={12} className={classes.item}>
-                <Card className={classes.card}>
+            <Grid item xs={12} sx={{ margin: (theme) => theme.spacing(0, 0, 4, 0) }}>
+                <Card sx={{ padding: (theme) => theme.spacing(1, 1, 1, 1) }}>
                     <CardContent>
-                        <div className={classes.relative}>
+                        <div style={{ position: 'relative', width: '100%' }}>
                             <Chip
                                 color='secondary'
                                 icon={<HelpIcon />}
@@ -182,16 +137,19 @@ export function DashboardDemo() {
                                 onClick={() => handleClickOpen(2)}
                             />
 
-                            <Typography variant='h6' className={classes.title}>
+                            <Typography variant='h6' sx={{ marginBottom: (theme) => theme.spacing(1) }}>
                                 Upcoming Events
                             </Typography>
                         </div>
                         <Grid container justifyContent='space-between' alignItems='center' spacing={1}>
                             {dummyFutureEvents.map(({ title, date }, idx) => (
                                 <React.Fragment key={idx}>
-                                    <Grid item className={classes.text}>
+                                    <Grid item sx={{ marginLeft: (theme) => theme.spacing(1) }}>
                                         <Typography variant='subtitle2'>{title}</Typography>
-                                        <Typography variant='body2' className={classes.secondaryText}>
+                                        <Typography
+                                            variant='body2'
+                                            sx={{ color: (theme) => theme.palette.text.secondary }}
+                                        >
                                             {date}
                                         </Typography>
                                     </Grid>

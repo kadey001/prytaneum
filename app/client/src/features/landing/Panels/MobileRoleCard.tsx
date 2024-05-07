@@ -10,7 +10,6 @@ import {
     ListItemText,
     Typography,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Props {
@@ -20,25 +19,8 @@ interface Props {
     button: boolean;
 }
 
-const useStyles = makeStyles(() => ({
-    featuresBar: {
-        height: 40,
-        width: '109%',
-        marginTop: 14,
-        marginLeft: -16,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#D2A94280',
-    },
-    contain: {
-        objectFit: 'contain',
-    },
-}));
-
 export default function MobileRoleCard(props: Props) {
     const router = useRouter();
-    const classes = useStyles();
     const bulletPoints = props.bulletPoints.map((value, idx) => (
         <ListItem key={idx} sx={{ display: 'list-item', marginBottom: -2 }}>
             <ListItemText primary={value} primaryTypographyProps={{ fontSize: 15 }} />
@@ -49,7 +31,7 @@ export default function MobileRoleCard(props: Props) {
         <Accordion square={true}>
             <AccordionSummary expandIcon={<ExpandMoreIcon htmlColor='white' />} style={{ backgroundColor: '#F5C64F' }}>
                 <img
-                    className={classes.contain}
+                    style={{ objectFit: 'contain' }}
                     alt={`${props.title} Icon`}
                     src={`/static/${props.title.toLowerCase()}_icon.svg`}
                     width={31}
@@ -63,7 +45,19 @@ export default function MobileRoleCard(props: Props) {
                 <Typography fontSize='15px' align='center'>
                     {props.description}
                 </Typography>
-                <Grid item className={classes.featuresBar}>
+                <Grid
+                    item
+                    style={{
+                        height: 40,
+                        width: '109%',
+                        marginTop: 14,
+                        marginLeft: -16,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#D2A94280',
+                    }}
+                >
                     <Typography variant='h4' color='white' fontSize={20}>
                         Features
                     </Typography>

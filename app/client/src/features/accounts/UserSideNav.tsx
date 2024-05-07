@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import * as React from 'react';
 import { List, ListItemText } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import ListIcon from '@mui/icons-material/List';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { Skeleton } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { AnimateSharedLayout /* motion */ } from 'framer-motion';
 import { useRouter } from 'next/router';
 import {
@@ -20,13 +20,6 @@ import { RoleGuard } from '@local/components/RoleGuard';
 import { graphql, usePreloadedQuery, PreloadedQuery } from 'react-relay';
 
 import type { UserSideNavQuery } from '@local/__generated__/UserSideNavQuery.graphql';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        padding: theme.spacing(0, 1.5),
-        flex: 1,
-    },
-}));
 
 enum Nav {
     'My Organizations',
@@ -89,9 +82,9 @@ export const USER_SIDE_NAV_QUERY = graphql`
 `;
 
 export function UserSideNavLoader() {
-    const classes = useStyles();
+    const theme = useTheme();
     return (
-        <div className={classes.root}>
+        <div style={{ padding: theme.spacing(0, 1.5), flex: 1 }}>
             <Skeleton width={200} height={40} />
             <Skeleton width={200} height={40} />
             <Skeleton width={200} height={40} />
@@ -100,7 +93,6 @@ export function UserSideNavLoader() {
 }
 
 export function UserSideNav({ queryRef, onClick }: UserSideNavProps) {
-    const classes = useStyles();
     const router = useRouter();
     usePreloadedQuery(USER_SIDE_NAV_QUERY, queryRef);
     const { user } = useUser();
@@ -128,7 +120,7 @@ export function UserSideNav({ queryRef, onClick }: UserSideNavProps) {
     }, [router.pathname, selected]);
 
     return (
-        <List component='nav' className={classes.root}>
+        <List component='nav' sx={{ padding: (theme) => theme.spacing(0, 1.5), flex: 1 }}>
             <AnimateSharedLayout>
                 {!!user ? (
                     <StyledListItem onClick={handleClick('Dashboard')} selected={selected === 'Dashboard'}>

@@ -11,7 +11,6 @@ import { CreateEvent } from '@local/features/events';
 
 interface OrgEventListProps {
     fragementRef: OrgEventListFragment$key;
-    className?: string;
 }
 
 const EVENT_FRAGEMENT = graphql`
@@ -38,7 +37,7 @@ const EVENT_FRAGEMENT = graphql`
     }
 `;
 
-export function OrgEventList({ fragementRef, className }: OrgEventListProps) {
+export function OrgEventList({ fragementRef }: OrgEventListProps) {
     const data = useFragment(EVENT_FRAGEMENT, fragementRef);
     const eventArr = React.useMemo(() => data.events?.edges || [], [data]);
     const router = useRouter();
@@ -46,7 +45,7 @@ export function OrgEventList({ fragementRef, className }: OrgEventListProps) {
     const [isOpen, open, close] = useResponsiveDialog(false);
 
     return (
-        <Grid container item direction='column' className={className}>
+        <Grid container item direction='column'>
             <Grid item xs={12}>
                 {eventArr.length > 0 ? (
                     <List>

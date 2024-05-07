@@ -1,18 +1,10 @@
 import * as React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/Grid';
-import makeStyles from '@mui/styles/makeStyles';
+import { Grid, GridProps } from '@mui/material';
 
-const useStyles = makeStyles({
-    root: {
-        width: '100%',
-        height: '100%',
-    },
-    loader: {
-        flex: 1,
-        display: 'flex',
-    },
-});
+interface Props {
+    gridProps?: GridProps;
+}
 
 /**
  * @description generic Loader that displays in the center vertically and horizontally of its parent component
@@ -20,12 +12,11 @@ const useStyles = makeStyles({
  * @category Component
  * @constructor Loader
  */
-export const Loader = () => {
-    const classes = useStyles();
+export const Loader = ({ gridProps }: Props) => {
     return (
-        <Grid container justifyContent='center' className={classes.root}>
+        <Grid container justifyContent='center' width='100%' height='100%' {...gridProps}>
             <Grid item xs={12} container direction='column' alignContent='center'>
-                <CircularProgress className={classes.loader} />
+                <CircularProgress sx={{ display: 'flex', flex: 1 }} />
             </Grid>
         </Grid>
     );

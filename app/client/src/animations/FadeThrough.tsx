@@ -1,10 +1,5 @@
 import * as React from 'react';
 import { motion, AnimationProps, MotionProps } from 'framer-motion';
-import makeStyles from '@mui/styles/makeStyles';
-
-const useStyles = makeStyles({
-    motion: { top: 0, bottom: 0, left: 0, right: 0, position: 'absolute' },
-});
 
 interface Props {
     children: React.ReactNode | React.ReactNodeArray;
@@ -21,9 +16,12 @@ export const fadeThroughProps: AnimationProps & MotionProps = {
 };
 
 export default function FadeThrough({ children, animKey: key }: Props) {
-    const classes = useStyles();
     return (
-        <motion.div key={key} {...fadeThroughProps} className={classes.motion}>
+        <motion.div
+            style={{ top: 0, bottom: 0, left: 0, right: 0, position: 'absolute' }}
+            key={key}
+            {...fadeThroughProps}
+        >
             {children}
         </motion.div>
     );

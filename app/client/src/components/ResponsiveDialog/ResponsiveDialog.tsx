@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
 import MUIDialog, { DialogProps } from '@mui/material/Dialog';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,15 +10,6 @@ import Slide, { SlideProps } from '@mui/material/Slide';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { DialogTitle } from '@mui/material';
-
-const useStyles = makeStyles({
-    appBar: {
-        position: 'relative',
-    },
-    title: {
-        flexGrow: 1,
-    },
-});
 
 /** Transition used by FullScreenDialog -- it slides up
  *  @category Component
@@ -41,19 +31,18 @@ export type ResponsiveDialogProps = {
  */
 export function ResponsiveDialog(props: ResponsiveDialogProps) {
     const { children, title, fullScreen: _fullscreen, ...rest } = props;
-    const classes = useStyles();
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md')) || _fullscreen;
 
     return (
         <MUIDialog fullScreen={fullScreen} TransitionComponent={Transition} {...rest}>
             {fullScreen && (
-                <AppBar elevation={0} className={classes.appBar}>
+                <AppBar elevation={0} position='relative'>
                     <Toolbar>
                         <IconButton edge='start' color='inherit' onClick={rest.onClose} aria-label='close' size='large'>
                             <CloseIcon />
                         </IconButton>
-                        <Typography component='span' variant='h6' className={classes.title}>
+                        <Typography component='span' variant='h6' flexGrow={1}>
                             {title}
                         </Typography>
                     </Toolbar>

@@ -1,7 +1,5 @@
 import { graphql, useFragment } from 'react-relay';
 import { Card } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import clsx from 'clsx';
 
 import type { QuestionQuoteFragment$key } from '@local/__generated__/QuestionQuoteFragment.graphql';
 import { QuestionAuthor } from './QuestionAuthor';
@@ -17,22 +15,16 @@ export const QUESTION_QUOTE_FRAGMENT = graphql`
 
 export interface QuestionQuoteProps {
     fragmentRef: QuestionQuoteFragment$key;
-    className?: string;
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        margin: theme.spacing(2),
-        border: `1px solid ${theme.palette.divider}`,
-    },
-}));
-
-export function QuestionQuote({ fragmentRef, className }: QuestionQuoteProps) {
+export function QuestionQuote({ fragmentRef }: QuestionQuoteProps) {
     const data = useFragment(QUESTION_QUOTE_FRAGMENT, fragmentRef);
-    const classes = useStyles();
 
     return (
-        <Card className={clsx(className, classes.root)} elevation={0}>
+        <Card
+            sx={{ margin: (theme) => theme.spacing(2), border: (theme) => `1px solid ${theme.palette.divider}` }}
+            elevation={0}
+        >
             <QuestionAuthor fragmentRef={data} />
             <QuestionContent fragmentRef={data} />
         </Card>

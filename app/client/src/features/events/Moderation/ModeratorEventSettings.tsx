@@ -16,7 +16,6 @@ import {
     Avatar,
 } from '@mui/material';
 import { Add, MoreVert } from '@mui/icons-material';
-import makeStyles from '@mui/styles/makeStyles';
 import { graphql, useFragment } from 'react-relay';
 
 import type {
@@ -33,15 +32,6 @@ interface EventSettingsProps {
     fragmentRef: ModeratorEventSettingsFragment$key;
     className?: string;
 }
-
-const useStyles = makeStyles(() => ({
-    listRoot: {
-        width: '100%',
-    },
-    red: {
-        color: 'red',
-    },
-}));
 
 export const MODERATOR_EVENT_SETTINGS_FRAGMENT = graphql`
     fragment ModeratorEventSettingsFragment on Event
@@ -141,7 +131,6 @@ export const ModeratorEventSettings = ({ fragmentRef, className }: EventSettings
         anchorEl: null,
         focusedModerator: null,
     });
-    const classes = useStyles();
 
     // close all dialogs
     const close = () => dispatch({ type: 'dialog/close-all' });
@@ -176,7 +165,7 @@ export const ModeratorEventSettings = ({ fragmentRef, className }: EventSettings
             </ResponsiveDialog>
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={close}>
                 <MenuItem onClick={openUpdateForm}>Update</MenuItem>
-                <MenuItem className={classes.red} onClick={promptDelete}>
+                <MenuItem style={{ color: 'red' }} onClick={promptDelete}>
                     Delete
                 </MenuItem>
             </Menu>
@@ -195,13 +184,16 @@ export const ModeratorEventSettings = ({ fragmentRef, className }: EventSettings
                 </>
             </DeleteModerator>
             {moderatorEdges.length > 0 ? (
-                <List className={classes.listRoot} disablePadding>
+                <List style={{ width: '100%' }} disablePadding>
                     {moderatorEdges.map(({ firstName, lastName, id, email, avatar }) => (
                         <ListItem key={id} disableGutters>
                             <ListItemAvatar>
                                 <Avatar src={avatar || undefined} />
                             </ListItemAvatar>
-                            <ListItemText primary={firstName ? `${firstName} ${lastName}` : 'Pending Registration...'} secondary={email} />
+                            <ListItemText
+                                primary={firstName ? `${firstName} ${lastName}` : 'Pending Registration...'}
+                                secondary={email}
+                            />
                             <ListItemSecondaryAction>
                                 <IconButton onClick={openMenu({ id, firstName, lastName, email, avatar })} size='large'>
                                     <MoreVert />

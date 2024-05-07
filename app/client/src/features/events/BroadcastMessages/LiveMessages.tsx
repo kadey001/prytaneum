@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
 import { Card, Grid, List, ListItem, Paper, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { useEvent } from '@local/features/events';
 import { ConditionalRender } from '@local/components/ConditionalRender';
@@ -12,35 +11,6 @@ import { BroadcastMessageAuthor } from './BroadcastMessageAuthor';
 import { BroadcastMessageContent } from './BroadcastMessageContent';
 import { LiveMessagesQuery } from '@local/__generated__/LiveMessagesQuery.graphql';
 import { useEnvironment } from '@local/core';
-
-const useStyles = makeStyles((theme) => ({
-    listFilter: {
-        flex: 1,
-        paddingLeft: '0.5rem',
-        paddingRight: '0.5rem',
-    },
-    content: {
-        height: 0, // flex box recalculates this -- explanation:  https://stackoverflow.com/a/14964944
-        flex: '1 1 100%',
-    },
-    broadcastMessageActions: {
-        display: 'flex',
-        justifyContent: 'center',
-    },
-    item: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        paddingTop: theme.spacing(0.5),
-        borderRadius: '10px',
-    },
-    filler: {
-        visibility: 'hidden',
-    },
-    text: {
-        margin: 'auto',
-    },
-}));
 
 export const LIVE_MESSAGES_QUERY = graphql`
     query LiveMessagesQuery($eventId: ID!) {
@@ -80,7 +50,6 @@ function MessageList({ broadcastMessages: immutableBroadcastMessages }: MessageL
         const mutableList = [...immutableBroadcastMessages];
         return mutableList.reverse();
     }, [immutableBroadcastMessages]);
-    const classes = useStyles();
 
     const isMessageDeleted = React.useCallback(
         (index: number) => {
@@ -118,7 +87,10 @@ function MessageList({ broadcastMessages: immutableBroadcastMessages }: MessageL
                                         <React.Fragment />
                                     ) : (
                                         <ListItem disableGutters sx={{ paddingX: '0.5rem' }}>
-                                            <Card className={classes.item}>
+                                            <Card
+                                                style={{ flex: 1, flexDirection: 'column', borderRadius: '10px' }}
+                                                sx={{ paddingTop: (theme) => theme.spacing(0.5) }}
+                                            >
                                                 <BroadcastMessageAuthor fragmentRef={broadcastMessage} />
                                                 <BroadcastMessageContent fragmentRef={broadcastMessage} />
                                             </Card>

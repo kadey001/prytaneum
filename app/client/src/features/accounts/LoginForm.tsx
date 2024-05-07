@@ -1,7 +1,5 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { Button, InputAdornment, IconButton, Link as MUILink, Grid, Typography, TextField } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Link from 'next/link';
@@ -12,35 +10,6 @@ import { Form } from '@local/components/Form';
 import { FormContent } from '@local/components/FormContent';
 import { LoadingButton } from '@local/components/LoadingButton';
 import { useSnack, useForm } from '@local/core';
-
-const useStyles = makeStyles((theme) => ({
-    link: {
-        padding: theme.spacing(0.5, 0, 0, 0),
-    },
-    buttonGroup: {
-        '& > *': {
-            margin: theme.spacing(1, 0),
-        },
-    },
-    divider: {
-        maxWidth: '75%',
-        marginLeft: '12.5%',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(4),
-    },
-}));
-
-interface Props {
-    onSuccess?: () => void;
-    close?: () => void;
-    secondaryActions?: React.ReactNode;
-}
 
 interface TLoginForm {
     [index: string]: string;
@@ -60,6 +29,12 @@ const LOGIN_FORM_MUTATION = graphql`
     }
 `;
 
+interface Props {
+    onSuccess?: () => void;
+    close?: () => void;
+    secondaryActions?: React.ReactNode;
+}
+
 const intialState: TLoginForm = { email: '', password: '' };
 /** Function to request a password reset, calls onSuccess if worked, otherwise, calls onFailure
  * @category @local/domains/Auth
@@ -73,7 +48,6 @@ const intialState: TLoginForm = { email: '', password: '' };
  * <ForgotPassRequest onSuccess={onS} onFailure={onF}/>
  */
 export function LoginForm({ onSuccess, close, secondaryActions }: Props) {
-    const classes = useStyles();
     const { displaySnack } = useSnack();
     const [isPassVisible, setIsPassVisible] = React.useState(false);
     const [form, errors, handleSubmit, handleChange] = useForm(intialState);
@@ -103,7 +77,7 @@ export function LoginForm({ onSuccess, close, secondaryActions }: Props) {
                     Login
                 </Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={handleSubmit(commitMutation)}>
+            <Form onSubmit={handleSubmit(commitMutation)}>
                 <FormContent>
                     <TextField
                         id='login-email'
@@ -145,7 +119,7 @@ export function LoginForm({ onSuccess, close, secondaryActions }: Props) {
                         <Grid container justifyContent='flex-end'>
                             <Link href='/forgot-password' passHref>
                                 <MUILink
-                                    className={classes.link}
+                                    sx={{ padding: (theme) => theme.spacing(0.5, 0, 0, 0) }}
                                     color='primary'
                                     underline='hover'
                                     onClick={() => {
@@ -158,7 +132,7 @@ export function LoginForm({ onSuccess, close, secondaryActions }: Props) {
                         </Grid>
                     </>
                 </FormContent>
-                <Grid container item direction='column' className={classes.buttonGroup}>
+                <Grid container item direction='column' sx={{ '& > *': { margin: (theme) => theme.spacing(1, 0) } }}>
                     <LoadingButton loading={isLoading}>
                         <Button
                             data-test-id='login-form-submit'
@@ -182,12 +156,3 @@ export function LoginForm({ onSuccess, close, secondaryActions }: Props) {
         </Grid>
     );
 }
-
-LoginForm.defaultProps = {
-    onSuccess: undefined,
-    demo: false,
-};
-
-LoginForm.propTypes = {
-    onSuccess: PropTypes.func,
-};

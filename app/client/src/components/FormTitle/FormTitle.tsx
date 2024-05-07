@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { Grid, Typography, TypographyProps } from '@mui/material';
 
 interface Props {
@@ -33,15 +32,3 @@ export function FormTitle({ title, subtitle, description, titleTypographyProps }
         </Grid>
     );
 }
-
-FormTitle.defaultProps = {
-    subtitle: '',
-    description: '',
-    titleTypographyProps: {},
-};
-
-FormTitle.propTypes = {
-    subtitle: PropTypes.string,
-    description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-    titleTypographyProps: PropTypes.object,
-};

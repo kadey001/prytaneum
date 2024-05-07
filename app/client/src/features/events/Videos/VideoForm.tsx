@@ -41,21 +41,21 @@ export const VideoForm = (props: VideoFormProps) => {
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
             <FormTitle title='Video Form' />
-            <FormControl fullWidth>
-                <InputLabel id='lang-label'>Language</InputLabel>
-                <Select
-                    labelId='lang-label'
-                    id='lang'
-                    label='Language'
-                    name='lang'
-                    value={state.lang}
-                    onChange={handleSelectionChange}
-                >
-                    <MenuItem value='en'>English</MenuItem>
-                    <MenuItem value='sp'>Spanish</MenuItem>
-                </Select>
-            </FormControl>
             <FormContent>
+                <FormControl fullWidth>
+                    <InputLabel id='lang-label'>Language</InputLabel>
+                    <Select
+                        labelId='lang-label'
+                        id='lang'
+                        label='Language'
+                        name='lang'
+                        value={state.lang}
+                        onChange={handleSelectionChange}
+                    >
+                        <MenuItem value='en'>English</MenuItem>
+                        <MenuItem value='sp'>Spanish</MenuItem>
+                    </Select>
+                </FormControl>
                 <TextField
                     required
                     helperText={errors.url}

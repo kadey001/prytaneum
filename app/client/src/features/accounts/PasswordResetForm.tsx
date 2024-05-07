@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Grid, IconButton, InputAdornment, Typography, TextField } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { makeStyles } from '@mui/styles';
 import { Form } from '@local/components/Form';
 import { useForm, useSnack } from '@local/core';
 import { graphql } from 'relay-runtime';
@@ -11,39 +10,12 @@ import { LoadingButton } from '@local/components/LoadingButton';
 import { FormContent } from '@local/components/FormContent';
 import { useRouter } from 'next/router';
 
-interface Props {
-    onSuccess: () => void;
-    onFailure: () => void;
-    token: string | string[] | undefined;
-    tokenReady: boolean;
-}
-
 const initialState = {
     newPassword: '',
     confirmNewPassword: '',
 };
 
 export type TPasswordResetForm = typeof initialState;
-
-const useStyles = makeStyles((theme) => ({
-    btnGroup: {
-        '& > *': {
-            margin: theme.spacing(1, 0),
-        },
-    },
-    divider: {
-        width: '75%',
-        marginLeft: '12.5%',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(4),
-    },
-}));
 
 const PASSWORD_RESET_FORM_MUTATION = graphql`
     mutation PasswordResetFormMutation($input: ResetPasswordForm!) {
@@ -54,6 +26,13 @@ const PASSWORD_RESET_FORM_MUTATION = graphql`
     }
 `;
 
+interface Props {
+    onSuccess: () => void;
+    onFailure: () => void;
+    token: string | string[] | undefined;
+    tokenReady: boolean;
+}
+
 export function PasswordResetForm({ onSuccess, onFailure, token, tokenReady }: Props) {
     const [isPassVisible, setIsPassVisible] = React.useState(false);
     const [tokenIsValid, setTokenIsValid] = React.useState<boolean>(false);
@@ -61,7 +40,6 @@ export function PasswordResetForm({ onSuccess, onFailure, token, tokenReady }: P
     const [form, errors, handleSubmit, handleChange] = useForm(initialState);
     const [commit, isLoading] = useMutation<PasswordResetFormMutation>(PASSWORD_RESET_FORM_MUTATION);
 
-    const classes = useStyles();
     const { displaySnack } = useSnack();
     const router = useRouter();
 
@@ -97,7 +75,7 @@ export function PasswordResetForm({ onSuccess, onFailure, token, tokenReady }: P
             <Grid container item xs={12} direction='column' alignItems='center'>
                 <Typography variant='h6'>Reset Password</Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={handleSubmit(handleCommit)}>
+            <Form onSubmit={handleSubmit(handleCommit)}>
                 <FormContent>
                     <TextField
                         id='new-password'
@@ -156,7 +134,16 @@ export function PasswordResetForm({ onSuccess, onFailure, token, tokenReady }: P
                         }}
                     />
                 </FormContent>
-                <Grid container item direction='column' className={classes.btnGroup}>
+                <Grid
+                    container
+                    item
+                    direction='column'
+                    sx={{
+                        '& > *': {
+                            margin: (theme) => theme.spacing(1, 0),
+                        },
+                    }}
+                >
                     <LoadingButton loading={isLoading}>
                         <Button fullWidth type='submit' variant='contained' color='secondary' disabled={!tokenIsValid}>
                             Submit

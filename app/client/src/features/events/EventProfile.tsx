@@ -1,6 +1,6 @@
 import { Paper, Grid, Typography, Divider, Button } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { graphql, useFragment } from 'react-relay';
-import makeStyles from '@mui/styles/makeStyles';
 
 import type { EventProfileFragment$key } from '@local/__generated__/EventProfileFragment.graphql';
 
@@ -26,22 +26,22 @@ export const EVENT_PROFILE_FRAGMENT = graphql`
     }
 `;
 
-const useStyles = makeStyles((theme) => ({
-    paper: {
-        padding: theme.spacing(3),
-        '& > *': {
-            marginBottom: theme.spacing(2),
-        },
-    },
-}));
-
 export function EventProfile({ fragmentRef }: EventProfileProps) {
+    const theme = useTheme();
     const data = useFragment(EVENT_PROFILE_FRAGMENT, fragmentRef);
-    const classes = useStyles();
+
     return (
         <Grid container justifyContent='center'>
             <Grid item xs={12} md={8}>
-                <Grid component={Paper} className={classes.paper}>
+                <Grid
+                    component={Paper}
+                    padding={theme.spacing(3)}
+                    sx={{
+                        '& > *': {
+                            marginBottom: theme.spacing(2),
+                        },
+                    }}
+                >
                     <Grid item xs={12}>
                         <Typography variant='h4'>{data.title}</Typography>
                         <Typography color='textSecondary' paragraph>

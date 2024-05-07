@@ -1,10 +1,8 @@
 /* eslint-disable react/jsx-curly-newline */
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { Button, IconButton, InputAdornment, Grid, Typography, TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import makeStyles from '@mui/styles/makeStyles';
 import { graphql, useMutation } from 'react-relay';
 
 import type { RegisterFormMutation } from '@local/__generated__/RegisterFormMutation.graphql';
@@ -13,12 +11,6 @@ import { FormContent } from '@local/components/FormContent';
 import { LoadingButton } from '@local/components/LoadingButton';
 import { useUser } from '@local/features/accounts';
 import { useSnack, useForm } from '@local/core';
-
-interface Props {
-    onSuccess?: () => void;
-    onFailure?: () => void;
-    secondaryActions?: React.ReactNode;
-}
 
 const initialState = {
     email: '',
@@ -30,25 +22,6 @@ const initialState = {
 
 export type TRegisterForm = typeof initialState;
 
-const useStyles = makeStyles((theme) => ({
-    btnGroup: {
-        '& > *': {
-            margin: theme.spacing(1, 0),
-        },
-    },
-    divider: {
-        width: '75%',
-        marginLeft: '12.5%',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(4),
-    },
-}));
 const REGISTER_FORM_MUTATION = graphql`
     mutation RegisterFormMutation($input: RegistrationForm!) {
         register(input: $input) {
@@ -60,13 +33,19 @@ const REGISTER_FORM_MUTATION = graphql`
         }
     }
 `;
+
+interface Props {
+    onSuccess?: () => void;
+    onFailure?: () => void;
+    secondaryActions?: React.ReactNode;
+}
+
 export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) {
     // form state hooks
     const [isPassVisible, setIsPassVisible] = React.useState(false);
     const [form, errors, handleSubmit, handleChange] = useForm(initialState);
     const [commit, isLoading] = useMutation<RegisterFormMutation>(REGISTER_FORM_MUTATION);
 
-    const classes = useStyles();
     const { setUser } = useUser();
     const { displaySnack } = useSnack();
 
@@ -93,7 +72,7 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
                     Register
                 </Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={handleSubmit(handleCommit)}>
+            <Form onSubmit={handleSubmit(handleCommit)}>
                 <FormContent>
                     <TextField
                         id='register-first-name'
@@ -190,7 +169,16 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
                         }}
                     />
                 </FormContent>
-                <Grid container item direction='column' className={classes.btnGroup}>
+                <Grid
+                    container
+                    item
+                    direction='column'
+                    sx={{
+                        '& > *': {
+                            margin: (theme) => theme.spacing(1, 0),
+                        },
+                    }}
+                >
                     <LoadingButton loading={isLoading}>
                         <Button
                             data-test-id='register-form-submit'
@@ -215,13 +203,3 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
         </Grid>
     );
 }
-
-RegisterForm.defaultProps = {
-    onSuccess: () => {},
-    onFailure: () => {},
-};
-
-RegisterForm.propTypes = {
-    onSuccess: PropTypes.func.isRequired,
-    onFailure: PropTypes.func,
-};

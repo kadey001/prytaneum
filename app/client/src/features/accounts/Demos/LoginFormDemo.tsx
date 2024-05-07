@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Button, InputAdornment, IconButton, Link as MUILink, Grid, Typography, TextField } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
@@ -8,29 +7,6 @@ import { Form } from '@local/components/Form';
 import { FormContent } from '@local/components/FormContent';
 import { LoadingButton } from '@local/components/LoadingButton';
 import { useForm } from '@local/core';
-
-const useStyles = makeStyles((theme) => ({
-    link: {
-        padding: theme.spacing(0.5, 0, 0, 0),
-    },
-    buttonGroup: {
-        '& > *': {
-            margin: theme.spacing(1, 0),
-        },
-    },
-    divider: {
-        maxWidth: '75%',
-        marginLeft: '12.5%',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(4),
-    },
-}));
 
 interface TLoginForm {
     [index: string]: string;
@@ -41,7 +17,6 @@ interface TLoginForm {
 const intialState: TLoginForm = { email: '', password: '' };
 
 export function LoginFormDemo() {
-    const classes = useStyles();
     const [isPassVisible, setIsPassVisible] = React.useState(false);
     const [form, errors, , handleChange] = useForm(intialState);
 
@@ -55,7 +30,7 @@ export function LoginFormDemo() {
                     Login
                 </Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={() => {}}>
+            <Form onSubmit={() => {}}>
                 <FormContent>
                     <TextField
                         id='login-email'
@@ -98,13 +73,26 @@ export function LoginFormDemo() {
                             }}
                         />
                         <Grid container justifyContent='flex-end'>
-                            <MUILink className={classes.link} color='primary' underline='hover'>
+                            <MUILink
+                                sx={{ padding: (theme) => theme.spacing(0.5, 0, 0, 0) }}
+                                color='primary'
+                                underline='hover'
+                            >
                                 Forgot Password?
                             </MUILink>
                         </Grid>
                     </>
                 </FormContent>
-                <Grid container item direction='column' className={classes.buttonGroup}>
+                <Grid
+                    container
+                    item
+                    direction='column'
+                    sx={{
+                        '& > *': {
+                            margin: (theme) => theme.spacing(1, 0),
+                        },
+                    }}
+                >
                     <LoadingButton loading={false}>
                         <Button fullWidth variant='contained' color='secondary'>
                             Login

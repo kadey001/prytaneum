@@ -1,42 +1,25 @@
 import * as React from 'react';
 import { Grid, Typography, Divider } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 interface Props {
     errorMessage?: string;
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        
-    },
-    secondary: {
-        fontWeight: 100,
-    },
-    spacing: {
-        marginBottom: theme.spacing(3),
-    },
-}));
-
 export default function NotFound({ errorMessage }: Props) {
-    const classes = useStyles();
     return (
-        <div className={classes.root}>
+        <div style={{ width: '100%', height: '100%', display: 'flex' }}>
             <Grid container justifyContent='center' direction='column' alignContent='stretch'>
                 <Grid container justifyContent='center'>
                     <Typography variant='h3' color='error' display='inline'>
                         404
                     </Typography>
                     &nbsp;
-                    <Typography className={classes.secondary} variant='h3' display='inline'>
+                    <Typography variant='h3' display='inline' fontWeight={100}>
                         Not found
                     </Typography>
                 </Grid>
-                <Divider variant='middle' className={classes.spacing} />
-                <Grid container justifyContent='center' className={classes.spacing}>
+                <Divider variant='middle' sx={{ marginBottom: (theme) => theme.spacing(3) }} />
+                <Grid container justifyContent='center' sx={{ marginBottom: (theme) => theme.spacing(3) }}>
                     <Typography variant='subtitle2' component='div'>
                         Please check the link and try again
                     </Typography>

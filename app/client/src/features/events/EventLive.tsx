@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
 import { Grid, useMediaQuery } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { motion } from 'framer-motion';
@@ -21,39 +20,6 @@ import { useSnack } from '@local/core';
 import { useUser } from '../accounts';
 import { useEventDetails } from './useEventDetails';
 import { usePingEvent } from './Participants/usePingEvent';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        height: '100%',
-        [theme.breakpoints.up('md')]: {
-            flexDirection: 'row',
-            flexWrap: 'nowrap',
-        },
-        [theme.breakpoints.down('md')]: {
-            flexDirection: 'column',
-            overflowY: 'scroll',
-            flexWrap: 'nowrap',
-        },
-    },
-    panes: {
-        flex: 1,
-        display: 'flex',
-        justifyContent: 'center',
-        // [theme.breakpoints.up('md')]: {
-        //     overflowY: 'scroll',
-        // },
-    },
-    video: {
-        [theme.breakpoints.down('md')]: {
-            position: 'sticky',
-            top: 0,
-            zIndex: theme.zIndex.appBar,
-        },
-    },
-    target: {
-        scrollMarginTop: '1rem',
-    },
-}));
 
 export const EVENT_LIVE_QUERY = graphql`
     query EventLiveQuery($eventId: ID!) {
@@ -177,7 +143,6 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
     }, [eventId, isLive, isModerator, router, eventData, validationChecked]);
 
     // styles
-    const classes = useStyles();
     const theme = useTheme();
 
     // references for scrolling
@@ -218,17 +183,47 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
                 resumeParentRefreshing,
             }}
         >
-            <Grid component={motion.div} key='townhall-live' container className={classes.root} onScroll={handleScroll}>
+            <Grid
+                component={motion.div}
+                key='townhall-live'
+                container
+                sx={{
+                    height: '100%',
+                    [theme.breakpoints.up('md')]: {
+                        flexDirection: 'row',
+                        flexWrap: 'nowrap',
+                    },
+                    [theme.breakpoints.down('md')]: {
+                        flexDirection: 'column',
+                        overflowY: 'scroll',
+                        flexWrap: 'nowrap',
+                    },
+                }}
+                onScroll={handleScroll}
+            >
                 {!isMdUp && <div ref={topRef} />}
                 <Grid container item md={8} direction='column' wrap='nowrap'>
-                    <Grid item className={classes.video}>
+                    <Grid
+                        item
+                        sx={{
+                            [theme.breakpoints.down('md')]: {
+                                position: 'sticky',
+                                top: 0,
+                                zIndex: theme.zIndex.appBar,
+                            },
+                        }}
+                    >
                         <EventVideo fragmentRef={node} />
                     </Grid>
                     <EventDetailsCard eventData={eventData} />
                     <SpeakerList fragmentRef={node} />
                 </Grid>
                 <Grid container item xs={12} md={4} direction='column'>
-                    <div className={classes.panes} id='event-sidebar-scroller' onScroll={handleScroll}>
+                    <div
+                        style={{ flex: 1, display: 'flex', justifyContent: 'center' }}
+                        id='event-sidebar-scroller'
+                        onScroll={handleScroll}
+                    >
                         {/* {isMdUp && <div ref={topRef} className={classes.target} />} */}
                         <EventSidebar
                             fragmentRef={node}

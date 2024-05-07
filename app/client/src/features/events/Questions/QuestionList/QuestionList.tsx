@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
 import { Grid, Card, ListItem, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { useTheme } from '@mui/material/styles';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import type { useQuestionListFragment$key } from '@local/__generated__/useQuestionListFragment.graphql';
@@ -22,38 +22,6 @@ import { useQuestionDeleted } from './useQuestionDeleted';
 import { Loader } from '@local/components/Loader';
 import { OperationType } from 'relay-runtime';
 import { LoadMoreFn } from 'react-relay';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        // padding: theme.spacing(1.5),
-    },
-    listFilter: {
-        flex: 1,
-        paddingLeft: '0.5rem',
-        paddingRight: '0.5rem',
-    },
-    content: {
-        height: 0, // flex box recalculates this -- explanation:  https://stackoverflow.com/a/14964944
-        flex: '1 1 100%',
-    },
-    questionActions: {
-        display: 'flex',
-        justifyContent: 'center',
-    },
-    item: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        paddingTop: theme.spacing(0.5),
-        borderRadius: '10px',
-    },
-    filler: {
-        visibility: 'hidden',
-    },
-    text: {
-        margin: 'auto',
-    },
-}));
 
 interface InfiniteScrollerProps {
     children: React.ReactNode | React.ReactNodeArray;
@@ -87,7 +55,7 @@ interface QuestionListProps {
 }
 
 export function QuestionList({ fragmentRef, ActionButtons, isVisible }: QuestionListProps) {
-    const classes = useStyles();
+    const theme = useTheme();
     const { user } = useUser();
     const { isModerator } = useEvent();
     const { questions, connections, loadNext, hasNext } = useQuestionList({ fragmentRef });
@@ -118,7 +86,7 @@ export function QuestionList({ fragmentRef, ActionButtons, isVisible }: Question
                     <React.Fragment>
                         {ActionButtons}
                         <ListFilter
-                            className={classes.listFilter}
+                            style={{ flex: 1, paddingLeft: '0.5rem', paddingRight: '0.5rem' }}
                             // filterMap={filterFuncs}
                             onFilterChange={handleFilterChange}
                             onSearch={handleSearch}
@@ -152,7 +120,15 @@ export function QuestionList({ fragmentRef, ActionButtons, isVisible }: Question
                             {(isModerator ? filteredList : filteredList.slice(0, MAX_QUESTIONS_DISPLAYED)).map(
                                 (question) => (
                                     <ListItem disableGutters key={question.id} sx={{ paddingX: '0.5rem' }}>
-                                        <Card className={classes.item}>
+                                        <Card
+                                            style={{
+                                                flex: 1,
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                paddingTop: theme.spacing(0.5),
+                                                borderRadius: '10px',
+                                            }}
+                                        >
                                             <QuestionAuthor fragmentRef={question} />
                                             {question.refQuestion && (
                                                 <QuestionQuote fragmentRef={question.refQuestion} />
@@ -166,7 +142,6 @@ export function QuestionList({ fragmentRef, ActionButtons, isVisible }: Question
                                                             ? { width: '100%' }
                                                             : { width: '100%', maxWidth: '10rem' }
                                                     }
-                                                    className={classes.questionActions}
                                                     likeEnabled={!isModerator && Boolean(user)}
                                                     quoteEnabled={!isModerator && Boolean(user)}
                                                     queueEnabled={isModerator && Boolean(user)}
@@ -175,7 +150,7 @@ export function QuestionList({ fragmentRef, ActionButtons, isVisible }: Question
                                                     fragmentRef={question}
                                                 />
                                                 {isModerator && ( // filler to justify moderator queue button
-                                                    <span className={classes.filler}>
+                                                    <span style={{ visibility: 'hidden' }}>
                                                         <QuestionStats fragmentRef={question} />
                                                     </span>
                                                 )}

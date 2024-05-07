@@ -3,7 +3,6 @@ import * as React from 'react';
 import {
     Menu,
     MenuItem,
-    // Tooltip,
     ListItemText,
     Avatar,
     ButtonBase,
@@ -19,8 +18,6 @@ import ExitToApp from '@mui/icons-material/ExitToApp';
 import MoreVert from '@mui/icons-material/MoreVert';
 import Settings from '@mui/icons-material/Settings';
 import { useTheme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { Skeleton } from '@mui/material';
 import { usePreloadedQuery, PreloadedQuery } from 'react-relay';
@@ -34,62 +31,42 @@ import useLogout from '@local/features/accounts/useLogout';
 import { USER_CONTEXT_QUERY } from '@local/features/accounts/UserContext';
 import { UserContextQuery } from '@local/__generated__/UserContextQuery.graphql';
 
-const useStyles = makeStyles((theme) => ({
-    button: {
-        borderRadius: 16,
-        height: '100%',
-        width: 'auto',
-        margin: theme.spacing(1),
-    },
-    paper: {
-        marginTop: theme.spacing(2),
-    },
-    avatar: {
-        marginRight: theme.spacing(1.5),
-        width: theme.spacing(4.5),
-        height: theme.spacing(4.5),
-    },
-    icon: {
-        alignSelf: 'center',
-        transform: 'rotate(0deg)',
-        fontSize: '2em',
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-    },
-    iconOpen: {
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-        transform: 'rotate(180deg)',
-    },
-    item: {
-        marginRight: theme.spacing(1),
-    },
-}));
-
 export function UserMenuLoader() {
-    const classes = useStyles();
     return (
         <>
-            <Skeleton variant='circular' className={classes.avatar} />
+            <Skeleton
+                variant='circular'
+                sx={{
+                    marginRight: (theme) => theme.spacing(1.5),
+                    width: (theme) => theme.spacing(4.5),
+                    height: (theme) => theme.spacing(4.5),
+                }}
+            />
             <Skeleton height='100%' width={100} />
         </>
     );
 }
 
 export interface UserMenuProps {
-    className?: string;
     queryRef: PreloadedQuery<UserContextQuery>;
 }
 
 function UserName() {
     const { user } = useUser();
-    const classes = useStyles();
 
     return (
         <>
-            {user?.firstName && <Avatar className={classes.avatar}>{user.firstName[0]}</Avatar>}
+            {user?.firstName && (
+                <Avatar
+                    sx={{
+                        marginRight: (theme) => theme.spacing(1.5),
+                        width: (theme) => theme.spacing(4.5),
+                        height: (theme) => theme.spacing(4.5),
+                    }}
+                >
+                    {user.firstName[0]}
+                </Avatar>
+            )}
             <Typography variant='button' color='inherit'>
                 {`${user?.firstName} ${user?.lastName}`.toUpperCase()}
             </Typography>
@@ -98,13 +75,12 @@ function UserName() {
 }
 
 type TButtons = 'login' | 'register' | null;
-export function UserMenu({ className, queryRef }: UserMenuProps) {
+export function UserMenu({ queryRef }: UserMenuProps) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     // TODO remove unused query
     const data = usePreloadedQuery<UserContextQuery>(USER_CONTEXT_QUERY, queryRef);
     const { user, setUser, setIsLoading } = useUser();
     const isClient = useIsClient();
-    const classes = useStyles();
     const isSignedIn = React.useMemo(() => !!user, [user]);
 
     const isOpen = React.useMemo(() => Boolean(anchorEl), [anchorEl]);
@@ -149,12 +125,21 @@ export function UserMenu({ className, queryRef }: UserMenuProps) {
                     color='inherit'
                     onClick={handleOpen}
                     aria-label='user-menu'
-                    className={classes.button}
+                    sx={{ borderRadius: 16, height: '100%', width: 'auto', margin: theme.spacing(1) }}
                     disableRipple
                     disableTouchRipple
                 >
                     <UserName />
-                    <ArrowDropDown className={!isOpen ? classes.icon : clsx([classes.icon, classes.iconOpen])} />
+                    <ArrowDropDown
+                        sx={{
+                            alignSelf: 'center',
+                            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                            fontSize: '2em',
+                            transition: theme.transitions.create('transform', {
+                                duration: theme.transitions.duration.shortest,
+                            }),
+                        }}
+                    />
                 </ButtonBase>
             );
         return (
@@ -162,17 +147,22 @@ export function UserMenu({ className, queryRef }: UserMenuProps) {
                 <MoreVert />
             </IconButton>
         );
-    }, [isSmUp, classes, isOpen]);
+    }, [isSmUp, theme, isOpen]);
 
     return (
-        <div className={className}>
+        <div>
             {!isSignedIn && (
                 <>
                     <Button
                         data-test-id='appbar-login-button'
-                        style={{ backgroundColor: '#2427B7' }}
+                        style={{
+                            backgroundColor: '#2427B7',
+                            borderRadius: 16,
+                            height: '100%',
+                            width: 'auto',
+                            margin: theme.spacing(1),
+                        }}
                         variant='contained'
-                        className={classes.button}
                         onClick={handleClick('login')}
                     >
                         Login
@@ -191,9 +181,14 @@ export function UserMenu({ className, queryRef }: UserMenuProps) {
                     </ResponsiveDialog>
                     <Button
                         data-test-id='appbar-register-button'
-                        style={{ backgroundColor: '#2427B7' }}
+                        style={{
+                            backgroundColor: '#2427B7',
+                            borderRadius: 16,
+                            height: '100%',
+                            width: 'auto',
+                            margin: theme.spacing(1),
+                        }}
                         variant='contained'
-                        className={classes.button}
                         onClick={handleClick('register')}
                     >
                         Register
@@ -227,8 +222,7 @@ export function UserMenu({ className, queryRef }: UserMenuProps) {
                             horizontal: 'left',
                         }}
                         PaperProps={{
-                            className: classes.paper,
-                            style: { minWidth: width.current },
+                            style: { minWidth: width.current, marginTop: theme.spacing(2) },
                         }}
                     >
                         {!isSmUp && (

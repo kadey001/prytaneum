@@ -1,31 +1,33 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Grid } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import clsx from 'clsx';
+import { Grid, GridProps } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 interface Props {
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
     children: React.ReactNode | React.ReactNodeArray;
-    className?: string;
+    styles?: GridProps['sx'];
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        '& > *': {
-            paddingBottom: theme.spacing(2),
-        },
-        '&:last-child': {
-            paddingBottom: 0,
-        },
-    },
-}));
-
-export function Form({ onSubmit, children, className: parentClass }: Props) {
-    const classes = useStyles();
-    const className = clsx(parentClass, classes.root);
+export function Form({ onSubmit, children, styles }: Props) {
+    const theme = useTheme();
     return (
-        <Grid noValidate component='form' autoComplete='off' onSubmit={onSubmit} container className={className}>
+        <Grid
+            noValidate
+            component='form'
+            autoComplete='off'
+            onSubmit={onSubmit}
+            container
+            sx={{
+                '& > *': { paddingBottom: theme.spacing(2) },
+                '&:last-child': {
+                    paddingBottom: 0,
+                },
+                width: '100%',
+                marginTop: theme.spacing(2),
+                ...styles,
+            }}
+        >
             {children}
         </Grid>
     );

@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Button, IconButton, InputAdornment, Grid, Typography, TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { Form } from '@local/components/Form';
 import { FormContent } from '@local/components/FormContent';
@@ -20,32 +19,10 @@ const initialState = {
 
 export type TRegisterForm = typeof initialState;
 
-const useStyles = makeStyles((theme) => ({
-    btnGroup: {
-        '& > *': {
-            margin: theme.spacing(1, 0),
-        },
-    },
-    divider: {
-        width: '75%',
-        marginLeft: '12.5%',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(4),
-    },
-}));
-
 export function RegisterFormDemo() {
     // form state hooks
     const [isPassVisible, setIsPassVisible] = React.useState(false);
     const [form, errors, , handleChange] = useForm(initialState);
-
-    const classes = useStyles();
 
     return (
         <Grid container justifyContent='center'>
@@ -54,7 +31,7 @@ export function RegisterFormDemo() {
                     Register
                 </Typography>
             </Grid>
-            <Form className={classes.form} onSubmit={() => {}}>
+            <Form onSubmit={() => {}}>
                 <FormContent>
                     <TextField
                         id='register-first-name'
@@ -143,7 +120,16 @@ export function RegisterFormDemo() {
                         }}
                     />
                 </FormContent>
-                <Grid container item direction='column' className={classes.btnGroup}>
+                <Grid
+                    container
+                    item
+                    direction='column'
+                    sx={{
+                        '& > *': {
+                            margin: (theme) => theme.spacing(1, 0),
+                        },
+                    }}
+                >
                     <LoadingButton loading={false}>
                         <Button fullWidth variant='contained' color='secondary'>
                             Register

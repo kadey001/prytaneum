@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { Grid, useMediaQuery, IconButton, ContainerProps } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useUser } from '@local/features/accounts';
 
@@ -32,18 +31,6 @@ export interface LayoutProps {
     disablePadding?: boolean;
 }
 
-const useStyles = makeStyles((theme) => ({
-    background: {
-        backgroundColor: '#FFFFFF',
-    },
-    menuIcon: {
-        marginRight: theme.spacing(1),
-    },
-    main: {
-        padding: theme.spacing(3),
-    },
-}));
-
 export function Layout({
     children,
     hideSideNav: noSideNav,
@@ -52,7 +39,6 @@ export function Layout({
 }: LayoutProps) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
-    const classes = useStyles();
     const { user } = useUser();
 
     // hardcode breakpoint based on when page resizes (default keys hid element too early or too late)
@@ -73,7 +59,7 @@ export function Layout({
                 >
                     {isSideNavHidden && (
                         <IconButton
-                            className={classes.menuIcon}
+                            sx={{ marginRight: theme.spacing(2) }}
                             onClick={() => setOpen(!open)}
                             color='inherit'
                             size='large'
@@ -83,9 +69,9 @@ export function Layout({
                     )}
                 </AppBar>
             </div>
-            <Grid container className={classes.background} alignItems='flex-start' item xs={12}>
+            <Grid container sx={{ backgroundColor: '#FFFFFF' }} alignItems='flex-start' item xs={12}>
                 <SideNav isOpen={open} close={() => setOpen(false)} isHidden={isSideNavHidden} />
-                <Main className={disablePadding ? undefined : classes.main} {..._ContainerProps}>
+                <Main disablePadding={disablePadding} {..._ContainerProps}>
                     {children}
                 </Main>
             </Grid>

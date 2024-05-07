@@ -1,7 +1,6 @@
 import React from 'react';
 import { ResponsiveDialog, useResponsiveDialog } from '@local/components/ResponsiveDialog';
 import { graphql, useFragment, useMutation } from 'react-relay';
-import makeStyles from '@mui/styles/makeStyles';
 import { Button, Card, CardContent, DialogContent, Typography } from '@mui/material';
 import ReplyIcon from '@mui/icons-material/Reply';
 import { LiveFeedbackReplyFragment$key } from '@local/__generated__/LiveFeedbackReplyFragment.graphql';
@@ -11,13 +10,6 @@ import { useEvent } from '../useEvent';
 import { LiveFeedbackForm, LiveFeedbackFormProps } from './LiveFeedbackForm';
 import { LiveFeedbackAuthor } from './LiveFeedbackAuthor';
 import { LIVE_FEEDBACK_REPLY_FRAGMENT } from './LiveFeedbackReply';
-
-const useStyles = makeStyles((theme) => ({
-    card: {
-        width: '100%',
-        marginBottom: theme.spacing(3),
-    },
-}));
 
 const LIVE_FEEDBACK_REPLY_ACTION_MUTATION = graphql`
     mutation LiveFeedbackReplyActionMutation($input: CreateFeedback!, $eventId: ID!) {
@@ -43,7 +35,6 @@ interface Props {
 export function LiveFeedbackReplyAction({ fragmentRef }: Props) {
     const [isOpen, open, close] = useResponsiveDialog(false);
     const { eventId } = useEvent();
-    const classes = useStyles();
 
     const [commit] = useMutation<LiveFeedbackReplyActionMutation>(LIVE_FEEDBACK_REPLY_ACTION_MUTATION);
     const data = useFragment(LIVE_FEEDBACK_REPLY_FRAGMENT, fragmentRef);
@@ -65,14 +56,14 @@ export function LiveFeedbackReplyAction({ fragmentRef }: Props) {
 
     const reply = React.useMemo(
         () => (
-            <Card className={classes.card}>
+            <Card sx={{ width: '100%', marginBottom: (theme) => theme.spacing(3) }}>
                 <LiveFeedbackAuthor fragmentRef={data} />
                 <CardContent>
                     <Typography style={{ wordBreak: 'break-word' }}>{data.message}</Typography>
                 </CardContent>
             </Card>
         ),
-        [data, classes]
+        [data]
     );
 
     return (
