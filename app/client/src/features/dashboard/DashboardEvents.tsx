@@ -76,7 +76,11 @@ export function DashboardEvents({ dashboardEvents }: DashboardEventsProps) {
             <Grid item xs={12} marginBottom={theme.spacing(4)}>
                 <Card style={{ padding: theme.spacing(1) }}>
                     <CardContent>
-                        <Typography variant='h6' marginBottom={theme.spacing(1)}>
+                        <Typography
+                            data-test-id='dashboard-current-events-header'
+                            variant='h6'
+                            marginBottom={theme.spacing(1)}
+                        >
                             Current Events
                         </Typography>
                         <List>
@@ -112,7 +116,11 @@ export function DashboardEvents({ dashboardEvents }: DashboardEventsProps) {
                                 </DashboardEventListItem>
                             ))}
                         </List>
-                        <Typography variant='h6' marginBottom={theme.spacing(1)}>
+                        <Typography
+                            data-test-id='dashboard-upcoming-events-header'
+                            variant='h6'
+                            marginBottom={theme.spacing(1)}
+                        >
                             Upcoming Events
                         </Typography>
                         <List>
