@@ -1,5 +1,14 @@
 import * as React from 'react';
-import { Button, TextField, Typography, useMediaQuery } from '@mui/material';
+import {
+    Button,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    OutlinedInput,
+    Typography,
+    useMediaQuery,
+} from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 import { useTheme } from '@mui/material/styles';
 import { MobileDateTimePicker, DesktopDateTimePicker } from '@mui/x-date-pickers';
 import { DateTimeValidationError } from '@mui/x-date-pickers/models';
@@ -64,8 +73,6 @@ export function EventForm({ onCancel, onSubmit, title, className, form, formType
         validationSchema
     );
 
-    console.log(startDateError);
-
     const startDateErrorMessage = React.useMemo(() => {
         switch (startDateError) {
             case 'maxDate':
@@ -101,63 +108,88 @@ export function EventForm({ onCancel, onSubmit, title, className, form, formType
         <Form onSubmit={handleSubmit(onSubmit)} className={className}>
             <FormTitle title={title || 'Event Form'} />
             <FormContent>
-                <TextField
-                    autoFocus
-                    error={Boolean(errors.title)}
-                    helperText={errors.title}
-                    required
-                    label='Title'
-                    name='title'
-                    value={state.title}
-                    onChange={handleChange('title')}
-                />
-                <Typography
-                    variant='caption'
-                    color={state.title.length > EVENT_TITLE_MAX_LENGTH ? 'red' : 'black'}
-                    sx={{
-                        display: 'block',
-                        textAlign: 'right',
-                    }}
-                >
-                    {state.title.length}/{EVENT_TITLE_MAX_LENGTH}
-                </Typography>
-                <TextField
-                    error={Boolean(errors.topic)}
-                    helperText={errors.topic}
-                    required
-                    label='Topic'
-                    name='topic'
-                    value={state.topic}
-                    onChange={handleChange('topic')}
-                />
-                <Typography
-                    variant='caption'
-                    color={state.topic.length > EVENT_TOPIC_MAX_LENGTH ? 'red' : 'black'}
-                    sx={{
-                        display: 'block',
-                        textAlign: 'right',
-                    }}
-                >
-                    {state.topic.length}/{EVENT_TOPIC_MAX_LENGTH}
-                </Typography>
-                <TextField
-                    error={Boolean(errors.description)}
-                    helperText={errors.description}
-                    label='Description'
-                    name='description'
-                    value={state.description}
-                    onChange={handleChange('description')}
-                />
-                <Typography
-                    variant='caption'
-                    color={state.description.length > EVENT_DESCRIPTION_MAX_LENGTH ? 'red' : 'black'}
-                    sx={{
-                        display: 'block',
-                        textAlign: 'right',
-                    }}
-                >
-                    {state.description.length}/{EVENT_DESCRIPTION_MAX_LENGTH}
-                </Typography>
+                <FormControl required error={Boolean(errors.title)} fullWidth variant='outlined'>
+                    <InputLabel>Title</InputLabel>
+                    <OutlinedInput
+                        id='event-title-input'
+                        label='Title'
+                        name='title'
+                        error={Boolean(errors.title)}
+                        value={state.title}
+                        onChange={handleChange('title')}
+                        endAdornment={
+                            <InputAdornment position='end'>
+                                <Typography
+                                    variant='caption'
+                                    color={state.title.length > EVENT_TITLE_MAX_LENGTH ? 'red' : 'black'}
+                                    sx={{
+                                        display: 'block',
+                                        textAlign: 'right',
+                                    }}
+                                >
+                                    {state.title.length}/{EVENT_TITLE_MAX_LENGTH}
+                                </Typography>
+                            </InputAdornment>
+                        }
+                        aria-describedby='event-title-input'
+                        aria-label='event title input'
+                    />
+                    <FormHelperText style={{ color: 'red' }}>{errors.title}</FormHelperText>
+                </FormControl>
+                <FormControl required error={Boolean(errors.topic)} fullWidth variant='outlined'>
+                    <InputLabel>Topic</InputLabel>
+                    <OutlinedInput
+                        id='event-topic-input'
+                        label='Topic'
+                        name='topic'
+                        value={state.topic}
+                        onChange={handleChange('topic')}
+                        endAdornment={
+                            <InputAdornment position='end'>
+                                <Typography
+                                    variant='caption'
+                                    color={state.topic.length > EVENT_TOPIC_MAX_LENGTH ? 'red' : 'black'}
+                                    sx={{
+                                        display: 'block',
+                                        textAlign: 'right',
+                                    }}
+                                >
+                                    {state.topic.length}/{EVENT_TOPIC_MAX_LENGTH}
+                                </Typography>
+                            </InputAdornment>
+                        }
+                        aria-describedby='event-topic-input'
+                        aria-label='event topic input'
+                    />
+                    <FormHelperText style={{ color: 'red' }}>{errors.topic}</FormHelperText>
+                </FormControl>
+                <FormControl error={Boolean(errors.description)} fullWidth variant='outlined'>
+                    <InputLabel>Description</InputLabel>
+                    <OutlinedInput
+                        id='event-description-input'
+                        label='Description'
+                        name='description'
+                        value={state.description}
+                        onChange={handleChange('description')}
+                        endAdornment={
+                            <InputAdornment position='end'>
+                                <Typography
+                                    variant='caption'
+                                    color={state.description.length > EVENT_DESCRIPTION_MAX_LENGTH ? 'red' : 'black'}
+                                    sx={{
+                                        display: 'block',
+                                        textAlign: 'right',
+                                    }}
+                                >
+                                    {state.description.length}/{EVENT_DESCRIPTION_MAX_LENGTH}
+                                </Typography>
+                            </InputAdornment>
+                        }
+                        aria-describedby='event-description-input'
+                        aria-label='event description input'
+                    />
+                    <FormHelperText style={{ color: 'red' }}>{errors.description}</FormHelperText>
+                </FormControl>
                 {isMobile && (
                     <React.Fragment>
                         <Typography variant='caption'>Start Date & Time</Typography>
