@@ -7,7 +7,7 @@ import { PreloadedEventPre } from '@local/features/events/EventPre';
 export async function getServerSideProps() {
     const baseProps = {
         hideSideNav: true,
-        containerProps: { maxWidth: 'xl' },
+        containerProps: { maxWidth: '100%' },
         disablePadding: true,
     };
 

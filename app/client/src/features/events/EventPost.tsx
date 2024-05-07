@@ -91,7 +91,7 @@ export function EventPost({ node }: EventPostProps) {
                     <Grid
                         item
                         container
-                        xs={mdDownBreakpoint ? 16 : 7}
+                        xs={mdDownBreakpoint ? 16 : 6}
                         direction='column'
                         justifyContent='space-around'
                         marginLeft={mdDownBreakpoint ? '0' : '3rem'}
@@ -136,7 +136,7 @@ export function EventPost({ node }: EventPostProps) {
                     <Grid
                         item
                         container
-                        xs={mdDownBreakpoint ? 16 : 8}
+                        xs={mdDownBreakpoint ? 16 : 5}
                         direction='column'
                         flexWrap='nowrap'
                         marginLeft={lgDownBreakpoint ? 0 : 2}
