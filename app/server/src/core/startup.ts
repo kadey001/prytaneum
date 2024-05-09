@@ -7,6 +7,7 @@ import * as plugins from './plugins';
 import * as hooks from './hooks';
 
 require('@local/features/accounts/account');
+require('@local/features/events/moderation/upload-reading-materials');
 
 export function startup() {
     const server = getOrCreateServer();
