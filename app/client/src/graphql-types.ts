@@ -208,6 +208,7 @@ export type Event = Node & {
   questionQueue?: Maybe<EventQuestionQueue>;
   /** All questions relating to this event */
   questions?: Maybe<EventQuestionConnection>;
+  readingMaterialsUrl?: Maybe<Scalars['String']>;
   /** Registrants for this event -- individuals invited */
   registrants?: Maybe<UserConnection>;
   /** Speakers for this event */

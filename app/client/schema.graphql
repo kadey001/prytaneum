@@ -224,6 +224,7 @@ type Event implements Node {
 
   """All questions relating to this event"""
   questions(after: String, first: Int, viewerOnly: Boolean): EventQuestionConnection
+  readingMaterialsUrl: String
 
   """Registrants for this event -- individuals invited"""
   registrants: UserConnection
