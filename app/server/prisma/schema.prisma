@@ -86,6 +86,7 @@ model Event {
     description String @db.VarChar(500)
     topic String @db.VarChar(100)
     currentQuestion String @db.VarChar(14) @default("-1")
+    readingMaterialsUrl String @db.VarChar(500) @default("") // URL to reading materials
     // settings defaults are built into the business logic layer rather than the db layer
     isActive Boolean
     isQuestionFeedVisible Boolean
