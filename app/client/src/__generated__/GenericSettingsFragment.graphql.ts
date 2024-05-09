@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0cac82a1371915e3e0ce5d08254e000a>>
+ * @generated SignedSource<<d9aa39ab529887019681d961521db3a7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type GenericSettingsFragment$data = {
   readonly isForumEnabled: boolean | null;
   readonly isPrivate: boolean | null;
   readonly isQuestionFeedVisible: boolean | null;
+  readonly readingMaterialsUrl: string | null;
   readonly " $fragmentType": "GenericSettingsFragment";
 };
 export type GenericSettingsFragment$key = {
@@ -63,12 +64,19 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "isPrivate",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "readingMaterialsUrl",
+      "storageKey": null
     }
   ],
   "type": "Event",
   "abstractKey": null
 };
 
-(node as any).hash = "7e110cfffef7631bf0363a82b3ecba2d";
+(node as any).hash = "5f0b89d39bc10790c921a048d40a5be2";
 
 export default node;

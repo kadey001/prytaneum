@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6a5fb8d7c0132e03181e6a259b760e76>>
+ * @generated SignedSource<<9e81f2684eb4fd3833e7af74b806f1a2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -166,6 +166,13 @@ return {
                 "kind": "ScalarField",
                 "name": "isPrivate",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "readingMaterialsUrl",
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -176,12 +183,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7f951762c717982d1f177282a0f23297",
+    "cacheID": "0f5f802a0d6a2d91f867ec139804c109",
     "id": null,
     "metadata": {},
     "name": "GenericSettingsMutation",
     "operationKind": "mutation",
-    "text": "mutation GenericSettingsMutation(\n  $input: UpdateEvent!\n) {\n  updateEvent(event: $input) {\n    isError\n    message\n    body {\n      ...GenericSettingsFragment\n      id\n    }\n  }\n}\n\nfragment GenericSettingsFragment on Event {\n  id\n  isQuestionFeedVisible\n  isCollectRatingsEnabled\n  isForumEnabled\n  isPrivate\n}\n"
+    "text": "mutation GenericSettingsMutation(\n  $input: UpdateEvent!\n) {\n  updateEvent(event: $input) {\n    isError\n    message\n    body {\n      ...GenericSettingsFragment\n      id\n    }\n  }\n}\n\nfragment GenericSettingsFragment on Event {\n  id\n  isQuestionFeedVisible\n  isCollectRatingsEnabled\n  isForumEnabled\n  isPrivate\n  readingMaterialsUrl\n}\n"
   }
 };
 })();
