@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0d0494439a68dbd86340c779e6d064a8>>
+ * @generated SignedSource<<17cc16b1cdf2de4c220fd56a5b5a473f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,27 +10,35 @@
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type ReadingMaterialsEventSettingsFragment$data = {
+export type EventIssueGuideSettingsFragment$data = {
   readonly id: string;
   readonly readingMaterialsUrl: string | null;
-  readonly " $fragmentType": "ReadingMaterialsEventSettingsFragment";
+  readonly title: string | null;
+  readonly " $fragmentType": "EventIssueGuideSettingsFragment";
 };
-export type ReadingMaterialsEventSettingsFragment$key = {
-  readonly " $data"?: ReadingMaterialsEventSettingsFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"ReadingMaterialsEventSettingsFragment">;
+export type EventIssueGuideSettingsFragment$key = {
+  readonly " $data"?: EventIssueGuideSettingsFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"EventIssueGuideSettingsFragment">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "ReadingMaterialsEventSettingsFragment",
+  "name": "EventIssueGuideSettingsFragment",
   "selections": [
     {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
       "name": "id",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "title",
       "storageKey": null
     },
     {
@@ -45,6 +53,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "65b0acb0eb38ab5ef8b4eea4d9516f68";
+(node as any).hash = "24b255064caf13912570a31361ff8aa4";
 
 export default node;

@@ -18,7 +18,7 @@ import { ModeratorEventSettings } from '../Moderation';
 import { EventContext } from '../EventContext';
 import { InviteEventSettings } from '../Invites/InviteEventSettings';
 import { DeleteEvent } from '../DeleteEvent';
-import ReadingMaterialsEventSettings from '../ReadingMaterials/ReadingMaterialsEventSettings';
+import { EventIssueGuideSettings } from '../EventIssueGuide';
 
 export const eventSettingsSections = [
     'Form',
@@ -44,7 +44,7 @@ export const EVENT_SETTINGS_QUERY = graphql`
                 ...GenericSettingsFragment
                 ...ModeratorEventSettingsFragment
                 ...useInvitedUsersListFragment @arguments(eventId: $eventId)
-                ...ReadingMaterialsEventSettingsFragment
+                ...EventIssueGuideSettingsFragment
             }
         }
     }
@@ -122,7 +122,7 @@ export function EventSettings({ queryRef }: Props) {
                             {
                                 title: 'Reading Materials',
                                 description: 'Upload and manage reading materials',
-                                component: <ReadingMaterialsEventSettings fragmentRef={data.node} />,
+                                component: <EventIssueGuideSettings fragmentRef={data.node} />,
                             },
                             {
                                 title: 'Moderators',
