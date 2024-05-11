@@ -99,7 +99,7 @@ export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListPro
 
     return (
         <Grid container height={0} flex='1 1 100%' justifyContent='center'>
-            <Grid item paddingTop='1rem' width='100%'>
+            <Grid item width='100%'>
                 <Paper sx={{ padding: '1rem', marginX: '8px' }}>
                     {ActionButtons}
                     <ListFilter
