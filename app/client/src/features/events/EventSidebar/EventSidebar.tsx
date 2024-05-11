@@ -7,7 +7,6 @@ import { graphql, useFragment } from 'react-relay';
 import { EventSidebarFragment$key } from '@local/__generated__/EventSidebarFragment.graphql';
 import { QuestionList } from '@local/features/events/Questions/QuestionList';
 import { QuestionQueue } from '@local/features/events/Moderation/ManageQuestions';
-import AskQuestion from '@local/features/events/Questions/AskQuestion';
 import { LiveFeedbackList } from '@local/features/events/LiveFeedback/LiveFeedbackList';
 import { BroadcastMessageList } from '@local/features/events/BroadcastMessages/BroadcastMessageList';
 import { SubmitLiveFeedback } from '@local/features/events/LiveFeedback/SubmitLiveFeedback';
@@ -106,12 +105,6 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
                 );
             return null;
         } else {
-            if (bottomTab === 'Questions')
-                return (
-                    <Grid container paddingBottom='1rem' justifyContent='center'>
-                        <AskQuestion eventId={eventId} />
-                    </Grid>
-                );
             if (bottomTab === 'Feedback')
                 return (
                     <Grid container paddingBottom='1rem' justifyContent='center'>
@@ -235,11 +228,7 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
                     {isViewerModerator === true && (
                         <QuestionQueue fragmentRef={data} isVisible={bottomTab === 'Queue'} />
                     )}
-                    <QuestionList
-                        fragmentRef={data}
-                        ActionButtons={displayActionButtons}
-                        isVisible={bottomTab === 'Questions'}
-                    />
+                    <QuestionList fragmentRef={data} isVisible={bottomTab === 'Questions'} />
                     <LiveFeedbackList
                         fragmentRef={data}
                         ActionButtons={displayActionButtons}

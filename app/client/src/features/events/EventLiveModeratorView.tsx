@@ -227,7 +227,7 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
                                 width: '98%',
                             }}
                         >
-                            <QuestionList fragmentRef={node} ActionButtons={true} isVisible={true} />
+                            <QuestionList fragmentRef={node} isVisible={true} />
                         </StyledColumnGrid>
                     </Grid>
                 </Panel>

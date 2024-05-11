@@ -86,6 +86,7 @@ function AskQuestion({ className, eventId }: AskQuestionProps) {
 
             <Button
                 className={className}
+                fullWidth
                 disabled={!user}
                 variant='contained'
                 color='primary'
