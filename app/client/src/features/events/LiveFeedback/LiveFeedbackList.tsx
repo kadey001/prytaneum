@@ -67,7 +67,13 @@ export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListPro
             );
         } else {
             return (
-                <Grid container direction='row' justifyContent='space-between' alignItems='center'>
+                <Grid
+                    container
+                    direction='row'
+                    justifyContent='space-between'
+                    alignItems='center'
+                    marginBottom={isSearchOpen ? '.5rem' : '0rem'}
+                >
                     <Grid item xs='auto'>
                         <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
                             <SearchIcon />

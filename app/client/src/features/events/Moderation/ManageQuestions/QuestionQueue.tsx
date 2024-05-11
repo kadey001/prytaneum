@@ -357,6 +357,7 @@ export function QuestionQueue({ fragmentRef, isVisible }: QuestionQueueProps) {
                         style={{ flex: 1, marginLeft: theme.spacing(0.5) }}
                         onFilterChange={queueIndex === 0 ? () => handleFilterChange : () => prevHandleFilterChange}
                         onSearch={queueIndex === 0 ? handleSearch : prevHandleSearch}
+                        isSearchOpen={true}
                         length={queueIndex === 0 ? filteredList.length : prevFilteredList.length}
                     />
                 </Grid>

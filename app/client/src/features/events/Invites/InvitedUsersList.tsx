@@ -85,6 +85,7 @@ export function InvitedUsersList({ isVisible, fragmentRef }: InvitedUsersListPro
                                 style={{ width: '80%' }}
                                 onFilterChange={handleFilterChange}
                                 onSearch={handleSearch}
+                                isSearchOpen={true}
                                 length={filteredList.length}
                             />
                         </Grid>

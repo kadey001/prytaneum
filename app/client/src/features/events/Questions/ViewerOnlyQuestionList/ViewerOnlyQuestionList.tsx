@@ -86,6 +86,7 @@ export function ViewerOnlyQuestionList({ fragmentRef, ActionButtons, isVisible }
                     // filterMap={filterFuncs}
                     onFilterChange={handleFilterChange}
                     onSearch={handleSearch}
+                    isSearchOpen={false}
                     length={filteredList.length}
                     // menuIcons={[
                     //     <Tooltip title='Load New'>
