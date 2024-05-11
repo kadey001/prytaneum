@@ -14,7 +14,7 @@ import { isURL } from '@local/utils';
 interface Props {
     eventId: string;
     promptRef: MutableRefObject<Prompt>;
-    closeSnackbar: () => void;
+    closeSnack: () => void;
     isOpen: boolean;
     open: () => void;
     close: () => void;
@@ -35,7 +35,7 @@ export const SUBMIT_LIVE_FEEDBACK_PROMPT_RESPONSE_MUTATION = graphql`
     }
 `;
 
-export function SubmitLiveFeedbackPromptResponse({ eventId, promptRef, closeSnackbar, isOpen, close }: Props) {
+export function SubmitLiveFeedbackPromptResponse({ eventId, promptRef, closeSnack, isOpen, close }: Props) {
     const { displaySnack } = useSnack();
     const [commit] = useMutation<SubmitLiveFeedbackPromptResponseMutation>(
         SUBMIT_LIVE_FEEDBACK_PROMPT_RESPONSE_MUTATION
@@ -53,7 +53,7 @@ export function SubmitLiveFeedbackPromptResponse({ eventId, promptRef, closeSnac
                             throw new Error(response.createFeedbackPromptResponse.message);
                         displaySnack('Response submitted', { variant: 'success' });
                         close();
-                        closeSnackbar();
+                        closeSnack();
                     } catch (err) {
                         if (err instanceof Error) displaySnack(err.message, { variant: 'error' });
                         else displaySnack('Something went wrong!');
@@ -71,13 +71,13 @@ export function SubmitLiveFeedbackPromptResponse({ eventId, promptRef, closeSnac
             <ResponsiveDialog
                 open={isOpen}
                 onClose={() => {
-                    closeSnackbar();
+                    closeSnack();
                 }}
             >
                 <DialogContent>
                     <LiveFeedbackPromptResponseForm
                         onCancel={() => {
-                            closeSnackbar();
+                            closeSnack();
                             close();
                         }}
                         onSubmit={handleSubmit}

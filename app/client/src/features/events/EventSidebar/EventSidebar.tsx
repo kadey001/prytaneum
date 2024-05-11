@@ -15,7 +15,10 @@ import { QuestionCarousel } from '../Questions/QuestionCarousel';
 import { CurrentQuestionCard } from '../Moderation/ManageQuestions/CurrentQuestionCard';
 import { ShareFeedbackResults, useLiveFeedbackPrompt } from '../LiveFeedbackPrompts';
 import { SubmitLiveFeedbackPrompt } from '../LiveFeedbackPrompts/LiveFeedbackPrompt/SubmitLiveFeedbackPrompt';
-import { useLiveFeedbackPromptResultsShared } from '../LiveFeedbackPrompts/LiveFeedbackPromptResults';
+import {
+    useLiveFeedbackPromptResultsShared,
+    ViewLiveFeedbackPromptResults,
+} from '../LiveFeedbackPrompts/LiveFeedbackPromptResults';
 import { PreloadedParticipantsList } from '../Participants/ParticipantsList';
 import { StyledTabs } from '@local/components/StyledTabs';
 import { StyledColumnGrid } from '@local/components/StyledColumnGrid';
@@ -60,11 +63,14 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
     const [topSectionVisible, setTopSectionVisible] = React.useState(true);
     const [isFeedbackPromptResponseOpen, openFeedbackPromptResponse, closeFeedbackPromptResponse] =
         useResponsiveDialog();
+    const [isFeedbackPromptResultsOpen, openFeedbackPromptResults, closeFeedbackPromptResults] = useResponsiveDialog();
     const eventId = data.id;
 
     // Subscribe to live feedback prompts
-    const { feedbackPromptRef, closeSnack } = useLiveFeedbackPrompt({ openFeedbackPromptResponse });
-    useLiveFeedbackPromptResultsShared();
+    const { feedbackPromptRef, closeFeedbackPromptSnack } = useLiveFeedbackPrompt({ openFeedbackPromptResponse });
+    const { feedbackPromptResultsRef, closeFeedbackPromptResultsSnack } = useLiveFeedbackPromptResultsShared({
+        openFeedbackPromptResults,
+    });
 
     const toggleTopSectionVisibility = React.useCallback(() => {
         setTopSectionVisible((prev) => !prev);
@@ -136,10 +142,17 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
             <SubmitLiveFeedbackPromptResponse
                 eventId={eventId}
                 promptRef={feedbackPromptRef}
-                closeSnackbar={closeSnack}
+                closeSnack={closeFeedbackPromptSnack}
                 isOpen={isFeedbackPromptResponseOpen}
                 open={openFeedbackPromptResponse}
                 close={closeFeedbackPromptResponse}
+            />
+            <ViewLiveFeedbackPromptResults
+                promptRef={feedbackPromptResultsRef}
+                closeSnack={closeFeedbackPromptResultsSnack}
+                open={isFeedbackPromptResultsOpen}
+                setOpen={openFeedbackPromptResults}
+                close={closeFeedbackPromptResults}
             />
             <Grid item>
                 {!isViewerModerator && <QuestionCarousel fragmentRef={data} />}

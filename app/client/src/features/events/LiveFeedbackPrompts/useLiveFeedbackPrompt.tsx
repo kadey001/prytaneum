@@ -90,5 +90,5 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
     );
 
     useSubscription<useLiveFeedbackPromptSubscription>(config);
-    return { feedbackPromptRef: promptRef, closeSnack };
+    return { feedbackPromptRef: promptRef, closeFeedbackPromptSnack: closeSnack };
 }
