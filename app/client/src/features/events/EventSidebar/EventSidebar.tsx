@@ -9,11 +9,9 @@ import { QuestionList } from '@local/features/events/Questions/QuestionList';
 import { QuestionQueue } from '@local/features/events/Moderation/ManageQuestions';
 import { LiveFeedbackList } from '@local/features/events/LiveFeedback/LiveFeedbackList';
 import { BroadcastMessageList } from '@local/features/events/BroadcastMessages/BroadcastMessageList';
-import { SubmitLiveFeedback } from '@local/features/events/LiveFeedback/SubmitLiveFeedback';
 import { QuestionCarousel } from '../Questions/QuestionCarousel';
 import { CurrentQuestionCard } from '../Moderation/ManageQuestions/CurrentQuestionCard';
-import { ShareFeedbackResults, useLiveFeedbackPrompt } from '../LiveFeedbackPrompts';
-import { SubmitLiveFeedbackPrompt } from '../LiveFeedbackPrompts/LiveFeedbackPrompt/SubmitLiveFeedbackPrompt';
+import { useLiveFeedbackPrompt } from '../LiveFeedbackPrompts';
 import {
     useLiveFeedbackPromptResultsShared,
     ViewLiveFeedbackPromptResults,
@@ -84,36 +82,6 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
         e.preventDefault();
         setBottomTab(newTab);
     };
-
-    const displayActionButtons = React.useMemo(() => {
-        if (data.isViewerModerator) {
-            if (bottomTab === 'Queue') return null;
-            if (bottomTab === 'Questions') return null;
-            if (bottomTab === 'Feedback')
-                return (
-                    <Grid container direction='row' justifyContent='space-evenly' alignItems='center'>
-                        <Grid item paddingBottom='1rem'>
-                            <SubmitLiveFeedbackPrompt eventId={eventId} />
-                        </Grid>
-                        <Grid item paddingBottom='1rem'>
-                            <ShareFeedbackResults />
-                        </Grid>
-                        <Grid item paddingBottom='1rem'>
-                            <SubmitLiveFeedback eventId={eventId} />
-                        </Grid>
-                    </Grid>
-                );
-            return null;
-        } else {
-            if (bottomTab === 'Feedback')
-                return (
-                    <Grid container paddingBottom='1rem' justifyContent='center'>
-                        <SubmitLiveFeedback eventId={eventId} />
-                    </Grid>
-                );
-            return null;
-        }
-    }, [data.isViewerModerator, bottomTab, eventId]);
 
     return (
         <Grid
@@ -229,11 +197,7 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
                         <QuestionQueue fragmentRef={data} isVisible={bottomTab === 'Queue'} />
                     )}
                     <QuestionList fragmentRef={data} isVisible={bottomTab === 'Questions'} />
-                    <LiveFeedbackList
-                        fragmentRef={data}
-                        ActionButtons={displayActionButtons}
-                        isVisible={bottomTab === 'Feedback'}
-                    />
+                    <LiveFeedbackList fragmentRef={data} isVisible={bottomTab === 'Feedback'} />
                     {isViewerModerator === true && (
                         <BroadcastMessageList fragmentRef={data} isVisible={bottomTab === 'Broadcast'} />
                     )}
