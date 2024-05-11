@@ -131,10 +131,7 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                             <Typography variant='h4'>Resources</Typography>
                             <Grid container justifyContent='space-around' width='100%' marginTop='1rem'>
                                 <Grid item>
-                                    <EventIssueGuideViewer
-                                        url={eventData.readingMaterialsUrl}
-                                        title={eventData.title}
-                                    />
+                                    <EventIssueGuideViewer url={eventData.issueGuideUrl} title={eventData.title} />
                                 </Grid>
                                 <Grid item>
                                     <Link href='/guides/participant'>

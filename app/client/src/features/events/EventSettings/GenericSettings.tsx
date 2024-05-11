@@ -35,7 +35,7 @@ export const GENERIC_SETTINGS_FRAGMENT = graphql`
         isCollectRatingsEnabled
         isForumEnabled
         isPrivate
-        readingMaterialsUrl
+        issueGuideUrl
     }
 `;
 

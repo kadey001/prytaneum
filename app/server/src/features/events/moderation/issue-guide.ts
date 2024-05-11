@@ -33,7 +33,6 @@ const fileFilter = (req: unknown, file: any, cb: any) => {
     }
 };
 
-// TODO Discuss storing locally or in memory
 const multerStorage = multer({
     storage,
     limits: {
@@ -48,8 +47,43 @@ interface FastifyMulterRequest extends FastifyRequest {
 
 server.route({
     method: 'POST',
-    url: '/graphql/upload-reading-materials',
-    preHandler: multerStorage.single('reading-materials'),
+    url: '/graphql/set-reading-materials-url',
+    handler: async (req: FastifyRequest, reply: FastifyReply) => {
+        const prisma = getPrismaClient(server.log);
+        const { body } = req;
+
+        try {
+            let viewerId = await extractAuthenticationJwt(req).catch(() => reply.clearCookie('jwt').send());
+            if (viewerId) {
+                const { id } = fromGlobalId(viewerId);
+                viewerId = id;
+            }
+            if (!viewerId) throw new Error('Must be authenticated to invite users.');
+
+            const { eventId, url } = body as { eventId?: string; url?: string };
+            if (!eventId) throw new Error('Event ID not provided.');
+            if (!url) throw new Error('Issue guide URL not provided.');
+            const { id: eventGlobalId } = fromGlobalId(eventId);
+
+            await prisma.event.update({
+                where: { id: eventGlobalId },
+                data: {
+                    issueGuideUrl: url,
+                },
+            });
+
+            reply.code(200).send({ message: 'Issue guide URL set successfully.' });
+        } catch (error: any) {
+            server.log.error(error);
+            reply.code(500).send({ message: error instanceof Error ? error.message : 'An unknown error occurred.' });
+        }
+    },
+});
+
+server.route({
+    method: 'POST',
+    url: '/graphql/upload-issue-guide',
+    preHandler: multerStorage.single('issue-guide'),
     handler: async (req: FastifyMulterRequest, reply: FastifyReply) => {
         const prisma = getPrismaClient(server.log);
         const { file, body } = req;
@@ -84,7 +118,7 @@ server.route({
             await prisma.event.update({
                 where: { id: eventGlobalId },
                 data: {
-                    readingMaterialsUrl: mediaLink,
+                    issueGuideUrl: mediaLink,
                 },
             });
 

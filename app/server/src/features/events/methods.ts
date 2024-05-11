@@ -79,7 +79,7 @@ export async function createEvent(userId: string, prisma: PrismaClient, input: C
         isForumEnabled: true,
         isPrivate: false,
         createdById: userId,
-        readingMaterialsUrl: '',
+        issueGuideUrl: '',
     };
 
     const result = await prisma.event.create({

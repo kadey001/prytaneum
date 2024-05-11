@@ -11,7 +11,8 @@ export const getOrCreateStorage = () => {
     if (!_storage) {
         _storage = new Storage({
             projectId: process.env.GCP_PROJECT_ID,
-            // keyFilename: './src/core/utils/gcp-storage-credentials.json',
+            keyFilename:
+                process.env.NODE_ENV === 'development' ? './src/core/utils/gcp-storage-credentials.json' : undefined,
         });
     }
 

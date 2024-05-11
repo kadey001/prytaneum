@@ -29,13 +29,13 @@ export const EVENT_ISSUE_GUIDE_SETTINGS_FRAGMENT = graphql`
     fragment EventIssueGuideSettingsFragment on Event {
         id
         title
-        readingMaterialsUrl
+        issueGuideUrl
     }
 `;
 
 export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSettingsProps) {
     const router = useRouter();
-    const { id: eventId, readingMaterialsUrl, title } = useFragment(EVENT_ISSUE_GUIDE_SETTINGS_FRAGMENT, fragmentRef);
+    const { id: eventId, issueGuideUrl, title } = useFragment(EVENT_ISSUE_GUIDE_SETTINGS_FRAGMENT, fragmentRef);
     const [pdfFile, setPDFFile] = React.useState<File | null>(null);
     const [isUploading, setIsUploading] = React.useState(false);
     const [isUrlDialogOpen, setIsUrlDialogOpen] = React.useState(false);
@@ -54,8 +54,8 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
         setIsUpdatingUrl(true);
         const formData = new FormData();
         formData.append('eventId', eventId);
-        formData.append('reading-materials-url', newUrl);
-        fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL + '/set-reading-materials-url', {
+        formData.append('url', newUrl);
+        fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL + '/set-issue-guide-url', {
             method: 'POST',
             body: formData,
         })
@@ -92,7 +92,7 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
             const limit = 5 * 1024 * 1024; // 5 MB
             if (e.target.files[0]?.size > limit) {
                 displaySnack('File size too large. Max 5MB.', { variant: 'error' });
-                const file = document.getElementById('reading-materials') as HTMLInputElement;
+                const file = document.getElementById('issue-guide') as HTMLInputElement;
                 file.value = file.defaultValue;
                 return;
             }
@@ -106,15 +106,15 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
         setIsUploading(true);
         const formData = new FormData();
         formData.append('eventId', eventId);
-        formData.append('reading-materials', pdfFile);
-        fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL + '/upload-reading-materials', {
+        formData.append('issue-guide', pdfFile);
+        fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL + '/upload-issue-guide', {
             method: 'POST',
             body: formData,
         })
             .then((res) => {
                 // Remove file from input upon success
                 setPDFFile(null);
-                const file = document.getElementById('reading-materials') as HTMLInputElement;
+                const file = document.getElementById('issue-guide') as HTMLInputElement;
                 file.value = file.defaultValue;
                 setIsUploading(false);
                 if (res.status === 200) {
@@ -146,14 +146,14 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
 
     return (
         <Grid container>
-            <EventIssueGuideViewer url={readingMaterialsUrl} title={title} />
+            <EventIssueGuideViewer url={issueGuideUrl} title={title} />
             <Grid container direction='row' alignItems='center' justifyContent='right'>
                 <Tooltip title={PDF_TOOLTIP_TEXT} enterTouchDelay={0}>
                     <IconButton>
                         <InfoIcon />
                     </IconButton>
                 </Tooltip>
-                <input id='reading-materials' type='file' accept='.pdf' onChange={attachPDF} />
+                <input id='issue-guide' type='file' accept='.pdf' onChange={attachPDF} />
                 <Button disabled={pdfFile === null || isUploading} onClick={uploadEventIssueGuide} variant='outlined'>
                     Upload Issue Guide
                 </Button>
@@ -177,7 +177,7 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
                         <FormControl required fullWidth variant='outlined'>
                             <InputLabel>Url</InputLabel>
                             <OutlinedInput
-                                id='reading-materials-url-input'
+                                id='issue-guide-url-input'
                                 label='Issue Guide URL'
                                 name='title'
                                 // error={Boolean(errors.title)}
@@ -197,7 +197,7 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
                                         </Typography>
                                     </InputAdornment>
                                 }
-                                aria-describedby='reading-materials-url-input'
+                                aria-describedby='issue-guide-url-input'
                                 aria-label='Issue Guide URL'
                             />
                             <FormHelperText style={{ color: 'red' }}></FormHelperText>

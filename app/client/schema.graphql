@@ -203,6 +203,7 @@ type Event implements Node {
 
   """Whether or not the viewer is a moderator"""
   isViewerModerator: Boolean
+  issueGuideUrl: String
 
   """Live Feedback given during the event"""
   liveFeedback(after: String, first: Int): EventLiveFeedbackConnection
@@ -224,7 +225,6 @@ type Event implements Node {
 
   """All questions relating to this event"""
   questions(after: String, first: Int, viewerOnly: Boolean): EventQuestionConnection
-  readingMaterialsUrl: String
 
   """Registrants for this event -- individuals invited"""
   registrants: UserConnection
