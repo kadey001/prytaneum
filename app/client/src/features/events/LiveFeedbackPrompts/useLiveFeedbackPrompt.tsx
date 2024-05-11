@@ -27,7 +27,11 @@ export interface Prompt {
     multipleChoiceOptions: string[];
 }
 
-export function useLiveFeedbackPrompt() {
+interface Props {
+    openFeedbackPromptResponse: () => void;
+}
+
+export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
     const { eventId } = useEvent();
 
     const promptRef = React.useRef<Prompt>({
@@ -57,7 +61,7 @@ export function useLiveFeedbackPrompt() {
             multipleChoiceOptions: multipleChoiceOptions,
         };
     };
-    const { displaySnack } = useLiveFeedbackPromptResponseSnack(promptRef, eventId);
+    const { displaySnack, closeSnack } = useLiveFeedbackPromptResponseSnack({ openFeedbackPromptResponse });
 
     const config = React.useMemo<GraphQLSubscriptionConfig<useLiveFeedbackPromptSubscription>>(
         () => ({
@@ -86,4 +90,5 @@ export function useLiveFeedbackPrompt() {
     );
 
     useSubscription<useLiveFeedbackPromptSubscription>(config);
+    return { feedbackPromptRef: promptRef, closeSnack };
 }

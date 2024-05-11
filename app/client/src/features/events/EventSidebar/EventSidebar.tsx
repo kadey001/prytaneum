@@ -20,6 +20,8 @@ import { PreloadedParticipantsList } from '../Participants/ParticipantsList';
 import { StyledTabs } from '@local/components/StyledTabs';
 import { StyledColumnGrid } from '@local/components/StyledColumnGrid';
 import { ModeratorActions } from '../Moderation/ModeratorActions';
+import { SubmitLiveFeedbackPromptResponse } from '../LiveFeedbackPrompts/LiveFeedbackPromptResponse';
+import { useResponsiveDialog } from '@local/components/ResponsiveDialog';
 
 export const EVENT_SIDEBAR_FRAGMENT = graphql`
     fragment EventSidebarFragment on Event {
@@ -56,10 +58,12 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
     const [topTab, setTopTab] = React.useState<sidebarTopTabs>('Moderator');
     const [bottomTab, setBottomTab] = React.useState<SidebarBottomTabs>('Questions');
     const [topSectionVisible, setTopSectionVisible] = React.useState(true);
+    const [isFeedbackPromptResponseOpen, openFeedbackPromptResponse, closeFeedbackPromptResponse] =
+        useResponsiveDialog();
     const eventId = data.id;
 
     // Subscribe to live feedback prompts
-    useLiveFeedbackPrompt();
+    const { feedbackPromptRef, closeSnack } = useLiveFeedbackPrompt({ openFeedbackPromptResponse });
     useLiveFeedbackPromptResultsShared();
 
     const toggleTopSectionVisibility = React.useCallback(() => {
@@ -129,6 +133,14 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
             alignItems='flex-start'
             wrap='nowrap'
         >
+            <SubmitLiveFeedbackPromptResponse
+                eventId={eventId}
+                promptRef={feedbackPromptRef}
+                closeSnackbar={closeSnack}
+                isOpen={isFeedbackPromptResponseOpen}
+                open={openFeedbackPromptResponse}
+                close={closeFeedbackPromptResponse}
+            />
             <Grid item>
                 {!isViewerModerator && <QuestionCarousel fragmentRef={data} />}
                 {isViewerModerator && (
