@@ -4,7 +4,6 @@ import { Grid, Card, Typography, IconButton, Paper, Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { AutoSizer, List, CellMeasurer, CellMeasurerCache, InfiniteLoader } from 'react-virtualized';
 import type { IndexRange } from 'react-virtualized';
 import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
@@ -24,35 +23,7 @@ import { useQuestionList } from './useQuestionList';
 import { useQuestionCreated } from './useQuestionCreated';
 import { useQuestionUpdated } from './useQuestionUpdated';
 import { useQuestionDeleted } from './useQuestionDeleted';
-import { Loader } from '@local/components/Loader';
-import { OperationType } from 'relay-runtime';
-import { LoadMoreFn } from 'react-relay';
 import AskQuestion from '../AskQuestion';
-
-interface InfiniteScrollerProps {
-    children: React.ReactNode | React.ReactNodeArray;
-    isModerator: boolean;
-    filteredList: Array<any>;
-    loadNext: LoadMoreFn<OperationType>;
-    hasNext: boolean;
-}
-
-export function InfiniteScroller({ children, isModerator, filteredList, loadNext, hasNext }: InfiniteScrollerProps) {
-    return isModerator ? (
-        <InfiniteScroll
-            dataLength={filteredList.length}
-            next={() => loadNext(10)}
-            hasMore={hasNext}
-            loader={<Loader />}
-            hasChildren
-            scrollableTarget='scrollable-tab'
-        >
-            {children}
-        </InfiniteScroll>
-    ) : (
-        <>{children}</>
-    );
-}
 
 interface QuestionListProps {
     fragmentRef: useQuestionListFragment$key;
