@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
 import { Grid, Card, Typography, IconButton, Paper, Stack } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from '@mui/material/styles';
+import SearchIcon from '@mui/icons-material/Search';
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { AutoSizer, List, CellMeasurer, CellMeasurerCache, InfiniteLoader } from 'react-virtualized';
+import type { IndexRange } from 'react-virtualized';
+import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 
 import type { useQuestionListFragment$key } from '@local/__generated__/useQuestionListFragment.graphql';
 import ListFilter, { useFilters, Accessors } from '@local/components/ListFilter';
@@ -24,9 +28,6 @@ import { Loader } from '@local/components/Loader';
 import { OperationType } from 'relay-runtime';
 import { LoadMoreFn } from 'react-relay';
 import AskQuestion from '../AskQuestion';
-import { AutoSizer, List, CellMeasurer, CellMeasurerCache, InfiniteLoader } from 'react-virtualized';
-import type { IndexRange } from 'react-virtualized';
-import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 
 interface InfiniteScrollerProps {
     children: React.ReactNode | React.ReactNodeArray;
@@ -56,9 +57,16 @@ export function InfiniteScroller({ children, isModerator, filteredList, loadNext
 interface QuestionListProps {
     fragmentRef: useQuestionListFragment$key;
     isVisible: boolean;
+    askQuestionEnabled?: boolean;
+    searchOnly?: boolean;
 }
 
-export function QuestionList({ fragmentRef, isVisible }: QuestionListProps) {
+export function QuestionList({
+    fragmentRef,
+    isVisible,
+    askQuestionEnabled = true,
+    searchOnly = false,
+}: QuestionListProps) {
     const theme = useTheme();
     const { user } = useUser();
     const { isModerator, eventId } = useEvent();
@@ -167,7 +175,7 @@ export function QuestionList({ fragmentRef, isVisible }: QuestionListProps) {
                 <React.Fragment>
                     <Grid item width='100%' minHeight={0} marginBottom={getActionsBoxMargin}>
                         <Paper sx={{ padding: '1rem', marginX: '8px' }}>
-                            {!isModerator && (
+                            {!isModerator && !searchOnly && (
                                 <Grid
                                     container
                                     direction='row'
@@ -180,7 +188,7 @@ export function QuestionList({ fragmentRef, isVisible }: QuestionListProps) {
                                         </IconButton>
                                     </Grid>
                                     <Grid item xs='auto'>
-                                        <AskQuestion eventId={eventId} />
+                                        {askQuestionEnabled && <AskQuestion eventId={eventId} />}
                                     </Grid>
                                     <Grid item xs='auto'>
                                         <div style={{ display: 'none' }} />
@@ -192,7 +200,7 @@ export function QuestionList({ fragmentRef, isVisible }: QuestionListProps) {
                                 onFilterChange={handleFilterChange}
                                 onSearch={handleSearch}
                                 length={filteredList.length}
-                                isSearchOpen={isModerator || isSearchOpen}
+                                isSearchOpen={isModerator || isSearchOpen || searchOnly}
                                 // menuIcons={[
                                 //     <Tooltip title='Load New'>
                                 //         <span>
@@ -206,6 +214,19 @@ export function QuestionList({ fragmentRef, isVisible }: QuestionListProps) {
                                 // ]}
                             />
                         </Paper>
+                        {filteredList.length === 0 && questions.length !== 0 && (
+                            <Typography align='center' variant='body2' marginTop='1rem'>
+                                No results to display
+                            </Typography>
+                        )}
+                        {questions.length === 0 && (
+                            <Typography align='center' variant='h5' marginTop='1rem'>
+                                <Stack direction='row' justifyContent='center' alignItems='center'>
+                                    No Questions to display
+                                    <SentimentDissatisfiedIcon />
+                                </Stack>
+                            </Typography>
+                        )}
                     </Grid>
                     <div style={{ width: '100%', height: '100%' }}>
                         <InfiniteLoader
@@ -233,16 +254,6 @@ export function QuestionList({ fragmentRef, isVisible }: QuestionListProps) {
                             )}
                         </InfiniteLoader>
                     </div>
-                    {filteredList.length === 0 && questions.length !== 0 && (
-                        <Typography align='center' variant='body2'>
-                            No results to display
-                        </Typography>
-                    )}
-                    {questions.length === 0 && (
-                        <Typography align='center' variant='h5'>
-                            No Questions to display :(
-                        </Typography>
-                    )}
                 </React.Fragment>
             )}
         </Stack>
