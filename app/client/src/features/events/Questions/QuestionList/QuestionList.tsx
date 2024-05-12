@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
-import { Grid, Card, ListItem, Typography, IconButton, Paper } from '@mui/material';
+import { Grid, Card, Typography, IconButton, Paper, Stack } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from '@mui/material/styles';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -24,6 +24,9 @@ import { Loader } from '@local/components/Loader';
 import { OperationType } from 'relay-runtime';
 import { LoadMoreFn } from 'react-relay';
 import AskQuestion from '../AskQuestion';
+import { AutoSizer, List, CellMeasurer, CellMeasurerCache, InfiniteLoader } from 'react-virtualized';
+import type { IndexRange } from 'react-virtualized';
+import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 
 interface InfiniteScrollerProps {
     children: React.ReactNode | React.ReactNodeArray;
@@ -61,7 +64,7 @@ export function QuestionList({ fragmentRef, isVisible }: QuestionListProps) {
     const { isModerator, eventId } = useEvent();
     const [isSearchOpen, setIsSearchOpen] = React.useState(false);
     const { questions, connections, loadNext, hasNext } = useQuestionList({ fragmentRef });
-    const MAX_QUESTIONS_DISPLAYED = 50;
+    const QUESTIONS_BATCH_SIZE = 10;
     useQuestionCreated({ connections });
     useQuestionUpdated({ connections });
     useQuestionDeleted({ connections });
@@ -81,107 +84,155 @@ export function QuestionList({ fragmentRef, isVisible }: QuestionListProps) {
 
     const [filteredList, handleSearch, handleFilterChange] = useFilters(questions, accessors);
 
+    // Virtualized List variables and functions
+    const listLength = React.useMemo(() => filteredList.length, [filteredList]);
+    const isRowLoaded = ({ index }: { index: number }) => !!filteredList[index + 1];
+
+    const loadMoreRows = React.useCallback(
+        async ({}: IndexRange) => {
+            if (hasNext) loadNext(QUESTIONS_BATCH_SIZE);
+        },
+        [hasNext, loadNext]
+    );
+
+    const cache = new CellMeasurerCache({
+        defaultHeight: 185,
+        minHeight: 185,
+        fixedWidth: true,
+    });
+
+    interface RowRendererProps {
+        index: number;
+        isScrolling: boolean;
+        key: string;
+        parent: MeasuredCellParent;
+        style: React.CSSProperties;
+    }
+
+    function rowRenderer({ index: rowIndex, key, parent, style }: RowRendererProps) {
+        const question = filteredList[rowIndex];
+
+        return (
+            <CellMeasurer cache={cache} key={key} parent={parent} rowIndex={rowIndex}>
+                {({ registerChild }) => (
+                    // 'style' attribute required to position cell (within parent List)
+                    <div ref={registerChild as any} style={{ ...style, width: '100%', padding: '.5rem' }}>
+                        <Card
+                            style={{
+                                flex: 1,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                paddingTop: theme.spacing(0.5),
+                                borderRadius: '10px',
+                            }}
+                        >
+                            <QuestionAuthor fragmentRef={question} />
+                            {question.refQuestion && <QuestionQuote fragmentRef={question.refQuestion} />}
+                            <QuestionContent fragmentRef={question} />
+                            <Grid container alignItems='center' justifyContent='space-between'>
+                                {isModerator && <QuestionStats fragmentRef={question} />}
+                                <QuestionActions
+                                    style={!isModerator ? { width: '100%' } : { width: '100%', maxWidth: '10rem' }}
+                                    likeEnabled={!isModerator && Boolean(user)}
+                                    quoteEnabled={!isModerator && Boolean(user)}
+                                    queueEnabled={isModerator && Boolean(user)}
+                                    deleteEnabled={isModerator && Boolean(user)}
+                                    connections={connections}
+                                    fragmentRef={question}
+                                />
+                                {isModerator && ( // filler to justify moderator queue button
+                                    <span style={{ visibility: 'hidden' }}>
+                                        <QuestionStats fragmentRef={question} />
+                                    </span>
+                                )}
+                            </Grid>
+                        </Card>
+                    </div>
+                )}
+            </CellMeasurer>
+        );
+    }
+
+    const getActionsBoxMargin = React.useMemo(() => {
+        if (isModerator) return '1.5rem';
+        if (isSearchOpen) return '2.5rem';
+        return '1rem';
+    }, [isModerator, isSearchOpen]);
+
     if (!isVisible) return <React.Fragment />;
 
     return (
-        <Grid container data-test-id='question-list' height={0} flex='1 1 100%' justifyContent='center'>
+        <Stack direction='column' alignItems='stretch' width='100%'>
             {isVisible && (
-                <Grid item width='100%'>
-                    <Paper sx={{ padding: '1rem', marginX: '8px' }}>
-                        {!isModerator && (
-                            <Grid
-                                container
-                                direction='row'
-                                justifyContent='space-between'
-                                marginBottom={isSearchOpen ? '.5rem' : '0rem'}
-                            >
-                                <Grid item xs='auto'>
-                                    <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
-                                        <SearchIcon />
-                                    </IconButton>
+                <React.Fragment>
+                    <Grid item width='100%' minHeight={0} marginBottom={getActionsBoxMargin}>
+                        <Paper sx={{ padding: '1rem', marginX: '8px' }}>
+                            {!isModerator && (
+                                <Grid
+                                    container
+                                    direction='row'
+                                    justifyContent='space-between'
+                                    marginBottom={isSearchOpen ? '.5rem' : '0rem'}
+                                >
+                                    <Grid item xs='auto'>
+                                        <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
+                                            <SearchIcon />
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item xs='auto'>
+                                        <AskQuestion eventId={eventId} />
+                                    </Grid>
+                                    <Grid item xs='auto'>
+                                        <div style={{ display: 'none' }} />
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs='auto'>
-                                    <AskQuestion eventId={eventId} />
-                                </Grid>
-                                <Grid item xs='auto'>
-                                    <div style={{ display: 'none' }} />
-                                </Grid>
-                            </Grid>
-                        )}
-                        <ListFilter
-                            // filterMap={filterFuncs}
-                            onFilterChange={handleFilterChange}
-                            onSearch={handleSearch}
-                            length={filteredList.length}
-                            isSearchOpen={isModerator || isSearchOpen}
-                            // menuIcons={[
-                            //     <Tooltip title='Load New'>
-                            //         <span>
-                            //             <IconButton color='inherit' onClick={togglePause}>
-                            //                 <Badge badgeContent={isPaused ? 0 : 0} color='secondary'>
-                            //                     {isPaused ? <PlayArrow /> : <Pause />}
-                            //                 </Badge>
-                            //             </IconButton>
-                            //         </span>
-                            //     </Tooltip>,
-                            // ]}
-                        />
-                    </Paper>
-                    {/* <List disablePadding> */}
-                    {/* TODO: Restore Later 
-                            <Grid container alignItems='center'>
-                                <Typography className={classes.text} variant='body2'>
-                                    <b>{filteredList.length <= MAX_QUESTIONS_DISPLAYED ? filteredList.length : MAX_QUESTIONS_DISPLAYED}</b>
-                                    &nbsp; Questions Displayed
-                                </Typography>
-                            </Grid> */}
-                    <InfiniteScroller
-                        isModerator={isModerator}
-                        filteredList={filteredList}
-                        hasNext={hasNext}
-                        loadNext={loadNext}
-                    >
-                        {(isModerator ? filteredList : filteredList.slice(0, MAX_QUESTIONS_DISPLAYED)).map(
-                            (question) => (
-                                <ListItem disableGutters key={question.id} sx={{ paddingX: '0.5rem' }}>
-                                    <Card
-                                        style={{
-                                            flex: 1,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            paddingTop: theme.spacing(0.5),
-                                            borderRadius: '10px',
-                                        }}
-                                    >
-                                        <QuestionAuthor fragmentRef={question} />
-                                        {question.refQuestion && <QuestionQuote fragmentRef={question.refQuestion} />}
-                                        <QuestionContent fragmentRef={question} />
-                                        <Grid container alignItems='center' justifyContent='space-between'>
-                                            {isModerator && <QuestionStats fragmentRef={question} />}
-                                            <QuestionActions
-                                                style={
-                                                    !isModerator
-                                                        ? { width: '100%' }
-                                                        : { width: '100%', maxWidth: '10rem' }
-                                                }
-                                                likeEnabled={!isModerator && Boolean(user)}
-                                                quoteEnabled={!isModerator && Boolean(user)}
-                                                queueEnabled={isModerator && Boolean(user)}
-                                                deleteEnabled={isModerator && Boolean(user)}
-                                                connections={connections}
-                                                fragmentRef={question}
-                                            />
-                                            {isModerator && ( // filler to justify moderator queue button
-                                                <span style={{ visibility: 'hidden' }}>
-                                                    <QuestionStats fragmentRef={question} />
-                                                </span>
-                                            )}
-                                        </Grid>
-                                    </Card>
-                                </ListItem>
-                            )
-                        )}
-                    </InfiniteScroller>
+                            )}
+                            <ListFilter
+                                // filterMap={filterFuncs}
+                                onFilterChange={handleFilterChange}
+                                onSearch={handleSearch}
+                                length={filteredList.length}
+                                isSearchOpen={isModerator || isSearchOpen}
+                                // menuIcons={[
+                                //     <Tooltip title='Load New'>
+                                //         <span>
+                                //             <IconButton color='inherit' onClick={togglePause}>
+                                //                 <Badge badgeContent={isPaused ? 0 : 0} color='secondary'>
+                                //                     {isPaused ? <PlayArrow /> : <Pause />}
+                                //                 </Badge>
+                                //             </IconButton>
+                                //         </span>
+                                //     </Tooltip>,
+                                // ]}
+                            />
+                        </Paper>
+                    </Grid>
+                    <div style={{ width: '100%', height: '100%' }}>
+                        <InfiniteLoader
+                            isRowLoaded={isRowLoaded}
+                            loadMoreRows={loadMoreRows}
+                            minimumBatchSize={QUESTIONS_BATCH_SIZE}
+                            rowCount={listLength}
+                            threshold={5}
+                        >
+                            {({ onRowsRendered, registerChild }) => (
+                                <AutoSizer>
+                                    {({ width, height }) => (
+                                        <List
+                                            ref={registerChild}
+                                            height={height}
+                                            width={width}
+                                            rowCount={listLength}
+                                            deferredMeasurementCache={cache}
+                                            rowHeight={cache.rowHeight}
+                                            rowRenderer={rowRenderer}
+                                            onRowsRendered={onRowsRendered}
+                                        />
+                                    )}
+                                </AutoSizer>
+                            )}
+                        </InfiniteLoader>
+                    </div>
                     {filteredList.length === 0 && questions.length !== 0 && (
                         <Typography align='center' variant='body2'>
                             No results to display
@@ -192,9 +243,8 @@ export function QuestionList({ fragmentRef, isVisible }: QuestionListProps) {
                             No Questions to display :(
                         </Typography>
                     )}
-                    {/* </List> */}
-                </Grid>
+                </React.Fragment>
             )}
-        </Grid>
+        </Stack>
     );
 }
