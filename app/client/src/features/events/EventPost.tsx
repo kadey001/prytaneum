@@ -9,7 +9,6 @@ import { EventContext } from './EventContext';
 import { ConditionalRender } from '../../components/ConditionalRender';
 import { Loader } from '@local/components';
 import { LiveFeedbackList } from './LiveFeedback';
-import { SubmitLiveFeedback } from './LiveFeedback/SubmitLiveFeedback';
 import { FragmentRefs } from 'relay-runtime';
 import { EventDetailsCard } from './EventDetailsCard';
 import { SpeakerList } from './Speakers';
@@ -167,18 +166,11 @@ export function EventPost({ node }: EventPostProps) {
                             >
                                 <QuestionList
                                     fragmentRef={node}
-                                    ActionButtons={<></>}
                                     isVisible={tab === 'Questions'}
+                                    askQuestionEnabled={false}
+                                    searchOnly={true}
                                 />
-                                <LiveFeedbackList
-                                    fragmentRef={node}
-                                    ActionButtons={
-                                        <Grid container paddingBottom='1rem' justifyContent='center'>
-                                            <SubmitLiveFeedback eventId={eventId} />
-                                        </Grid>
-                                    }
-                                    isVisible={tab === 'Feedback'}
-                                />
+                                <LiveFeedbackList fragmentRef={node} isVisible={tab === 'Feedback'} />
                             </StyledColumnGrid>
                         </Grid>
                     </Grid>

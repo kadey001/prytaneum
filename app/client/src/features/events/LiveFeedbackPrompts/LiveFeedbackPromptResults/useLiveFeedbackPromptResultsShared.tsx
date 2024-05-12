@@ -20,7 +20,11 @@ export interface Prompt {
     prompt: string;
 }
 
-export function useLiveFeedbackPromptResultsShared() {
+interface Props {
+    openFeedbackPromptResults: () => void;
+}
+
+export function useLiveFeedbackPromptResultsShared({ openFeedbackPromptResults }: Props) {
     const { isModerator, eventId } = useEvent();
 
     const promptRef = React.useRef<Prompt>({ id: '', prompt: '' });
@@ -28,7 +32,7 @@ export function useLiveFeedbackPromptResultsShared() {
     const updateCurrentPrompt = ({ id, prompt }: Prompt) => {
         promptRef.current = { ...promptRef.current, id: id, prompt: prompt };
     };
-    const { displaySnack } = useLiveFeedbackPromptResultsSnack(promptRef);
+    const { displaySnack, closeSnack } = useLiveFeedbackPromptResultsSnack({ openFeedbackPromptResults });
 
     const config = React.useMemo<GraphQLSubscriptionConfig<useLiveFeedbackPromptResultsSharedSubscription>>(
         () => ({
@@ -50,4 +54,5 @@ export function useLiveFeedbackPromptResultsShared() {
     );
 
     useSubscription<useLiveFeedbackPromptResultsSharedSubscription>(config);
+    return { feedbackPromptResultsRef: promptRef, closeFeedbackPromptResultsSnack: closeSnack };
 }
