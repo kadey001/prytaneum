@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
 import { Grid, Card, Typography, Stack, Paper, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -69,7 +68,7 @@ export function ViewerOnlyQuestionList({ fragmentRef, isVisible }: ViewerOnlyQue
 
     const cache = new CellMeasurerCache({
         defaultHeight: 185,
-        minHeight: 185,
+        minHeight: 148,
         fixedWidth: true,
     });
 
