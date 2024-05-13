@@ -80,7 +80,9 @@ export function EventIssueGuideViewer({ url, title }: EventIssueGuideViewerProps
                             </Toolbar>
                         </AppBar>
                         <Grid container justifyContent='center'>
-                            <PdfViewer url={url} />
+                            <Grid item>
+                                <PdfViewer url={url} />
+                            </Grid>
                         </Grid>
                     </Dialog>
                     <Button onClick={openDialog} variant='contained'>
