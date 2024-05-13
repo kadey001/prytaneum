@@ -162,7 +162,9 @@ export function EventPost({ node }: EventPostProps) {
                                     maxHeight: '100%',
                                     display: 'flex',
                                     flexGrow: 1,
+                                    padding: 0,
                                 }}
+                                scrollable={false}
                             >
                                 <QuestionList
                                     fragmentRef={node}

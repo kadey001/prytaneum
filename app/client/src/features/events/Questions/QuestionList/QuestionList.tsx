@@ -4,7 +4,7 @@ import { Grid, Card, Typography, IconButton, Paper, Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
-import { AutoSizer, List, CellMeasurer, CellMeasurerCache, InfiniteLoader } from 'react-virtualized';
+import { AutoSizer, List as VirtualizedList, CellMeasurer, CellMeasurerCache, InfiniteLoader } from 'react-virtualized';
 import type { IndexRange } from 'react-virtualized';
 import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 
@@ -132,73 +132,65 @@ export function QuestionList({
         );
     }
 
-    const getActionsBoxMargin = React.useMemo(() => {
-        if (isModerator) return '1.5rem';
-        if (isSearchOpen) return '2.5rem';
-        return '1rem';
-    }, [isModerator, isSearchOpen]);
-
     if (!isVisible) return <React.Fragment />;
 
     return (
-        <Stack direction='column' alignItems='stretch' width='100%'>
+        <Stack direction='column' alignItems='stretch' width='100%' padding={1} paddingRight={0}>
             {isVisible && (
                 <React.Fragment>
-                    <Grid item width='100%' minHeight={0} marginBottom={getActionsBoxMargin}>
-                        <Paper sx={{ padding: '1rem', marginX: '8px' }}>
-                            {!isModerator && !searchOnly && (
-                                <Grid
-                                    container
-                                    direction='row'
-                                    justifyContent='space-between'
-                                    marginBottom={isSearchOpen ? '.5rem' : '0rem'}
-                                >
-                                    <Grid item xs='auto'>
-                                        <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
-                                            <SearchIcon />
-                                        </IconButton>
-                                    </Grid>
-                                    <Grid item xs='auto'>
-                                        {askQuestionEnabled && <AskQuestion eventId={eventId} />}
-                                    </Grid>
-                                    <Grid item xs='auto'>
-                                        <div style={{ display: 'none' }} />
-                                    </Grid>
+                    <Paper sx={{ padding: '1rem', marginX: '8px', marginBottom: '0.5rem' }}>
+                        {!isModerator && !searchOnly && (
+                            <Grid
+                                container
+                                direction='row'
+                                justifyContent='space-between'
+                                marginBottom={isSearchOpen ? '.5rem' : '0rem'}
+                            >
+                                <Grid item xs='auto'>
+                                    <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
+                                        <SearchIcon />
+                                    </IconButton>
                                 </Grid>
-                            )}
-                            <ListFilter
-                                // filterMap={filterFuncs}
-                                onFilterChange={handleFilterChange}
-                                onSearch={handleSearch}
-                                length={filteredList.length}
-                                isSearchOpen={isModerator || isSearchOpen || searchOnly}
-                                // menuIcons={[
-                                //     <Tooltip title='Load New'>
-                                //         <span>
-                                //             <IconButton color='inherit' onClick={togglePause}>
-                                //                 <Badge badgeContent={isPaused ? 0 : 0} color='secondary'>
-                                //                     {isPaused ? <PlayArrow /> : <Pause />}
-                                //                 </Badge>
-                                //             </IconButton>
-                                //         </span>
-                                //     </Tooltip>,
-                                // ]}
-                            />
-                        </Paper>
-                        {filteredList.length === 0 && questions.length !== 0 && (
-                            <Typography align='center' variant='body2' marginTop='1rem'>
-                                No results to display
-                            </Typography>
+                                <Grid item xs='auto'>
+                                    {askQuestionEnabled && <AskQuestion eventId={eventId} />}
+                                </Grid>
+                                <Grid item xs='auto'>
+                                    <div style={{ display: 'none' }} />
+                                </Grid>
+                            </Grid>
                         )}
-                        {questions.length === 0 && (
-                            <Typography align='center' variant='h5' marginTop='1rem'>
-                                <Stack direction='row' justifyContent='center' alignItems='center'>
-                                    No Questions to display
-                                    <SentimentDissatisfiedIcon />
-                                </Stack>
-                            </Typography>
-                        )}
-                    </Grid>
+                        <ListFilter
+                            // filterMap={filterFuncs}
+                            onFilterChange={handleFilterChange}
+                            onSearch={handleSearch}
+                            length={filteredList.length}
+                            isSearchOpen={isModerator || isSearchOpen || searchOnly}
+                            // menuIcons={[
+                            //     <Tooltip title='Load New'>
+                            //         <span>
+                            //             <IconButton color='inherit' onClick={togglePause}>
+                            //                 <Badge badgeContent={isPaused ? 0 : 0} color='secondary'>
+                            //                     {isPaused ? <PlayArrow /> : <Pause />}
+                            //                 </Badge>
+                            //             </IconButton>
+                            //         </span>
+                            //     </Tooltip>,
+                            // ]}
+                        />
+                    </Paper>
+                    {filteredList.length === 0 && questions.length !== 0 && (
+                        <Typography align='center' variant='body2' marginTop='1rem'>
+                            No results to display
+                        </Typography>
+                    )}
+                    {questions.length === 0 && (
+                        <Typography align='center' variant='h5' marginTop='1rem'>
+                            <Stack direction='row' justifyContent='center' alignItems='center'>
+                                No Questions to display
+                                <SentimentDissatisfiedIcon />
+                            </Stack>
+                        </Typography>
+                    )}
                     <div style={{ width: '100%', height: '100%' }}>
                         <InfiniteLoader
                             isRowLoaded={isRowLoaded}
@@ -210,7 +202,7 @@ export function QuestionList({
                             {({ onRowsRendered, registerChild }) => (
                                 <AutoSizer>
                                     {({ width, height }) => (
-                                        <List
+                                        <VirtualizedList
                                             ref={registerChild}
                                             height={height}
                                             width={width}

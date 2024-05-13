@@ -6,36 +6,27 @@ import { alpha, useTheme } from '@mui/material/styles';
 export interface StyledColumnGridProps {
     children: React.ReactNode;
     props?: GridProps;
+    scrollable?: boolean;
 }
 
-export const StyledColumnGrid = ({ children, props }: StyledColumnGridProps) => {
+export const StyledColumnGrid = ({ children, props, scrollable = true }: StyledColumnGridProps) => {
     const theme = useTheme();
     return (
         <Grid
-            {...props}
             width={props?.width ? props.width : '100%'}
             container
             justifyContent='center'
+            padding={1}
             sx={{
                 border: 5,
-                padding: 1,
                 borderImage: `linear-gradient(${theme.palette.custom.creamCan},${alpha(
                     theme.palette.custom.creamCan,
                     0.06
                 )}) 10`,
                 backgroundColor: alpha(theme.palette.custom.creamCan, 0.06),
-                overflowY: 'scroll',
-                '::-webkit-scrollbar': {
-                    backgroundColor: 'transparent',
-                },
-                '::-webkit-scrollbar-thumb': {
-                    backgroundColor: '#D9D9D9',
-                    backgroundOpacity: '0.3',
-                    borderRadius: '20px',
-                    border: '5px solid transparent',
-                    backgroundClip: 'content-box',
-                },
+                overflowY: scrollable ? 'scroll' : 'hidden',
             }}
+            {...props}
         >
             {children}
         </Grid>

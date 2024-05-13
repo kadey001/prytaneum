@@ -191,12 +191,14 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
                         minHeight: '500px',
                         display: 'flex',
                         flexGrow: 1,
+                        padding: 0,
                     }}
+                    scrollable={false}
                 >
                     {isViewerModerator === true && (
                         <QuestionQueue fragmentRef={data} isVisible={bottomTab === 'Queue'} />
                     )}
-                    <QuestionList fragmentRef={data} isVisible={bottomTab === 'Questions'} />
+                    <QuestionList fragmentRef={data} isVisible={bottomTab === 'Questions'} searchOnly={false} />
                     <LiveFeedbackList fragmentRef={data} isVisible={bottomTab === 'Feedback'} />
                     {isViewerModerator === true && (
                         <BroadcastMessageList fragmentRef={data} isVisible={bottomTab === 'Broadcast'} />

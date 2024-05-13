@@ -110,16 +110,6 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                                     height: '200px',
                                     maxHeight: '200px',
                                     overflowY: 'auto',
-                                    '::-webkit-scrollbar': {
-                                        backgroundColor: 'transparent',
-                                    },
-                                    '::-webkit-scrollbar-thumb': {
-                                        backgroundColor: '#D9D9D9',
-                                        backgroundOpacity: '0.3',
-                                        borderRadius: '20px',
-                                        border: '5px solid transparent',
-                                        backgroundClip: 'content-box',
-                                    },
                                 }}
                             >
                                 <Grid container height='100%' justifyContent='center' alignItems='center'>
@@ -198,7 +188,9 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                                     maxHeight: '100%',
                                     display: 'flex',
                                     flexGrow: 1,
+                                    padding: 0,
                                 }}
+                                scrollable={false}
                             >
                                 <ViewerOnlyQuestionList fragmentRef={fragmentRef} isVisible={tab === 'Questions'} />
                                 <LiveFeedbackList fragmentRef={fragmentRef} isVisible={tab === 'Feedback'} />

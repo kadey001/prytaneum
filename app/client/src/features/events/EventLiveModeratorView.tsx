@@ -100,16 +100,6 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
                                 sx={{
                                     overflow: 'auto',
                                     height: '100%',
-                                    '::-webkit-scrollbar': {
-                                        backgroundColor: 'transparent',
-                                    },
-                                    '::-webkit-scrollbar-thumb': {
-                                        backgroundColor: '#D9D9D9',
-                                        backgroundOpacity: '0.3',
-                                        borderRadius: '20px',
-                                        border: '5px solid transparent',
-                                        backgroundClip: 'content-box',
-                                    },
                                 }}
                             >
                                 <EventVideo fragmentRef={node} />
@@ -202,7 +192,9 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
                                 display: 'flex',
                                 flexGrow: 1,
                                 width: '98%',
+                                padding: 0,
                             }}
+                            scrollable={false}
                         >
                             <QuestionList fragmentRef={node} isVisible={true} />
                         </StyledColumnGrid>

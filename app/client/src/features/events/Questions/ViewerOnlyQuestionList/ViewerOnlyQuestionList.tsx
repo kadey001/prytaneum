@@ -128,62 +128,60 @@ export function ViewerOnlyQuestionList({ fragmentRef, isVisible }: ViewerOnlyQue
     if (!isVisible) return <React.Fragment />;
 
     return (
-        <Stack direction='column' alignItems='stretch' width='100%'>
-            <Grid item width='100%' minHeight={0} marginBottom={isSearchOpen ? '2.5rem' : '1rem'}>
-                <Paper sx={{ padding: '1rem', marginX: '8px' }}>
-                    <Grid
-                        container
-                        direction='row'
-                        justifyContent='space-between'
-                        marginBottom={isSearchOpen ? '.5rem' : '0rem'}
-                    >
-                        <Grid item xs='auto'>
-                            {user && (
-                                <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
-                                    <SearchIcon />
-                                </IconButton>
-                            )}
-                        </Grid>
-                        <Grid item xs='auto'>
-                            <AskQuestion eventId={eventId} />
-                        </Grid>
-                        <Grid item xs='auto'>
-                            <div style={{ display: 'none' }} />
-                        </Grid>
+        <Stack direction='column' alignItems='stretch' width='100%' padding={1} paddingRight={0}>
+            <Paper sx={{ padding: '1rem', marginX: '8px', marginBottom: '0.5rem' }}>
+                <Grid
+                    container
+                    direction='row'
+                    justifyContent='space-between'
+                    marginBottom={isSearchOpen ? '.5rem' : '0rem'}
+                >
+                    <Grid item xs='auto'>
+                        {user && (
+                            <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
+                                <SearchIcon />
+                            </IconButton>
+                        )}
                     </Grid>
-                    <ListFilter
-                        // filterMap={filterFuncs}
-                        onFilterChange={handleFilterChange}
-                        onSearch={handleSearch}
-                        length={filteredList.length}
-                        isSearchOpen={isModerator || isSearchOpen}
-                        // menuIcons={[
-                        //     <Tooltip title='Load New'>
-                        //         <span>
-                        //             <IconButton color='inherit' onClick={togglePause}>
-                        //                 <Badge badgeContent={isPaused ? 0 : 0} color='secondary'>
-                        //                     {isPaused ? <PlayArrow /> : <Pause />}
-                        //                 </Badge>
-                        //             </IconButton>
-                        //         </span>
-                        //     </Tooltip>,
-                        // ]}
-                    />
-                </Paper>
-                {filteredList.length === 0 && questions.length !== 0 && (
-                    <Typography align='center' variant='body2' marginTop='1rem'>
-                        No results to display
-                    </Typography>
-                )}
-                {questions.length === 0 && (
-                    <Typography align='center' variant='h5' marginTop='1rem'>
-                        <Stack direction='row' justifyContent='center' alignItems='center'>
-                            No Questions to display
-                            <SentimentDissatisfiedIcon />
-                        </Stack>
-                    </Typography>
-                )}
-            </Grid>
+                    <Grid item xs='auto'>
+                        <AskQuestion eventId={eventId} />
+                    </Grid>
+                    <Grid item xs='auto'>
+                        <div style={{ display: 'none' }} />
+                    </Grid>
+                </Grid>
+                <ListFilter
+                    // filterMap={filterFuncs}
+                    onFilterChange={handleFilterChange}
+                    onSearch={handleSearch}
+                    length={filteredList.length}
+                    isSearchOpen={isModerator || isSearchOpen}
+                    // menuIcons={[
+                    //     <Tooltip title='Load New'>
+                    //         <span>
+                    //             <IconButton color='inherit' onClick={togglePause}>
+                    //                 <Badge badgeContent={isPaused ? 0 : 0} color='secondary'>
+                    //                     {isPaused ? <PlayArrow /> : <Pause />}
+                    //                 </Badge>
+                    //             </IconButton>
+                    //         </span>
+                    //     </Tooltip>,
+                    // ]}
+                />
+            </Paper>
+            {filteredList.length === 0 && questions.length !== 0 && (
+                <Typography align='center' variant='body2' marginTop='1rem'>
+                    No results to display
+                </Typography>
+            )}
+            {questions.length === 0 && (
+                <Typography align='center' variant='h5' marginTop='1rem'>
+                    <Stack direction='row' justifyContent='center' alignItems='center'>
+                        No Questions to display
+                        <SentimentDissatisfiedIcon />
+                    </Stack>
+                </Typography>
+            )}
             <div style={{ width: '100%', height: '100%' }}>
                 <InfiniteLoader
                     isRowLoaded={isRowLoaded}
