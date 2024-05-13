@@ -47,10 +47,10 @@ interface FastifyMulterRequest extends FastifyRequest {
 
 server.route({
     method: 'POST',
-    url: '/graphql/set-reading-materials-url',
+    url: '/graphql/set-issue-guide-url',
     handler: async (req: FastifyRequest, reply: FastifyReply) => {
         const prisma = getPrismaClient(server.log);
-        const { body } = req;
+        const body = JSON.parse(req.body as string);
 
         try {
             let viewerId = await extractAuthenticationJwt(req).catch(() => reply.clearCookie('jwt').send());

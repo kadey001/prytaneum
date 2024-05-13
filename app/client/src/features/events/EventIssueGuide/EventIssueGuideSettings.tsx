@@ -19,7 +19,12 @@ import InfoIcon from '@mui/icons-material/Info';
 import { useSnack } from '@local/core';
 import { EventIssueGuideViewer } from './EventIssueGuideViewer';
 import { EventIssueGuideSettingsFragment$key } from '@local/__generated__/EventIssueGuideSettingsFragment.graphql';
-import { ResponsiveDialog } from '@local/components';
+import { Form, ResponsiveDialog } from '@local/components';
+import { isURL } from '@local/utils';
+import { EVENT_ISSUE_GUIDE_URL_MAX_LENGTH } from '@local/utils/rules';
+import { FormTitle } from '@local/components/FormTitle';
+import { FormContent } from '@local/components/FormContent';
+import { FormActions } from '@local/components/FormActions';
 
 interface ReadingMaterialsEventSettingsProps {
     fragmentRef: EventIssueGuideSettingsFragment$key;
@@ -50,37 +55,38 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
         setIsUrlDialogOpen(false);
     }, []);
 
-    const setEventIssueGuideUrl = () => {
+    const updateEventIssueGuideUrl = () => {
         setIsUpdatingUrl(true);
+        console.log('Setting URL');
         const formData = new FormData();
         formData.append('eventId', eventId);
         formData.append('url', newUrl);
         fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL + '/set-issue-guide-url', {
             method: 'POST',
-            body: formData,
+            body: JSON.stringify({ eventId, url: newUrl }),
         })
             .then((res) => {
                 setIsUpdatingUrl(false);
                 if (res.status === 200) {
                     res.json().then((data: unknown) => {
                         if (!data) {
-                            displaySnack('Something went wrong, please try again later.', { variant: 'error' });
-                            return;
+                            throw new Error('No data from response.');
                         }
                         const { isError, message } = data as { isError: boolean; message: string };
                         if (isError) displaySnack(message, { variant: 'error' });
                         else {
-                            displaySnack('Issue Guide Uploaded.', { variant: 'success' });
+                            displaySnack('Issue Guide Url Set.', { variant: 'success' });
                             // TODO: Update to refetch fragment instead of reloading page
                             router.reload();
                         }
                     });
                 } else {
-                    displaySnack('Issue Guide url failed to update.', { variant: 'error' });
+                    displaySnack('Issue Guide Url failed to update.', { variant: 'error' });
                 }
             })
             .catch((err) => {
                 console.error(err);
+                displaySnack('Something went wrong, please try again later.', { variant: 'error' });
                 setIsUpdatingUrl(false);
             });
     };
@@ -140,6 +146,13 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
             });
     };
 
+    const newUrlError = React.useMemo(() => {
+        if (newUrl.length === 0) return 'URL is required!';
+        if (newUrl.length > EVENT_ISSUE_GUIDE_URL_MAX_LENGTH) return 'URL is too long!';
+        if (!isURL(newUrl)) return 'Invalid URL!';
+        return '';
+    }, [newUrl]);
+
     const PDF_TOOLTIP_TEXT = 'File Must be a PDF. | NOTE: New uploads will replace any existing ones.';
     const URL_TOOLTIP_TEXT =
         'Instead of a PDF, you can add a URL to a site page with Issue Guide. NOTE: This will override any uploaded PDF.';
@@ -170,42 +183,44 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
             </Grid>
             <ResponsiveDialog open={isUrlDialogOpen} onClose={closeDialog}>
                 <DialogContent>
-                    <Grid container direction='column' alignItems='center'>
-                        <Typography marginBottom='1rem' variant='h5'>
-                            Set Issue Guide URL
-                        </Typography>
-                        <FormControl required fullWidth variant='outlined'>
-                            <InputLabel>Url</InputLabel>
-                            <OutlinedInput
-                                id='issue-guide-url-input'
-                                label='Issue Guide URL'
-                                name='title'
-                                // error={Boolean(errors.title)}
-                                value={newUrl}
-                                onChange={(e) => setNewUrl(e.target.value)}
-                                endAdornment={
-                                    <InputAdornment position='end'>
-                                        <Typography
-                                            variant='caption'
-                                            color={newUrl.length > 500 ? 'red' : 'black'}
-                                            sx={{
-                                                display: 'block',
-                                                textAlign: 'right',
-                                            }}
-                                        >
-                                            {newUrl.length}/{500}
-                                        </Typography>
-                                    </InputAdornment>
-                                }
-                                aria-describedby='issue-guide-url-input'
-                                aria-label='Issue Guide URL'
-                            />
-                            <FormHelperText style={{ color: 'red' }}></FormHelperText>
-                        </FormControl>
-                        <Button disabled={isUpdatingUrl} onSubmit={setEventIssueGuideUrl} variant='outlined'>
-                            Set
-                        </Button>
-                    </Grid>
+                    <Form onSubmit={updateEventIssueGuideUrl}>
+                        <FormTitle title='Set Issue Guide URL' />
+                        <FormContent>
+                            <FormControl required fullWidth variant='outlined'>
+                                <InputLabel>Url</InputLabel>
+                                <OutlinedInput
+                                    id='issue-guide-url-input'
+                                    label='Issue Guide URL'
+                                    name='title'
+                                    error={Boolean(newUrlError)}
+                                    value={newUrl}
+                                    onChange={(e) => setNewUrl(e.target.value)}
+                                    endAdornment={
+                                        <InputAdornment position='end'>
+                                            <Typography
+                                                variant='caption'
+                                                color={newUrl.length > 500 ? 'red' : 'black'}
+                                                sx={{
+                                                    display: 'block',
+                                                    textAlign: 'right',
+                                                }}
+                                            >
+                                                {newUrl.length}/{500}
+                                            </Typography>
+                                        </InputAdornment>
+                                    }
+                                    aria-describedby='issue-guide-url-input'
+                                    aria-label='Issue Guide URL'
+                                />
+                                <FormHelperText style={{ color: 'red' }}>{newUrlError}</FormHelperText>
+                            </FormControl>
+                        </FormContent>
+                        <FormActions disableGrow gridProps={{ justifyContent: 'flex-end' }}>
+                            <Button disabled={isUpdatingUrl || newUrlError !== ''} type='submit' variant='outlined'>
+                                Set URL
+                            </Button>
+                        </FormActions>
+                    </Form>
                 </DialogContent>
             </ResponsiveDialog>
         </Grid>
