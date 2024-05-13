@@ -57,10 +57,6 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
 
     const updateEventIssueGuideUrl = () => {
         setIsUpdatingUrl(true);
-        console.log('Setting URL');
-        const formData = new FormData();
-        formData.append('eventId', eventId);
-        formData.append('url', newUrl);
         fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL + '/set-issue-guide-url', {
             method: 'POST',
             body: JSON.stringify({ eventId, url: newUrl }),
