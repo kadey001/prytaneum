@@ -44,16 +44,17 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
     const [pdfFile, setPDFFile] = React.useState<File | null>(null);
     const [isUploading, setIsUploading] = React.useState(false);
     const [isUrlDialogOpen, setIsUrlDialogOpen] = React.useState(false);
+    const [isDeleteGuideDialogOpen, setIsDeleteGuideDialogOpen] = React.useState(false);
     const [newUrl, setNewUrl] = React.useState<string>('');
     const [isUpdatingUrl, setIsUpdatingUrl] = React.useState(false);
+    const [isDeletingGuide, setIsDeletingGuide] = React.useState(false);
     const { displaySnack } = useSnack();
 
-    const openDialog = React.useCallback(() => {
-        setIsUrlDialogOpen(true);
-    }, []);
-    const closeDialog = React.useCallback(() => {
-        setIsUrlDialogOpen(false);
-    }, []);
+    const openUrlDialog = () => setIsUrlDialogOpen(true);
+    const closeUrlDialog = () => setIsUrlDialogOpen(false);
+
+    const openDeleteGuideDialog = () => setIsDeleteGuideDialogOpen(true);
+    const closeDeleteGuideDialog = () => setIsDeleteGuideDialogOpen(false);
 
     const updateEventIssueGuideUrl = () => {
         setIsUpdatingUrl(true);
@@ -78,6 +79,38 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
                     });
                 } else {
                     displaySnack('Issue Guide Url failed to update.', { variant: 'error' });
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                displaySnack('Something went wrong, please try again later.', { variant: 'error' });
+                setIsUpdatingUrl(false);
+            });
+    };
+
+    const deleteEventIssueGuide = () => {
+        setIsDeletingGuide(true);
+        fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL + '/set-issue-guide-url', {
+            method: 'POST',
+            body: JSON.stringify({ eventId, url: '' }),
+        })
+            .then((res) => {
+                setIsUpdatingUrl(false);
+                if (res.status === 200) {
+                    res.json().then((data: unknown) => {
+                        if (!data) {
+                            throw new Error('No data from response.');
+                        }
+                        const { isError, message } = data as { isError: boolean; message: string };
+                        if (isError) displaySnack(message, { variant: 'error' });
+                        else {
+                            displaySnack('Issue Guide Deleted.', { variant: 'success' });
+                            // TODO: Update to refetch fragment instead of reloading page
+                            router.reload();
+                        }
+                    });
+                } else {
+                    displaySnack('Issue Guide Url failed to delete.', { variant: 'error' });
                 }
             })
             .catch((err) => {
@@ -162,7 +195,7 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
                         <InfoIcon />
                     </IconButton>
                 </Tooltip>
-                <Button onClick={openDialog} variant='outlined'>
+                <Button onClick={openUrlDialog} variant='outlined'>
                     Set Issue Guide URL
                 </Button>
             </Grid>
@@ -177,7 +210,17 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
                     Upload Issue Guide
                 </Button>
             </Grid>
-            <ResponsiveDialog open={isUrlDialogOpen} onClose={closeDialog}>
+            <Grid container direction='row' alignItems='center' justifyContent='right'>
+                <Button
+                    disabled={issueGuideUrl === ''}
+                    onClick={openDeleteGuideDialog}
+                    variant='contained'
+                    color='error'
+                >
+                    Delete Issue Guide
+                </Button>
+            </Grid>
+            <ResponsiveDialog open={isUrlDialogOpen} onClose={closeUrlDialog}>
                 <DialogContent>
                     <Form onSubmit={updateEventIssueGuideUrl}>
                         <FormTitle title='Set Issue Guide URL' />
@@ -214,6 +257,26 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
                         <FormActions disableGrow gridProps={{ justifyContent: 'flex-end' }}>
                             <Button disabled={isUpdatingUrl || newUrlError !== ''} type='submit' variant='outlined'>
                                 Set URL
+                            </Button>
+                        </FormActions>
+                    </Form>
+                </DialogContent>
+            </ResponsiveDialog>
+            <ResponsiveDialog open={isDeleteGuideDialogOpen} onClose={closeDeleteGuideDialog}>
+                <DialogContent>
+                    <Form onSubmit={deleteEventIssueGuide}>
+                        <FormTitle title='Delete Issue Guide Confirmation' />
+                        <FormContent>
+                            <Typography variant='body1' align='center'>
+                                Are you sure you want to delete the issue guide?
+                            </Typography>
+                        </FormContent>
+                        <FormActions disableGrow gridProps={{ justifyContent: 'flex-end' }}>
+                            <Button onClick={closeUrlDialog} variant='outlined'>
+                                Cancel
+                            </Button>
+                            <Button disabled={isDeletingGuide} type='submit' variant='contained' color='error'>
+                                Delete
                             </Button>
                         </FormActions>
                     </Form>

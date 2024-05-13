@@ -62,7 +62,7 @@ server.route({
 
             const { eventId, url } = body as { eventId?: string; url?: string };
             if (!eventId) throw new Error('Event ID not provided.');
-            if (!url) throw new Error('Issue guide URL not provided.');
+            if (url === undefined) throw new Error('Issue guide URL not provided.');
             const { id: eventGlobalId } = fromGlobalId(eventId);
 
             await prisma.event.update({
