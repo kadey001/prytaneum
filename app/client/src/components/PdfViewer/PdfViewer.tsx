@@ -31,11 +31,11 @@ export function PdfViewer({ url }: Props) {
         <React.Fragment>
             <Grid container justifyContent='center'>
                 <nav>
-                    <IconButton disabled={!canGoBack} onClick={goToPrevPage}>
-                        <ArrowBackIcon />
+                    <IconButton disabled={!canGoBack} onClick={goToPrevPage} size='large'>
+                        <ArrowBackIcon fontSize='large' />
                     </IconButton>
-                    <IconButton disabled={!canGoForward} onClick={goToNextPage}>
-                        <ArrowForwardIcon />
+                    <IconButton disabled={!canGoForward} onClick={goToNextPage} size='large'>
+                        <ArrowForwardIcon fontSize='large' />
                     </IconButton>
                     <Typography variant='body2' align='center'>
                         Page {pageNumber} of {numPages}
@@ -49,7 +49,7 @@ export function PdfViewer({ url }: Props) {
                 onLoadSuccess={onDocumentLoadSuccess}
                 onLoadError={console.error}
             >
-                <Page pageNumber={1} width={width} />
+                <Page pageNumber={pageNumber} width={width} />
             </Document>
         </React.Fragment>
     );
