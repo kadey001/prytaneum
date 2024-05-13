@@ -18,11 +18,13 @@ import { ModeratorEventSettings } from '../Moderation';
 import { EventContext } from '../EventContext';
 import { InviteEventSettings } from '../Invites/InviteEventSettings';
 import { DeleteEvent } from '../DeleteEvent';
+import { EventIssueGuideSettings } from '../EventIssueGuide';
 
-export const townhallSettingsSections = [
+export const eventSettingsSections = [
     'Form',
     'Video',
     'Speakers',
+    'Issue Guide',
     'components',
     'Moderators',
     'Invite',
@@ -42,6 +44,7 @@ export const EVENT_SETTINGS_QUERY = graphql`
                 ...GenericSettingsFragment
                 ...ModeratorEventSettingsFragment
                 ...useInvitedUsersListFragment @arguments(eventId: $eventId)
+                ...EventIssueGuideSettingsFragment
             }
         }
     }
@@ -115,6 +118,11 @@ export function EventSettings({ queryRef }: Props) {
                                 title: 'Speaker',
                                 description: 'Add and Modify speakers at this event',
                                 component: <SpeakerEventSettings fragmentRef={data.node} />,
+                            },
+                            {
+                                title: 'Issue Guide',
+                                description: 'Add and Modify the event issue guide',
+                                component: <EventIssueGuideSettings fragmentRef={data.node} />,
                             },
                             {
                                 title: 'Moderators',

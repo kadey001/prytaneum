@@ -130,3 +130,4 @@ allure-results/
 state/
 screenshots/
 *.csv
+*credentials.json

@@ -1,9 +1,9 @@
 import React from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { graphql, PreloadedQuery, usePreloadedQuery, useQueryLoader } from 'react-relay';
 import { Button, Divider, Grid, Paper, Tab, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import ArticleIcon from '@mui/icons-material/Article';
 import PersonIcon from '@mui/icons-material/Person';
 
 import { CountdownWrapper } from '@local/components/Countdown';
@@ -20,6 +20,7 @@ import { PreloadedLiveMessages } from './BroadcastMessages/LiveMessages';
 import { ViewerOnlyQuestionList } from './Questions/ViewerOnlyQuestionList/ViewerOnlyQuestionList';
 import { StyledTabs } from '@local/components/StyledTabs';
 import { StyledColumnGrid } from '@local/components/StyledColumnGrid';
+import { EventIssueGuideViewer } from './EventIssueGuide/EventIssueGuideViewer';
 
 const EVENT_PRE_QUERY = graphql`
     query EventPreQuery($eventId: ID!) {
@@ -130,16 +131,15 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                             <Typography variant='h4'>Resources</Typography>
                             <Grid container justifyContent='space-around' width='100%' marginTop='1rem'>
                                 <Grid item>
-                                    <Button variant='contained'>
-                                        <ArticleIcon sx={{ marginRight: '0.5rem' }} />
-                                        Event Issue Guide
-                                    </Button>
+                                    <EventIssueGuideViewer url={eventData.issueGuideUrl} title={eventData.title} />
                                 </Grid>
                                 <Grid item>
-                                    <Button variant='contained'>
-                                        <PersonIcon sx={{ marginRight: '0.5rem' }} />
-                                        Participant Guide
-                                    </Button>
+                                    <Link href='/guides/participant'>
+                                        <Button variant='contained'>
+                                            <PersonIcon sx={{ marginRight: '0.5rem' }} />
+                                            Participant Guide
+                                        </Button>
+                                    </Link>
                                 </Grid>
                             </Grid>
                         </Grid>
