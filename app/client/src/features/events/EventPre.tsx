@@ -12,8 +12,6 @@ import { EventContext } from './EventContext';
 import { ConditionalRender } from '../../components/ConditionalRender';
 import { Loader } from '@local/components';
 import { LiveFeedbackList } from './LiveFeedback';
-import AskQuestion from './Questions/AskQuestion';
-import { SubmitLiveFeedback } from './LiveFeedback/SubmitLiveFeedback';
 import { FragmentRefs } from 'relay-runtime';
 import { EventDetailsCard } from './EventDetailsCard';
 import { SpeakerList } from './Speakers';
@@ -112,16 +110,6 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                                     height: '200px',
                                     maxHeight: '200px',
                                     overflowY: 'auto',
-                                    '::-webkit-scrollbar': {
-                                        backgroundColor: 'transparent',
-                                    },
-                                    '::-webkit-scrollbar-thumb': {
-                                        backgroundColor: '#D9D9D9',
-                                        backgroundOpacity: '0.3',
-                                        borderRadius: '20px',
-                                        border: '5px solid transparent',
-                                        backgroundClip: 'content-box',
-                                    },
                                 }}
                             >
                                 <Grid container height='100%' justifyContent='center' alignItems='center'>
@@ -200,26 +188,12 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                                     maxHeight: '100%',
                                     display: 'flex',
                                     flexGrow: 1,
+                                    padding: 0,
                                 }}
+                                scrollable={false}
                             >
-                                <ViewerOnlyQuestionList
-                                    fragmentRef={fragmentRef}
-                                    ActionButtons={
-                                        <Grid container width='100%' paddingBottom='1rem' justifyContent='center'>
-                                            <AskQuestion eventId={eventId} />
-                                        </Grid>
-                                    }
-                                    isVisible={tab === 'Questions'}
-                                />
-                                <LiveFeedbackList
-                                    fragmentRef={fragmentRef}
-                                    ActionButtons={
-                                        <Grid container paddingBottom='1rem' justifyContent='center'>
-                                            <SubmitLiveFeedback eventId={eventId} />
-                                        </Grid>
-                                    }
-                                    isVisible={tab === 'Feedback'}
-                                />
+                                <ViewerOnlyQuestionList fragmentRef={fragmentRef} isVisible={tab === 'Questions'} />
+                                <LiveFeedbackList fragmentRef={fragmentRef} isVisible={tab === 'Feedback'} />
                             </StyledColumnGrid>
                         </Grid>
                     </Grid>

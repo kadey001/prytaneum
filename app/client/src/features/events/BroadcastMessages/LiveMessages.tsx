@@ -60,24 +60,7 @@ function MessageList({ broadcastMessages: immutableBroadcastMessages }: MessageL
 
     return (
         <Paper>
-            <Grid
-                item
-                container
-                height='180px'
-                sx={{
-                    overflowY: 'scroll',
-                    '::-webkit-scrollbar': {
-                        backgroundColor: 'transparent',
-                    },
-                    '::-webkit-scrollbar-thumb': {
-                        backgroundColor: '#D9D9D9',
-                        backgroundOpacity: '0.3',
-                        borderRadius: '20px',
-                        border: '5px solid transparent',
-                        backgroundClip: 'content-box',
-                    },
-                }}
-            >
+            <Grid item container height='180px' sx={{ overflowY: 'scroll' }}>
                 <Grid alignContent='center' justifyContent='center' container>
                     <Grid item width='90%'>
                         <List disablePadding>

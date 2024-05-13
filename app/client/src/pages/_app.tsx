@@ -13,11 +13,34 @@ import { Layout } from '@local/layout';
 import '@local/index.css';
 import { useRouter } from 'next/router';
 import * as ga from '@local/utils/ga/index';
+import { GlobalStyles } from '@mui/material';
 
 declare module '@mui/material/styles' {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface DefaultTheme extends Theme {}
 }
+
+// Consistant scrollbar styling
+const inputGlobalStyles = (
+    <GlobalStyles
+        styles={{
+            '*::-webkit-scrollbar-track': {
+                background: '#f1f1f1',
+            },
+            '*::-webkit-scrollbar-thumb': {
+                backgroundColor: '#888',
+                borderRadius: '20px',
+            },
+            '*::-webkit-scrollbar-thumb:hover': {
+                background: '#555',
+            },
+            '*::-webkit-scrollbar': {
+                width: '0.4em',
+                backgroundColor: 'transparent',
+            },
+        }}
+    />
+);
 
 export default function App({ Component, pageProps }: AppProps & { pageProps: any }) {
     const router = useRouter();
@@ -57,6 +80,7 @@ export default function App({ Component, pageProps }: AppProps & { pageProps: an
                 <StyledEngineProvider injectFirst>
                     <ThemeProvider>
                         <CssBaseline />
+                        {inputGlobalStyles}
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <SnackContext maxSnack={3}>
                                 <UserProvider userInfo={pageProps.userInfo}>{children}</UserProvider>

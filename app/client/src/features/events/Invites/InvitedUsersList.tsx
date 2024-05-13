@@ -55,24 +55,7 @@ export function InvitedUsersList({ isVisible, fragmentRef }: InvitedUsersListPro
     return (
         <React.Fragment>
             <Typography variant='h6'>Invited Users List</Typography>
-            <Grid
-                container
-                display='grid'
-                maxHeight={'300px'}
-                sx={{
-                    overflowY: 'scroll',
-                    '::-webkit-scrollbar': {
-                        backgroundColor: 'transparent',
-                    },
-                    '::-webkit-scrollbar-thumb': {
-                        backgroundColor: '#D9D9D9',
-                        backgroundOpacity: '0.3',
-                        borderRadius: '20px',
-                        border: '5px solid transparent',
-                        backgroundClip: 'content-box',
-                    },
-                }}
-            >
+            <Grid container display='grid' maxHeight={'300px'} sx={{ overflowY: 'scroll' }}>
                 <Grid item paddingTop='1rem'>
                     {invitedUsers.length === 0 && (
                         <Grid item container alignItems='center' justifyContent='center'>
@@ -85,6 +68,7 @@ export function InvitedUsersList({ isVisible, fragmentRef }: InvitedUsersListPro
                                 style={{ width: '80%' }}
                                 onFilterChange={handleFilterChange}
                                 onSearch={handleSearch}
+                                isSearchOpen={true}
                                 length={filteredList.length}
                             />
                         </Grid>
