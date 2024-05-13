@@ -24,7 +24,7 @@ export const eventSettingsSections = [
     'Form',
     'Video',
     'Speakers',
-    'Reading Materials',
+    'Issue Guide',
     'components',
     'Moderators',
     'Invite',
@@ -120,8 +120,8 @@ export function EventSettings({ queryRef }: Props) {
                                 component: <SpeakerEventSettings fragmentRef={data.node} />,
                             },
                             {
-                                title: 'Reading Materials',
-                                description: 'Upload and manage reading materials',
+                                title: 'Issue Guide',
+                                description: 'Add and Modify the event issue guide',
                                 component: <EventIssueGuideSettings fragmentRef={data.node} />,
                             },
                             {
