@@ -161,6 +161,16 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
         <Grid container>
             <EventIssueGuideViewer url={issueGuideUrl} title={title} />
             <Grid container direction='row' alignItems='center' justifyContent='right'>
+                <Tooltip title={URL_TOOLTIP_TEXT} enterTouchDelay={0}>
+                    <IconButton>
+                        <InfoIcon />
+                    </IconButton>
+                </Tooltip>
+                <Button onClick={openDialog} variant='outlined'>
+                    Set Issue Guide URL
+                </Button>
+            </Grid>
+            <Grid container direction='row' alignItems='center' justifyContent='right'>
                 <Tooltip title={PDF_TOOLTIP_TEXT} enterTouchDelay={0}>
                     <IconButton>
                         <InfoIcon />
@@ -169,16 +179,6 @@ export function EventIssueGuideSettings({ fragmentRef }: ReadingMaterialsEventSe
                 <input id='issue-guide' type='file' accept='.pdf' onChange={attachPDF} />
                 <Button disabled={pdfFile === null || isUploading} onClick={uploadEventIssueGuide} variant='outlined'>
                     Upload Issue Guide
-                </Button>
-            </Grid>
-            <Grid container direction='row' alignItems='center' justifyContent='right'>
-                <Tooltip title={URL_TOOLTIP_TEXT} enterTouchDelay={0}>
-                    <IconButton>
-                        <InfoIcon />
-                    </IconButton>
-                </Tooltip>
-                <Button onClick={openDialog} variant='outlined'>
-                    Set Issue Guide URL
                 </Button>
             </Grid>
             <ResponsiveDialog open={isUrlDialogOpen} onClose={closeDialog}>
