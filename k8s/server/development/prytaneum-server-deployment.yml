@@ -110,4 +110,4 @@ spec:
             volumes:
                 - name: 'service-account'
                   secret:
-                      secretName: 'pubsub-sa-key'
+                      secretName: 'gcp-storage-credentials'
