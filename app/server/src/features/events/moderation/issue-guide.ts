@@ -104,7 +104,7 @@ server.route({
                 throw new Error('The uploaded file could not be read.');
             }
 
-            const bucketName = process.env.GCLOUD_READING_MATERIALS_STORAGE_BUCKET;
+            const bucketName = process.env.GCLOUD_ISSUE_GUIDES_STORAGE_BUCKET;
             const { filename, path: filePath } = file;
 
             const generatedFileName = `${uuid()}-${filename}`;

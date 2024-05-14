@@ -63,6 +63,11 @@ spec:
                             configMapKeyRef:
                                 key: GCP_PROJECT_ID
                                 name: prytaneum-server-config
+                      - name: GCLOUD_ISSUE_GUIDES_STORAGE_BUCKET
+                        valueFrom:
+                            configMapKeyRef:
+                                key: GCLOUD_ISSUE_GUIDES_STORAGE_BUCKET
+                                name: prytaneum-server-config
                       - name: PUB_SUB_PREFIX
                         valueFrom:
                             configMapKeyRef:
