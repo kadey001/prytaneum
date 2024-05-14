@@ -92,7 +92,13 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                             <Typography variant='h4'>Upcoming Event</Typography>
                             <Grid item paddingTop='1rem'>
                                 <Typography variant='h5'>
-                                    This event will start at{' '}
+                                    This event will start on{' '}
+                                    {new Date(date).toLocaleDateString('en-US', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
+                                    })}{' '}
+                                    at{' '}
                                     {new Date(date).toLocaleTimeString('en-US', {
                                         timeZoneName: 'short',
                                         hour: '2-digit',
