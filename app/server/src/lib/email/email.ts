@@ -1,6 +1,6 @@
 import mg from './client';
 
-export type EmailTemplates = 'prytaneum-invite' | 'password-reset' | 'prytaneum-invites';
+export type EmailTemplates = 'prytaneum-invite' | 'password-reset' | 'prytaneum-invites' | 'register-attempt';
 
 export interface EmailConfig {
     to: string | Array<string>;
@@ -21,6 +21,7 @@ export interface EmailConfig {
  * @returns {Promise<string>}
  */
 export async function sendEmail(config: EmailConfig) {
+    // TODO: Generate unsubscribe url and attach to all emails
     if (!process.env.MAILGUN_DOMAIN) throw new Error('MAILGUN_DOMAIN not configured');
 
     if (process.env.NODE_ENV === 'test') {
