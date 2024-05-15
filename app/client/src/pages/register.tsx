@@ -50,7 +50,7 @@ export default function RegisterPage() {
                     }}
                 >
                     <RegisterForm
-                        onSuccess={() => router.push('/dashboard')}
+                        onSuccess={() => router.reload()}
                         secondaryActions={
                             <Link
                                 href='/login'

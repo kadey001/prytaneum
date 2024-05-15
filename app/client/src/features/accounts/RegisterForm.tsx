@@ -4,23 +4,43 @@ import { Button, IconButton, InputAdornment, Grid, Typography, TextField } from 
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { graphql, useMutation } from 'react-relay';
+import * as Yup from 'yup';
 
 import type { RegisterFormMutation } from '@local/__generated__/RegisterFormMutation.graphql';
 import { Form } from '@local/components/Form';
 import { FormContent } from '@local/components/FormContent';
 import { LoadingButton } from '@local/components/LoadingButton';
 import { useUser } from '@local/features/accounts';
-import { useSnack, useForm } from '@local/core';
+import { useSnack } from '@local/core';
+import { useFormik } from 'formik';
 
-const initialState = {
-    email: '',
-    password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
+export type TRegisterForm = {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    firstName: string;
+    lastName: string;
 };
 
-export type TRegisterForm = typeof initialState;
+type TRegisterSchema = {
+    [key in keyof TRegisterForm]: Yup.AnySchema;
+};
+
+const registerValidationSchema = Yup.object().shape<TRegisterSchema>({
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    password: Yup.string()
+        .required('Password is required')
+        .min(8, 'Password too short')
+        .matches(/^(?=.*[a-z])/, 'Must contain at least one lowercase character')
+        .matches(/^(?=.*[A-Z])/, 'Must contain at least one uppercase character')
+        .matches(/^(?=.*[0-9])/, 'Must contain at least one number')
+        .matches(/^(?=.*[!@#%&])/, 'Must contain at least one special character'),
+    confirmPassword: Yup.string()
+        .required('Confirm Password is required')
+        .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
+});
 
 const REGISTER_FORM_MUTATION = graphql`
     mutation RegisterFormMutation($input: RegistrationForm!) {
@@ -43,7 +63,6 @@ interface Props {
 export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) {
     // form state hooks
     const [isPassVisible, setIsPassVisible] = React.useState(false);
-    const [form, errors, handleSubmit, handleChange] = useForm(initialState);
     const [commit, isLoading] = useMutation<RegisterFormMutation>(REGISTER_FORM_MUTATION);
 
     const { setUser } = useUser();
@@ -65,6 +84,22 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
         });
     }
 
+    const { handleSubmit, handleChange, values, errors } = useFormik<TRegisterForm>({
+        initialValues: {
+            email: '',
+            password: '',
+            confirmPassword: '',
+            firstName: '',
+            lastName: '',
+        },
+        validationSchema: registerValidationSchema,
+        onSubmit: handleCommit,
+    });
+
+    const isAllInputsValid = React.useMemo(() => {
+        return Object.values(errors).every((error) => !error);
+    }, [errors]);
+
     return (
         <Grid data-test-id='register-form' container justifyContent='center'>
             <Grid container item xs={12} direction='column' alignItems='center'>
@@ -72,13 +107,13 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
                     Register
                 </Typography>
             </Grid>
-            <Form onSubmit={handleSubmit(handleCommit)}>
+            <Form onSubmit={handleSubmit}>
                 <FormContent>
                     <TextField
                         id='register-first-name'
                         helperText={errors.firstName}
                         required
-                        value={form.firstName}
+                        value={values.firstName}
                         onChange={handleChange('firstName')}
                         label='First Name'
                         autoFocus
@@ -88,7 +123,7 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
                         id='register-last-name'
                         helperText={errors.lastName}
                         required
-                        value={form.lastName}
+                        value={values.lastName}
                         onChange={handleChange('lastName')}
                         label='Last Name'
                         error={Boolean(errors.lastName)}
@@ -98,7 +133,7 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
                         helperText={errors.email || 'We will never share your email'}
                         required
                         type='email'
-                        value={form.email}
+                        value={values.email}
                         onChange={handleChange('email')}
                         label='Email'
                         error={Boolean(errors.email)}
@@ -114,7 +149,7 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
                             'Passwords must be at least 8 characters long and contain at least one lowercase letter, capital letter, number, and symbol.'
                         }
                         type={isPassVisible ? 'text' : 'password'}
-                        value={form.password}
+                        value={values.password}
                         onChange={handleChange('password')}
                         label='Password'
                         InputProps={{
@@ -145,7 +180,7 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
                         error={Boolean(errors.confirmPassword)}
                         helperText={errors.confirmPassword}
                         type={isPassVisible ? 'text' : 'password'}
-                        value={form.confirmPassword}
+                        value={values.confirmPassword}
                         onChange={handleChange('confirmPassword')}
                         label='Confirm Password'
                         InputProps={{
@@ -186,13 +221,7 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
                             type='submit'
                             variant='contained'
                             color='secondary'
-                            disabled={
-                                form.email.length === 0 ||
-                                form.firstName.length === 0 ||
-                                form.lastName.length === 0 ||
-                                form.password.length === 0 ||
-                                form.confirmPassword.length === 0
-                            }
+                            disabled={!isAllInputsValid || values.firstName === ''}
                         >
                             Register
                         </Button>
