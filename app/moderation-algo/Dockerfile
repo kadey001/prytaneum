@@ -8,8 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Install pip requirements
-ARG REQUIREMENTS_FILE=requirements.txt
-COPY ${REQUIREMENTS_FILE} .
+COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
 
 WORKDIR /app
@@ -23,4 +22,4 @@ USER appuser
 EXPOSE 5000
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ls -l && python /app/main.py
+CMD ls -l && python main.py
