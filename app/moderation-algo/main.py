@@ -70,7 +70,7 @@ def ConnectToRedis() -> redis.Redis:
     if NODE_ENV == 'production':
         nodes = list()
         nodes.append(ClusterNode(host=REDIS_HOST, port=REDIS_PORT))
-        return RedisCluster(startup_nodes=nodes, host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD)
+        return RedisCluster(startup_nodes=nodes, host=REDIS_HOST, port=REDIS_PORT)
     return redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, username=REDIS_USERNAME, password=REDIS_PASSWORD,
                             charset='utf-8', decode_responses=True)
 
