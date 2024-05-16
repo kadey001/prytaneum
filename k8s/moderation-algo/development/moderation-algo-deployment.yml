@@ -38,6 +38,16 @@ spec:
                             configMapKeyRef:
                                 key: NODE_ENV
                                 name: moderation-algo-config
+                      - name: REDIS_HOST
+                        valueFrom:
+                            configMapKeyRef:
+                                name: moderation-algo-config
+                                key: REDIS_HOST
+                      - name: REDIS_PORT
+                        valueFrom:
+                            configMapKeyRef:
+                                name: moderation-algo-config
+                                key: REDIS_PORT
                       - name: GCP_PROJECT_ID
                         valueFrom:
                             configMapKeyRef:
@@ -47,6 +57,11 @@ spec:
                         valueFrom:
                             fieldRef:
                                 fieldPath: metadata.name
+                      - name: REDIS_PASSWORD
+                        valueFrom:
+                            secretKeyRef:
+                                key: redis-password
+                                name: staging-redis-cluster
                       - name: 'GOOGLE_APPLICATION_CREDENTIALS'
                         value: '/var/secrets/google/key.json'
                   volumeMounts:
