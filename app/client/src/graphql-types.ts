@@ -217,6 +217,7 @@ export type Event = Node & {
   startDateTime?: Maybe<Scalars['Date']>;
   title?: Maybe<Scalars['String']>;
   topic?: Maybe<Scalars['String']>;
+  topics?: Maybe<Array<EventTopic>>;
   updatedAt?: Maybe<Scalars['Date']>;
   /** Video feeds and the languages */
   videos?: Maybe<EventVideoConnection>;
@@ -590,6 +591,14 @@ export type EventSpeakerMutationResponse = MutationResponse & {
   message: Scalars['String'];
 };
 
+export type EventTopic = {
+  __typename?: 'EventTopic';
+  description: Scalars['String'];
+  eventId: Scalars['String'];
+  id: Scalars['ID'];
+  topic: Scalars['String'];
+};
+
 export type EventVideo = Node & {
   __typename?: 'EventVideo';
   event?: Maybe<Event>;
@@ -630,6 +639,13 @@ export type FeedbackOperation = {
   operationType: Operation;
 };
 
+export type GeneratedTopic = {
+  __typename?: 'GeneratedTopic';
+  description: Scalars['String'];
+  locked?: Maybe<Scalars['Boolean']>;
+  topic: Scalars['String'];
+};
+
 export type HideQuestion = {
   eventId: Scalars['ID'];
   questionId: Scalars['ID'];
@@ -665,6 +681,9 @@ export type ModeratorMutationResponse = MutationResponse & {
 export type Mutation = {
   __typename?: 'Mutation';
   addQuestionToQueue: EventQuestionMutationResponse;
+  /** Update topics */
+  addTopic?: Maybe<TopicMutationResponse>;
+  addTopics?: Maybe<TopicMutationResponse>;
   alterLike: EventQuestionMutationResponse;
   createBroadcastMessage: EventBroadcastMessageMutationResponse;
   createEvent: EventMutationResponse;
@@ -694,7 +713,15 @@ export type Mutation = {
   editBroadcastMessage: EventBroadcastMessageMutationResponse;
   /** End the event so that it is not live */
   endEvent: EventMutationResponse;
+  finalizeTopics?: Maybe<TopicFinalizeMutationResponse>;
+  /**
+   * Generate topics based on the event id and material
+   * Material limited to ~120k characters
+   */
+  generateEventTopics?: Maybe<TopicGenerationMutationResponse>;
   hideQuestion?: Maybe<EventQuestion>;
+  lockTopic?: Maybe<TopicLockToggleMutationResponse>;
+  lockTopics?: Maybe<MutationResponse>;
   login: UserMutationResponse;
   /** The logout just returns the timestamp of the logout action */
   logout: Scalars['Date'];
@@ -711,9 +738,13 @@ export type Mutation = {
    * TODO: make this an EventMutationResponse
    */
   prevQuestion: Event;
+  /** Regenerates topics with existing reading materials while keeping any locked topics */
+  regenerateEventTopics?: Maybe<TopicGenerationMutationResponse>;
   register: UserMutationResponse;
   removeOrganizer: UserMutationResponse;
   removeQuestionFromQueue: EventQuestionMutationResponse;
+  removeTopic?: Maybe<TopicRemoveMutationResponse>;
+  removeTopics?: Maybe<TopicsRemoveMutationResponse>;
   resetPassword: ResetPasswordMutationResponse;
   /**
    * send a reset password request if the account exists
@@ -725,6 +756,8 @@ export type Mutation = {
   startEvent: EventMutationResponse;
   submitPostEventFeedback: PostEventFeedbackMutationResponse;
   uninviteUser: InviteMutationResponse;
+  unlockTopic?: Maybe<TopicLockToggleMutationResponse>;
+  unlockTopics?: Maybe<MutationResponse>;
   unmuteParticipant: MuteParticipantMutationResponse;
   updateEmail: UserMutationResponse;
   updateEvent: EventMutationResponse;
@@ -734,12 +767,26 @@ export type Mutation = {
   updatePassword: UserMutationResponse;
   updateQuestionPosition: EventQuestionMutationResponse;
   updateSpeaker: EventSpeakerMutationResponse;
+  updateTopic?: Maybe<TopicMutationResponse>;
   updateVideo: EventVideoMutationResponse;
 };
 
 
 export type MutationAddQuestionToQueueArgs = {
   input: AddQuestionToQueue;
+};
+
+
+export type MutationAddTopicArgs = {
+  description: Scalars['String'];
+  eventId: Scalars['String'];
+  topic: Scalars['String'];
+};
+
+
+export type MutationAddTopicsArgs = {
+  eventId: Scalars['String'];
+  topics: Array<Scalars['String']>;
 };
 
 
@@ -863,8 +910,33 @@ export type MutationEndEventArgs = {
 };
 
 
+export type MutationFinalizeTopicsArgs = {
+  descriptions: Array<Scalars['String']>;
+  eventId: Scalars['String'];
+  topics: Array<Scalars['String']>;
+};
+
+
+export type MutationGenerateEventTopicsArgs = {
+  eventId: Scalars['String'];
+  material: Scalars['String'];
+};
+
+
 export type MutationHideQuestionArgs = {
   input: HideQuestion;
+};
+
+
+export type MutationLockTopicArgs = {
+  eventId: Scalars['String'];
+  topic: Scalars['String'];
+};
+
+
+export type MutationLockTopicsArgs = {
+  eventId: Scalars['String'];
+  topics: Array<Scalars['String']>;
 };
 
 
@@ -899,6 +971,11 @@ export type MutationPrevQuestionArgs = {
 };
 
 
+export type MutationRegenerateEventTopicsArgs = {
+  eventId: Scalars['String'];
+};
+
+
 export type MutationRegisterArgs = {
   input: RegistrationForm;
 };
@@ -911,6 +988,18 @@ export type MutationRemoveOrganizerArgs = {
 
 export type MutationRemoveQuestionFromQueueArgs = {
   input: RemoveQuestionFromQueue;
+};
+
+
+export type MutationRemoveTopicArgs = {
+  eventId: Scalars['String'];
+  topic: Scalars['String'];
+};
+
+
+export type MutationRemoveTopicsArgs = {
+  eventId: Scalars['String'];
+  topics: Array<Scalars['String']>;
 };
 
 
@@ -944,6 +1033,18 @@ export type MutationSubmitPostEventFeedbackArgs = {
 export type MutationUninviteUserArgs = {
   eventId: Scalars['ID'];
   userId: Scalars['ID'];
+};
+
+
+export type MutationUnlockTopicArgs = {
+  eventId: Scalars['String'];
+  topic: Scalars['String'];
+};
+
+
+export type MutationUnlockTopicsArgs = {
+  eventId: Scalars['String'];
+  topics: Array<Scalars['String']>;
 };
 
 
@@ -990,6 +1091,14 @@ export type MutationUpdateQuestionPositionArgs = {
 
 export type MutationUpdateSpeakerArgs = {
   input: UpdateSpeaker;
+};
+
+
+export type MutationUpdateTopicArgs = {
+  description: Scalars['String'];
+  eventId: Scalars['String'];
+  newTopic: Scalars['String'];
+  oldTopic: Scalars['String'];
 };
 
 
@@ -1103,6 +1212,7 @@ export type Query = {
   event?: Maybe<Event>;
   eventBroadcastMessages?: Maybe<Array<EventBroadcastMessage>>;
   eventParticipants: Array<Maybe<EventParticipant>>;
+  eventTopics?: Maybe<Array<EventTopic>>;
   /** Fetch all events */
   events?: Maybe<Array<Event>>;
   isOrganizer: Scalars['Boolean'];
@@ -1115,6 +1225,7 @@ export type Query = {
   promptResponses?: Maybe<Array<EventLiveFeedbackPromptResponse>>;
   prompts?: Maybe<Array<EventLiveFeedbackPrompt>>;
   questionsByEventId?: Maybe<Array<EventQuestion>>;
+  topics?: Maybe<Array<EventTopic>>;
   /** Validates an invite token and logs the user in if they are already registered. */
   validateInvite: ValidateInviteQueryResponse;
   validatePasswordResetToken: ValidatePasswordResetTokenQueryResponse;
@@ -1135,6 +1246,11 @@ export type QueryEventParticipantsArgs = {
   after?: InputMaybe<Scalars['String']>;
   eventId: Scalars['ID'];
   first?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryEventTopicsArgs = {
+  eventId: Scalars['String'];
 };
 
 
@@ -1247,6 +1363,7 @@ export type Subscription = {
   recordPushQuestion: EventQuestionEdgeContainer;
   recordRemoveQuestion: EventQuestionEdgeContainer;
   recordUnshiftQuestion: EventQuestionEdgeContainer;
+  topicUpdated?: Maybe<EventTopic>;
   /** Subscribes to the creation of invites for a given event. */
   userInvited: UserEdgeContainer;
   /** Subscribes to the removal of invites for a given event. */
@@ -1372,6 +1489,11 @@ export type SubscriptionRecordUnshiftQuestionArgs = {
 };
 
 
+export type SubscriptionTopicUpdatedArgs = {
+  eventId: Scalars['String'];
+};
+
+
 export type SubscriptionUserInvitedArgs = {
   eventId: Scalars['ID'];
 };
@@ -1379,6 +1501,53 @@ export type SubscriptionUserInvitedArgs = {
 
 export type SubscriptionUserUninvitedArgs = {
   eventId: Scalars['ID'];
+};
+
+export type TopicFinalizeMutationResponse = MutationResponse & {
+  __typename?: 'TopicFinalizeMutationResponse';
+  body?: Maybe<Array<GeneratedTopic>>;
+  isError: Scalars['Boolean'];
+  message: Scalars['String'];
+};
+
+export type TopicGenerationMutationResponse = MutationResponse & {
+  __typename?: 'TopicGenerationMutationResponse';
+  body?: Maybe<Array<GeneratedTopic>>;
+  isError: Scalars['Boolean'];
+  message: Scalars['String'];
+};
+
+export type TopicLockToggleMutationResponse = MutationResponse & {
+  __typename?: 'TopicLockToggleMutationResponse';
+  body?: Maybe<TopicOnly>;
+  isError: Scalars['Boolean'];
+  message: Scalars['String'];
+};
+
+export type TopicMutationResponse = MutationResponse & {
+  __typename?: 'TopicMutationResponse';
+  body?: Maybe<GeneratedTopic>;
+  isError: Scalars['Boolean'];
+  message: Scalars['String'];
+};
+
+export type TopicOnly = {
+  __typename?: 'TopicOnly';
+  topic: Scalars['String'];
+};
+
+export type TopicRemoveMutationResponse = MutationResponse & {
+  __typename?: 'TopicRemoveMutationResponse';
+  body?: Maybe<TopicOnly>;
+  isError: Scalars['Boolean'];
+  message: Scalars['String'];
+};
+
+export type TopicsRemoveMutationResponse = MutationResponse & {
+  __typename?: 'TopicsRemoveMutationResponse';
+  body?: Maybe<Array<TopicOnly>>;
+  isError: Scalars['Boolean'];
+  message: Scalars['String'];
 };
 
 export type UpdateEmailForm = {

@@ -19,11 +19,13 @@ import { EventContext } from '../EventContext';
 import { InviteEventSettings } from '../Invites/InviteEventSettings';
 import { DeleteEvent } from '../DeleteEvent';
 import { EventIssueGuideSettings } from '../EventIssueGuide';
+import { EventTopicSettings } from '../EventTopics/EventTopicSettings';
 
 export const eventSettingsSections = [
     'Form',
     'Video',
     'Speakers',
+    'Topics',
     'Issue Guide',
     'components',
     'Moderators',
@@ -118,6 +120,11 @@ export function EventSettings({ queryRef }: Props) {
                                 title: 'Speaker',
                                 description: 'Add and Modify speakers at this event',
                                 component: <SpeakerEventSettings fragmentRef={data.node} />,
+                            },
+                            {
+                                title: 'Topics',
+                                description: 'Add and Modify the event topics',
+                                component: <EventTopicSettings />,
                             },
                             {
                                 title: 'Issue Guide',

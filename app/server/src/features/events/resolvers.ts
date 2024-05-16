@@ -36,7 +36,7 @@ export const resolvers: Resolvers = {
             if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
             const foundEvents = await Event.findDashboardEvents(ctx.viewer.id, ctx.prisma);
             return foundEvents.map(toEventId);
-        }
+        },
     },
     Mutation: {
         async createEvent(parent, args, ctx, info) {
@@ -303,6 +303,11 @@ export const resolvers: Resolvers = {
             const connection = connectionFromArray(invited.map(toUserId), args);
             if (invited.length === 0) connection.pageInfo = { ...connection.pageInfo, startCursor: '', endCursor: '' };
             return connection;
+        },
+        async topics(parent, args, ctx, info) {
+            const { id: eventId } = fromGlobalId(parent.id);
+            const topics = await Event.findTopicsByEventId(eventId, ctx.prisma);
+            return topics;
         },
     },
 };

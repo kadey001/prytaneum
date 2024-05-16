@@ -384,6 +384,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@app/moderation-algo@workspace:app/moderation-algo":
+  version: 0.0.0-use.local
+  resolution: "@app/moderation-algo@workspace:app/moderation-algo"
+  languageName: unknown
+  linkType: soft
+
 "@app/proxy@workspace:app/proxy":
   version: 0.0.0-use.local
   resolution: "@app/proxy@workspace:app/proxy"
@@ -431,6 +437,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.59.11
     "@yarnpkg/pnpify": ^3.1.1-rc.15
     altair-fastify-plugin: ^5.0.6
+    axios: ^1.6.8
     bcryptjs: ^2.4.3
     cors: ^2.8.5
     dotenv: ^8.2.0
@@ -10359,6 +10366,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.6.8":
+  version: 1.6.8
+  resolution: "axios@npm:1.6.8"
+  dependencies:
+    follow-redirects: ^1.15.6
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: bf007fa4b207d102459300698620b3b0873503c6d47bf5a8f6e43c0c64c90035a4f698b55027ca1958f61ab43723df2781c38a99711848d232cad7accbcdfcdd
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:^2.2.0":
   version: 2.2.0
   resolution: "axobject-query@npm:2.2.0"
@@ -15905,6 +15923,16 @@ __metadata:
     debug:
       optional: true
   checksum: faa66059b66358ba65c234c2f2a37fcec029dc22775f35d9ad6abac56003268baf41e55f9ee645957b32c7d9f62baf1f0b906e68267276f54ec4b4c597c2b190
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.15.6":
+  version: 1.15.6
+  resolution: "follow-redirects@npm:1.15.6"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: a62c378dfc8c00f60b9c80cab158ba54e99ba0239a5dd7c81245e5a5b39d10f0c35e249c3379eae719ff0285fff88c365dd446fab19dee771f1d76252df1bbf5
   languageName: node
   linkType: hard
 

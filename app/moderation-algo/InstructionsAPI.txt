@@ -1,0 +1,63 @@
+Here are three stages available to use with the moderation app: 1) extracting topics and definitions from the reading materials, 2) interactively finalizing the list of topics and definitions, and 3) running live questions through the moderation algorithm.
+ 
+Stage 1: Extracting the topics and definitions from reading materials.
+request = {
+	'stage': 'extraction',
+	'reading_materials': 'The text of the entire reading materials...'
+}
+response = {
+	'issue':'Overall issue discussed in the reading materials',
+	'topics': {
+		'topic1': 'definition1',
+		'topic2': 'definition2',
+		...
+	}
+}
+ 
+Stage 2: Interactively choose a set of topics and definitions to classify questions into.
+NOTE: It is assumed that the user already went through Stage 1 to create an initial list of topics.
+Possible actions to take are: lock, lock_many, unlock, unlock_many, rename, add, remove, remove_many, regenerate.
+request = {
+	'stage': 'interactive',
+	'action': 'action_to_take',
+	'selected_topic': 'Name of the selected topic' # Required for: lock, unlock, rename, add, remove
+	'selected_topics': [ # Required for: lock_many, unlock_many, remove_many
+		'topic1',
+		'topic2',
+		...
+	]
+	'new_topic': 'Name of the new topic' # Required for: rename, add
+	'new_definition': 'Definition of the new topic' # Required for: rename add
+}
+response = {
+	'topics': {
+		'topic1': 'definition1',
+		'topic2': 'definition2',
+		...
+	},
+	'locked_topics': [
+		'topic1',
+		'topic4',
+		...
+	]
+}
+ 
+ 
+Stage 3: Process a question through the moderation algorithm.
+request = {
+	'stage': 'moderation',
+	'question': 'The question to process'
+}
+response = {
+	'question_en': 'The question in English',
+	'question_es': 'The question in Spanish',
+	'original_lang': 'Original language of the question as a two-letter code',
+	'substantive': True/False,
+	'offensive': True/False,
+	'relevant': True/False,
+	'topics': {
+		'topic1': True/False,
+		'topic2': True/False,
+		...
+	}
+}

@@ -105,6 +105,7 @@ model Event {
     registrants EventRegistrant[]
     videos EventVideo[]
     participants EventParticipant[]
+    topics EventTopic[]
 }
 
 model EventVideo {
@@ -193,7 +194,12 @@ model EventQuestion {
     lang String @db.VarChar(30)
     isFollowUp Boolean
     isQuote Boolean
+    // Moderation fields
+    substantive Boolean @default(false)
+    offensive Boolean @default(false)
+    relevant Boolean @default(false)
     
+    topics EventQuestionTopic[]
     likes EventQuestionLike[]
 }
 
@@ -266,4 +272,25 @@ model EventParticipant {
     lastPingTime DateTime @default(now())
 
     @@id([eventId, userId])
+}
+
+model EventTopic {
+    id String @id @default(uuid()) @db.Uuid
+    eventId String @db.Uuid
+    event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    topic String @db.VarChar(100)
+    description String @db.VarChar(500)
+    
+    questions EventQuestionTopic[]
+
+    @@unique([eventId, topic])
+}
+
+model EventQuestionTopic {
+    questionId String @db.Uuid
+    topicId String @db.Uuid
+    question EventQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+    topic EventTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+    @@id([questionId, topicId])
 }

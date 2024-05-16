@@ -1,0 +1,30 @@
+name: Moderation Algorithm build, lint, and test
+on:
+    pull_request:
+        branches:
+            - staging
+        paths:
+            - 'app/moderation-algo/**'
+
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        environment: development
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: '18'
+
+            - name: Docker build
+              run: |-
+                  docker build \
+                    -f ./app/moderation-algo/Dockerfile \
+                    --build-arg REQUIREMENTS_FILE="./app/moderation-algo/requirements.txt" \
+                    --build-arg GITHUB_SHA="$GITHUB_SHA" \
+                    --build-arg GITHUB_REF="$GITHUB_REF" \
+                    .

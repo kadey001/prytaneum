@@ -236,6 +236,7 @@ type Event implements Node {
   startDateTime: Date
   title: String
   topic: String
+  topics: [EventTopic!]
   updatedAt: Date
 
   """Video feeds and the languages"""
@@ -518,6 +519,13 @@ type EventSpeakerMutationResponse implements MutationResponse {
   message: String!
 }
 
+type EventTopic {
+  description: String!
+  eventId: String!
+  id: ID!
+  topic: String!
+}
+
 type EventVideo implements Node {
   event: Event
   id: ID!
@@ -554,6 +562,12 @@ type FeedbackOperation {
   operationType: Operation!
 }
 
+type GeneratedTopic {
+  description: String!
+  locked: Boolean
+  topic: String!
+}
+
 input HideQuestion {
   eventId: ID!
   questionId: ID!
@@ -588,6 +602,10 @@ type ModeratorMutationResponse implements MutationResponse {
 
 type Mutation {
   addQuestionToQueue(input: AddQuestionToQueue!): EventQuestionMutationResponse!
+
+  """Update topics"""
+  addTopic(description: String!, eventId: String!, topic: String!): TopicMutationResponse
+  addTopics(eventId: String!, topics: [String!]!): TopicMutationResponse
   alterLike(input: AlterLike!): EventQuestionMutationResponse!
   createBroadcastMessage(input: CreateBroadcastMessage!): EventBroadcastMessageMutationResponse!
   createEvent(event: CreateEvent!): EventMutationResponse!
@@ -622,7 +640,16 @@ type Mutation {
 
   """End the event so that it is not live"""
   endEvent(eventId: String!): EventMutationResponse!
+  finalizeTopics(descriptions: [String!]!, eventId: String!, topics: [String!]!): TopicFinalizeMutationResponse
+
+  """
+  Generate topics based on the event id and material
+  Material limited to ~120k characters
+  """
+  generateEventTopics(eventId: String!, material: String!): TopicGenerationMutationResponse
   hideQuestion(input: HideQuestion!): EventQuestion
+  lockTopic(eventId: String!, topic: String!): TopicLockToggleMutationResponse
+  lockTopics(eventId: String!, topics: [String!]!): MutationResponse
   login(input: LoginForm!): UserMutationResponse!
 
   """The logout just returns the timestamp of the logout action"""
@@ -642,9 +669,16 @@ type Mutation {
   TODO: make this an EventMutationResponse
   """
   prevQuestion(eventId: ID!): Event!
+
+  """
+  Regenerates topics with existing reading materials while keeping any locked topics
+  """
+  regenerateEventTopics(eventId: String!): TopicGenerationMutationResponse
   register(input: RegistrationForm!): UserMutationResponse!
   removeOrganizer(input: OrganizerForm!): UserMutationResponse!
   removeQuestionFromQueue(input: RemoveQuestionFromQueue!): EventQuestionMutationResponse!
+  removeTopic(eventId: String!, topic: String!): TopicRemoveMutationResponse
+  removeTopics(eventId: String!, topics: [String!]!): TopicsRemoveMutationResponse
   resetPassword(input: ResetPasswordForm!): ResetPasswordMutationResponse!
 
   """
@@ -660,6 +694,8 @@ type Mutation {
   startEvent(eventId: String!): EventMutationResponse!
   submitPostEventFeedback(eventId: ID!, feedback: String!): PostEventFeedbackMutationResponse!
   uninviteUser(eventId: ID!, userId: ID!): InviteMutationResponse!
+  unlockTopic(eventId: String!, topic: String!): TopicLockToggleMutationResponse
+  unlockTopics(eventId: String!, topics: [String!]!): MutationResponse
   unmuteParticipant(eventId: ID!, userId: ID!): MuteParticipantMutationResponse!
   updateEmail(input: UpdateEmailForm!): UserMutationResponse!
   updateEvent(event: UpdateEvent!): EventMutationResponse!
@@ -669,6 +705,7 @@ type Mutation {
   updatePassword(input: UpdatePasswordForm!): UserMutationResponse!
   updateQuestionPosition(input: UpdateQuestionPosition!): EventQuestionMutationResponse!
   updateSpeaker(input: UpdateSpeaker!): EventSpeakerMutationResponse!
+  updateTopic(description: String!, eventId: String!, newTopic: String!, oldTopic: String!): TopicMutationResponse
   updateVideo(input: UpdateVideo!): EventVideoMutationResponse!
 }
 
@@ -762,6 +799,7 @@ type Query {
   event(eventId: ID!): Event
   eventBroadcastMessages(eventId: ID!): [EventBroadcastMessage!]
   eventParticipants(after: String, eventId: ID!, first: Int): [EventParticipant]!
+  eventTopics(eventId: String!): [EventTopic!]
 
   """Fetch all events"""
   events: [Event!]
@@ -776,6 +814,7 @@ type Query {
   promptResponses(promptId: ID!): [EventLiveFeedbackPromptResponse!]
   prompts(eventId: ID!): [EventLiveFeedbackPrompt!]
   questionsByEventId(eventId: ID!): [EventQuestion!]
+  topics: [EventTopic!]
 
   """
   Validates an invite token and logs the user in if they are already registered.
@@ -849,12 +888,53 @@ type Subscription {
   recordPushQuestion(eventId: ID!): EventQuestionEdgeContainer!
   recordRemoveQuestion(eventId: ID!): EventQuestionEdgeContainer!
   recordUnshiftQuestion(eventId: ID!): EventQuestionEdgeContainer!
+  topicUpdated(eventId: String!): EventTopic
 
   """Subscribes to the creation of invites for a given event."""
   userInvited(eventId: ID!): UserEdgeContainer!
 
   """Subscribes to the removal of invites for a given event."""
   userUninvited(eventId: ID!): UserEdgeContainer!
+}
+
+type TopicFinalizeMutationResponse implements MutationResponse {
+  body: [GeneratedTopic!]
+  isError: Boolean!
+  message: String!
+}
+
+type TopicGenerationMutationResponse implements MutationResponse {
+  body: [GeneratedTopic!]
+  isError: Boolean!
+  message: String!
+}
+
+type TopicLockToggleMutationResponse implements MutationResponse {
+  body: TopicOnly
+  isError: Boolean!
+  message: String!
+}
+
+type TopicMutationResponse implements MutationResponse {
+  body: GeneratedTopic
+  isError: Boolean!
+  message: String!
+}
+
+type TopicOnly {
+  topic: String!
+}
+
+type TopicRemoveMutationResponse implements MutationResponse {
+  body: TopicOnly
+  isError: Boolean!
+  message: String!
+}
+
+type TopicsRemoveMutationResponse implements MutationResponse {
+  body: [TopicOnly!]
+  isError: Boolean!
+  message: String!
 }
 
 input UpdateEmailForm {

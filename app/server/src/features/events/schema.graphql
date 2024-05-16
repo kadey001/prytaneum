@@ -123,6 +123,8 @@ type Event implements Node {
     The broadcast message currently being broadcasted, corresponds to a "position" value on the event broadcastmessage
     """
     currentBroadcastMessage: Int
+
+    topics: [EventTopic!]
 }
 
 type EventBroadcastMessage implements Node {

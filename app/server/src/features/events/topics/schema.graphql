@@ -1,0 +1,86 @@
+type EventTopic {
+    id: ID!
+    eventId: String!
+    topic: String!
+    description: String!
+}
+
+type GeneratedTopic {
+    topic: String!
+    description: String!
+    locked: Boolean
+}
+
+type TopicGenerationMutationResponse implements MutationResponse {
+    body: [GeneratedTopic!]
+    isError: Boolean!
+    message: String!
+}
+
+type TopicMutationResponse implements MutationResponse {
+    body: GeneratedTopic
+    isError: Boolean!
+    message: String!
+}
+
+type TopicOnly {
+    topic: String!
+}
+
+type TopicRemoveMutationResponse implements MutationResponse {
+    body: TopicOnly
+    isError: Boolean!
+    message: String!
+}
+
+type TopicsRemoveMutationResponse implements MutationResponse {
+    body: [TopicOnly!]
+    isError: Boolean!
+    message: String!
+}
+
+type TopicLockToggleMutationResponse implements MutationResponse {
+    body: TopicOnly
+    isError: Boolean!
+    message: String!
+}
+
+type TopicFinalizeMutationResponse implements MutationResponse {
+    body: [GeneratedTopic!]
+    isError: Boolean!
+    message: String!
+}
+
+type Query {
+    topics: [EventTopic!]
+    eventTopics(eventId: String!): [EventTopic!]
+}
+
+type Mutation {
+    """
+    Generate topics based on the event id and material
+    Material limited to ~120k characters
+    """
+    generateEventTopics(eventId: String!, material: String!): TopicGenerationMutationResponse
+    """
+    Regenerates topics with existing reading materials while keeping any locked topics
+    """
+    regenerateEventTopics(eventId: String!): TopicGenerationMutationResponse
+    """
+    Update topics
+    """
+    addTopic(eventId: String!, topic: String!, description: String!): TopicMutationResponse
+    addTopics(eventId: String!, topics: [String!]!): TopicMutationResponse
+    removeTopic(eventId: String!, topic: String!): TopicRemoveMutationResponse
+    removeTopics(eventId: String!, topics: [String!]!): TopicsRemoveMutationResponse
+    updateTopic(eventId: String!, oldTopic: String!, newTopic: String!, description: String!): TopicMutationResponse
+    lockTopic(eventId: String!, topic: String!): TopicLockToggleMutationResponse
+    unlockTopic(eventId: String!, topic: String!): TopicLockToggleMutationResponse
+    lockTopics(eventId: String!, topics: [String!]!): MutationResponse
+    unlockTopics(eventId: String!, topics: [String!]!): MutationResponse
+    finalizeTopics(eventId: String!, topics: [String!]!, descriptions: [String!]!): TopicFinalizeMutationResponse
+}
+
+type Subscription {
+    topicUpdated(eventId: String!): EventTopic
+}

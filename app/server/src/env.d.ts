@@ -18,6 +18,7 @@ declare global {
             REDIS_PASSWORD: string;
             REDIS_URL: string;
             GCLOUD_ISSUE_GUIDES_STORAGE_BUCKET: string;
+            MODERATION_URL: string;
         }
     }
 }

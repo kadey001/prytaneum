@@ -370,3 +370,7 @@ export async function findDashboardEvents(userId: string, prisma: PrismaClient) 
     const events = results.moderatorOf.map(({ event }) => event).concat(results.invitedOf.map(({ event }) => event));
     return events;
 }
+
+export function findTopicsByEventId(eventId: string, prisma: PrismaClient) {
+    return prisma.eventTopic.findMany({ where: { eventId } });
+}

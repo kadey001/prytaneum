@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moderation-algo
+  labels:
+    app: moderation-algo
+  namespace: development
+spec:
+  selector:
+    matchLabels:
+      app: moderation-algo
+  replicas: 2
+  revisionHistoryLimit: 100
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: moderation-algo
+    spec:
+      containers:
+        - name: moderation-algo
+          image: gcr.io/PROJECT_ID/MODERATION_ALGO_IMAGE:TAG
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 150m
+              memory: 250Mi
+            requests:
+              cpu: 100m
+              memory: 150Mi
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  key: NODE_ENV
+                  name: moderation-algo-config
+            - name: GCP_PROJECT_ID
+              valueFrom:
+                configMapKeyRef:
+                  key: GCP_PROJECT_ID
+                  name: moderation-algo-config
+            - name: POD_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: "GOOGLE_APPLICATION_CREDENTIALS"
+              value: "/var/secrets/google/key.json"
+          volumeMounts:
+            - name: "service-account"
+              mountPath: "/var/secrets/google"
+      volumes:
+        - name: "service-account"
+          secret:
+            secretName: "moderation-sa-key"

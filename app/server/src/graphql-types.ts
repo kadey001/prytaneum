@@ -58,6 +58,8 @@ export type Query = {
     validateInvite: ValidateInviteQueryResponse;
     eventParticipants: Array<Maybe<EventParticipant>>;
     questionsByEventId?: Maybe<Array<EventQuestion>>;
+    topics?: Maybe<Array<EventTopic>>;
+    eventTopics?: Maybe<Array<EventTopic>>;
 };
 
 export type QuerynodeArgs = {
@@ -108,6 +110,10 @@ export type QueryeventParticipantsArgs = {
 
 export type QueryquestionsByEventIdArgs = {
     eventId: Scalars['ID'];
+};
+
+export type QueryeventTopicsArgs = {
+    eventId: Scalars['String'];
 };
 
 export type Error = {
@@ -375,6 +381,24 @@ export type Mutation = {
     createSpeaker: EventSpeakerMutationResponse;
     deleteSpeaker: EventSpeakerMutationResponse;
     updateSpeaker: EventSpeakerMutationResponse;
+    /**
+     * Generate topics based on the event id and material
+     * Material limited to ~120k characters
+     */
+    generateEventTopics?: Maybe<TopicGenerationMutationResponse>;
+    /** Regenerates topics with existing reading materials while keeping any locked topics */
+    regenerateEventTopics?: Maybe<TopicGenerationMutationResponse>;
+    /** Update topics */
+    addTopic?: Maybe<TopicMutationResponse>;
+    addTopics?: Maybe<TopicMutationResponse>;
+    removeTopic?: Maybe<TopicRemoveMutationResponse>;
+    removeTopics?: Maybe<TopicsRemoveMutationResponse>;
+    updateTopic?: Maybe<TopicMutationResponse>;
+    lockTopic?: Maybe<TopicLockToggleMutationResponse>;
+    unlockTopic?: Maybe<TopicLockToggleMutationResponse>;
+    lockTopics?: Maybe<MutationResponse>;
+    unlockTopics?: Maybe<MutationResponse>;
+    finalizeTopics?: Maybe<TopicFinalizeMutationResponse>;
     createVideo: EventVideoMutationResponse;
     deleteVideo: EventVideoMutationResponse;
     updateVideo: EventVideoMutationResponse;
@@ -577,6 +601,69 @@ export type MutationupdateSpeakerArgs = {
     input: UpdateSpeaker;
 };
 
+export type MutationgenerateEventTopicsArgs = {
+    eventId: Scalars['String'];
+    material: Scalars['String'];
+};
+
+export type MutationregenerateEventTopicsArgs = {
+    eventId: Scalars['String'];
+};
+
+export type MutationaddTopicArgs = {
+    eventId: Scalars['String'];
+    topic: Scalars['String'];
+    description: Scalars['String'];
+};
+
+export type MutationaddTopicsArgs = {
+    eventId: Scalars['String'];
+    topics: Array<Scalars['String']>;
+};
+
+export type MutationremoveTopicArgs = {
+    eventId: Scalars['String'];
+    topic: Scalars['String'];
+};
+
+export type MutationremoveTopicsArgs = {
+    eventId: Scalars['String'];
+    topics: Array<Scalars['String']>;
+};
+
+export type MutationupdateTopicArgs = {
+    eventId: Scalars['String'];
+    oldTopic: Scalars['String'];
+    newTopic: Scalars['String'];
+    description: Scalars['String'];
+};
+
+export type MutationlockTopicArgs = {
+    eventId: Scalars['String'];
+    topic: Scalars['String'];
+};
+
+export type MutationunlockTopicArgs = {
+    eventId: Scalars['String'];
+    topic: Scalars['String'];
+};
+
+export type MutationlockTopicsArgs = {
+    eventId: Scalars['String'];
+    topics: Array<Scalars['String']>;
+};
+
+export type MutationunlockTopicsArgs = {
+    eventId: Scalars['String'];
+    topics: Array<Scalars['String']>;
+};
+
+export type MutationfinalizeTopicsArgs = {
+    eventId: Scalars['String'];
+    topics: Array<Scalars['String']>;
+    descriptions: Array<Scalars['String']>;
+};
+
 export type MutationcreateVideoArgs = {
     input: CreateVideo;
 };
@@ -645,6 +732,7 @@ export type Event = Node & {
     currentQuestion?: Maybe<Scalars['String']>;
     /** The broadcast message currently being broadcasted, corresponds to a "position" value on the event broadcastmessage */
     currentBroadcastMessage?: Maybe<Scalars['Int']>;
+    topics?: Maybe<Array<EventTopic>>;
 };
 
 export type EventquestionsArgs = {
@@ -845,6 +933,7 @@ export type Subscription = {
     enqueuedRemoveQuestion: EventQuestionEdgeContainer;
     questionAddedToEnqueued: EventQuestionEdgeContainer;
     questionRemovedFromEnqueued: EventQuestionEdgeContainer;
+    topicUpdated?: Maybe<EventTopic>;
 };
 
 export type SubscriptioneventUpdatesArgs = {
@@ -948,6 +1037,10 @@ export type SubscriptionquestionAddedToEnqueuedArgs = {
 
 export type SubscriptionquestionRemovedFromEnqueuedArgs = {
     eventId: Scalars['ID'];
+};
+
+export type SubscriptiontopicUpdatedArgs = {
+    eventId: Scalars['String'];
 };
 
 export type Organization = Node & {
@@ -1447,6 +1540,68 @@ export type EventSpeakerMutationResponse = MutationResponse & {
     body?: Maybe<EventSpeaker>;
 };
 
+export type EventTopic = {
+    __typename?: 'EventTopic';
+    id: Scalars['ID'];
+    eventId: Scalars['String'];
+    topic: Scalars['String'];
+    description: Scalars['String'];
+};
+
+export type GeneratedTopic = {
+    __typename?: 'GeneratedTopic';
+    topic: Scalars['String'];
+    description: Scalars['String'];
+    locked?: Maybe<Scalars['Boolean']>;
+};
+
+export type TopicGenerationMutationResponse = MutationResponse & {
+    __typename?: 'TopicGenerationMutationResponse';
+    body?: Maybe<Array<GeneratedTopic>>;
+    isError: Scalars['Boolean'];
+    message: Scalars['String'];
+};
+
+export type TopicMutationResponse = MutationResponse & {
+    __typename?: 'TopicMutationResponse';
+    body?: Maybe<GeneratedTopic>;
+    isError: Scalars['Boolean'];
+    message: Scalars['String'];
+};
+
+export type TopicOnly = {
+    __typename?: 'TopicOnly';
+    topic: Scalars['String'];
+};
+
+export type TopicRemoveMutationResponse = MutationResponse & {
+    __typename?: 'TopicRemoveMutationResponse';
+    body?: Maybe<TopicOnly>;
+    isError: Scalars['Boolean'];
+    message: Scalars['String'];
+};
+
+export type TopicsRemoveMutationResponse = MutationResponse & {
+    __typename?: 'TopicsRemoveMutationResponse';
+    body?: Maybe<Array<TopicOnly>>;
+    isError: Scalars['Boolean'];
+    message: Scalars['String'];
+};
+
+export type TopicLockToggleMutationResponse = MutationResponse & {
+    __typename?: 'TopicLockToggleMutationResponse';
+    body?: Maybe<TopicOnly>;
+    isError: Scalars['Boolean'];
+    message: Scalars['String'];
+};
+
+export type TopicFinalizeMutationResponse = MutationResponse & {
+    __typename?: 'TopicFinalizeMutationResponse';
+    body?: Maybe<Array<GeneratedTopic>>;
+    isError: Scalars['Boolean'];
+    message: Scalars['String'];
+};
+
 export type EventVideo = Node & {
     __typename?: 'EventVideo';
     id: Scalars['ID'];
@@ -1593,6 +1748,12 @@ export type ResolversTypes = {
         | ResolversTypes['MuteParticipantMutationResponse']
         | ResolversTypes['EventQuestionMutationResponse']
         | ResolversTypes['EventSpeakerMutationResponse']
+        | ResolversTypes['TopicGenerationMutationResponse']
+        | ResolversTypes['TopicMutationResponse']
+        | ResolversTypes['TopicRemoveMutationResponse']
+        | ResolversTypes['TopicsRemoveMutationResponse']
+        | ResolversTypes['TopicLockToggleMutationResponse']
+        | ResolversTypes['TopicFinalizeMutationResponse']
         | ResolversTypes['EventVideoMutationResponse'];
     Operation: Operation;
     User: ResolverTypeWrapper<User>;
@@ -1698,6 +1859,15 @@ export type ResolversTypes = {
     UpdateSpeaker: UpdateSpeaker;
     DeleteSpeaker: DeleteSpeaker;
     EventSpeakerMutationResponse: ResolverTypeWrapper<EventSpeakerMutationResponse>;
+    EventTopic: ResolverTypeWrapper<EventTopic>;
+    GeneratedTopic: ResolverTypeWrapper<GeneratedTopic>;
+    TopicGenerationMutationResponse: ResolverTypeWrapper<TopicGenerationMutationResponse>;
+    TopicMutationResponse: ResolverTypeWrapper<TopicMutationResponse>;
+    TopicOnly: ResolverTypeWrapper<TopicOnly>;
+    TopicRemoveMutationResponse: ResolverTypeWrapper<TopicRemoveMutationResponse>;
+    TopicsRemoveMutationResponse: ResolverTypeWrapper<TopicsRemoveMutationResponse>;
+    TopicLockToggleMutationResponse: ResolverTypeWrapper<TopicLockToggleMutationResponse>;
+    TopicFinalizeMutationResponse: ResolverTypeWrapper<TopicFinalizeMutationResponse>;
     EventVideo: ResolverTypeWrapper<EventVideo>;
     EventVideoEdge: ResolverTypeWrapper<EventVideoEdge>;
     EventVideoConnection: ResolverTypeWrapper<EventVideoConnection>;
@@ -1745,6 +1915,12 @@ export type ResolversParentTypes = {
         | ResolversParentTypes['MuteParticipantMutationResponse']
         | ResolversParentTypes['EventQuestionMutationResponse']
         | ResolversParentTypes['EventSpeakerMutationResponse']
+        | ResolversParentTypes['TopicGenerationMutationResponse']
+        | ResolversParentTypes['TopicMutationResponse']
+        | ResolversParentTypes['TopicRemoveMutationResponse']
+        | ResolversParentTypes['TopicsRemoveMutationResponse']
+        | ResolversParentTypes['TopicLockToggleMutationResponse']
+        | ResolversParentTypes['TopicFinalizeMutationResponse']
         | ResolversParentTypes['EventVideoMutationResponse'];
     User: User;
     UsersSearchFilters: UsersSearchFilters;
@@ -1848,6 +2024,15 @@ export type ResolversParentTypes = {
     UpdateSpeaker: UpdateSpeaker;
     DeleteSpeaker: DeleteSpeaker;
     EventSpeakerMutationResponse: EventSpeakerMutationResponse;
+    EventTopic: EventTopic;
+    GeneratedTopic: GeneratedTopic;
+    TopicGenerationMutationResponse: TopicGenerationMutationResponse;
+    TopicMutationResponse: TopicMutationResponse;
+    TopicOnly: TopicOnly;
+    TopicRemoveMutationResponse: TopicRemoveMutationResponse;
+    TopicsRemoveMutationResponse: TopicsRemoveMutationResponse;
+    TopicLockToggleMutationResponse: TopicLockToggleMutationResponse;
+    TopicFinalizeMutationResponse: TopicFinalizeMutationResponse;
     EventVideo: EventVideo;
     EventVideoEdge: EventVideoEdge;
     EventVideoConnection: EventVideoConnection;
@@ -1963,6 +2148,13 @@ export type QueryResolvers<
         ContextType,
         RequireFields<QueryquestionsByEventIdArgs, 'eventId'>
     >;
+    topics?: Resolver<Maybe<Array<ResolversTypes['EventTopic']>>, ParentType, ContextType>;
+    eventTopics?: Resolver<
+        Maybe<Array<ResolversTypes['EventTopic']>>,
+        ParentType,
+        ContextType,
+        RequireFields<QueryeventTopicsArgs, 'eventId'>
+    >;
 };
 
 export type ErrorResolvers<
@@ -1994,6 +2186,12 @@ export type MutationResponseResolvers<
         | 'MuteParticipantMutationResponse'
         | 'EventQuestionMutationResponse'
         | 'EventSpeakerMutationResponse'
+        | 'TopicGenerationMutationResponse'
+        | 'TopicMutationResponse'
+        | 'TopicRemoveMutationResponse'
+        | 'TopicsRemoveMutationResponse'
+        | 'TopicLockToggleMutationResponse'
+        | 'TopicFinalizeMutationResponse'
         | 'EventVideoMutationResponse',
         ParentType,
         ContextType
@@ -2403,6 +2601,78 @@ export type MutationResolvers<
         ContextType,
         RequireFields<MutationupdateSpeakerArgs, 'input'>
     >;
+    generateEventTopics?: Resolver<
+        Maybe<ResolversTypes['TopicGenerationMutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationgenerateEventTopicsArgs, 'eventId' | 'material'>
+    >;
+    regenerateEventTopics?: Resolver<
+        Maybe<ResolversTypes['TopicGenerationMutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationregenerateEventTopicsArgs, 'eventId'>
+    >;
+    addTopic?: Resolver<
+        Maybe<ResolversTypes['TopicMutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationaddTopicArgs, 'eventId' | 'topic' | 'description'>
+    >;
+    addTopics?: Resolver<
+        Maybe<ResolversTypes['TopicMutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationaddTopicsArgs, 'eventId' | 'topics'>
+    >;
+    removeTopic?: Resolver<
+        Maybe<ResolversTypes['TopicRemoveMutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationremoveTopicArgs, 'eventId' | 'topic'>
+    >;
+    removeTopics?: Resolver<
+        Maybe<ResolversTypes['TopicsRemoveMutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationremoveTopicsArgs, 'eventId' | 'topics'>
+    >;
+    updateTopic?: Resolver<
+        Maybe<ResolversTypes['TopicMutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationupdateTopicArgs, 'eventId' | 'oldTopic' | 'newTopic' | 'description'>
+    >;
+    lockTopic?: Resolver<
+        Maybe<ResolversTypes['TopicLockToggleMutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationlockTopicArgs, 'eventId' | 'topic'>
+    >;
+    unlockTopic?: Resolver<
+        Maybe<ResolversTypes['TopicLockToggleMutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationunlockTopicArgs, 'eventId' | 'topic'>
+    >;
+    lockTopics?: Resolver<
+        Maybe<ResolversTypes['MutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationlockTopicsArgs, 'eventId' | 'topics'>
+    >;
+    unlockTopics?: Resolver<
+        Maybe<ResolversTypes['MutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationunlockTopicsArgs, 'eventId' | 'topics'>
+    >;
+    finalizeTopics?: Resolver<
+        Maybe<ResolversTypes['TopicFinalizeMutationResponse']>,
+        ParentType,
+        ContextType,
+        RequireFields<MutationfinalizeTopicsArgs, 'eventId' | 'topics' | 'descriptions'>
+    >;
     createVideo?: Resolver<
         ResolversTypes['EventVideoMutationResponse'],
         ParentType,
@@ -2498,6 +2768,7 @@ export type EventResolvers<
     >;
     currentQuestion?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     currentBroadcastMessage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+    topics?: Resolver<Maybe<Array<ResolversTypes['EventTopic']>>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2774,6 +3045,13 @@ export type SubscriptionResolvers<
         ParentType,
         ContextType,
         RequireFields<SubscriptionquestionRemovedFromEnqueuedArgs, 'eventId'>
+    >;
+    topicUpdated?: SubscriptionResolver<
+        Maybe<ResolversTypes['EventTopic']>,
+        'topicUpdated',
+        ParentType,
+        ContextType,
+        RequireFields<SubscriptiontopicUpdatedArgs, 'eventId'>
     >;
 };
 
@@ -3211,6 +3489,95 @@ export type EventSpeakerMutationResponseResolvers<
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type EventTopicResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['EventTopic'] = ResolversParentTypes['EventTopic']
+> = {
+    id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+    eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    topic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GeneratedTopicResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['GeneratedTopic'] = ResolversParentTypes['GeneratedTopic']
+> = {
+    topic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    locked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TopicGenerationMutationResponseResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['TopicGenerationMutationResponse'] = ResolversParentTypes['TopicGenerationMutationResponse']
+> = {
+    body?: Resolver<Maybe<Array<ResolversTypes['GeneratedTopic']>>, ParentType, ContextType>;
+    isError?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TopicMutationResponseResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['TopicMutationResponse'] = ResolversParentTypes['TopicMutationResponse']
+> = {
+    body?: Resolver<Maybe<ResolversTypes['GeneratedTopic']>, ParentType, ContextType>;
+    isError?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TopicOnlyResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['TopicOnly'] = ResolversParentTypes['TopicOnly']
+> = {
+    topic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TopicRemoveMutationResponseResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['TopicRemoveMutationResponse'] = ResolversParentTypes['TopicRemoveMutationResponse']
+> = {
+    body?: Resolver<Maybe<ResolversTypes['TopicOnly']>, ParentType, ContextType>;
+    isError?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TopicsRemoveMutationResponseResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['TopicsRemoveMutationResponse'] = ResolversParentTypes['TopicsRemoveMutationResponse']
+> = {
+    body?: Resolver<Maybe<Array<ResolversTypes['TopicOnly']>>, ParentType, ContextType>;
+    isError?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TopicLockToggleMutationResponseResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['TopicLockToggleMutationResponse'] = ResolversParentTypes['TopicLockToggleMutationResponse']
+> = {
+    body?: Resolver<Maybe<ResolversTypes['TopicOnly']>, ParentType, ContextType>;
+    isError?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TopicFinalizeMutationResponseResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['TopicFinalizeMutationResponse'] = ResolversParentTypes['TopicFinalizeMutationResponse']
+> = {
+    body?: Resolver<Maybe<Array<ResolversTypes['GeneratedTopic']>>, ParentType, ContextType>;
+    isError?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type EventVideoResolvers<
     ContextType = MercuriusContext,
     ParentType extends ResolversParentTypes['EventVideo'] = ResolversParentTypes['EventVideo']
@@ -3317,6 +3684,15 @@ export type Resolvers<ContextType = MercuriusContext> = {
     EventSpeakerEdge?: EventSpeakerEdgeResolvers<ContextType>;
     EventSpeakerConnection?: EventSpeakerConnectionResolvers<ContextType>;
     EventSpeakerMutationResponse?: EventSpeakerMutationResponseResolvers<ContextType>;
+    EventTopic?: EventTopicResolvers<ContextType>;
+    GeneratedTopic?: GeneratedTopicResolvers<ContextType>;
+    TopicGenerationMutationResponse?: TopicGenerationMutationResponseResolvers<ContextType>;
+    TopicMutationResponse?: TopicMutationResponseResolvers<ContextType>;
+    TopicOnly?: TopicOnlyResolvers<ContextType>;
+    TopicRemoveMutationResponse?: TopicRemoveMutationResponseResolvers<ContextType>;
+    TopicsRemoveMutationResponse?: TopicsRemoveMutationResponseResolvers<ContextType>;
+    TopicLockToggleMutationResponse?: TopicLockToggleMutationResponseResolvers<ContextType>;
+    TopicFinalizeMutationResponse?: TopicFinalizeMutationResponseResolvers<ContextType>;
     EventVideo?: EventVideoResolvers<ContextType>;
     EventVideoEdge?: EventVideoEdgeResolvers<ContextType>;
     EventVideoConnection?: EventVideoConnectionResolvers<ContextType>;
@@ -3456,6 +3832,7 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         questionQueue?: LoaderResolver<Maybe<EventQuestionQueue>, Event, EventquestionQueueArgs, TContext>;
         currentQuestion?: LoaderResolver<Maybe<Scalars['String']>, Event, {}, TContext>;
         currentBroadcastMessage?: LoaderResolver<Maybe<Scalars['Int']>, Event, {}, TContext>;
+        topics?: LoaderResolver<Maybe<Array<EventTopic>>, Event, {}, TContext>;
     };
 
     EventBroadcastMessage?: {
@@ -3797,6 +4174,59 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         isError?: LoaderResolver<Scalars['Boolean'], EventSpeakerMutationResponse, {}, TContext>;
         message?: LoaderResolver<Scalars['String'], EventSpeakerMutationResponse, {}, TContext>;
         body?: LoaderResolver<Maybe<EventSpeaker>, EventSpeakerMutationResponse, {}, TContext>;
+    };
+
+    EventTopic?: {
+        id?: LoaderResolver<Scalars['ID'], EventTopic, {}, TContext>;
+        eventId?: LoaderResolver<Scalars['String'], EventTopic, {}, TContext>;
+        topic?: LoaderResolver<Scalars['String'], EventTopic, {}, TContext>;
+        description?: LoaderResolver<Scalars['String'], EventTopic, {}, TContext>;
+    };
+
+    GeneratedTopic?: {
+        topic?: LoaderResolver<Scalars['String'], GeneratedTopic, {}, TContext>;
+        description?: LoaderResolver<Scalars['String'], GeneratedTopic, {}, TContext>;
+        locked?: LoaderResolver<Maybe<Scalars['Boolean']>, GeneratedTopic, {}, TContext>;
+    };
+
+    TopicGenerationMutationResponse?: {
+        body?: LoaderResolver<Maybe<Array<GeneratedTopic>>, TopicGenerationMutationResponse, {}, TContext>;
+        isError?: LoaderResolver<Scalars['Boolean'], TopicGenerationMutationResponse, {}, TContext>;
+        message?: LoaderResolver<Scalars['String'], TopicGenerationMutationResponse, {}, TContext>;
+    };
+
+    TopicMutationResponse?: {
+        body?: LoaderResolver<Maybe<GeneratedTopic>, TopicMutationResponse, {}, TContext>;
+        isError?: LoaderResolver<Scalars['Boolean'], TopicMutationResponse, {}, TContext>;
+        message?: LoaderResolver<Scalars['String'], TopicMutationResponse, {}, TContext>;
+    };
+
+    TopicOnly?: {
+        topic?: LoaderResolver<Scalars['String'], TopicOnly, {}, TContext>;
+    };
+
+    TopicRemoveMutationResponse?: {
+        body?: LoaderResolver<Maybe<TopicOnly>, TopicRemoveMutationResponse, {}, TContext>;
+        isError?: LoaderResolver<Scalars['Boolean'], TopicRemoveMutationResponse, {}, TContext>;
+        message?: LoaderResolver<Scalars['String'], TopicRemoveMutationResponse, {}, TContext>;
+    };
+
+    TopicsRemoveMutationResponse?: {
+        body?: LoaderResolver<Maybe<Array<TopicOnly>>, TopicsRemoveMutationResponse, {}, TContext>;
+        isError?: LoaderResolver<Scalars['Boolean'], TopicsRemoveMutationResponse, {}, TContext>;
+        message?: LoaderResolver<Scalars['String'], TopicsRemoveMutationResponse, {}, TContext>;
+    };
+
+    TopicLockToggleMutationResponse?: {
+        body?: LoaderResolver<Maybe<TopicOnly>, TopicLockToggleMutationResponse, {}, TContext>;
+        isError?: LoaderResolver<Scalars['Boolean'], TopicLockToggleMutationResponse, {}, TContext>;
+        message?: LoaderResolver<Scalars['String'], TopicLockToggleMutationResponse, {}, TContext>;
+    };
+
+    TopicFinalizeMutationResponse?: {
+        body?: LoaderResolver<Maybe<Array<GeneratedTopic>>, TopicFinalizeMutationResponse, {}, TContext>;
+        isError?: LoaderResolver<Scalars['Boolean'], TopicFinalizeMutationResponse, {}, TContext>;
+        message?: LoaderResolver<Scalars['String'], TopicFinalizeMutationResponse, {}, TContext>;
     };
 
     EventVideo?: {
