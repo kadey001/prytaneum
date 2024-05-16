@@ -63,14 +63,14 @@ def ConnectToRedis() -> redis.Redis:
     # Get connection details from environment variables
     REDIS_HOST = os.environ.get('REDIS_HOST')
     REDIS_PORT = os.environ.get('REDIS_PORT')
+    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 
     # If we are in production then do not bother with username and password
     NODE_ENV = os.environ.get('NODE_ENV')
     if(NODE_ENV == 'production'):
-        return redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, charset='utf-8', decode_responses=True)
+        return redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, charset='utf-8', decode_responses=True)
     else:
         REDIS_USERNAME = os.environ.get('REDIS_USERNAME')
-        REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
         return redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, username=REDIS_USERNAME, password=REDIS_PASSWORD,
                                 charset='utf-8', decode_responses=True)
 
