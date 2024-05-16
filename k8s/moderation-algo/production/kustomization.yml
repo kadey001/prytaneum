@@ -1,10 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 replicas:
-  - name: moderation-algo
-    count: 1
+    - name: moderation-algo
+      count: 1
 resources:
-  - ./moderation-algo-deployment.yml
-  - ./moderation-algo-service.yml
-  - ./moderation-algo-backend-config.yml
-  
+    - ./moderation-algo-deployment.yml
+    - ./moderation-algo-service.yml
+    - ./moderation-algo-backend-config.yml
+    - ./moderation-algo-configmap.yml
