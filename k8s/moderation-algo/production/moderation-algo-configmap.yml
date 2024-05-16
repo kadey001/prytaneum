@@ -9,5 +9,5 @@ data:
     HOST: 0.0.0.0
     NODE_ENV: production
     GCP_PROJECT_ID: prytaneum-project
-    REDIS_HOST: staging-redis-cluster.development.svc.cluster.local
+    REDIS_HOST: prod-redis-cluster.development.svc.cluster.local
     REDIS_PORT: '6379'
