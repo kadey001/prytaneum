@@ -11,3 +11,4 @@ data:
     GCP_PROJECT_ID: prytaneum-project
     REDIS_HOST: prod-redis-cluster.development.svc.cluster.local
     REDIS_PORT: '6379'
+    REDIS_USERNAME: default

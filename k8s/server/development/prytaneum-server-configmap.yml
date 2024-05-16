@@ -14,4 +14,4 @@ data:
     REDIS_HOST: staging-redis-cluster.development.svc.cluster.local
     REDIS_PORT: '6379'
     GCLOUD_ISSUE_GUIDES_STORAGE_BUCKET: prytaneum-issue-guides
-    MODERATION_URL: moderation-algo.development:5000
+    MODERATION_URL: http://moderation-algo.svc.cluster.local:5000
