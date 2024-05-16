@@ -11,6 +11,7 @@ metadata:
     name: moderation-algo-service
     namespace: development
 spec:
+    ClusterIP: 10.112.10.190
     ports:
         - port: 5000
           protocol: TCP
