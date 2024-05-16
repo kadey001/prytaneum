@@ -23,4 +23,4 @@ USER appuser
 EXPOSE 5000
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ls -l && python /app/main.py
+CMD ls -l && python main.py
