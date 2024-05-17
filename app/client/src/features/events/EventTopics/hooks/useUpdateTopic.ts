@@ -24,33 +24,31 @@ export function useUpdateTopic() {
     const { displaySnack } = useSnack();
     const [commit] = useMutation<useUpdateTopicMutation>(USE_UPDATE_TOPIC);
 
-    const updateTopic = (oldTopic: Topic, newTopic: Topic, onSuccess: () => void) => {
-        try {
-            commit({
-                variables: {
-                    eventId,
-                    oldTopic: oldTopic.topic,
-                    newTopic: newTopic.topic,
-                    description: newTopic.description,
-                },
-                onCompleted: (response) => {
-                    console.log('Response: ', response.updateTopic);
+    const updateTopic = (oldTopic: Topic, newTopic: Topic, onSuccess: () => void, onFailure?: () => void) => {
+        commit({
+            variables: {
+                eventId,
+                oldTopic: oldTopic.topic,
+                newTopic: newTopic.topic,
+                description: newTopic.description,
+            },
+            onCompleted: (response) => {
+                try {
                     if (!response.updateTopic) throw new Error('An error occurred while updating the topic');
-                    if (response.updateTopic.isError) {
-                        displaySnack(response.updateTopic.message, { variant: 'error' });
-                        return;
-                    }
+                    if (response.updateTopic.isError) throw new Error(response.updateTopic.message);
                     displaySnack('Topic updated successfully', { variant: 'success' });
                     onSuccess();
-                },
-                onError: (error) => {
-                    throw error;
-                },
-            });
-        } catch (error) {
-            if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
-            else displaySnack('An error occurred while updating the topic', { variant: 'error' });
-        }
+                } catch (error) {
+                    if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
+                    else displaySnack('An error occurred while updating the topic', { variant: 'error' });
+                    if (onFailure) onFailure();
+                }
+            },
+            onError: (error) => {
+                displaySnack(error.message, { variant: 'error' });
+                if (onFailure) onFailure();
+            },
+        });
     };
 
     return { updateTopic };

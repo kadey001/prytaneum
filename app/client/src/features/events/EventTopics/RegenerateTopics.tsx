@@ -23,7 +23,10 @@ export function RegenerateTopics() {
             setTopics(newTopics);
             setIsLoading(false);
         };
-        regenerateTopics(onSuccess);
+        const onFailure = () => {
+            setIsLoading(false);
+        };
+        regenerateTopics(onSuccess, onFailure);
     };
 
     return (

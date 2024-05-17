@@ -15,6 +15,7 @@ import { EditTopics } from './EditTopics';
 import { FinalizeTopics } from './FinalizeTopics';
 import { useResponsiveDialog } from '@local/components';
 import { useFinalizeTopics } from './hooks/useFinalizeTopics';
+import { PreloadedTopicList } from './TopicList';
 
 type TTopicContext = {
     topics: Topic[];
@@ -84,6 +85,7 @@ export function EventTopicSettings({}: Props) {
 
     return (
         <TopicContext.Provider value={{ topics, setTopics, isReadingMaterialsUploaded }}>
+            <PreloadedTopicList />
             <Dialog open={isOpen} onClose={handleCloseDialog} maxWidth='lg' fullWidth>
                 <Grid container justifyContent='end'>
                     <IconButton onClick={close}>

@@ -16,8 +16,11 @@ export function LockTopic({ topic }: Props) {
     const { setTopics } = React.useContext(TopicContext);
     const { lockTopic } = useLockTopic();
     const { unlockTopic } = useUnlockTopic();
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const handleToggleLock = () => {
+        if (isLoading) return;
+        setIsLoading(true);
         const isCurrentlyLocked = Boolean(topic.locked);
         const onSuccess = () => {
             const newTopic = { ...topic, locked: !isCurrentlyLocked };
@@ -28,9 +31,11 @@ export function LockTopic({ topic }: Props) {
                 newTopics[index] = newTopic;
                 return newTopics;
             });
+            setIsLoading(false);
         };
-        if (isCurrentlyLocked) unlockTopic(topic, onSuccess);
-        else lockTopic(topic, onSuccess);
+        const onFailure = () => setIsLoading(false);
+        if (isCurrentlyLocked) unlockTopic(topic, onSuccess, onFailure);
+        else lockTopic(topic, onSuccess, onFailure);
     };
 
     return (

@@ -20,28 +20,27 @@ export function useLockTopics() {
     const { displaySnack } = useSnack();
     const [commit] = useMutation<useLockTopicsMutation>(USE_LOCK_TOPICS);
 
-    const lockTopics = (topics: Topic[], onSuccess: () => void) => {
+    const lockTopics = (topics: Topic[], onSuccess: () => void, onFailure?: () => void) => {
         const topicsList = topics.map((topic) => topic.topic);
-        try {
-            commit({
-                variables: { eventId, topics: topicsList },
-                onCompleted: (response) => {
+        commit({
+            variables: { eventId, topics: topicsList },
+            onCompleted: (response) => {
+                try {
                     if (!response.lockTopics) throw new Error('An error occurred while locking topics');
-                    if (response.lockTopics.isError) {
-                        displaySnack(response.lockTopics.message, { variant: 'error' });
-                        return;
-                    }
+                    if (response.lockTopics.isError) throw new Error(response.lockTopics.message);
                     displaySnack('Topics locked successfully', { variant: 'success' });
                     onSuccess();
-                },
-                onError: (error) => {
-                    throw error;
-                },
-            });
-        } catch (error) {
-            if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
-            else displaySnack('An error occurred while locking topics', { variant: 'error' });
-        }
+                } catch (error) {
+                    if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
+                    else displaySnack('An error occurred while locking topics', { variant: 'error' });
+                    if (onFailure) onFailure();
+                }
+            },
+            onError: (error) => {
+                displaySnack(error.message, { variant: 'error' });
+                if (onFailure) onFailure();
+            },
+        });
     };
 
     return { lockTopics };

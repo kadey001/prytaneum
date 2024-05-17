@@ -3,6 +3,19 @@ import axios from 'axios';
 import { ProtectedError } from '@local/lib/ProtectedError';
 import { PrismaClient } from '@local/__generated__/prisma';
 
+export async function getEventTopics(eventId: string, prisma: PrismaClient) {
+    const topics = await prisma.eventTopic.findMany({
+        where: { eventId },
+        select: {
+            id: true,
+            eventId: true,
+            topic: true,
+            description: true,
+        },
+    });
+    return topics;
+}
+
 export async function generateEventTopics(eventId: string, readingMaterials: string) {
     type ExpectedResponse = {
         issue: string;

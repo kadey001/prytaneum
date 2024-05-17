@@ -23,27 +23,26 @@ export function useLockTopic() {
     const { displaySnack } = useSnack();
     const [commit] = useMutation<useLockTopicMutation>(USE_LOCK_TOPIC);
 
-    const lockTopic = (topic: Topic, onSuccess: () => void) => {
-        try {
-            commit({
-                variables: { eventId, topic: topic.topic },
-                onCompleted: (response) => {
+    const lockTopic = (topic: Topic, onSuccess: () => void, onFailure?: () => void) => {
+        commit({
+            variables: { eventId, topic: topic.topic },
+            onCompleted: (response) => {
+                try {
                     if (!response.lockTopic) throw new Error('An error occurred while locking the topic');
-                    if (response.lockTopic.isError) {
-                        displaySnack(response.lockTopic.message, { variant: 'error' });
-                        return;
-                    }
+                    if (response.lockTopic.isError) throw new Error(response.lockTopic.message);
                     displaySnack(`Topic "${topic.topic}" locked successfully`, { variant: 'success' });
                     onSuccess();
-                },
-                onError: (error) => {
-                    throw error;
-                },
-            });
-        } catch (error) {
-            if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
-            else displaySnack('An error occurred while locking the topic', { variant: 'error' });
-        }
+                } catch (error) {
+                    if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
+                    else displaySnack('An error occurred while locking the topic', { variant: 'error' });
+                    if (onFailure) onFailure();
+                }
+            },
+            onError: (error) => {
+                displaySnack(error.message, { variant: 'error' });
+                if (onFailure) onFailure();
+            },
+        });
     };
 
     return { lockTopic };
