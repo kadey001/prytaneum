@@ -34,7 +34,7 @@ export class PlaywrightRegisterPage {
         this.confirmPasswordInput = page.getByLabel('Confirm Password *');
         this.loginLink = page.getByRole('link', { name: 'Already have an account?' });
         // Snacks
-        this.failedSnackMismatcedPasswords = page.getByText('Passwords must match.');
+        this.failedSnackMismatcedPasswords = page.getByText('Passwords must match');
         this.failedSnackPasswordSpecialCharacter = page.getByText('Must contain at least one special character');
         this.failedSnackPasswordMissingNumber = page.getByText('Must contain at least one number');
         this.failedSnackPasswordUpperCase = page.getByText('Must contain at least one uppercase character');
