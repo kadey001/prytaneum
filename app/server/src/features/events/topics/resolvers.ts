@@ -4,6 +4,13 @@ import { fromGlobalId } from 'graphql-relay';
 import * as Topics from './methods';
 
 export const resolvers: Resolvers = {
+    Query: {
+        async eventTopics(parent, args, ctx, info) {
+            const { eventId } = args;
+            const { id: globalEventId } = fromGlobalId(eventId);
+            return Topics.getEventTopics(globalEventId, ctx.prisma);
+        },
+    },
     Mutation: {
         async generateEventTopics(parent, args, ctx, info) {
             return runMutation(async () => {
