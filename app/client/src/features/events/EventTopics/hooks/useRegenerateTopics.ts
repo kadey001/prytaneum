@@ -32,7 +32,8 @@ export function useRegenerateTopics() {
                 try {
                     if (!response.regenerateEventTopics) throw new Error('An error occurred while regenerating topics');
                     if (response.regenerateEventTopics.isError) throw new Error(response.regenerateEventTopics.message);
-                    if (!response.regenerateEventTopics.body) throw new Error('No topics were returned');
+                    if (!response.regenerateEventTopics.body || response.regenerateEventTopics.body.length === 0)
+                        throw new Error('No topics were returned');
                     displaySnack('Topics regenerated successfully', { variant: 'success' });
                     const newTopics = response.regenerateEventTopics.body as Topic[];
                     onSuccess(newTopics);
