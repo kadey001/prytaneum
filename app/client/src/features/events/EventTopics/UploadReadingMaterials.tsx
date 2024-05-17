@@ -48,19 +48,16 @@ export function UploadReadingMaterials({ onSuccess, setTopics }: Props) {
     const [commit] = useMutation<UploadReadingMaterialsMutation>(UPLOAD_READING_MATERIALS);
 
     const handleUpload = () => {
-        try {
-            setIsLoading(true);
-            commit({
-                variables: { eventId, material: readingMaterials },
-                onCompleted: (response) => {
-                    console.log('Response: ', response.generateEventTopics);
+        setIsLoading(true);
+        commit({
+            variables: { eventId, material: readingMaterials },
+            onCompleted: (response) => {
+                try {
                     if (!response.generateEventTopics)
                         throw new Error('An error occurred while uploading reading materials.');
-                    if (response.generateEventTopics.isError) {
-                        displaySnack(response.generateEventTopics.message, { variant: 'error' });
-                        setIsLoading(false);
-                        return;
-                    }
+                    if (response.generateEventTopics.isError) throw new Error(response.generateEventTopics.message);
+                    if (!response.generateEventTopics.body || response.generateEventTopics.body.length === 0)
+                        throw new Error('No topics were returned, please try again with more materials.');
                     const topics = response.generateEventTopics.body as Topic[];
                     setTopics(topics);
                     displaySnack('Reading materials uploaded successfully', { variant: 'success' });
@@ -68,17 +65,17 @@ export function UploadReadingMaterials({ onSuccess, setTopics }: Props) {
                     setIsLoading(false);
                     onSuccess();
                     closeDialog();
-                },
-                onError: (error) => {
-                    throw error;
-                },
-            });
-        } catch (error) {
-            console.error(error);
-            if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
-            else displaySnack('An error occurred while uploading reading materials.', { variant: 'error' });
-            setIsLoading(false);
-        }
+                } catch (error) {
+                    if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
+                    else displaySnack('An error occurred while uploading reading materials', { variant: 'error' });
+                    setIsLoading(false);
+                }
+            },
+            onError: (error) => {
+                displaySnack(error.message, { variant: 'error' });
+                setIsLoading(false);
+            },
+        });
     };
 
     const errorMessage = React.useMemo(() => {
