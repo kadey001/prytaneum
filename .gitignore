@@ -131,3 +131,11 @@ state/
 screenshots/
 *.csv
 *credentials.json
+
+# mac specific files (installed when yarn install is ran on mac, no need to commit)
+.yarn/cache/@next-swc-darwin-arm64-npm-12.3.4-3c587df0e7-8.zip
+.yarn/cache/@next-swc-darwin-arm64-npm-13.4.18-95029982f0-8.zip
+.yarn/cache/@next-swc-linux-x64-gnu-npm-12.3.4-97054948a9-8.zip
+.yarn/cache/@next-swc-linux-x64-gnu-npm-13.4.18-b1775b82a1-8.zip
+.yarn/cache/fsevents-patch-3340e2eb10-8.zip
+.yarn/cache/fsevents-patch-fcdf30aaca-8.zip
