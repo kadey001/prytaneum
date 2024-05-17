@@ -24,35 +24,34 @@ export function useFinalizeTopics() {
     const { displaySnack } = useSnack();
     const [commit] = useMutation<useFinalizeTopicsMutation>(USE_FINALIZE_TOPICS);
 
-    const finalizeTopics = (topics: Topic[], onSuccess: () => void) => {
+    const finalizeTopics = (topics: Topic[], onSuccess: () => void, onFailure?: () => void) => {
         const topicsList = topics.map((topic) => topic.topic);
         const descriptionsList = topics.map((topic) => topic.description);
-        try {
-            commit({
-                variables: {
-                    eventId,
-                    topics: topicsList,
-                    descriptions: descriptionsList,
-                },
-                onCompleted: (response) => {
+        commit({
+            variables: {
+                eventId,
+                topics: topicsList,
+                descriptions: descriptionsList,
+            },
+            onCompleted: (response) => {
+                try {
                     if (!response.finalizeTopics) throw new Error('An error occurred while finalizing topics');
-                    if (response.finalizeTopics.isError) {
-                        displaySnack(response.finalizeTopics.message, { variant: 'error' });
-                        return;
-                    }
+                    if (response.finalizeTopics.isError) throw new Error(response.finalizeTopics.message);
                     if (response.finalizeTopics.body === null)
                         throw new Error('An error occurred while finalizing topics');
                     displaySnack('Topics finalized successfully', { variant: 'success' });
                     onSuccess();
-                },
-                onError: (error) => {
-                    throw error;
-                },
-            });
-        } catch (error) {
-            if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
-            else displaySnack('An error occurred while finalizing topics', { variant: 'error' });
-        }
+                } catch (error) {
+                    if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
+                    else displaySnack('An error occurred while finalizing topics', { variant: 'error' });
+                    if (onFailure) onFailure();
+                }
+            },
+            onError: (error) => {
+                displaySnack(error.message, { variant: 'error' });
+                if (onFailure) onFailure();
+            },
+        });
     };
 
     return { finalizeTopics };

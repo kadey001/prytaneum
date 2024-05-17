@@ -20,28 +20,27 @@ export function useUnlockTopics() {
     const { displaySnack } = useSnack();
     const [commit] = useMutation<useUnlockTopicsMutation>(USE_UNLOCK_TOPICS);
 
-    const unlockTopics = (topics: Topic[], onSuccess: () => void) => {
+    const unlockTopics = (topics: Topic[], onSuccess: () => void, onFailure?: () => void) => {
         const topicsList = topics.map((topic) => topic.topic);
-        try {
-            commit({
-                variables: { eventId, topics: topicsList },
-                onCompleted: (response) => {
+        commit({
+            variables: { eventId, topics: topicsList },
+            onCompleted: (response) => {
+                try {
                     if (!response.unlockTopics) throw new Error('An error occurred while unlocking topics');
-                    if (response.unlockTopics.isError) {
-                        displaySnack(response.unlockTopics.message, { variant: 'error' });
-                        return;
-                    }
+                    if (response.unlockTopics.isError) throw new Error(response.unlockTopics.message);
                     displaySnack('Topics unlocked successfully', { variant: 'success' });
                     onSuccess();
-                },
-                onError: (error) => {
-                    throw error;
-                },
-            });
-        } catch (error) {
-            if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
-            else displaySnack('An error occurred while unlocking topics', { variant: 'error' });
-        }
+                } catch (error) {
+                    if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
+                    else displaySnack('An error occurred while unlocking topics', { variant: 'error' });
+                    if (onFailure) onFailure();
+                }
+            },
+            onError: (error) => {
+                displaySnack(error.message, { variant: 'error' });
+                if (onFailure) onFailure();
+            },
+        });
     };
 
     return { unlockTopics };

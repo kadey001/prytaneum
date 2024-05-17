@@ -23,27 +23,26 @@ export function useUnlockTopic() {
     const { displaySnack } = useSnack();
     const [commit] = useMutation<useUnlockTopicMutation>(USE_UNLOCK_TOPIC);
 
-    const unlockTopic = (topic: Topic, onSuccess: () => void) => {
-        try {
-            commit({
-                variables: { eventId, topic: topic.topic },
-                onCompleted: (response) => {
+    const unlockTopic = (topic: Topic, onSuccess: () => void, onFailure?: () => void) => {
+        commit({
+            variables: { eventId, topic: topic.topic },
+            onCompleted: (response) => {
+                try {
                     if (!response.unlockTopic) throw new Error('An error occurred while unlocking the topic');
-                    if (response.unlockTopic.isError) {
-                        displaySnack(response.unlockTopic.message, { variant: 'error' });
-                        return;
-                    }
+                    if (response.unlockTopic.isError) throw new Error(response.unlockTopic.message);
                     displaySnack(`Topic "${topic.topic}" unlocked successfully`, { variant: 'success' });
                     onSuccess();
-                },
-                onError: (error) => {
-                    throw error;
-                },
-            });
-        } catch (error) {
-            if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
-            else displaySnack('An error occurred while unlocking the topic', { variant: 'error' });
-        }
+                } catch (error) {
+                    if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
+                    else displaySnack('An error occurred while unlocking the topic', { variant: 'error' });
+                    if (onFailure) onFailure();
+                }
+            },
+            onError: (error) => {
+                displaySnack(error.message, { variant: 'error' });
+                if (onFailure) onFailure();
+            },
+        });
     };
 
     return { unlockTopic };

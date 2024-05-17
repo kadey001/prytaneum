@@ -20,27 +20,26 @@ export function useDeleteTopic() {
     const { displaySnack } = useSnack();
     const [commit] = useMutation<useDeleteTopicMutation>(USE_DELETE_TOPIC);
 
-    const deleteTopic = (topic: Topic, onSuccess: () => void) => {
-        try {
-            commit({
-                variables: { eventId, topic: topic.topic },
-                onCompleted: (response) => {
+    const deleteTopic = (topic: Topic, onSuccess: () => void, onFailure?: () => void) => {
+        commit({
+            variables: { eventId, topic: topic.topic },
+            onCompleted: (response) => {
+                try {
                     if (!response.removeTopic) throw new Error('An error occurred while deleting topic');
-                    if (response.removeTopic.isError) {
-                        displaySnack(response.removeTopic.message, { variant: 'error' });
-                        return;
-                    }
+                    if (response.removeTopic.isError) throw new Error(response.removeTopic.message);
                     displaySnack('Topic deleted successfully', { variant: 'success' });
                     onSuccess();
-                },
-                onError: (error) => {
-                    throw error;
-                },
-            });
-        } catch (error) {
-            if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
-            else displaySnack('An error occurred while deleting topic', { variant: 'error' });
-        }
+                } catch (error) {
+                    if (error instanceof Error) displaySnack(error.message, { variant: 'error' });
+                    else displaySnack('An error occurred while deleting topic', { variant: 'error' });
+                    if (onFailure) onFailure();
+                }
+            },
+            onError: (error) => {
+                displaySnack(error.message, { variant: 'error' });
+                if (onFailure) onFailure();
+            },
+        });
     };
 
     return { deleteTopic };
