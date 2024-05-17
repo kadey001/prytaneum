@@ -1,6 +1,17 @@
 import React from 'react';
 import { graphql, useMutation } from 'react-relay';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Typography } from '@mui/material';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    TextField,
+    Typography,
+    Grid,
+    Tooltip,
+    Stack,
+} from '@mui/material';
 
 import { useSnack } from '@local/core';
 import { useEvent } from '@local/features/events';
@@ -83,8 +94,24 @@ export function UploadReadingMaterials({ onSuccess, setTopics }: Props) {
                 Input Background Materials
             </Button>
             <Dialog open={isOpen} maxWidth='lg' fullWidth>
-                <DialogTitle>Input Background Materials</DialogTitle>
+                <DialogTitle>
+                    <Stack direction='row' justifyContent='space-between' alignItems='center'>
+                        Input Background Materials
+                        <Tooltip title='Using Google Gemini'>
+                            <img src='/static/google-gemini-icon.svg' alt='Gemini Logo' width='25px' height='25px' />
+                        </Tooltip>
+                    </Stack>
+                </DialogTitle>
                 <DialogContent>
+                    <Grid container justifyContent='center'>
+                        <Typography variant='body2' color='textSecondary'>
+                            Input any text materials related to your event here to generate a list of topics.
+                        </Typography>
+                        <Typography variant='body2' color='textSecondary'>
+                            Please use a substantual amount of text to generate a good list of topics. Too little text
+                            will result in no topics generated.
+                        </Typography>
+                    </Grid>
                     <TextField
                         autoFocus
                         margin='dense'
