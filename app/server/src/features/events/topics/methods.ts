@@ -184,9 +184,16 @@ export async function finalizeTopics(
     topics: { topic: string; description: string }[],
     prisma: PrismaClient
 ) {
+    // Remove all existing topics
+    await prisma.eventTopic.deleteMany({ where: { eventId } });
+
     const result = await prisma.eventTopic.createMany({
         data: topics.map((topic) => ({ eventId, topic: topic.topic, description: topic.description })),
         skipDuplicates: true,
     });
     console.log('Result: ', result);
+}
+
+export async function deleteAllTopics(eventId: string, prisma: PrismaClient) {
+    await prisma.eventTopic.deleteMany({ where: { eventId } });
 }

@@ -38,7 +38,7 @@ export const resolvers: Resolvers = {
             return runMutation(async () => {
                 const { eventId, oldTopic, newTopic, description } = args;
                 const { id: globalEventId } = fromGlobalId(eventId);
-                await Topics.updateTopic({ eventId, oldTopic, newTopic, description });
+                await Topics.updateTopic({ eventId: globalEventId, oldTopic, newTopic, description });
                 return { topic: newTopic, description };
             });
         },
