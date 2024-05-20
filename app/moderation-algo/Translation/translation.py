@@ -7,10 +7,15 @@ def TranslateText(text: str) -> str:
     in spanish, then the 'es' language code to show that it was originally in spanish.
     @Return: english_text, spanish_text, original_lang"""
     # Retrieve my personal project ID
-    # NOTE: REPLACE THIS WITH A FILEPATH TO A FILE CONTAINING THE PROJECT ID
     folder = os.path.dirname(os.path.abspath(__file__)) + '/' # Folder of this script
-    with open(folder + '../MyPersonalKeyAPI/secret3', 'r') as f:
-        projectID = f.read()
+    filepath = folder + '../MyPersonalKeyAPI/secret3'
+    # For local testing
+    if(os.path.isfile(filepath)):
+        with open(filepath, 'r') as f:
+            projectID = f.read()
+    # For production environment
+    else:
+        projectID = os.environ.get('GCP_PROJECT_ID')
     parent = 'projects/{}/locations/global'.format(projectID)
 
     # Find which language this is written in

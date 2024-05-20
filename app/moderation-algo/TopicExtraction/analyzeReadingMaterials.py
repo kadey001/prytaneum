@@ -5,7 +5,8 @@ import json
 
 def ExtractIssueFromReadingMaterials(model: str, reading_materials: str, force=False) -> str:
     "Use Google Gemini to extract the overall topic that the given reading material discusses"
-    prompt = 'Write the overall topic that the following article deals with as a short phrase:\n'
+    prompt = 'Write the overall topic that the following article deals with as a short phrase. '
+    prompt += 'If it is impossible to find the overall topic, output "none":\n'
     prompt += 'Article: """' + reading_materials.replace('\n', ' ') + '"""\n'
     prompt += 'Topic:'
     
@@ -35,7 +36,11 @@ def ExtractTopicsDescriptions(model: str, reading_materials: str, force=False) -
     response, safety_ratings = gemini.AskGoogleGemini(model, prompt, force=force)
     
     # Convert the response to python dict and return
-    allTopicsDesc = json.loads(response)
+    try:
+        allTopicsDesc = json.loads(response)
+    # If no topics were found, return an empty list
+    except:
+        allTopicsDesc = {}
     return allTopicsDesc
 
 def RegenerateTopicsDescriptions(model: str, reading_materials: str, lockedTopics: set, force=False) -> dict:
@@ -73,5 +78,9 @@ def RegenerateTopicsDescriptions(model: str, reading_materials: str, lockedTopic
     response, safety_ratings = gemini.AskGoogleGemini(model, prompt, force=force)
     
     # Convert the response to python dict and return
-    allTopicsDesc = json.loads(response)
+    try:
+        allTopicsDesc = json.loads(response)
+    # If no topics were found, return an empty list
+    except:
+        allTopicsDesc = {}
     return allTopicsDesc

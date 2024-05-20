@@ -90,7 +90,7 @@ def HandleUserInput():
         # NOTE: Make sure Google API is initialized at this point
         model = 'gemini-pro'
 
-        # Connect to Redis with a week expiration time
+        # Connect to Redis with a week expiration time for stored data
         secInAWeek = 604800
         r = ConnectToRedis()
 
@@ -118,6 +118,10 @@ def HandleUserInput():
             r.set('moderation_topics_{}'.format(eventId), json.dumps(topics), ex=secInAWeek)
             r.set('moderation_reading_materials_{}'.format(eventId), reading_materials, ex=secInAWeek)
 
+            # Issue a warning if no topics were returned
+            if(len(topics) == 0):
+                LogEventConsole('Could not extract any topics from the provided reading materials', 'WARNING')
+
             # Construct and return the response
             response = {
                 'issue': issue,
@@ -136,10 +140,13 @@ def HandleUserInput():
             else:
                 lockedTopics = []
                 r.set('moderation_lockedTopics_{}'.format(eventId), json.dumps(lockedTopics))
-            topics = json.loads(r.get('moderation_topics_{}'.format(eventId)))
+            
+            # If the list of topics does not exist then we have an error and need to rerun stage 1
+            topics = r.get('moderation_topics_{}'.format(eventId))
             if(not topics):
                 LogEventConsole('Unable to find value(s) in stored data. Please rerun Stages 1 and 2.', 'ERROR')
                 return jsonify({'ERROR': 'Unable to find value(s) in stored data. Please rerun Stages 1 and 2.'}), 400 # HTTP bad request
+            topics = json.loads(topics)
             
             # Perform the user designated action
             action = request.get_json().get('action')
@@ -213,6 +220,10 @@ def HandleUserInput():
                     LogEventConsole('Unable to find value(s) in stored data. Please rerun Stages 1 and 2.', 'ERROR')
                     return jsonify({'ERROR': 'Unable to find value(s) in stored data. Please rerun Stages 1 and 2.'}), 400 # HTTP bad request
                 topics, lockedTopics, error = Regenerate(topics, lockedTopics, reading_materials)
+
+                # Issue a warning if no topics were returned
+                if(len(topics) == 0):
+                    LogEventConsole('Could not regenerate any topics from the provided reading materials', 'WARNING')
             
             else:
                 LogEventConsole('Invalid field "action" in request data', 'ERROR')
