@@ -43,10 +43,10 @@ export function useUsersDashboard({ fragmentRef }: UseUsersDashboardProps) {
         (filter: UsersDashboardSearchFilter) => {
             if (isRefreshing) return;
             setIsRefreshing(true);
-            refetch({ filter });
+            refetch({ id: data.id, filter });
             setIsRefreshing(false);
         },
-        [isRefreshing, refetch]
+        [data.id, isRefreshing, refetch]
     );
 
     const users = useMemo(() => {

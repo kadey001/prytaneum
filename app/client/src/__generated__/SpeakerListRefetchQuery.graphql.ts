@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5d3009e89b886d6aa941a5d30b8dc4f7>>
+ * @generated SignedSource<<f7053b5a80e732b2c72d03ecde81e0e6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -176,16 +176,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "59d9511857f369b1635a8cc25f79d111",
+    "cacheID": "b1a77f15230dd85b5a4272c62d4e4dc2",
     "id": null,
     "metadata": {},
     "name": "SpeakerListRefetchQuery",
     "operationKind": "query",
-    "text": "query SpeakerListRefetchQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...SpeakerListFragment\n    id\n  }\n}\n\nfragment SpeakerListFragment on Event {\n  speakers {\n    edges {\n      node {\n        id\n        pictureUrl\n        name\n        description\n        title\n      }\n      cursor\n    }\n  }\n  id\n}\n"
+    "text": "query SpeakerListRefetchQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...SpeakerListFragment\n    id\n  }\n}\n\nfragment SpeakerListFragment on Event {\n  id\n  speakers {\n    edges {\n      node {\n        id\n        pictureUrl\n        name\n        description\n        title\n      }\n      cursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "4e24a9165c283d14e4233b854f4c0fd2";
+(node as any).hash = "418ee1e908ab595a0307c13d14ed471a";
 
 export default node;

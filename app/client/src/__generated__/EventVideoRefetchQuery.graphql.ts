@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6185e1a9580f34c3981483fd7818ca2b>>
+ * @generated SignedSource<<1362d47bae857e6b1d4b79eb57711a7b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -162,16 +162,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "0b2608e5235583a378945a9002028ed6",
+    "cacheID": "f186f81105ce994dfc6d6a0e2019a723",
     "id": null,
     "metadata": {},
     "name": "EventVideoRefetchQuery",
     "operationKind": "query",
-    "text": "query EventVideoRefetchQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...EventVideoFragment\n    id\n  }\n}\n\nfragment EventVideoFragment on Event {\n  videos {\n    edges {\n      cursor\n      node {\n        url\n        lang\n        id\n      }\n    }\n  }\n  id\n}\n"
+    "text": "query EventVideoRefetchQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...EventVideoFragment\n    id\n  }\n}\n\nfragment EventVideoFragment on Event {\n  id\n  videos {\n    edges {\n      cursor\n      node {\n        url\n        lang\n        id\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "497d6ec5dcdba88a4e48b9d8a1bd419e";
+(node as any).hash = "abcdfe47a99827c9e163b76e9fe3cb75";
 
 export default node;

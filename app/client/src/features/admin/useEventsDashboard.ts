@@ -44,10 +44,10 @@ export function useEventsDashboard({ fragmentRef }: UseEventsDashboardProps) {
         (filter: EventsDashboardSearchFilter) => {
             if (isRefreshing) return;
             setIsRefreshing(true);
-            refetch({ filter });
+            refetch({ id: data.id, filter });
             setIsRefreshing(false);
         },
-        [isRefreshing, refetch]
+        [data.id, isRefreshing, refetch]
     );
 
     const events = useMemo(() => {

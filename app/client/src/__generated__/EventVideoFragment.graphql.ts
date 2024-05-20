@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f409beaa74d879b658d82df4494627e5>>
+ * @generated SignedSource<<3d50a2421a6c317f674c3c8ee235e93a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -43,6 +43,13 @@ const node: ReaderFragment = {
   },
   "name": "EventVideoFragment",
   "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
     {
       "alias": null,
       "args": null,
@@ -96,19 +103,12 @@ const node: ReaderFragment = {
         }
       ],
       "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
     }
   ],
   "type": "Event",
   "abstractKey": null
 };
 
-(node as any).hash = "497d6ec5dcdba88a4e48b9d8a1bd419e";
+(node as any).hash = "abcdfe47a99827c9e163b76e9fe3cb75";
 
 export default node;

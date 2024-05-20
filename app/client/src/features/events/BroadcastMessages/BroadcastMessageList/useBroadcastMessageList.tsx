@@ -58,11 +58,11 @@ export function useBroadcastMessageList({ fragmentRef }: useBroadcastMessageList
         if (isRefreshing) return;
         setIsRefreshing(true);
         refetch(
-            { first: MAX_MESSAGES_DISPLAYED, after: data.broadcastMessages?.pageInfo?.endCursor },
+            { id: data.id, first: MAX_MESSAGES_DISPLAYED, after: data.broadcastMessages?.pageInfo?.endCursor },
             { fetchPolicy: 'network-only' }
         );
         setIsRefreshing(false);
-    }, [data.broadcastMessages?.pageInfo?.endCursor, isRefreshing, refetch]);
+    }, [data.broadcastMessages?.pageInfo?.endCursor, data.id, isRefreshing, refetch]);
 
     return {
         broadcastMessages: broadcastMessageList,

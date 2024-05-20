@@ -8,6 +8,7 @@ import { useRefresh } from '@local/features/core';
 
 export const EVENT_VIDEO_FRAGMENT = graphql`
     fragment EventVideoFragment on Event @refetchable(queryName: "EventVideoRefetchQuery") {
+        id
         videos {
             edges {
                 cursor
@@ -33,8 +34,8 @@ export function EventVideo({ fragmentRef }: EventVideoProps) {
 
     const REFRESH_INTERVAL = 20000; // 20 seconds
     const refresh = React.useCallback(() => {
-        refetch({}, { fetchPolicy: 'store-and-network' });
-    }, [refetch]);
+        refetch({ id: data.id }, { fetchPolicy: 'store-and-network' });
+    }, [data.id, refetch]);
     useRefresh({ refreshInterval: REFRESH_INTERVAL, callback: refresh });
 
     // TODO: better system/user flow for this

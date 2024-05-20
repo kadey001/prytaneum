@@ -30,8 +30,8 @@ export function useEventDetails({ fragmentRef }: Props) {
 
     const REFRESH_INTERVAL = 30000; // 30 seconds
     const refresh = React.useCallback(() => {
-        refetch({}, { fetchPolicy: 'store-and-network' });
-    }, [refetch]);
+        refetch({ id: data.id }, { fetchPolicy: 'store-and-network' });
+    }, [data.id, refetch]);
 
     const { pauseRefresh, resumeRefresh } = useRefresh({ refreshInterval: REFRESH_INTERVAL, callback: refresh });
 

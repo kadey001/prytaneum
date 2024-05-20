@@ -43,10 +43,10 @@ export function useLiveFeedbackPrompts({ fragmentRef, modalIsOpen }: Props) {
         // if the modal is open, don't refetch (Ensures secondary modal doesn't flash)
         if (modalIsOpen) return;
         refetch(
-            { first: 100, after: data.liveFeedbackPrompts?.pageInfo?.endCursor || '' },
+            { id: data.id, first: 100, after: data.liveFeedbackPrompts?.pageInfo?.endCursor || '' },
             { fetchPolicy: 'network-only' }
         );
-    }, [modalIsOpen, refetch, data.liveFeedbackPrompts?.pageInfo?.endCursor]);
+    }, [modalIsOpen, refetch, data.id, data.liveFeedbackPrompts?.pageInfo?.endCursor]);
     useRefresh({ refreshInterval: REFETCH_INTERVAL, callback: refresh });
 
     const promptsList = React.useMemo(

@@ -50,7 +50,7 @@ export function useInvitedUsers({ fragmentRef, eventId }: Props) {
 
     const REFRESH_INTERVAL = 15000; // 15 seconds
     const refresh = React.useCallback(() => {
-        refetch({ eventId }, { fetchPolicy: 'store-and-network' });
+        refetch({ id: eventId }, { fetchPolicy: 'store-and-network' });
     }, [refetch, eventId]);
 
     useRefresh({ refreshInterval: REFRESH_INTERVAL, callback: refresh });

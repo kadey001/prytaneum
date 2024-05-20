@@ -50,8 +50,8 @@ export function useParticipantList({ fragmentRef, eventId }: Props) {
 
     const REFRESH_INTERVAL = 15000; // 15 seconds
     const refresh = React.useCallback(() => {
-        refetch({ eventId, first: 1000 }, { fetchPolicy: 'store-and-network' });
-    }, [refetch, eventId]);
+        refetch({ id: eventId }, { fetchPolicy: 'network-only' });
+    }, [eventId, refetch]);
 
     useRefresh({ refreshInterval: REFRESH_INTERVAL, callback: refresh });
 

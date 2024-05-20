@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d5dfc8d3102dbf5366fe2954d81724e3>>
+ * @generated SignedSource<<eb93c86bd07f42181efe4733426652e7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -54,6 +54,7 @@ return {
   },
   "name": "SpeakerListFragment",
   "selections": [
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -122,14 +123,13 @@ return {
         }
       ],
       "storageKey": null
-    },
-    (v0/*: any*/)
+    }
   ],
   "type": "Event",
   "abstractKey": null
 };
 })();
 
-(node as any).hash = "4e24a9165c283d14e4233b854f4c0fd2";
+(node as any).hash = "418ee1e908ab595a0307c13d14ed471a";
 
 export default node;

@@ -28,6 +28,7 @@ interface SpeakerItemProps {
 
 export const SPEAKER_LIST_FRAGMENT = graphql`
     fragment SpeakerListFragment on Event @refetchable(queryName: "SpeakerListRefetchQuery") {
+        id
         speakers {
             edges {
                 node {
@@ -53,8 +54,8 @@ export function SpeakerList({ fragmentRef, className }: SpeakerItemProps) {
 
     const REFRESH_INTERVAL = 30000; // 30 seconds
     const refresh = React.useCallback(() => {
-        refetch({}, { fetchPolicy: 'store-and-network' });
-    }, [refetch]);
+        refetch({ id: data.id }, { fetchPolicy: 'store-and-network' });
+    }, [data.id, refetch]);
     useRefresh({ refreshInterval: REFRESH_INTERVAL, callback: refresh });
 
     const speakerEdges = React.useMemo(() => speakers?.edges ?? [], [speakers]);

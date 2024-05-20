@@ -41,7 +41,7 @@ export const EVENT_LIVE_MODERATOR_VIEW_QUERY = graphql`
                 ...useBroadcastMessageListFragment
                 ...useQuestionQueueFragment
                 ...QuestionCarouselFragment
-                ...useLiveFeedbackListFragment @arguments(eventId: $eventId)
+                ...useLiveFeedbackListFragment
             }
         }
     }

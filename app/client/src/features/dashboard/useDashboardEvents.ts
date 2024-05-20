@@ -47,8 +47,8 @@ export function useDashboardEvents({ fragmentRef }: TArgs) {
     const { events } = data;
     const REFRESH_INTERVAL = 20000; // 20 seconds
     const refresh = React.useCallback(() => {
-        refetch({ cursor: events?.pageInfo.endCursor }, { fetchPolicy: 'store-and-network' });
-    }, [events?.pageInfo.endCursor, refetch]);
+        refetch({ id: data.id, cursor: events?.pageInfo.endCursor }, { fetchPolicy: 'store-and-network' });
+    }, [data.id, events?.pageInfo.endCursor, refetch]);
     useRefresh({ refreshInterval: REFRESH_INTERVAL, callback: refresh });
 
     const eventList = React.useMemo(
