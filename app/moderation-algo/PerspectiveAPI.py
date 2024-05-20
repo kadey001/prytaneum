@@ -2,6 +2,7 @@ import os
 import hashlib
 import json
 from googleapiclient.discovery import build
+from Utilities.logEvents import LogEventConsole
 
 def InitPerspectiveAPI(folder=''):
     "Retrieve my API key and set an environmental variable to it"
@@ -54,7 +55,12 @@ def GetToxicityScores(text: str, force=False) -> dict:
                 'THREAT':{},
             },
         }
-        response = client.comments().analyze(body=analyze_request).execute()
+        # Sometimes Perspective API crashes on irregular inputs
+        try:
+            response = client.comments().analyze(body=analyze_request).execute()
+        except:
+            LogEventConsole('PerspectiveAPI unable to process question. Returning default toxicity values. Question: "{}"'.format(text), 'WARNING')
+            return {'INSULT': 0.0, 'PROFANITY': 0.0, 'SEVERE_TOXICITY': 0.0, 'IDENTITY_ATTACK': 0.0, 'THREAT': 0.0, 'TOXICITY': 0.0}
     
         # Create the cache folder if it does not exist
         os.makedirs(os.path.dirname(filepath), exist_ok=True)

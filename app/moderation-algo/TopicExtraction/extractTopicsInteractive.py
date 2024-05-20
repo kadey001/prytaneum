@@ -138,6 +138,7 @@ def Rename(allTopics: dict, lockedTopics: list, topic: str, newTopic: str, newDe
         return allTopics, lockedTopics, 'input'
     if(newTopic in allTopics and newDefn == allTopics[newTopic]): # Exact topic and definition already exists
         return allTopics, lockedTopics, 'duplicate'
+    allTopics, lockedTopics, error = Remove(allTopics, lockedTopics, topic)
     allTopics[newTopic] = newDefn
     if(newTopic not in lockedTopics):
         lockedTopics.append(newTopic)

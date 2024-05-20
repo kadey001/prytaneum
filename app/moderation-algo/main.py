@@ -144,8 +144,8 @@ def HandleUserInput():
             # If the list of topics does not exist then we have an error and need to rerun stage 1
             topics = r.get('moderation_topics_{}'.format(eventId))
             if(not topics):
-                LogEventConsole('Unable to find value(s) in stored data. Please rerun Stages 1 and 2.', 'ERROR')
-                return jsonify({'ERROR': 'Unable to find value(s) in stored data. Please rerun Stages 1 and 2.'}), 400 # HTTP bad request
+                LogEventConsole('Unable to find topics in stored data for event with ID "{}". Please rerun Stages 1 and 2.'.format(eventId), 'ERROR')
+                return jsonify({'ERROR': 'Unable to find topics in stored data for event with ID "{}". Please rerun Stages 1 and 2.'.format(eventId)}), 400 # HTTP bad request
             topics = json.loads(topics)
             
             # Perform the user designated action
@@ -217,8 +217,8 @@ def HandleUserInput():
             elif(action == 'regenerate'):
                 reading_materials = r.get('moderation_reading_materials_{}'.format(eventId))
                 if(not reading_materials):
-                    LogEventConsole('Unable to find value(s) in stored data. Please rerun Stages 1 and 2.', 'ERROR')
-                    return jsonify({'ERROR': 'Unable to find value(s) in stored data. Please rerun Stages 1 and 2.'}), 400 # HTTP bad request
+                    LogEventConsole('Unable to regenerate due to reading materials not existing in stored data.', 'ERROR')
+                    return jsonify({'ERROR': 'Unable to regenerate due to reading materials not existing in stored data.'}), 400 # HTTP bad request
                 topics, lockedTopics, error = Regenerate(topics, lockedTopics, reading_materials)
 
                 # Issue a warning if no topics were returned
@@ -253,10 +253,11 @@ def HandleUserInput():
         elif(stage == 'moderation'):
             # At this point, the issue and topics should already be available in Redis
             issue = r.get('moderation_issue_{}'.format(eventId))
-            topics = json.loads(r.get('moderation_topics_{}'.format(eventId)))
+            topics = r.get('moderation_topics_{}'.format(eventId))
             if(not issue or not topics):
                 LogEventConsole('Unable to find value(s) in stored data. Please rerun Stages 1 and 2', 'ERROR')
                 return jsonify({'ERROR': 'Unable to find value(s) in stored data. Please rerun Stages 1 and 2'}), 400 # HTTP bad request
+            topics = json.loads(topics)
 
             # Process the question and return the response
             question = request.get_json().get("question") # Get the user question/comment
