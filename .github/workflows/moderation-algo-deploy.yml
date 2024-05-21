@@ -160,6 +160,7 @@ jobs:
               run: |-
                   docker build \
                     -f ./app/moderation-algo/Dockerfile \
+                    --tag "gcr.io/$PROJECT_ID/$MODERATION_ALGO_IMAGE:$GITHUB_SHA" \
                     --build-arg GITHUB_SHA="$GITHUB_SHA" \
                     --build-arg GITHUB_REF="$GITHUB_REF" \
                     ./app/moderation-algo
