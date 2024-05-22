@@ -45,15 +45,25 @@ interface Props {
     eventId: string;
 }
 
-export function useParticipantList({ fragmentRef, eventId }: Props) {
+export function useParticipantList({ fragmentRef }: Props) {
     const [data, refetch] = useRefetchableFragment(USE_PARTICIPANT_LIST_FRAGMENT, fragmentRef);
+    const REFRESH_INTERVAL = 30000; // 30 seconds
+    const INITIAL_TIMEOUT = 1000; // 1 second
 
-    const REFRESH_INTERVAL = 15000; // 15 seconds
     const refresh = React.useCallback(() => {
-        refetch({ eventId, first: 1000 }, { fetchPolicy: 'store-and-network' });
-    }, [refetch, eventId]);
+        refetch({}, { fetchPolicy: 'network-only' });
+    }, [refetch]);
 
     useRefresh({ refreshInterval: REFRESH_INTERVAL, callback: refresh });
+
+    // Refresh a second after initial load to ensure a ping was received on the server
+    React.useEffect(() => {
+        const timeout = setTimeout(() => {
+            refresh();
+        }, INITIAL_TIMEOUT);
+        return () => clearTimeout(timeout);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const participants = React.useMemo(() => {
         const unsortedParticipants = data.participants?.edges?.map((participant) => ({
