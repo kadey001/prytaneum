@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<95773878a0a89ce4674f4e4a1cbbc818>>
+ * @generated SignedSource<<10c565d523e8dadb4e8b0d517b9b076a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,6 +22,11 @@ export type useEventDetailsFragment$data = {
   readonly startDateTime: Date | null;
   readonly title: string | null;
   readonly topic: string | null;
+  readonly topics: ReadonlyArray<{
+    readonly description: string;
+    readonly id: string;
+    readonly topic: string;
+  }> | null;
   readonly " $fragmentType": "useEventDetailsFragment";
 };
 export type useEventDetailsFragment$key = {
@@ -29,7 +34,29 @@ export type useEventDetailsFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"useEventDetailsFragment">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "topic",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "description",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": {
@@ -44,13 +71,7 @@ const node: ReaderFragment = {
   },
   "name": "useEventDetailsFragment",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    },
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -58,20 +79,8 @@ const node: ReaderFragment = {
       "name": "title",
       "storageKey": null
     },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "topic",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "description",
-      "storageKey": null
-    },
+    (v1/*: any*/),
+    (v2/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -120,12 +129,27 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "issueGuideUrl",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "EventTopic",
+      "kind": "LinkedField",
+      "name": "topics",
+      "plural": true,
+      "selections": [
+        (v0/*: any*/),
+        (v1/*: any*/),
+        (v2/*: any*/)
+      ],
+      "storageKey": null
     }
   ],
   "type": "Event",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "1e3632d245c6365ae65a3d6816792067";
+(node as any).hash = "ab121b9a240a802beddc0771de354001";
 
 export default node;

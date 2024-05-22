@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<38734a99d85e12719f9c43c8013aff2b>>
+ * @generated SignedSource<<a84e58d0235ba84fd5051a909cbce4fe>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,7 +22,9 @@ export type useQuestionListFragment$data = {
           readonly firstName: string | null;
         } | null;
         readonly id: string;
-        readonly question: string | null;
+        readonly onDeckPosition: string;
+        readonly position: string;
+        readonly question: string;
         readonly refQuestion: {
           readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
         } | null;
@@ -59,6 +61,11 @@ return {
       "defaultValue": 50,
       "kind": "LocalArgument",
       "name": "first"
+    },
+    {
+      "defaultValue": "default",
+      "kind": "LocalArgument",
+      "name": "topic"
     }
   ],
   "kind": "Fragment",
@@ -99,7 +106,13 @@ return {
     },
     {
       "alias": "questions",
-      "args": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "topic",
+          "variableName": "topic"
+        }
+      ],
       "concreteType": "EventQuestionConnection",
       "kind": "LinkedField",
       "name": "__useQuestionListFragment_questions_connection",
@@ -134,6 +147,20 @@ return {
                   "args": null,
                   "kind": "ScalarField",
                   "name": "question",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "position",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "onDeckPosition",
                   "storageKey": null
                 },
                 {
@@ -249,6 +276,6 @@ return {
 };
 })();
 
-(node as any).hash = "04d5e0c47685ba15a2a54c9e5aafe145";
+(node as any).hash = "1fa930264784555f9c5cd17d07e4c0a6";
 
 export default node;

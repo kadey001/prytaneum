@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a26000c4ec58363c1bac10013aab7ca2>>
+ * @generated SignedSource<<8a581b42f914db3e9ce31c765453527b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,6 @@ export type useTopicListQuery$variables = {
 export type useTopicListQuery$data = {
   readonly eventTopics: ReadonlyArray<{
     readonly description: string;
-    readonly eventId: string;
     readonly id: string;
     readonly topic: string;
   }> | null;
@@ -59,13 +58,6 @@ v1 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "eventId",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
         "name": "topic",
         "storageKey": null
       },
@@ -98,16 +90,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "3961c472a4005b24e044fe3c867dbce6",
+    "cacheID": "4ccb6badddaa7754521381deaa4c8de4",
     "id": null,
     "metadata": {},
     "name": "useTopicListQuery",
     "operationKind": "query",
-    "text": "query useTopicListQuery(\n  $eventId: String!\n) {\n  eventTopics(eventId: $eventId) {\n    id\n    eventId\n    topic\n    description\n  }\n}\n"
+    "text": "query useTopicListQuery(\n  $eventId: String!\n) {\n  eventTopics(eventId: $eventId) {\n    id\n    topic\n    description\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "dfac6bee23e7b13e94b8fa3715e3edcc";
+(node as any).hash = "ee303450961b52d919507f813f638c95";
 
 export default node;

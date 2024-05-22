@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<30767b7ab340a6ed4f52452bca71cc88>>
+ * @generated SignedSource<<1eb4e5f078d4c0beb30f18b0150208c6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,10 +10,10 @@
 
 import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type useViewerOnlyQuestionListFragment$data = {
+export type useQuestionModQueueFragment$data = {
   readonly currentQuestion: string | null;
   readonly id: string;
-  readonly questions: {
+  readonly questionModQueue: {
     readonly __id: string;
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
@@ -22,30 +22,48 @@ export type useViewerOnlyQuestionListFragment$data = {
           readonly firstName: string | null;
         } | null;
         readonly id: string;
+        readonly onDeckPosition: string;
+        readonly position: string;
         readonly question: string;
         readonly refQuestion: {
           readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
         } | null;
+        readonly topics: ReadonlyArray<{
+          readonly description: string;
+          readonly position: string;
+          readonly topic: string;
+        }> | null;
         readonly " $fragmentSpreads": FragmentRefs<"QuestionActionsFragment" | "QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
       };
     }> | null;
+    readonly pageInfo: {
+      readonly endCursor: string | null;
+      readonly startCursor: string | null;
+    };
   } | null;
-  readonly " $fragmentType": "useViewerOnlyQuestionListFragment";
+  readonly " $fragmentType": "useQuestionModQueueFragment";
 };
-export type useViewerOnlyQuestionListFragment$key = {
-  readonly " $data"?: useViewerOnlyQuestionListFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"useViewerOnlyQuestionListFragment">;
+export type useQuestionModQueueFragment$key = {
+  readonly " $data"?: useQuestionModQueueFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"useQuestionModQueueFragment">;
 };
 
 const node: ReaderFragment = (function(){
 var v0 = [
-  "questions"
+  "questionModQueue"
 ],
 v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "position",
   "storageKey": null
 };
 return {
@@ -56,14 +74,9 @@ return {
       "name": "after"
     },
     {
-      "defaultValue": 50,
+      "defaultValue": 1000,
       "kind": "LocalArgument",
       "name": "first"
-    },
-    {
-      "defaultValue": true,
-      "kind": "LocalArgument",
-      "name": "viewerOnly"
     }
   ],
   "kind": "Fragment",
@@ -88,11 +101,11 @@ return {
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": require('./viewerOnlyQuestionListPagination.graphql'),
+      "operation": require('./questionModQueuePagination.graphql'),
       "identifierField": "id"
     }
   },
-  "name": "useViewerOnlyQuestionListFragment",
+  "name": "useQuestionModQueueFragment",
   "selections": [
     (v1/*: any*/),
     {
@@ -103,17 +116,11 @@ return {
       "storageKey": null
     },
     {
-      "alias": "questions",
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "viewerOnly",
-          "variableName": "viewerOnly"
-        }
-      ],
+      "alias": "questionModQueue",
+      "args": null,
       "concreteType": "EventQuestionConnection",
       "kind": "LinkedField",
-      "name": "__useViewerOnlyQuestionListFragment_questions_connection",
+      "name": "__useQuestionModQueueFragment_questionModQueue_connection",
       "plural": false,
       "selections": [
         {
@@ -145,6 +152,40 @@ return {
                   "args": null,
                   "kind": "ScalarField",
                   "name": "question",
+                  "storageKey": null
+                },
+                (v2/*: any*/),
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "onDeckPosition",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "EventQuestionTopic",
+                  "kind": "LinkedField",
+                  "name": "topics",
+                  "plural": true,
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "topic",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "description",
+                      "storageKey": null
+                    },
+                    (v2/*: any*/)
+                  ],
                   "storageKey": null
                 },
                 {
@@ -226,6 +267,13 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
+              "name": "startCursor",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
               "name": "endCursor",
               "storageKey": null
             },
@@ -260,6 +308,6 @@ return {
 };
 })();
 
-(node as any).hash = "ea84e45d2a4280cb35c50555b9aa2f21";
+(node as any).hash = "87935db09d024f784b8ffea8ffb58a30";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c0593c8694c9f238122d9a78822d0abf>>
+ * @generated SignedSource<<a8c09f491655c88dfc6cd5ed828aeb06>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -118,6 +118,13 @@ v12 = {
   "args": null,
   "kind": "ScalarField",
   "name": "createdAt",
+  "storageKey": null
+},
+v13 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "position",
   "storageKey": null
 };
 return {
@@ -268,11 +275,24 @@ return {
                             "name": "isLikedByViewer",
                             "storageKey": null
                           },
+                          (v13/*: any*/),
                           {
                             "alias": null,
                             "args": null,
-                            "kind": "ScalarField",
-                            "name": "position",
+                            "concreteType": "EventQuestionTopic",
+                            "kind": "LinkedField",
+                            "name": "topics",
+                            "plural": true,
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "topic",
+                                "storageKey": null
+                              },
+                              (v13/*: any*/)
+                            ],
                             "storageKey": null
                           },
                           {
@@ -350,12 +370,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "670f248fb9d530ec28ef09ddac4cc130",
+    "cacheID": "ffcc048e23cc652e6413d7067ff1b6ab",
     "id": null,
     "metadata": {},
     "name": "viewerOnlyQuestionListPagination",
     "operationKind": "query",
-    "text": "query viewerOnlyQuestionListPagination(\n  $after: String = \"\"\n  $first: Int = 50\n  $viewerOnly: Boolean = true\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useViewerOnlyQuestionListFragment_3MCBfr\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment on EventQuestion {\n  id\n  ...QuoteFragment\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionQuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment QuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment useViewerOnlyQuestionListFragment_3MCBfr on Event {\n  id\n  currentQuestion\n  questions(first: $first, after: $after, viewerOnly: $viewerOnly) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment\n          id\n        }\n        ...QuestionActionsFragment\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query viewerOnlyQuestionListPagination(\n  $after: String = \"\"\n  $first: Int = 50\n  $viewerOnly: Boolean = true\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useViewerOnlyQuestionListFragment_3MCBfr\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment on EventQuestion {\n  id\n  ...QuoteFragment\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionQuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment useViewerOnlyQuestionListFragment_3MCBfr on Event {\n  id\n  currentQuestion\n  questions(first: $first, after: $after, viewerOnly: $viewerOnly) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment\n          id\n        }\n        ...QuestionActionsFragment\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

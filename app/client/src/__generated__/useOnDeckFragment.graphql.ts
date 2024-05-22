@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f68b8d5383ddc85bd71245d1a6fce839>>
+ * @generated SignedSource<<df5131ab319a2a9ad5069cbafdefc9fb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type useQuestionQueueFragment$data = {
+export type useOnDeckFragment$data = {
   readonly currentQuestion: string | null;
   readonly id: string;
   readonly questionQueue: {
@@ -23,11 +23,17 @@ export type useQuestionQueueFragment$data = {
             readonly firstName: string | null;
           } | null;
           readonly id: string;
+          readonly onDeckPosition: string;
           readonly position: string;
           readonly question: string;
           readonly refQuestion: {
             readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
           } | null;
+          readonly topics: ReadonlyArray<{
+            readonly description: string;
+            readonly position: string;
+            readonly topic: string;
+          }> | null;
           readonly " $fragmentSpreads": FragmentRefs<"QuestionActionsFragment" | "QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
         };
       }> | null;
@@ -41,21 +47,27 @@ export type useQuestionQueueFragment$data = {
             readonly firstName: string | null;
           } | null;
           readonly id: string;
+          readonly onDeckPosition: string;
           readonly position: string;
           readonly question: string;
           readonly refQuestion: {
             readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
           } | null;
+          readonly topics: ReadonlyArray<{
+            readonly description: string;
+            readonly position: string;
+            readonly topic: string;
+          }> | null;
           readonly " $fragmentSpreads": FragmentRefs<"QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
         };
       }> | null;
     } | null;
   } | null;
-  readonly " $fragmentType": "useQuestionQueueFragment";
+  readonly " $fragmentType": "useOnDeckFragment";
 };
-export type useQuestionQueueFragment$key = {
-  readonly " $data"?: useQuestionQueueFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"useQuestionQueueFragment">;
+export type useOnDeckFragment$key = {
+  readonly " $data"?: useOnDeckFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"useOnDeckFragment">;
 };
 
 const node: ReaderFragment = (function(){
@@ -83,6 +95,39 @@ v2 = {
 v3 = {
   "alias": null,
   "args": null,
+  "kind": "ScalarField",
+  "name": "position",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "EventQuestionTopic",
+  "kind": "LinkedField",
+  "name": "topics",
+  "plural": true,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "topic",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "description",
+      "storageKey": null
+    },
+    (v3/*: any*/)
+  ],
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
   "concreteType": "User",
   "kind": "LinkedField",
   "name": "createdBy",
@@ -98,29 +143,29 @@ v3 = {
   ],
   "storageKey": null
 },
-v4 = {
+v6 = {
   "args": null,
   "kind": "FragmentSpread",
   "name": "QuestionAuthorFragment"
 },
-v5 = {
+v7 = {
   "args": null,
   "kind": "FragmentSpread",
   "name": "QuestionStatsFragment"
 },
-v6 = {
+v8 = {
   "args": null,
   "kind": "FragmentSpread",
   "name": "QuestionContentFragment"
 },
-v7 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "position",
+  "name": "onDeckPosition",
   "storageKey": null
 },
-v8 = {
+v10 = {
   "alias": null,
   "args": null,
   "concreteType": "EventQuestion",
@@ -136,14 +181,14 @@ v8 = {
   ],
   "storageKey": null
 },
-v9 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v10 = {
+v12 = {
   "alias": null,
   "args": null,
   "concreteType": "PageInfo",
@@ -168,7 +213,7 @@ v10 = {
   ],
   "storageKey": null
 },
-v11 = {
+v13 = {
   "kind": "ClientExtension",
   "selections": [
     {
@@ -216,7 +261,7 @@ return {
       }
     ]
   },
-  "name": "useQuestionQueueFragment",
+  "name": "useOnDeckFragment",
   "selections": [
     (v0/*: any*/),
     {
@@ -239,7 +284,7 @@ return {
           "args": null,
           "concreteType": "EventQuestionConnection",
           "kind": "LinkedField",
-          "name": "__QuestionQueueFragment_questionRecord_connection",
+          "name": "__useOnDeckFragment_questionRecord_connection",
           "plural": false,
           "selections": [
             {
@@ -261,21 +306,23 @@ return {
                   "selections": [
                     (v0/*: any*/),
                     (v2/*: any*/),
-                    (v3/*: any*/),
                     (v4/*: any*/),
                     (v5/*: any*/),
                     (v6/*: any*/),
                     (v7/*: any*/),
                     (v8/*: any*/),
-                    (v9/*: any*/)
+                    (v3/*: any*/),
+                    (v9/*: any*/),
+                    (v10/*: any*/),
+                    (v11/*: any*/)
                   ],
                   "storageKey": null
                 }
               ],
               "storageKey": null
             },
-            (v10/*: any*/),
-            (v11/*: any*/)
+            (v12/*: any*/),
+            (v13/*: any*/)
           ],
           "storageKey": null
         },
@@ -284,7 +331,7 @@ return {
           "args": null,
           "concreteType": "EventQuestionConnection",
           "kind": "LinkedField",
-          "name": "__QuestionQueueFragment_enqueuedQuestions_connection",
+          "name": "__useOnDeckFragment_enqueuedQuestions_connection",
           "plural": false,
           "selections": [
             {
@@ -306,26 +353,28 @@ return {
                   "selections": [
                     (v0/*: any*/),
                     (v2/*: any*/),
-                    (v3/*: any*/),
+                    (v4/*: any*/),
+                    (v5/*: any*/),
                     {
                       "args": null,
                       "kind": "FragmentSpread",
                       "name": "QuestionActionsFragment"
                     },
-                    (v4/*: any*/),
-                    (v5/*: any*/),
                     (v6/*: any*/),
                     (v7/*: any*/),
                     (v8/*: any*/),
-                    (v9/*: any*/)
+                    (v3/*: any*/),
+                    (v9/*: any*/),
+                    (v10/*: any*/),
+                    (v11/*: any*/)
                   ],
                   "storageKey": null
                 }
               ],
               "storageKey": null
             },
-            (v10/*: any*/),
-            (v11/*: any*/)
+            (v12/*: any*/),
+            (v13/*: any*/)
           ],
           "storageKey": null
         }
@@ -338,6 +387,6 @@ return {
 };
 })();
 
-(node as any).hash = "83041d7b8a3882356dbe791565b11e26";
+(node as any).hash = "f13dc96d220c4cf27f9b02843a4e6be3";
 
 export default node;

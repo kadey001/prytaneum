@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<17c18ce424dc91e8c4fc70f31480dfed>>
+ * @generated SignedSource<<dcbb95036cb72c78ed27d1e1aeb0327d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -123,6 +123,20 @@ v12 = {
 v13 = {
   "alias": null,
   "args": null,
+  "kind": "ScalarField",
+  "name": "position",
+  "storageKey": null
+},
+v14 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "topic",
+  "storageKey": null
+},
+v15 = {
+  "alias": null,
+  "args": null,
   "concreteType": "PageInfo",
   "kind": "LinkedField",
   "name": "pageInfo",
@@ -145,7 +159,7 @@ v13 = {
   ],
   "storageKey": null
 },
-v14 = {
+v16 = {
   "kind": "ClientExtension",
   "selections": [
     {
@@ -157,7 +171,7 @@ v14 = {
     }
   ]
 },
-v15 = [
+v17 = [
   (v5/*: any*/),
   {
     "kind": "Literal",
@@ -165,14 +179,14 @@ v15 = [
     "value": 100
   }
 ],
-v16 = {
+v18 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "message",
   "storageKey": null
 },
-v17 = {
+v19 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -194,14 +208,14 @@ v17 = {
   ],
   "storageKey": null
 },
-v18 = {
+v20 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "title",
   "storageKey": null
 },
-v19 = {
+v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -363,11 +377,18 @@ return {
                             "name": "isLikedByViewer",
                             "storageKey": null
                           },
+                          (v13/*: any*/),
                           {
                             "alias": null,
                             "args": null,
-                            "kind": "ScalarField",
-                            "name": "position",
+                            "concreteType": "EventQuestionTopic",
+                            "kind": "LinkedField",
+                            "name": "topics",
+                            "plural": true,
+                            "selections": [
+                              (v14/*: any*/),
+                              (v13/*: any*/)
+                            ],
                             "storageKey": null
                           },
                           {
@@ -384,8 +405,8 @@ return {
                     ],
                     "storageKey": null
                   },
-                  (v13/*: any*/),
-                  (v14/*: any*/)
+                  (v15/*: any*/),
+                  (v16/*: any*/)
                 ],
                 "storageKey": "questions(after:\"\",first:50,viewerOnly:true)"
               },
@@ -402,7 +423,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v15/*: any*/),
+                "args": (v17/*: any*/),
                 "concreteType": "EventLiveFeedbackConnection",
                 "kind": "LinkedField",
                 "name": "liveFeedback",
@@ -426,8 +447,8 @@ return {
                         "plural": false,
                         "selections": [
                           (v2/*: any*/),
-                          (v16/*: any*/),
-                          (v17/*: any*/),
+                          (v18/*: any*/),
+                          (v19/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -436,9 +457,9 @@ return {
                             "name": "refFeedback",
                             "plural": false,
                             "selections": [
-                              (v17/*: any*/),
+                              (v19/*: any*/),
                               (v2/*: any*/),
-                              (v16/*: any*/),
+                              (v18/*: any*/),
                               (v12/*: any*/)
                             ],
                             "storageKey": null
@@ -451,29 +472,23 @@ return {
                     ],
                     "storageKey": null
                   },
-                  (v13/*: any*/),
-                  (v14/*: any*/)
+                  (v15/*: any*/),
+                  (v16/*: any*/)
                 ],
                 "storageKey": "liveFeedback(after:\"\",first:100)"
               },
               {
                 "alias": null,
-                "args": (v15/*: any*/),
+                "args": (v17/*: any*/),
                 "filters": null,
                 "handle": "connection",
                 "key": "useLiveFeedbackListFragment_liveFeedback",
                 "kind": "LinkedHandle",
                 "name": "liveFeedback"
               },
-              (v18/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "topic",
-                "storageKey": null
-              },
-              (v19/*: any*/),
+              (v20/*: any*/),
+              (v14/*: any*/),
+              (v21/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -526,6 +541,20 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "concreteType": "EventTopic",
+                "kind": "LinkedField",
+                "name": "topics",
+                "plural": true,
+                "selections": [
+                  (v2/*: any*/),
+                  (v14/*: any*/),
+                  (v21/*: any*/)
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": "EventSpeakerConnection",
                 "kind": "LinkedField",
                 "name": "speakers",
@@ -562,8 +591,8 @@ return {
                             "name": "name",
                             "storageKey": null
                           },
-                          (v19/*: any*/),
-                          (v18/*: any*/)
+                          (v21/*: any*/),
+                          (v20/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -584,12 +613,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1b2c0ae7d49e63a717cd28554f871adb",
+    "cacheID": "fd6bb20da8f7ace1f24592efdc99e703",
     "id": null,
     "metadata": {},
     "name": "EventPreQuery",
     "operationKind": "query",
-    "text": "query EventPreQuery(\n  $eventId: ID!\n) {\n  node(id: $eventId) {\n    __typename\n    id\n    ... on Event {\n      ...useViewerOnlyQuestionListFragment\n      ...useLiveFeedbackListFragment_32qNee\n      ...useEventDetailsFragment\n      ...SpeakerListFragment\n    }\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment LiveFeedbackAuthorFragment_32qNee on EventLiveFeedback {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n    moderatorOf(eventId: $eventId)\n  }\n  createdAt\n}\n\nfragment LiveFeedbackReplyFragment_32qNee on EventLiveFeedback {\n  id\n  message\n  ...LiveFeedbackAuthorFragment_32qNee\n}\n\nfragment QuestionActionsFragment on EventQuestion {\n  id\n  ...QuoteFragment\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionQuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment QuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment SpeakerListFragment on Event {\n  speakers {\n    edges {\n      node {\n        id\n        pictureUrl\n        name\n        description\n        title\n      }\n      cursor\n    }\n  }\n  id\n}\n\nfragment useEventDetailsFragment on Event {\n  id\n  title\n  topic\n  description\n  startDateTime\n  endDateTime\n  isActive\n  isViewerModerator\n  isPrivate\n  isViewerInvited\n  issueGuideUrl\n}\n\nfragment useLiveFeedbackListFragment_32qNee on Event {\n  id\n  liveFeedback(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        message\n        createdBy {\n          id\n          firstName\n          moderatorOf(eventId: $eventId)\n        }\n        refFeedback {\n          createdBy {\n            id\n            firstName\n            moderatorOf(eventId: $eventId)\n          }\n          ...LiveFeedbackReplyFragment_32qNee\n          id\n        }\n        ...LiveFeedbackReplyFragment_32qNee\n        ...LiveFeedbackAuthorFragment_32qNee\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useViewerOnlyQuestionListFragment on Event {\n  id\n  currentQuestion\n  questions(first: 50, after: \"\", viewerOnly: true) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment\n          id\n        }\n        ...QuestionActionsFragment\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query EventPreQuery(\n  $eventId: ID!\n) {\n  node(id: $eventId) {\n    __typename\n    id\n    ... on Event {\n      ...useViewerOnlyQuestionListFragment\n      ...useLiveFeedbackListFragment_32qNee\n      ...useEventDetailsFragment\n      ...SpeakerListFragment\n    }\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment LiveFeedbackAuthorFragment_32qNee on EventLiveFeedback {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n    moderatorOf(eventId: $eventId)\n  }\n  createdAt\n}\n\nfragment LiveFeedbackReplyFragment_32qNee on EventLiveFeedback {\n  id\n  message\n  ...LiveFeedbackAuthorFragment_32qNee\n}\n\nfragment QuestionActionsFragment on EventQuestion {\n  id\n  ...QuoteFragment\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionQuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment SpeakerListFragment on Event {\n  speakers {\n    edges {\n      node {\n        id\n        pictureUrl\n        name\n        description\n        title\n      }\n      cursor\n    }\n  }\n  id\n}\n\nfragment useEventDetailsFragment on Event {\n  id\n  title\n  topic\n  description\n  startDateTime\n  endDateTime\n  isActive\n  isViewerModerator\n  isPrivate\n  isViewerInvited\n  issueGuideUrl\n  topics {\n    id\n    topic\n    description\n  }\n}\n\nfragment useLiveFeedbackListFragment_32qNee on Event {\n  id\n  liveFeedback(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        message\n        createdBy {\n          id\n          firstName\n          moderatorOf(eventId: $eventId)\n        }\n        refFeedback {\n          createdBy {\n            id\n            firstName\n            moderatorOf(eventId: $eventId)\n          }\n          ...LiveFeedbackReplyFragment_32qNee\n          id\n        }\n        ...LiveFeedbackReplyFragment_32qNee\n        ...LiveFeedbackAuthorFragment_32qNee\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useViewerOnlyQuestionListFragment on Event {\n  id\n  currentQuestion\n  questions(first: 50, after: \"\", viewerOnly: true) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment\n          id\n        }\n        ...QuestionActionsFragment\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<05ef50d93182150f09d2242ef14d1b56>>
+ * @generated SignedSource<<02ed2a8d4705d00e3ee02ea56eb9704c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -31,7 +31,26 @@ export type AskQuestionMutation$data = {
           readonly lastName: string | null;
         } | null;
         readonly id: string;
-        readonly question: string | null;
+        readonly question: string;
+      };
+    } | null;
+    readonly isError: boolean;
+    readonly message: string;
+  };
+};
+export type AskQuestionMutation$rawResponse = {
+  readonly createQuestion: {
+    readonly body: {
+      readonly cursor: string;
+      readonly node: {
+        readonly createdAt: Date | null;
+        readonly createdBy: {
+          readonly firstName: string | null;
+          readonly id: string;
+          readonly lastName: string | null;
+        } | null;
+        readonly id: string;
+        readonly question: string;
       };
     } | null;
     readonly isError: boolean;
@@ -39,6 +58,7 @@ export type AskQuestionMutation$data = {
   };
 };
 export type AskQuestionMutation = {
+  rawResponse: AskQuestionMutation$rawResponse;
   response: AskQuestionMutation$data;
   variables: AskQuestionMutation$variables;
 };
@@ -189,6 +209,6 @@ return {
 };
 })();
 
-(node as any).hash = "12c8dcac98bfb6588516e97ac05305e3";
+(node as any).hash = "94c478947ace30e68191a156ba374d44";
 
 export default node;

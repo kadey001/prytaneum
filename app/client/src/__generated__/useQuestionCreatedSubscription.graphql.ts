@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<eb5c65c35540ec117c5a51fdc9e0fcc5>>
+ * @generated SignedSource<<357d75822d71f8d18cd6e17f2bdd3ce5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,11 +20,15 @@ export type useQuestionCreatedSubscription$data = {
       readonly cursor: string;
       readonly node: {
         readonly id: string;
-        readonly isVisible: boolean | null;
+        readonly isVisible: boolean;
         readonly position: string;
         readonly refQuestion: {
           readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
         } | null;
+        readonly topics: ReadonlyArray<{
+          readonly position: string;
+          readonly topic: string;
+        }> | null;
         readonly " $fragmentSpreads": FragmentRefs<"QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
       };
     };
@@ -77,11 +81,30 @@ v5 = {
 v6 = {
   "alias": null,
   "args": null,
+  "concreteType": "EventQuestionTopic",
+  "kind": "LinkedField",
+  "name": "topics",
+  "plural": true,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "topic",
+      "storageKey": null
+    },
+    (v5/*: any*/)
+  ],
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
   "kind": "ScalarField",
   "name": "isVisible",
   "storageKey": null
 },
-v7 = {
+v8 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -114,14 +137,14 @@ v7 = {
   ],
   "storageKey": null
 },
-v8 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "createdAt",
   "storageKey": null
 },
-v9 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -166,6 +189,7 @@ return {
                   (v4/*: any*/),
                   (v5/*: any*/),
                   (v6/*: any*/),
+                  (v7/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
@@ -250,6 +274,7 @@ return {
                   (v7/*: any*/),
                   (v8/*: any*/),
                   (v9/*: any*/),
+                  (v10/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -266,9 +291,9 @@ return {
                     "plural": false,
                     "selections": [
                       (v4/*: any*/),
-                      (v7/*: any*/),
                       (v8/*: any*/),
-                      (v9/*: any*/)
+                      (v9/*: any*/),
+                      (v10/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -300,16 +325,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2424d4faefe74fb61c1b215dc1c16ddc",
+    "cacheID": "9d771efa8a9576d777370d81254cd7d2",
     "id": null,
     "metadata": {},
     "name": "useQuestionCreatedSubscription",
     "operationKind": "subscription",
-    "text": "subscription useQuestionCreatedSubscription(\n  $eventId: ID!\n) {\n  questionCreated(eventId: $eventId) {\n    edge {\n      cursor\n      node {\n        id\n        position\n        isVisible\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n        refQuestion {\n          ...QuestionQuoteFragment\n          id\n        }\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionQuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
+    "text": "subscription useQuestionCreatedSubscription(\n  $eventId: ID!\n) {\n  questionCreated(eventId: $eventId) {\n    edge {\n      cursor\n      node {\n        id\n        position\n        topics {\n          topic\n          position\n        }\n        isVisible\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n        refQuestion {\n          ...QuestionQuoteFragment\n          id\n        }\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionQuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
   }
 };
 })();
 
-(node as any).hash = "b0e8a52bc8a0fc61bdd71c50467934dd";
+(node as any).hash = "8d07f4d8d044c599540e43b4073df27f";
 
 export default node;

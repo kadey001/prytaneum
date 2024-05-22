@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<30767b7ab340a6ed4f52452bca71cc88>>
+ * @generated SignedSource<<df6ff76cc4ab5f052b3afb12b593ae4c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type useViewerOnlyQuestionListFragment$data = {
+export type useQuestionsByTopicFragment$data = {
   readonly currentQuestion: string | null;
   readonly id: string;
   readonly questions: {
@@ -22,19 +22,29 @@ export type useViewerOnlyQuestionListFragment$data = {
           readonly firstName: string | null;
         } | null;
         readonly id: string;
+        readonly position: string;
         readonly question: string;
         readonly refQuestion: {
           readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
         } | null;
+        readonly topics: ReadonlyArray<{
+          readonly description: string;
+          readonly position: string;
+          readonly topic: string;
+        }> | null;
         readonly " $fragmentSpreads": FragmentRefs<"QuestionActionsFragment" | "QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
       };
     }> | null;
+    readonly pageInfo: {
+      readonly endCursor: string | null;
+      readonly startCursor: string | null;
+    };
   } | null;
-  readonly " $fragmentType": "useViewerOnlyQuestionListFragment";
+  readonly " $fragmentType": "useQuestionsByTopicFragment";
 };
-export type useViewerOnlyQuestionListFragment$key = {
-  readonly " $data"?: useViewerOnlyQuestionListFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"useViewerOnlyQuestionListFragment">;
+export type useQuestionsByTopicFragment$key = {
+  readonly " $data"?: useQuestionsByTopicFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"useQuestionsByTopicFragment">;
 };
 
 const node: ReaderFragment = (function(){
@@ -46,6 +56,13 @@ v1 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "position",
   "storageKey": null
 };
 return {
@@ -61,9 +78,9 @@ return {
       "name": "first"
     },
     {
-      "defaultValue": true,
+      "defaultValue": "default",
       "kind": "LocalArgument",
-      "name": "viewerOnly"
+      "name": "topic"
     }
   ],
   "kind": "Fragment",
@@ -88,11 +105,11 @@ return {
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": require('./viewerOnlyQuestionListPagination.graphql'),
+      "operation": require('./questionsByTopicPagination.graphql'),
       "identifierField": "id"
     }
   },
-  "name": "useViewerOnlyQuestionListFragment",
+  "name": "useQuestionsByTopicFragment",
   "selections": [
     (v1/*: any*/),
     {
@@ -107,13 +124,13 @@ return {
       "args": [
         {
           "kind": "Variable",
-          "name": "viewerOnly",
-          "variableName": "viewerOnly"
+          "name": "topic",
+          "variableName": "topic"
         }
       ],
       "concreteType": "EventQuestionConnection",
       "kind": "LinkedField",
-      "name": "__useViewerOnlyQuestionListFragment_questions_connection",
+      "name": "__useQuestionsByTopicFragment_questions_connection",
       "plural": false,
       "selections": [
         {
@@ -145,6 +162,33 @@ return {
                   "args": null,
                   "kind": "ScalarField",
                   "name": "question",
+                  "storageKey": null
+                },
+                (v2/*: any*/),
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "EventQuestionTopic",
+                  "kind": "LinkedField",
+                  "name": "topics",
+                  "plural": true,
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "topic",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "description",
+                      "storageKey": null
+                    },
+                    (v2/*: any*/)
+                  ],
                   "storageKey": null
                 },
                 {
@@ -226,6 +270,13 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
+              "name": "startCursor",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
               "name": "endCursor",
               "storageKey": null
             },
@@ -260,6 +311,6 @@ return {
 };
 })();
 
-(node as any).hash = "ea84e45d2a4280cb35c50555b9aa2f21";
+(node as any).hash = "5637ed11e38a778731601ded2cac063e";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<501961b1269e9891cc177a8211d73739>>
+ * @generated SignedSource<<8d5de573abcd107ce2312ec465f0d6d4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,24 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type RemoveQuestionFromQueue = {
+export type RemoveQuestionFromTopicQueue = {
   eventId: string;
   questionId: string;
+  topic: string;
 };
 export type DequeueQuestionButtonMutation$variables = {
-  input: RemoveQuestionFromQueue;
+  input: RemoveQuestionFromTopicQueue;
 };
 export type DequeueQuestionButtonMutation$data = {
-  readonly removeQuestionFromQueue: {
+  readonly removeQuestionFromTopicQueue: {
     readonly body: {
       readonly cursor: string;
       readonly node: {
         readonly id: string;
         readonly position: string;
+        readonly topics: ReadonlyArray<{
+          readonly position: string;
+        }> | null;
       };
     } | null;
     readonly isError: boolean;
@@ -42,7 +46,14 @@ var v0 = [
     "name": "input"
   }
 ],
-v1 = [
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "position",
+  "storageKey": null
+},
+v2 = [
   {
     "alias": null,
     "args": [
@@ -54,7 +65,7 @@ v1 = [
     ],
     "concreteType": "EventQuestionMutationResponse",
     "kind": "LinkedField",
-    "name": "removeQuestionFromQueue",
+    "name": "removeQuestionFromTopicQueue",
     "plural": false,
     "selections": [
       {
@@ -101,11 +112,17 @@ v1 = [
                 "name": "id",
                 "storageKey": null
               },
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "position",
+                "concreteType": "EventQuestionTopic",
+                "kind": "LinkedField",
+                "name": "topics",
+                "plural": true,
+                "selections": [
+                  (v1/*: any*/)
+                ],
                 "storageKey": null
               }
             ],
@@ -124,7 +141,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "DequeueQuestionButtonMutation",
-    "selections": (v1/*: any*/),
+    "selections": (v2/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
@@ -133,19 +150,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "DequeueQuestionButtonMutation",
-    "selections": (v1/*: any*/)
+    "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "bab3fafa5cacc48aa6447ba39cfd9f21",
+    "cacheID": "25ac2219ff80cff7edf7c1ae3eba6f67",
     "id": null,
     "metadata": {},
     "name": "DequeueQuestionButtonMutation",
     "operationKind": "mutation",
-    "text": "mutation DequeueQuestionButtonMutation(\n  $input: RemoveQuestionFromQueue!\n) {\n  removeQuestionFromQueue(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        position\n      }\n    }\n  }\n}\n"
+    "text": "mutation DequeueQuestionButtonMutation(\n  $input: RemoveQuestionFromTopicQueue!\n) {\n  removeQuestionFromTopicQueue(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        position\n        topics {\n          position\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "b6633a932e23782c1244f9b332e9766a";
+(node as any).hash = "8cd73f169b483ff7e31aedea3e7fc674";
 
 export default node;

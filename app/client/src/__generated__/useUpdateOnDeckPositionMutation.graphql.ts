@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<de2bd47f03441f580c76f9cf859b4f77>>
+ * @generated SignedSource<<e99fc8741d2822d9a82298714c133fcd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,16 +9,16 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type UpdateQuestionPosition = {
+export type UpdateOnDeckPosition = {
   eventId: string;
-  position: string;
+  newPosition: string;
   questionId: string;
 };
-export type QuestionQueueMutation$variables = {
-  input: UpdateQuestionPosition;
+export type useUpdateOnDeckPositionMutation$variables = {
+  input: UpdateOnDeckPosition;
 };
-export type QuestionQueueMutation$data = {
-  readonly updateQuestionPosition: {
+export type useUpdateOnDeckPositionMutation$data = {
+  readonly updateOnDeckPosition: {
     readonly body: {
       readonly cursor: string;
       readonly node: {
@@ -34,8 +34,8 @@ export type QuestionQueueMutation$data = {
     readonly message: string;
   };
 };
-export type QuestionQueueMutation$rawResponse = {
-  readonly updateQuestionPosition: {
+export type useUpdateOnDeckPositionMutation$rawResponse = {
+  readonly updateOnDeckPosition: {
     readonly body: {
       readonly cursor: string;
       readonly node: {
@@ -52,10 +52,10 @@ export type QuestionQueueMutation$rawResponse = {
     readonly message: string;
   };
 };
-export type QuestionQueueMutation = {
-  rawResponse: QuestionQueueMutation$rawResponse;
-  response: QuestionQueueMutation$data;
-  variables: QuestionQueueMutation$variables;
+export type useUpdateOnDeckPositionMutation = {
+  rawResponse: useUpdateOnDeckPositionMutation$rawResponse;
+  response: useUpdateOnDeckPositionMutation$data;
+  variables: useUpdateOnDeckPositionMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -127,14 +127,14 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "QuestionQueueMutation",
+    "name": "useUpdateOnDeckPositionMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
         "concreteType": "EventQuestionMutationResponse",
         "kind": "LinkedField",
-        "name": "updateQuestionPosition",
+        "name": "updateOnDeckPosition",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -188,14 +188,14 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "QuestionQueueMutation",
+    "name": "useUpdateOnDeckPositionMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
         "concreteType": "EventQuestionMutationResponse",
         "kind": "LinkedField",
-        "name": "updateQuestionPosition",
+        "name": "updateOnDeckPosition",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -245,16 +245,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d81b33f4d92004792283cb8c780fc2f8",
+    "cacheID": "e73254e03d460096c5af271fa31c3030",
     "id": null,
     "metadata": {},
-    "name": "QuestionQueueMutation",
+    "name": "useUpdateOnDeckPositionMutation",
     "operationKind": "mutation",
-    "text": "mutation QuestionQueueMutation(\n  $input: UpdateQuestionPosition!\n) {\n  updateQuestionPosition(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        question\n        createdBy {\n          firstName\n          id\n        }\n        position\n      }\n    }\n  }\n}\n"
+    "text": "mutation useUpdateOnDeckPositionMutation(\n  $input: UpdateOnDeckPosition!\n) {\n  updateOnDeckPosition(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        question\n        createdBy {\n          firstName\n          id\n        }\n        position\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "dbced572ae8572ce239520f31ebcee65";
+(node as any).hash = "890c84a049b35ece45bfacfa20c05489";
 
 export default node;

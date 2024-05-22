@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<eb401355e487478feefb15018eb01fe1>>
+ * @generated SignedSource<<97df95634fe7c46dad9eb91805fe3646>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -37,7 +37,28 @@ v1 = [
     "name": "id",
     "variableName": "id"
   }
-];
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "topic",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "description",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -86,13 +107,7 @@ return {
             "name": "__typename",
             "storageKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
-          },
+          (v2/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -103,20 +118,8 @@ return {
                 "name": "title",
                 "storageKey": null
               },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "topic",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "description",
-                "storageKey": null
-              },
+              (v3/*: any*/),
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -165,6 +168,20 @@ return {
                 "kind": "ScalarField",
                 "name": "issueGuideUrl",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "EventTopic",
+                "kind": "LinkedField",
+                "name": "topics",
+                "plural": true,
+                "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/),
+                  (v4/*: any*/)
+                ],
+                "storageKey": null
               }
             ],
             "type": "Event",
@@ -176,16 +193,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8fd38090644a2543c23fcadbc9a93523",
+    "cacheID": "6beadf6ed088f3382d47dcb4f211d24e",
     "id": null,
     "metadata": {},
     "name": "UseEventDetailsRefetchQuery",
     "operationKind": "query",
-    "text": "query UseEventDetailsRefetchQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useEventDetailsFragment\n    id\n  }\n}\n\nfragment useEventDetailsFragment on Event {\n  id\n  title\n  topic\n  description\n  startDateTime\n  endDateTime\n  isActive\n  isViewerModerator\n  isPrivate\n  isViewerInvited\n  issueGuideUrl\n}\n"
+    "text": "query UseEventDetailsRefetchQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useEventDetailsFragment\n    id\n  }\n}\n\nfragment useEventDetailsFragment on Event {\n  id\n  title\n  topic\n  description\n  startDateTime\n  endDateTime\n  isActive\n  isViewerModerator\n  isPrivate\n  isViewerInvited\n  issueGuideUrl\n  topics {\n    id\n    topic\n    description\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1e3632d245c6365ae65a3d6816792067";
+(node as any).hash = "ab121b9a240a802beddc0771de354001";
 
 export default node;

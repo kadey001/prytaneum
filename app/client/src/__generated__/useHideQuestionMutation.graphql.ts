@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<11c94eb8c7b99fb82a1e557975f87595>>
+ * @generated SignedSource<<e9fcd247d4c6168ae6882989075c8378>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,30 +9,28 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type AddQuestionToTopicQueue = {
-  eventId: string;
+export type DeleteQuestion = {
+  isVisible: boolean;
   questionId: string;
-  topic: string;
 };
-export type EnqueueQuestionButtonMutation$variables = {
-  input: AddQuestionToTopicQueue;
+export type useHideQuestionMutation$variables = {
+  input: DeleteQuestion;
 };
-export type EnqueueQuestionButtonMutation$data = {
-  readonly addQuestionToTopicQueue: {
+export type useHideQuestionMutation$data = {
+  readonly deleteQuestion: {
     readonly body: {
       readonly cursor: string;
       readonly node: {
         readonly id: string;
-        readonly position: string;
       };
     } | null;
     readonly isError: boolean;
     readonly message: string;
   };
 };
-export type EnqueueQuestionButtonMutation = {
-  response: EnqueueQuestionButtonMutation$data;
-  variables: EnqueueQuestionButtonMutation$variables;
+export type useHideQuestionMutation = {
+  response: useHideQuestionMutation$data;
+  variables: useHideQuestionMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -55,7 +53,7 @@ v1 = [
     ],
     "concreteType": "EventQuestionMutationResponse",
     "kind": "LinkedField",
-    "name": "addQuestionToTopicQueue",
+    "name": "deleteQuestion",
     "plural": false,
     "selections": [
       {
@@ -101,13 +99,6 @@ v1 = [
                 "kind": "ScalarField",
                 "name": "id",
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "position",
-                "storageKey": null
               }
             ],
             "storageKey": null
@@ -124,7 +115,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "EnqueueQuestionButtonMutation",
+    "name": "useHideQuestionMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -133,20 +124,20 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "EnqueueQuestionButtonMutation",
+    "name": "useHideQuestionMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "aa85dd7c9f881068ad0864792dd41278",
+    "cacheID": "5b64afccd86fb35edaa8ac68d9cb8737",
     "id": null,
     "metadata": {},
-    "name": "EnqueueQuestionButtonMutation",
+    "name": "useHideQuestionMutation",
     "operationKind": "mutation",
-    "text": "mutation EnqueueQuestionButtonMutation(\n  $input: AddQuestionToTopicQueue!\n) {\n  addQuestionToTopicQueue(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        position\n      }\n    }\n  }\n}\n"
+    "text": "mutation useHideQuestionMutation(\n  $input: DeleteQuestion!\n) {\n  deleteQuestion(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "87db975f9036bbac9a053a7efced47ad";
+(node as any).hash = "5c89cb7eb6fb58e1c6b39c0054837718";
 
 export default node;
