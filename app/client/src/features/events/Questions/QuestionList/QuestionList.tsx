@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { Grid, Card, Typography, IconButton, Paper, Stack } from '@mui/material';
+import { Grid, Card, Typography, IconButton, Paper, Stack, Badge, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
+import PauseCircleIcon from '@mui/icons-material/PauseCircle';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import { AutoSizer, List as VirtualizedList, CellMeasurer, CellMeasurerCache, InfiniteLoader } from 'react-virtualized';
 import type { IndexRange } from 'react-virtualized';
 import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
@@ -42,13 +44,12 @@ export function QuestionList({
     const { isModerator, eventId } = useEvent();
     const [isSearchOpen, setIsSearchOpen] = React.useState(false);
     const { questions, connections, loadNext, hasNext } = useQuestionList({ fragmentRef });
-    const QUESTIONS_BATCH_SIZE = 10;
+    const [isFrozen, setIsFrozen] = React.useState(false);
+    const [frozenQuestions, setFrozenQuestions] = React.useState<typeof questions>(questions);
+    const QUESTIONS_BATCH_SIZE = 50;
     useQuestionCreated({ connections });
     useQuestionUpdated({ connections });
     useQuestionDeleted({ connections });
-    // const [isPaused, setIsPaused] = React.useState();
-
-    // function togglePause() {}
 
     const toggleSearch = React.useCallback(() => setIsSearchOpen((prev) => !prev), [setIsSearchOpen]);
 
@@ -62,8 +63,16 @@ export function QuestionList({
 
     const [filteredList, handleSearch, handleFilterChange] = useFilters(questions, accessors);
 
+    function togglePause() {
+        setIsFrozen((prev) => !prev);
+        setFrozenQuestions(questions);
+    }
+
     // Virtualized List variables and functions
-    const listLength = React.useMemo(() => filteredList.length, [filteredList]);
+    const listLength = React.useMemo(
+        () => (isFrozen ? frozenQuestions.length : filteredList.length),
+        [filteredList.length, frozenQuestions.length, isFrozen]
+    );
     const isRowLoaded = ({ index }: { index: number }) => !!filteredList[index + 1];
 
     const loadMoreRows = React.useCallback(
@@ -88,7 +97,7 @@ export function QuestionList({
     }
 
     function rowRenderer({ index: rowIndex, key, parent, style }: RowRendererProps) {
-        const question = filteredList[rowIndex];
+        const question = isFrozen ? frozenQuestions[rowIndex] : filteredList[rowIndex];
 
         return (
             <CellMeasurer cache={cache} key={key} parent={parent} rowIndex={rowIndex}>
@@ -105,7 +114,7 @@ export function QuestionList({
                             }}
                         >
                             <QuestionAuthor fragmentRef={question} />
-                            {question.refQuestion && <QuestionQuote fragmentRef={question.refQuestion} />}
+                            {question?.refQuestion && <QuestionQuote fragmentRef={question.refQuestion} />}
                             <QuestionContent fragmentRef={question} />
                             <Grid container alignItems='center' justifyContent='space-between'>
                                 {isModerator && <QuestionStats fragmentRef={question} />}
@@ -138,43 +147,52 @@ export function QuestionList({
             {isVisible && (
                 <React.Fragment>
                     <Paper sx={{ padding: '1rem', marginX: '8px', marginBottom: '0.5rem' }}>
-                        {!isModerator && !searchOnly && (
-                            <Grid
-                                container
+                        {!searchOnly && (
+                            <Stack
                                 direction='row'
                                 justifyContent='space-between'
+                                alignItems='center'
                                 marginBottom={isSearchOpen ? '.5rem' : '0rem'}
                             >
                                 <Grid item xs='auto'>
+                                    <IconButton onClick={togglePause}>
+                                        {isFrozen ? (
+                                            <Badge
+                                                badgeContent={questions.length - frozenQuestions.length}
+                                                color='secondary'
+                                            >
+                                                <Tooltip title='Un-Pause Question List'>
+                                                    <PlayCircleIcon
+                                                        fontSize='large'
+                                                        sx={{ color: theme.palette.primary.main }}
+                                                    />
+                                                </Tooltip>
+                                            </Badge>
+                                        ) : (
+                                            <Tooltip title='Pause Question List' placement='top'>
+                                                <PauseCircleIcon
+                                                    fontSize='large'
+                                                    sx={{ color: theme.palette.primary.main }}
+                                                />
+                                            </Tooltip>
+                                        )}
+                                    </IconButton>
                                     <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
-                                        <SearchIcon />
+                                        <Tooltip title='Search Bar' placement='top'>
+                                            <SearchIcon fontSize='large' />
+                                        </Tooltip>
                                     </IconButton>
                                 </Grid>
-                                <Grid item xs='auto'>
-                                    {askQuestionEnabled && <AskQuestion eventId={eventId} />}
-                                </Grid>
-                                <Grid item xs='auto'>
-                                    <div style={{ display: 'none' }} />
-                                </Grid>
-                            </Grid>
+                                {!isModerator && askQuestionEnabled && <AskQuestion eventId={eventId} />}
+                            </Stack>
                         )}
                         <ListFilter
                             // filterMap={filterFuncs}
                             onFilterChange={handleFilterChange}
                             onSearch={handleSearch}
                             length={filteredList.length}
-                            isSearchOpen={isModerator || isSearchOpen || searchOnly}
-                            // menuIcons={[
-                            //     <Tooltip title='Load New'>
-                            //         <span>
-                            //             <IconButton color='inherit' onClick={togglePause}>
-                            //                 <Badge badgeContent={isPaused ? 0 : 0} color='secondary'>
-                            //                     {isPaused ? <PlayArrow /> : <Pause />}
-                            //                 </Badge>
-                            //             </IconButton>
-                            //         </span>
-                            //     </Tooltip>,
-                            // ]}
+                            isSearchOpen={isSearchOpen || searchOnly}
+                            isFrozen={isFrozen}
                         />
                     </Paper>
                     {filteredList.length === 0 && questions.length !== 0 && (
@@ -196,7 +214,7 @@ export function QuestionList({
                             loadMoreRows={loadMoreRows}
                             minimumBatchSize={QUESTIONS_BATCH_SIZE}
                             rowCount={listLength}
-                            threshold={5}
+                            threshold={10}
                         >
                             {({ onRowsRendered, registerChild }) => (
                                 <AutoSizer>
