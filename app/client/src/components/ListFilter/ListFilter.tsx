@@ -31,6 +31,7 @@ export interface Props<T> {
     displayNumResults?: boolean;
     style?: React.CSSProperties;
     isSearchOpen: boolean;
+    isFrozen?: boolean;
 }
 
 type Filters = Set<string>;
@@ -49,7 +50,14 @@ export function ListFilterSkeleton(props: SkeletonProps) {
 }
 
 // FIXME: delete dead code
-export default function ListFilter<T>({ filterMap, onSearch, onFilterChange, menuIcons, isSearchOpen }: Props<T>) {
+export default function ListFilter<T>({
+    filterMap,
+    onSearch,
+    onFilterChange,
+    menuIcons,
+    isSearchOpen,
+    isFrozen,
+}: Props<T>) {
     const [filters, setFilters] = React.useState<Filters>(new Set());
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     const [search, setSearch] = React.useState('');
@@ -94,6 +102,12 @@ export default function ListFilter<T>({ filterMap, onSearch, onFilterChange, men
     }, [search, onSearch]);
 
     const clearSearch = () => setSearch('');
+
+    React.useEffect(() => {
+        if (isFrozen) {
+            clearSearch();
+        }
+    }, [isFrozen]);
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Escape') clearSearch();
