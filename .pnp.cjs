@@ -397,6 +397,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["formik", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:2.2.6"],\
             ["framer-motion", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:3.10.6"],\
             ["graphql", "npm:16.6.0"],\
+            ["graphql-relay", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:0.10.0"],\
             ["jest-environment-jsdom-sixteen", "npm:1.0.3"],\
             ["next", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:12.3.4"],\
             ["notistack", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:2.0.3"],\
@@ -587,7 +588,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["fastify-multipart", "npm:5.4.0"],\
             ["form-data", "npm:4.0.0"],\
             ["graphql", "npm:16.6.0"],\
-            ["graphql-relay", "virtual:8677a47b7766945d002e7a51965f47027cfed0d45596695b49bd7d6174f0430951262648e27ddf1d0f801daddcf4db4a425e2c90e59f9252c5e3357dc0e5bbe8#npm:0.10.0"],\
+            ["graphql-relay", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:0.10.0"],\
             ["ioredis", "npm:5.3.2"],\
             ["ioredis-mock", "virtual:8677a47b7766945d002e7a51965f47027cfed0d45596695b49bd7d6174f0430951262648e27ddf1d0f801daddcf4db4a425e2c90e59f9252c5e3357dc0e5bbe8#npm:8.7.0"],\
             ["jest", "virtual:aedf018ff37487bbea07e39ab6922028847ef7476f42fbf184065ed99eff5d24997be06d56f281c73bbc274cfcb741db55884ec3b111f95f482082ce3a2760fe#npm:27.5.1"],\
@@ -23802,10 +23803,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:8677a47b7766945d002e7a51965f47027cfed0d45596695b49bd7d6174f0430951262648e27ddf1d0f801daddcf4db4a425e2c90e59f9252c5e3357dc0e5bbe8#npm:0.10.0", {\
-          "packageLocation": "./.yarn/__virtual__/graphql-relay-virtual-096f2f1ea5/0/cache/graphql-relay-npm-0.10.0-18d6fab9bf-74b2b608ed.zip/node_modules/graphql-relay/",\
+        ["virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:0.10.0", {\
+          "packageLocation": "./.yarn/__virtual__/graphql-relay-virtual-37aba21e86/0/cache/graphql-relay-npm-0.10.0-18d6fab9bf-74b2b608ed.zip/node_modules/graphql-relay/",\
           "packageDependencies": [\
-            ["graphql-relay", "virtual:8677a47b7766945d002e7a51965f47027cfed0d45596695b49bd7d6174f0430951262648e27ddf1d0f801daddcf4db4a425e2c90e59f9252c5e3357dc0e5bbe8#npm:0.10.0"],\
+            ["graphql-relay", "virtual:d184ea428bc08e6689e56de959db639964594659b4f9d1940ad16fd67c719f805332510e53b0a206ff95249aca6c3ff1f52554f78df9c72728a10bf3101eedec#npm:0.10.0"],\
             ["@types/graphql", null],\
             ["graphql", "npm:16.6.0"]\
           ],\
