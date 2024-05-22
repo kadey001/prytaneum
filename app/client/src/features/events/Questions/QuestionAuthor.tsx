@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import type { QuestionAuthorFragment$key } from '@local/__generated__/QuestionAuthorFragment.graphql';
 import { formatDate } from '@local/utils/format';
+import { getHashedColor } from '@local/core/getHashedColor';
 
 export type QuestionAuthorProps = {
     fragmentRef: QuestionAuthorFragment$key;
@@ -30,6 +31,7 @@ export function QuestionAuthor({ fragmentRef, ...props }: QuestionAuthorProps) {
         if (authorData.createdAt) return formatDate(authorData.createdAt, 'p-P').split('-');
         return ['', ''];
     }, [authorData]);
+
     const subheader = useMemo(
         () => (
             <Typography variant='caption' color='textSecondary'>
@@ -41,20 +43,23 @@ export function QuestionAuthor({ fragmentRef, ...props }: QuestionAuthorProps) {
         [time, month]
     );
     // make author name given available data
-    const createAuthorName = () => {
-        let authorName = 'Unknown User';
+
+    const authorName = useMemo(() => {
+        let _authorName = 'Unknown User';
         if (authorData.createdBy && authorData.createdBy.firstName) {
-            authorName = authorData.createdBy.firstName;
-            if (authorData.createdBy.lastName) authorName = `${authorName} ${authorData.createdBy.lastName}`;
+            _authorName = authorData.createdBy.firstName;
+            if (authorData.createdBy.lastName) _authorName = `${_authorName} ${authorData.createdBy.lastName}`;
         }
-        return authorName;
-    };
-    const authorName = createAuthorName();
+        return _authorName;
+    }, [authorData.createdBy]);
+    const avatarColor = useMemo(() => {
+        return getHashedColor(authorName);
+    }, [authorName]);
 
     return (
         <CardHeader
             // get first letter of name to display
-            avatar={<Avatar>{authorName[0]}</Avatar>}
+            avatar={<Avatar sx={{ bgcolor: avatarColor }}>{authorName[0]}</Avatar>}
             title={<Typography>{authorName}</Typography>}
             subheader={subheader}
             {...props}
