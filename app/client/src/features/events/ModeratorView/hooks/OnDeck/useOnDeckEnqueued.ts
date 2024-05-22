@@ -127,7 +127,7 @@ export function useOnDeckEnqueued({ connections, topics }: Props) {
     // NOTE: Should always order the onDeck list from lowest to highest
     // That way, whenever the list is empty and a new one is added (which is set to the time in ms),
     // it will always be after the current question.
-    function calculatePosition(list: Question[], movedQuestionIndex: number): number {
+    const calculatePosition = React.useCallback((list: Question[], movedQuestionIndex: number) => {
         // If the list is length 1 then it is likely the first item added to the list, calculate a new position
         if (!list || list.length <= 1) {
             const currentTimeMs = new Date().getTime();
@@ -164,7 +164,7 @@ export function useOnDeckEnqueued({ connections, topics }: Props) {
         const position = Math.round((prevQuestionPosition + parseInt(nextQuestion.onDeckPosition)) / 2);
         if (position < -1) throw new Error('Invalid position');
         return position;
-    }
+    }, []);
 
     type AddQuestionToOnDeckInput = {
         questionId: string;

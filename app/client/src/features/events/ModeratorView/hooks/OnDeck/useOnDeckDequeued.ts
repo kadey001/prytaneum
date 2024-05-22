@@ -111,56 +111,59 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
     // NOTE: Should always order the onDeck list from lowest to highest
     // That way, whenever the list is empty and a new one is added (which is set to the time in ms),
     // it will always be after the current question.
-    function calculatePosition(list: Question[], movedQuestionIndex: number): number {
-        // If the list is length 1 then it is likely the first item added to the list, calculate a new position
-        if (!list || list.length <= 1) {
-            const currentTimeMs = new Date().getTime();
-            const currentTimeMsStr = currentTimeMs.toString();
-            const calculatedPosition = parseInt(currentTimeMsStr);
-            return calculatedPosition;
-        }
+    const calculatePosition = React.useCallback(
+        (list: Question[], movedQuestionIndex: number) => {
+            // If the list is length 1 then it is likely the first item added to the list, calculate a new position
+            if (!list || list.length <= 1) {
+                const currentTimeMs = new Date().getTime();
+                const currentTimeMsStr = currentTimeMs.toString();
+                const calculatedPosition = parseInt(currentTimeMsStr);
+                return calculatedPosition;
+            }
 
-        console.log('Moved Question Index:', movedQuestionIndex);
+            console.log('Moved Question Index:', movedQuestionIndex);
 
-        // The source indx is useless here since we are moving from a different list, can only use destination index
-        // The destination index will be where the moved quesiton is as the list is updated while moving it.
-        // Should check if there at the end of the list or the start of the list
-        // If not, then calculate the position based on the two questions around it
-        // Already handled case with it being the first, so if the index is 0 then there should be at least one question below it
-        if (movedQuestionIndex === 0) {
-            // If the index is 0 then the new position should be less than the next question in the list
+            // The source indx is useless here since we are moving from a different list, can only use destination index
+            // The destination index will be where the moved quesiton is as the list is updated while moving it.
+            // Should check if there at the end of the list or the start of the list
+            // If not, then calculate the position based on the two questions around it
+            // Already handled case with it being the first, so if the index is 0 then there should be at least one question below it
+            if (movedQuestionIndex === 0) {
+                // If the index is 0 then the new position should be less than the next question in the list
+                const nextQuestion = list[movedQuestionIndex + 1];
+                console.log('nextQuestion:', nextQuestion);
+                const nextQuestionTopic = nextQuestion?.topics?.find((t) => t.topic === currentTopic);
+                if (!nextQuestionTopic) throw new Error('No topic found');
+                const nextQuestionPosition = parseInt(nextQuestionTopic.position);
+                // NOTE: race condition, since we're using time for ordering, then adding 1000 ms (1s) will mean that the order
+                // at the very end may be messed up, but that's okay, the start is what's important
+                return nextQuestionPosition - 1000;
+            }
+
+            // In this case we should have at least one question above it to reference and calculate the new position
+            const prevQuestion = list[movedQuestionIndex - 1];
+            console.log('prevQuestion:', prevQuestion);
+            const previousQuestionTopic = prevQuestion?.topics?.find((t) => t.topic === currentTopic);
+            if (!previousQuestionTopic) throw new Error('No topic found');
+            const prevQuestionPosition = parseInt(previousQuestionTopic.position);
+            console.log('prevQuestionPosition:', prevQuestionPosition);
             const nextQuestion = list[movedQuestionIndex + 1];
             console.log('nextQuestion:', nextQuestion);
+            if (!nextQuestion) {
+                // If there is no next question then the new position should be greater than the previous question
+                return prevQuestionPosition + 1000;
+            }
+            // If there is a next question then the new position should be between the previous and next question
             const nextQuestionTopic = nextQuestion?.topics?.find((t) => t.topic === currentTopic);
             if (!nextQuestionTopic) throw new Error('No topic found');
-            const nextQuestionPosition = parseInt(nextQuestionTopic.position);
-            // NOTE: race condition, since we're using time for ordering, then adding 1000 ms (1s) will mean that the order
-            // at the very end may be messed up, but that's okay, the start is what's important
-            return nextQuestionPosition - 1000;
-        }
-
-        // In this case we should have at least one question above it to reference and calculate the new position
-        const prevQuestion = list[movedQuestionIndex - 1];
-        console.log('prevQuestion:', prevQuestion);
-        const previousQuestionTopic = prevQuestion?.topics?.find((t) => t.topic === currentTopic);
-        if (!previousQuestionTopic) throw new Error('No topic found');
-        const prevQuestionPosition = parseInt(previousQuestionTopic.position);
-        console.log('prevQuestionPosition:', prevQuestionPosition);
-        const nextQuestion = list[movedQuestionIndex + 1];
-        console.log('nextQuestion:', nextQuestion);
-        if (!nextQuestion) {
-            // If there is no next question then the new position should be greater than the previous question
-            return prevQuestionPosition + 1000;
-        }
-        // If there is a next question then the new position should be between the previous and next question
-        const nextQuestionTopic = nextQuestion?.topics?.find((t) => t.topic === currentTopic);
-        if (!nextQuestionTopic) throw new Error('No topic found');
-        const position = Math.round(
-            (parseInt(previousQuestionTopic.position) + parseInt(nextQuestionTopic.position)) / 2
-        );
-        if (position < -1) throw new Error('Invalid position');
-        return position;
-    }
+            const position = Math.round(
+                (parseInt(previousQuestionTopic.position) + parseInt(nextQuestionTopic.position)) / 2
+            );
+            if (position < -1) throw new Error('Invalid position');
+            return position;
+        },
+        [currentTopic]
+    );
 
     type MutationInput = {
         questionId: string;
@@ -174,10 +177,9 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
         (input: MutationInput) => {
             const { list, movedQuestionIndex } = input;
 
-            // round b/c relay requires that int be an actual integer
             const newPosition = calculatePosition(list, movedQuestionIndex);
-            console.log('newPosition', newPosition);
             if (newPosition <= 0) throw new Error('Invalid position');
+
             commit({
                 variables: {
                     input: {
@@ -216,7 +218,7 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
                 },
             });
         },
-        [commit, currentTopic, eventId]
+        [calculatePosition, commit, currentTopic, eventId]
     );
 
     return { removeFromOnDeck };
