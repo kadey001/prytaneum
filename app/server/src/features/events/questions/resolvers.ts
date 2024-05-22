@@ -233,6 +233,60 @@ export const resolvers: Resolvers = {
                 }
             ),
         },
+        topicQueuePush: {
+            subscribe: withFilter<{ topicQueuePush: EventQuestionEdgeContainer; eventId: string; topic: string }>(
+                (parent, args, ctx) => ctx.pubsub.subscribe('topicQueuePush'),
+                (payload, args, ctx) => {
+                    console.log('Args', args, 'Payload', payload);
+                    const { id: eventId } = fromGlobalId(args.eventId);
+                    const { id: questionId } = fromGlobalId(payload.topicQueuePush.edge.node.id);
+                    return eventId === payload.eventId;
+                }
+            ),
+        },
+        topicQueueRemove: {
+            subscribe: withFilter<{ topicQueueRemove: EventQuestionEdgeContainer; eventId: string; topic: string }>(
+                (parent, args, ctx) => ctx.pubsub.subscribe('topicQueueRemove'),
+                (payload, args, ctx) => {
+                    const { id: eventId } = fromGlobalId(args.eventId);
+                    const { id: questionId } = fromGlobalId(payload.topicQueueRemove.edge.node.id);
+                    return eventId === payload.eventId;
+                }
+            ),
+        },
+        questionEnqueued: {
+            subscribe: withFilter<{ questionEnqueued: EventQuestionEdgeContainer; eventId: string; topic: string }>(
+                (parent, args, ctx) => ctx.pubsub.subscribe('questionEnqueued'),
+                (payload, args, ctx) => {
+                    const { id: eventId } = fromGlobalId(args.eventId);
+                    const { id: questionId } = fromGlobalId(payload.questionEnqueued.edge.node.id);
+                    if (eventId === payload.eventId) {
+                        if (args.topic === 'default') return true;
+                        return payload.topic === args.topic;
+                    }
+                    return false;
+                }
+            ),
+        },
+        questionDequeued: {
+            subscribe: withFilter<{
+                questionDequeued: EventQuestionEdgeContainer;
+                eventId: string;
+                topic: string;
+                viewerId: string;
+            }>(
+                (parent, args, ctx) => ctx.pubsub.subscribe('questionDequeued'),
+                (payload, args, ctx) => {
+                    const { id: eventId } = fromGlobalId(args.eventId);
+                    const { id: questionId } = fromGlobalId(payload.questionDequeued.edge.node.id);
+                    if (eventId === payload.eventId) {
+                        if (args.topic === 'default') return true;
+                        return payload.topic === args.topic;
+                    }
+                    return false;
+                }
+            ),
+        },
     },
     EventQuestion: {
         async createdBy(parent, args, ctx, info) {
@@ -263,6 +317,10 @@ export const resolvers: Resolvers = {
             if (!ctx.viewer.id) return null;
             const { id: questionId } = fromGlobalId(parent.id);
             return Question.isMyQuestion(ctx.viewer.id, questionId, ctx.prisma);
+        },
+        async topics(parent, args, ctx, info) {
+            const { id: questionId } = fromGlobalId(parent.id);
+            return Question.findTopicsByQuestionId(questionId, ctx.prisma);
         },
     },
 };

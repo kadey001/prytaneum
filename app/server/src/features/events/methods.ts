@@ -80,6 +80,7 @@ export async function createEvent(userId: string, prisma: PrismaClient, input: C
         isPrivate: false,
         createdById: userId,
         issueGuideUrl: '',
+        issue: '',
     };
 
     const result = await prisma.event.create({
@@ -236,8 +237,36 @@ export async function findOrgByEventId(eventId: string, prisma: PrismaClient) {
 /**
  * find questions by event id
  */
-export async function findQuestionsByEventId(eventId: string, prisma: PrismaClient) {
-    return prisma.eventQuestion.findMany({ where: { eventId, isVisible: true }, orderBy: { createdAt: 'desc' } });
+export async function findQuestionsByEventId(eventId: string, topic: string, prisma: PrismaClient) {
+    console.log('findQuestionsByEventId', topic);
+    if (topic === 'default' || topic === '') {
+        // Get all questions that are not in any topic queue
+        return prisma.eventQuestion.findMany({
+            where: {
+                eventId,
+                isVisible: true,
+                OR: [{ position: { not: '-1' } }, { topics: { none: { position: { not: '-1' } } } }],
+            },
+            include: { topics: true },
+            orderBy: { createdAt: 'desc' },
+        });
+    }
+    return prisma.eventQuestion.findMany({
+        where: {
+            eventId,
+            isVisible: true,
+            topics: {
+                some: {
+                    topic: {
+                        topic,
+                    },
+                    position: { equals: '-1' },
+                },
+            },
+        },
+        include: { topics: true },
+        orderBy: { createdAt: 'desc' },
+    });
 }
 
 /**
@@ -303,7 +332,7 @@ export async function findQuestionQueueByEventId(eventId: string, prisma: Prisma
     return prisma.event.findUnique({
         where: { id: eventId },
         select: {
-            questions: { where: { position: { not: '-1' } }, orderBy: { position: 'asc' } },
+            questions: { where: { onDeckPosition: { not: '-1' } }, orderBy: { position: 'asc' } },
             currentQuestion: true,
         },
     });
@@ -371,6 +400,56 @@ export async function findDashboardEvents(userId: string, prisma: PrismaClient) 
     return events;
 }
 
-export function findTopicsByEventId(eventId: string, prisma: PrismaClient) {
-    return prisma.eventTopic.findMany({ where: { eventId } });
+export async function findTopicsByEventId(eventId: string, prisma: PrismaClient) {
+    return prisma.eventTopic.findMany({ where: { eventId }, select: { id: true, topic: true, description: true } });
+}
+
+export async function findQueueByEventIdAndTopic(eventId: string, topic: string, prisma: PrismaClient) {
+    if (topic === 'default') {
+        const result = await prisma.eventQuestion.findMany({
+            where: {
+                eventId,
+                isVisible: true,
+                position: { not: '-1' },
+                // OR: [{ position: { not: '-1' } }, { topics: { some: { position: { not: '-1' } } } }],
+            },
+            include: { topics: true },
+        });
+        console.log('Getting Default Queue: ', result);
+        return result;
+    }
+    const topicResult = await prisma.eventTopic.findUnique({ where: { eventId_topic: { eventId, topic } } });
+    if (!topicResult)
+        throw new ProtectedError({
+            userMessage: 'Topic not found.',
+            internalMessage: `topic ${topic} not found in event ${eventId}`,
+        });
+    const result = await prisma.eventQuestionTopic.findMany({
+        where: { topicId: topicResult.id, position: { not: '-1' } },
+        orderBy: { position: 'asc' },
+        select: { question: true },
+    });
+    const filteredResult = result.filter((questionTopic) => questionTopic.question.onDeckPosition === '-1');
+    return filteredResult.map((questionTopic) => questionTopic.question);
+}
+
+export async function findQuestionModQueueByEventId(eventId: string, prisma: PrismaClient) {
+    // Get topic ids
+    const topics = await prisma.eventTopic.findMany({ where: { eventId }, select: { id: true } });
+    // Get questions that are in a topic queue
+    const questionIds = await prisma.eventQuestionTopic.findMany({
+        where: {
+            topicId: { in: topics.map((topic) => topic.id) },
+            position: { not: '-1' },
+            question: { onDeckPosition: { equals: '-1' } },
+        },
+        orderBy: { position: 'asc' },
+        select: { questionId: true },
+    });
+    console.log('Getting Mod Queue: ', questionIds);
+    const questions = await prisma.eventQuestion.findMany({
+        where: { id: { in: questionIds.map((question) => question.questionId) } },
+        // include: { topics: true },
+    });
+    return questions;
 }

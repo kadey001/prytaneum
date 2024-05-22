@@ -16,7 +16,7 @@ export async function getEventTopics(eventId: string, prisma: PrismaClient) {
     return topics;
 }
 
-export async function generateEventTopics(eventId: string, readingMaterials: string) {
+export async function generateEventTopics(eventId: string, readingMaterials: string, prisma: PrismaClient) {
     type ExpectedResponse = {
         issue: string;
         topics: { [key: string]: string };
@@ -34,7 +34,6 @@ export async function generateEventTopics(eventId: string, readingMaterials: str
         }
     );
     const data = response.data as ExpectedResponse;
-    console.log('DATA: ', data);
     if (!data.topics)
         throw new ProtectedError({
             userMessage: 'No topics found. Please try again.',
@@ -43,6 +42,27 @@ export async function generateEventTopics(eventId: string, readingMaterials: str
                 100
             )}...`,
         });
+
+    if (!data.issue) {
+        throw new ProtectedError({
+            userMessage: 'No issue found. Please try again.',
+            internalMessage: `No issue found for event ${eventId} with reading materials ${readingMaterials.substring(
+                0,
+                100
+            )}...`,
+        });
+    }
+
+    if (data.issue.length > 250) {
+        throw new ProtectedError({
+            userMessage: 'Issue is too long. Please try again.',
+            internalMessage: `Issue: ${
+                data.issue
+            } is too long for event ${eventId} with reading materials ${readingMaterials.substring(0, 100)}...`,
+        });
+    }
+
+    await prisma.event.update({ where: { id: eventId }, data: { issue: data.issue } });
     const topics = Object.keys(data.topics).map((key) => ({ topic: key, description: data.topics[key] }));
     return topics;
 }

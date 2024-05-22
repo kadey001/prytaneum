@@ -20,6 +20,7 @@ const toSpeakerId = toGlobalId('EventSpeaker');
 const toOrgId = toGlobalId('Organization');
 const toFeedbackId = toGlobalId('EventLiveFeedback');
 const toFeedbackPromptId = toGlobalId('EventLiveFeedbackPrompt');
+const toEventTopicId = toGlobalId('EventTopic');
 
 export const resolvers: Resolvers = {
     Query: {
@@ -190,15 +191,27 @@ export const resolvers: Resolvers = {
         },
         async questions(parent, args, ctx, info) {
             const { id: eventId } = fromGlobalId(parent.id);
-            const { viewerOnly } = args;
+            const { viewerOnly, topic, first, after } = args;
             if (!!viewerOnly) {
                 if (!ctx.viewer.id) return connectionFromArray([], args);
                 const questions = await Event.findQuestionsByEventIdAndUser(eventId, ctx.viewer.id, ctx.prisma);
                 return connectionFromArray(questions.map(toQuestionId), args);
             } else {
-                const questions = await Event.findQuestionsByEventId(eventId, ctx.prisma);
+                const questions = await Event.findQuestionsByEventId(eventId, topic || '', ctx.prisma);
                 return connectionFromArray(questions.map(toQuestionId), args);
             }
+        },
+        async topicQueue(parent, args, ctx, info) {
+            const { id: eventId } = fromGlobalId(parent.id);
+            const { topic, first, after } = args;
+            const questions = await Event.findQueueByEventIdAndTopic(eventId, topic || '', ctx.prisma);
+            return connectionFromArray(questions.map(toQuestionId), args);
+        },
+        async questionModQueue(parent, args, ctx, info) {
+            const { id: eventId } = fromGlobalId(parent.id);
+            const { first, after } = args;
+            const questions = await Event.findQuestionModQueueByEventId(eventId, ctx.prisma);
+            return connectionFromArray(questions.map(toQuestionId), args);
         },
         async broadcastMessages(parent, args, ctx, info) {
             const { id: eventId } = fromGlobalId(parent.id);
@@ -261,11 +274,11 @@ export const resolvers: Resolvers = {
 
             // many ways to do the following, done in similar ways for clarity
             const questionRecordEdges = queryResult.questions
-                .filter((question) => parseInt(question.position) <= parseInt(queryResult.currentQuestion))
+                .filter((question) => parseInt(question.onDeckPosition) <= parseInt(queryResult.currentQuestion))
                 .map(toQuestionId)
                 .map(toQuestionEdge);
             const enqueuedQuestionsEdges = queryResult.questions
-                .filter((question) => parseInt(question.position) > parseInt(queryResult.currentQuestion))
+                .filter((question) => parseInt(question.onDeckPosition) > parseInt(queryResult.currentQuestion))
                 .map(toQuestionId)
                 .map(toQuestionEdge);
             return {
@@ -307,7 +320,7 @@ export const resolvers: Resolvers = {
         async topics(parent, args, ctx, info) {
             const { id: eventId } = fromGlobalId(parent.id);
             const topics = await Event.findTopicsByEventId(eventId, ctx.prisma);
-            return topics;
+            return topics.map(toEventTopicId);
         },
     },
 };
