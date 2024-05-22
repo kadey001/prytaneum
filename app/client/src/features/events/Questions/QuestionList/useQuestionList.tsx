@@ -6,16 +6,23 @@ import type { useQuestionListFragment$key } from '@local/__generated__/useQuesti
 export const USE_QUESTION_LIST_FRAGMENT = graphql`
     fragment useQuestionListFragment on Event
     @refetchable(queryName: "questionListPagination")
-    @argumentDefinitions(first: { type: "Int", defaultValue: 50 }, after: { type: "String", defaultValue: "" }) {
+    @argumentDefinitions(
+        first: { type: "Int", defaultValue: 50 }
+        after: { type: "String", defaultValue: "" }
+        topic: { type: "String", defaultValue: "default" }
+    ) {
         id
         currentQuestion
-        questions(first: $first, after: $after) @connection(key: "useQuestionListFragment_questions") {
+        questions(first: $first, after: $after, topic: $topic)
+            @connection(key: "useQuestionListFragment_questions", filters: ["topic"]) {
             __id
             edges {
                 cursor
                 node {
                     id
                     question
+                    position
+                    onDeckPosition
                     createdBy {
                         firstName
                     }

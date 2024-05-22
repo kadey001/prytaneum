@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button } from '@mui/material';
+import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { graphql, useMutation, useFragment } from 'react-relay';
 import { DeleteButtonFragment$key } from '@local/__generated__/DeleteButtonFragment.graphql';
@@ -56,20 +56,13 @@ export function DeleteButton({ fragmentRef }: Props) {
         return true;
     }, [position]);
 
+    if (isQueued) return <React.Fragment />;
+
     return (
-        <div>
-            {isQueued ? (
-                <></>
-            ) : (
-                <Button
-                    onClick={handleClick}
-                    endIcon={<DeleteIcon fontSize='small' />}
-                    fullWidth
-                    sx={{ color: (theme) => theme.palette.custom.danger }}
-                >
-                    Delete
-                </Button>
-            )}
-        </div>
+        <React.Fragment>
+            <IconButton onClick={handleClick} sx={{ color: (theme) => theme.palette.custom.danger }}>
+                <DeleteIcon fontSize='small' />
+            </IconButton>
+        </React.Fragment>
     );
 }

@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Button } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { graphql, useMutation } from 'react-relay';
+import { ConnectionHandler, graphql, useMutation } from 'react-relay';
 
 import type { EnqueueQuestionButtonMutation } from '@local/__generated__/EnqueueQuestionButtonMutation.graphql';
 import { useEvent } from '@local/features/events';
 import { useSnack } from '@local/core';
+import { useTopic } from '../../ModeratorView/useTopic';
 
 export interface QueueButtonProps {
     questionId: string;
@@ -19,8 +20,8 @@ export const ENQUEUE_BUTTON_FRAGMENT = graphql`
 `;
 
 export const ENQUEUE_BUTTON_MUTATION = graphql`
-    mutation EnqueueQuestionButtonMutation($input: AddQuestionToQueue!) {
-        addQuestionToQueue(input: $input) {
+    mutation EnqueueQuestionButtonMutation($input: AddQuestionToTopicQueue!) {
+        addQuestionToTopicQueue(input: $input) {
             isError
             message
             body {
@@ -40,6 +41,7 @@ export const ENQUEUE_BUTTON_MUTATION = graphql`
 export function EnqueueQuestionButton({ questionId }: QueueButtonProps) {
     const [commit] = useMutation<EnqueueQuestionButtonMutation>(ENQUEUE_BUTTON_MUTATION);
     const { eventId } = useEvent();
+    const { topic } = useTopic();
     const { displaySnack } = useSnack();
 
     const handleClick = () => {
@@ -48,18 +50,50 @@ export function EnqueueQuestionButton({ questionId }: QueueButtonProps) {
                 input: {
                     questionId,
                     eventId,
+                    topic,
                 },
             },
-            onCompleted: ({ addQuestionToQueue }) => {
-                if (addQuestionToQueue.isError) {
-                    displaySnack(addQuestionToQueue.message);
+            onCompleted: ({ addQuestionToTopicQueue }) => {
+                if (addQuestionToTopicQueue.isError) {
+                    displaySnack(addQuestionToTopicQueue.message);
                 }
+            },
+            updater: (store) => {
+                // Remove the question from the current list
+                const eventRecord = store.get(eventId);
+                if (!eventRecord) return console.error('Event Record not found');
+                const connection = ConnectionHandler.getConnectionID(
+                    eventRecord.getDataID(),
+                    'useQuestionsByTopicFragment_questions'
+                );
+                // Need to do this workaround because the compiler in current version doesn't allow correctly naming the connection with _connection at the end.
+                const connectionId = connection + `(topic:"${topic}")`;
+                const connectionRecord = store.get(connectionId);
+                if (!connectionRecord) return console.error('Update failed: Connection record not found!');
+                ConnectionHandler.deleteNode(connectionRecord, questionId);
+
+                // Add the question to the topic queue
+                // But first ensure the question isn't already in the queue
+                const question = store.get(questionId);
+                if (question) return console.error('Update failed: Question already in queue!');
+                const queueConnection = ConnectionHandler.getConnection(
+                    eventRecord,
+                    'useQuestionModQueueFragment_questionModQueue'
+                );
+                if (!queueConnection) return console.error('Update failed: No queue connection found!');
+                const payload = store.getRootField('addQuestionToTopicQueue');
+                if (!payload) return console.error('Update failed: No payload found!');
+                const serverEdge = payload.getLinkedRecord('body');
+                if (!serverEdge) return console.error('Update failed: No edge found!');
+                ConnectionHandler.insertEdgeAfter(queueConnection, serverEdge);
             },
         });
     };
     return (
-        <Button fullWidth endIcon={<AddCircleIcon fontSize='small' />} onClick={handleClick}>
-            Enqueue
-        </Button>
+        <Tooltip title='Enqueue Question' placement='left'>
+            <IconButton onClick={handleClick}>
+                <AddCircleIcon sx={{ color: (theme) => theme.palette.primary.main }} fontSize='medium' />
+            </IconButton>
+        </Tooltip>
     );
 }
