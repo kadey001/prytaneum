@@ -17,6 +17,11 @@ export const USE_EVENT_DETAILS_FRAGMENT = graphql`
         isPrivate
         isViewerInvited
         issueGuideUrl
+        topics {
+            id
+            topic
+            description
+        }
     }
 `;
 
