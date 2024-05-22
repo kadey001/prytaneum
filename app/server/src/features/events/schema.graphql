@@ -55,7 +55,9 @@ type Event implements Node {
     """
     All questions relating to this event
     """
-    questions(first: Int, after: String, viewerOnly: Boolean): EventQuestionConnection
+    questions(first: Int, after: String, viewerOnly: Boolean, topic: String): EventQuestionConnection
+    topicQueue(first: Int, after: String, topic: String): EventQuestionConnection
+    questionModQueue(first: Int, after: String): EventQuestionConnection
 
     broadcastMessages(after: String, first: Int): EventBroadcastMessagesConnection
 

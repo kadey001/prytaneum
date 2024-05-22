@@ -13,9 +13,21 @@ export type Scalars = {
   Date: Date;
 };
 
+export type AddQuestionToOnDeck = {
+  eventId: Scalars['ID'];
+  newPosition: Scalars['String'];
+  questionId: Scalars['ID'];
+};
+
 export type AddQuestionToQueue = {
   eventId: Scalars['ID'];
   questionId: Scalars['ID'];
+};
+
+export type AddQuestionToTopicQueue = {
+  eventId: Scalars['ID'];
+  questionId: Scalars['ID'];
+  topic: Scalars['String'];
 };
 
 export type AlterLike = {
@@ -205,6 +217,7 @@ export type Event = Node & {
   organization?: Maybe<Organization>;
   /** Participants of the event -- individuals who showed up */
   participants?: Maybe<EventParticipantConnection>;
+  questionModQueue?: Maybe<EventQuestionConnection>;
   /** Questions having to do with the queue */
   questionQueue?: Maybe<EventQuestionQueue>;
   /** All questions relating to this event */
@@ -217,6 +230,7 @@ export type Event = Node & {
   startDateTime?: Maybe<Scalars['Date']>;
   title?: Maybe<Scalars['String']>;
   topic?: Maybe<Scalars['String']>;
+  topicQueue?: Maybe<EventQuestionConnection>;
   topics?: Maybe<Array<EventTopic>>;
   updatedAt?: Maybe<Scalars['Date']>;
   /** Video feeds and the languages */
@@ -260,6 +274,12 @@ export type EventParticipantsArgs = {
 };
 
 
+export type EventQuestionModQueueArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+};
+
+
 export type EventQuestionQueueArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -269,6 +289,7 @@ export type EventQuestionQueueArgs = {
 export type EventQuestionsArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+  topic?: InputMaybe<Scalars['String']>;
   viewerOnly?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -276,6 +297,13 @@ export type EventQuestionsArgs = {
 export type EventSpeakersArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type EventTopicQueueArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  topic?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -493,16 +521,21 @@ export type EventQuestion = Node & {
   /** If the question is owned by the current viewer */
   isMyQuestion?: Maybe<Scalars['Boolean']>;
   isQuote?: Maybe<Scalars['Boolean']>;
-  isVisible?: Maybe<Scalars['Boolean']>;
+  isVisible: Scalars['Boolean'];
   lang?: Maybe<Scalars['String']>;
   /** The users who have liked this question */
   likedBy?: Maybe<UserConnection>;
   /** Find the count of the likes only */
   likedByCount?: Maybe<Scalars['Int']>;
+  offensive: Scalars['Boolean'];
+  onDeckPosition: Scalars['String'];
   position: Scalars['String'];
   /** The actual content of the question */
-  question?: Maybe<Scalars['String']>;
+  question: Scalars['String'];
   refQuestion?: Maybe<EventQuestion>;
+  relevant: Scalars['Boolean'];
+  substantive: Scalars['Boolean'];
+  topics?: Maybe<Array<EventQuestionTopic>>;
 };
 
 export type EventQuestionConnection = {
@@ -552,6 +585,13 @@ export type EventQuestionQueueQuestionRecordArgs = {
   first?: InputMaybe<Scalars['Int']>;
 };
 
+export type EventQuestionTopic = {
+  __typename?: 'EventQuestionTopic';
+  description: Scalars['String'];
+  position: Scalars['String'];
+  topic: Scalars['String'];
+};
+
 export type EventSpeaker = Node & {
   __typename?: 'EventSpeaker';
   /** Description set by the organizer of the event */
@@ -591,10 +631,9 @@ export type EventSpeakerMutationResponse = MutationResponse & {
   message: Scalars['String'];
 };
 
-export type EventTopic = {
+export type EventTopic = Node & Topic & {
   __typename?: 'EventTopic';
   description: Scalars['String'];
-  eventId: Scalars['String'];
   id: Scalars['ID'];
   topic: Scalars['String'];
 };
@@ -680,7 +719,9 @@ export type ModeratorMutationResponse = MutationResponse & {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addQuestionToOnDeck: EventQuestionMutationResponse;
   addQuestionToQueue: EventQuestionMutationResponse;
+  addQuestionToTopicQueue: EventQuestionMutationResponse;
   /** Update topics */
   addTopic?: Maybe<TopicMutationResponse>;
   addTopics?: Maybe<TopicMutationResponse>;
@@ -742,7 +783,9 @@ export type Mutation = {
   regenerateEventTopics?: Maybe<TopicGenerationMutationResponse>;
   register: UserMutationResponse;
   removeOrganizer: UserMutationResponse;
+  removeQuestionFromOnDeck: EventQuestionMutationResponse;
   removeQuestionFromQueue: EventQuestionMutationResponse;
+  removeQuestionFromTopicQueue: EventQuestionMutationResponse;
   removeTopic?: Maybe<TopicRemoveMutationResponse>;
   removeTopics?: Maybe<TopicsRemoveMutationResponse>;
   resetPassword: ResetPasswordMutationResponse;
@@ -762,18 +805,30 @@ export type Mutation = {
   updateEmail: UserMutationResponse;
   updateEvent: EventMutationResponse;
   updateModerator: ModeratorMutationResponse;
+  updateOnDeckPosition: EventQuestionMutationResponse;
   updateOrganization: OrganizationMutationResponse;
   updateOrganizer: UserMutationResponse;
   updatePassword: UserMutationResponse;
   updateQuestionPosition: EventQuestionMutationResponse;
   updateSpeaker: EventSpeakerMutationResponse;
   updateTopic?: Maybe<TopicMutationResponse>;
+  updateTopicQueuePosition: EventQuestionMutationResponse;
   updateVideo: EventVideoMutationResponse;
+};
+
+
+export type MutationAddQuestionToOnDeckArgs = {
+  input: AddQuestionToOnDeck;
 };
 
 
 export type MutationAddQuestionToQueueArgs = {
   input: AddQuestionToQueue;
+};
+
+
+export type MutationAddQuestionToTopicQueueArgs = {
+  input: AddQuestionToTopicQueue;
 };
 
 
@@ -986,8 +1041,18 @@ export type MutationRemoveOrganizerArgs = {
 };
 
 
+export type MutationRemoveQuestionFromOnDeckArgs = {
+  input: RemoveQuestionFromOnDeck;
+};
+
+
 export type MutationRemoveQuestionFromQueueArgs = {
   input: RemoveQuestionFromQueue;
+};
+
+
+export type MutationRemoveQuestionFromTopicQueueArgs = {
+  input: RemoveQuestionFromTopicQueue;
 };
 
 
@@ -1069,6 +1134,11 @@ export type MutationUpdateModeratorArgs = {
 };
 
 
+export type MutationUpdateOnDeckPositionArgs = {
+  input: UpdateOnDeckPosition;
+};
+
+
 export type MutationUpdateOrganizationArgs = {
   input: UpdateOrganization;
 };
@@ -1099,6 +1169,11 @@ export type MutationUpdateTopicArgs = {
   eventId: Scalars['String'];
   newTopic: Scalars['String'];
   oldTopic: Scalars['String'];
+};
+
+
+export type MutationUpdateTopicQueuePositionArgs = {
+  input: UpdateQuestionPosition;
 };
 
 
@@ -1306,9 +1381,23 @@ export type RegistrationForm = {
   password: Scalars['String'];
 };
 
+export type RemoveQuestionFromOnDeck = {
+  eventId: Scalars['ID'];
+  newPosition: Scalars['String'];
+  questionId: Scalars['ID'];
+  /** Can use the topic and new position to properly place the question in the correct order in the correct topic queue */
+  topic: Scalars['String'];
+};
+
 export type RemoveQuestionFromQueue = {
   eventId: Scalars['ID'];
   questionId: Scalars['ID'];
+};
+
+export type RemoveQuestionFromTopicQueue = {
+  eventId: Scalars['ID'];
+  questionId: Scalars['ID'];
+  topic: Scalars['String'];
 };
 
 export type ResetPasswordForm = {
@@ -1357,12 +1446,16 @@ export type Subscription = {
   /** Question subscription for all operations performed on questions */
   questionCreated: EventQuestionEdgeContainer;
   questionDeleted: EventQuestionEdgeContainer;
+  questionDequeued: EventQuestionEdgeContainer;
+  questionEnqueued: EventQuestionEdgeContainer;
   questionRemovedFromEnqueued: EventQuestionEdgeContainer;
   questionRemovedFromRecord: EventQuestionEdgeContainer;
   questionUpdated: EventQuestionEdgeContainer;
   recordPushQuestion: EventQuestionEdgeContainer;
   recordRemoveQuestion: EventQuestionEdgeContainer;
   recordUnshiftQuestion: EventQuestionEdgeContainer;
+  topicQueuePush: EventQuestionEdgeContainer;
+  topicQueueRemove: EventQuestionEdgeContainer;
   topicUpdated?: Maybe<EventTopic>;
   /** Subscribes to the creation of invites for a given event. */
   userInvited: UserEdgeContainer;
@@ -1458,6 +1551,18 @@ export type SubscriptionQuestionDeletedArgs = {
 };
 
 
+export type SubscriptionQuestionDequeuedArgs = {
+  eventId: Scalars['String'];
+  topic: Scalars['String'];
+};
+
+
+export type SubscriptionQuestionEnqueuedArgs = {
+  eventId: Scalars['String'];
+  topic: Scalars['String'];
+};
+
+
 export type SubscriptionQuestionRemovedFromEnqueuedArgs = {
   eventId: Scalars['ID'];
 };
@@ -1489,6 +1594,18 @@ export type SubscriptionRecordUnshiftQuestionArgs = {
 };
 
 
+export type SubscriptionTopicQueuePushArgs = {
+  eventId: Scalars['String'];
+  topic: Scalars['String'];
+};
+
+
+export type SubscriptionTopicQueueRemoveArgs = {
+  eventId: Scalars['String'];
+  topic: Scalars['String'];
+};
+
+
 export type SubscriptionTopicUpdatedArgs = {
   eventId: Scalars['String'];
 };
@@ -1501,6 +1618,12 @@ export type SubscriptionUserInvitedArgs = {
 
 export type SubscriptionUserUninvitedArgs = {
   eventId: Scalars['ID'];
+};
+
+export type Topic = {
+  description: Scalars['String'];
+  id: Scalars['ID'];
+  topic: Scalars['String'];
 };
 
 export type TopicFinalizeMutationResponse = MutationResponse & {
@@ -1573,6 +1696,12 @@ export type UpdateModerator = {
   eventId: Scalars['ID'];
 };
 
+export type UpdateOnDeckPosition = {
+  eventId: Scalars['ID'];
+  newPosition: Scalars['String'];
+  questionId: Scalars['ID'];
+};
+
 /** Information that may be updated by the user */
 export type UpdateOrganization = {
   name: Scalars['String'];
@@ -1611,6 +1740,13 @@ export type UpdateSpeaker = {
   name?: InputMaybe<Scalars['String']>;
   pictureUrl?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateTopicQueuePosition = {
+  eventId: Scalars['ID'];
+  newPosition: Scalars['String'];
+  questionId: Scalars['ID'];
+  topic: Scalars['String'];
 };
 
 export type UpdateVideo = {

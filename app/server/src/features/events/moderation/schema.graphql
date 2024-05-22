@@ -45,6 +45,47 @@ input UpdateQuestionQueue {
     adding: Boolean!
 }
 
+input AddQuestionToTopicQueue {
+    questionId: ID!
+    eventId: ID!
+    topic: String!
+}
+
+input RemoveQuestionFromTopicQueue {
+    questionId: ID!
+    eventId: ID!
+    topic: String!
+}
+
+input AddQuestionToOnDeck {
+    questionId: ID!
+    eventId: ID!
+    newPosition: String!
+}
+
+input RemoveQuestionFromOnDeck {
+    questionId: ID!
+    eventId: ID!
+    """
+    Can use the topic and new position to properly place the question in the correct order in the correct topic queue
+    """
+    topic: String!
+    newPosition: String!
+}
+
+input UpdateOnDeckPosition {
+    questionId: ID!
+    eventId: ID!
+    newPosition: String!
+}
+
+input UpdateTopicQueuePosition {
+    questionId: ID!
+    eventId: ID!
+    topic: String!
+    newPosition: String!
+}
+
 type ModeratorMutationResponse implements MutationResponse {
     isError: Boolean!
     message: String!
@@ -56,6 +97,12 @@ type Mutation {
     updateQuestionPosition(input: UpdateQuestionPosition!): EventQuestionMutationResponse!
     addQuestionToQueue(input: AddQuestionToQueue!): EventQuestionMutationResponse!
     removeQuestionFromQueue(input: RemoveQuestionFromQueue!): EventQuestionMutationResponse!
+    addQuestionToTopicQueue(input: AddQuestionToTopicQueue!): EventQuestionMutationResponse!
+    removeQuestionFromTopicQueue(input: RemoveQuestionFromTopicQueue!): EventQuestionMutationResponse!
+    addQuestionToOnDeck(input: AddQuestionToOnDeck!): EventQuestionMutationResponse!
+    removeQuestionFromOnDeck(input: RemoveQuestionFromOnDeck!): EventQuestionMutationResponse!
+    updateOnDeckPosition(input: UpdateOnDeckPosition!): EventQuestionMutationResponse!
+    updateTopicQueuePosition(input: UpdateQuestionPosition!): EventQuestionMutationResponse!
 
     """
     Add a new moderator to the given event

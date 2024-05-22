@@ -1,8 +1,19 @@
-type EventTopic {
+interface Topic implements Node {
     id: ID!
-    eventId: String!
     topic: String!
     description: String!
+}
+
+type EventTopic implements Topic & Node {
+    id: ID!
+    topic: String!
+    description: String!
+}
+
+type EventQuestionTopic {
+    topic: String!
+    description: String!
+    position: String!
 }
 
 type GeneratedTopic {

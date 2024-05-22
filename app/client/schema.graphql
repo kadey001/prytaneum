@@ -1,6 +1,18 @@
+input AddQuestionToOnDeck {
+  eventId: ID!
+  newPosition: String!
+  questionId: ID!
+}
+
 input AddQuestionToQueue {
   eventId: ID!
   questionId: ID!
+}
+
+input AddQuestionToTopicQueue {
+  eventId: ID!
+  questionId: ID!
+  topic: String!
 }
 
 input AlterLike {
@@ -219,12 +231,13 @@ type Event implements Node {
 
   """Participants of the event -- individuals who showed up"""
   participants(after: String, first: Int): EventParticipantConnection
+  questionModQueue(after: String, first: Int): EventQuestionConnection
 
   """Questions having to do with the queue"""
   questionQueue(after: String, first: Int): EventQuestionQueue
 
   """All questions relating to this event"""
-  questions(after: String, first: Int, viewerOnly: Boolean): EventQuestionConnection
+  questions(after: String, first: Int, topic: String, viewerOnly: Boolean): EventQuestionConnection
 
   """Registrants for this event -- individuals invited"""
   registrants: UserConnection
@@ -236,6 +249,7 @@ type Event implements Node {
   startDateTime: Date
   title: String
   topic: String
+  topicQueue(after: String, first: Int, topic: String): EventQuestionConnection
   topics: [EventTopic!]
   updatedAt: Date
 
@@ -431,7 +445,7 @@ type EventQuestion implements Node {
   """If the question is owned by the current viewer"""
   isMyQuestion: Boolean
   isQuote: Boolean
-  isVisible: Boolean
+  isVisible: Boolean!
   lang: String
 
   """The users who have liked this question"""
@@ -439,11 +453,16 @@ type EventQuestion implements Node {
 
   """Find the count of the likes only"""
   likedByCount: Int
+  offensive: Boolean!
+  onDeckPosition: String!
   position: String!
 
   """The actual content of the question"""
-  question: String
+  question: String!
   refQuestion: EventQuestion
+  relevant: Boolean!
+  substantive: Boolean!
+  topics: [EventQuestionTopic!]
 }
 
 type EventQuestionConnection {
@@ -475,6 +494,12 @@ type EventQuestionQueue {
 
   """last index is current question"""
   questionRecord(after: String, first: Int): EventQuestionConnection
+}
+
+type EventQuestionTopic {
+  description: String!
+  position: String!
+  topic: String!
 }
 
 type EventSpeaker implements Node {
@@ -519,9 +544,8 @@ type EventSpeakerMutationResponse implements MutationResponse {
   message: String!
 }
 
-type EventTopic {
+type EventTopic implements Node & Topic {
   description: String!
-  eventId: String!
   id: ID!
   topic: String!
 }
@@ -601,7 +625,9 @@ type ModeratorMutationResponse implements MutationResponse {
 }
 
 type Mutation {
+  addQuestionToOnDeck(input: AddQuestionToOnDeck!): EventQuestionMutationResponse!
   addQuestionToQueue(input: AddQuestionToQueue!): EventQuestionMutationResponse!
+  addQuestionToTopicQueue(input: AddQuestionToTopicQueue!): EventQuestionMutationResponse!
 
   """Update topics"""
   addTopic(description: String!, eventId: String!, topic: String!): TopicMutationResponse
@@ -676,7 +702,9 @@ type Mutation {
   regenerateEventTopics(eventId: String!): TopicGenerationMutationResponse
   register(input: RegistrationForm!): UserMutationResponse!
   removeOrganizer(input: OrganizerForm!): UserMutationResponse!
+  removeQuestionFromOnDeck(input: RemoveQuestionFromOnDeck!): EventQuestionMutationResponse!
   removeQuestionFromQueue(input: RemoveQuestionFromQueue!): EventQuestionMutationResponse!
+  removeQuestionFromTopicQueue(input: RemoveQuestionFromTopicQueue!): EventQuestionMutationResponse!
   removeTopic(eventId: String!, topic: String!): TopicRemoveMutationResponse
   removeTopics(eventId: String!, topics: [String!]!): TopicsRemoveMutationResponse
   resetPassword(input: ResetPasswordForm!): ResetPasswordMutationResponse!
@@ -700,12 +728,14 @@ type Mutation {
   updateEmail(input: UpdateEmailForm!): UserMutationResponse!
   updateEvent(event: UpdateEvent!): EventMutationResponse!
   updateModerator(input: UpdateModerator!): ModeratorMutationResponse!
+  updateOnDeckPosition(input: UpdateOnDeckPosition!): EventQuestionMutationResponse!
   updateOrganization(input: UpdateOrganization!): OrganizationMutationResponse!
   updateOrganizer(input: UpdateOrganizerForm!): UserMutationResponse!
   updatePassword(input: UpdatePasswordForm!): UserMutationResponse!
   updateQuestionPosition(input: UpdateQuestionPosition!): EventQuestionMutationResponse!
   updateSpeaker(input: UpdateSpeaker!): EventSpeakerMutationResponse!
   updateTopic(description: String!, eventId: String!, newTopic: String!, oldTopic: String!): TopicMutationResponse
+  updateTopicQueuePosition(input: UpdateQuestionPosition!): EventQuestionMutationResponse!
   updateVideo(input: UpdateVideo!): EventVideoMutationResponse!
 }
 
@@ -831,9 +861,26 @@ input RegistrationForm {
   password: String!
 }
 
+input RemoveQuestionFromOnDeck {
+  eventId: ID!
+  newPosition: String!
+  questionId: ID!
+
+  """
+  Can use the topic and new position to properly place the question in the correct order in the correct topic queue
+  """
+  topic: String!
+}
+
 input RemoveQuestionFromQueue {
   eventId: ID!
   questionId: ID!
+}
+
+input RemoveQuestionFromTopicQueue {
+  eventId: ID!
+  questionId: ID!
+  topic: String!
 }
 
 input ResetPasswordForm {
@@ -882,12 +929,16 @@ type Subscription {
   """Question subscription for all operations performed on questions"""
   questionCreated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
   questionDeleted(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
+  questionDequeued(eventId: String!, topic: String!): EventQuestionEdgeContainer!
+  questionEnqueued(eventId: String!, topic: String!): EventQuestionEdgeContainer!
   questionRemovedFromEnqueued(eventId: ID!): EventQuestionEdgeContainer!
   questionRemovedFromRecord(eventId: ID!): EventQuestionEdgeContainer!
   questionUpdated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
   recordPushQuestion(eventId: ID!): EventQuestionEdgeContainer!
   recordRemoveQuestion(eventId: ID!): EventQuestionEdgeContainer!
   recordUnshiftQuestion(eventId: ID!): EventQuestionEdgeContainer!
+  topicQueuePush(eventId: String!, topic: String!): EventQuestionEdgeContainer!
+  topicQueueRemove(eventId: String!, topic: String!): EventQuestionEdgeContainer!
   topicUpdated(eventId: String!): EventTopic
 
   """Subscribes to the creation of invites for a given event."""
@@ -895,6 +946,12 @@ type Subscription {
 
   """Subscribes to the removal of invites for a given event."""
   userUninvited(eventId: ID!): UserEdgeContainer!
+}
+
+interface Topic implements Node {
+  description: String!
+  id: ID!
+  topic: String!
 }
 
 type TopicFinalizeMutationResponse implements MutationResponse {
@@ -960,6 +1017,12 @@ input UpdateModerator {
   eventId: ID!
 }
 
+input UpdateOnDeckPosition {
+  eventId: ID!
+  newPosition: String!
+  questionId: ID!
+}
+
 """Information that may be updated by the user"""
 input UpdateOrganization {
   name: String!
@@ -998,6 +1061,13 @@ input UpdateSpeaker {
   name: String
   pictureUrl: String
   title: String
+}
+
+input UpdateTopicQueuePosition {
+  eventId: ID!
+  newPosition: String!
+  questionId: ID!
+  topic: String!
 }
 
 input UpdateVideo {

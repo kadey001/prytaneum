@@ -18,13 +18,17 @@ type EventQuestion implements Node {
     """
     The actual content of the question
     """
-    question: String
+    question: String!
+    onDeckPosition: String!
     position: String!
-    isVisible: Boolean
+    isVisible: Boolean!
     isAsked: Boolean
     lang: String
     isFollowUp: Boolean
     isQuote: Boolean
+    substantive: Boolean!
+    offensive: Boolean!
+    relevant: Boolean!
 
     """
     The users who have liked this question
@@ -45,6 +49,7 @@ type EventQuestion implements Node {
     If the question is owned by the current viewer
     """
     isMyQuestion: Boolean
+    topics: [EventQuestionTopic!]
 }
 
 """
@@ -121,6 +126,9 @@ type Subscription {
     questionUpdated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
     questionDeleted(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
 
+    questionEnqueued(eventId: String!, topic: String!): EventQuestionEdgeContainer!
+    questionDequeued(eventId: String!, topic: String!): EventQuestionEdgeContainer!
+
     questionAddedToRecord(eventId: ID!): EventQuestionEdgeContainer!
     questionRemovedFromRecord(eventId: ID!): EventQuestionEdgeContainer!
 
@@ -138,6 +146,8 @@ type Subscription {
 
     questionAddedToEnqueued(eventId: ID!): EventQuestionEdgeContainer!
     questionRemovedFromEnqueued(eventId: ID!): EventQuestionEdgeContainer!
+    topicQueuePush(eventId: String!, topic: String!): EventQuestionEdgeContainer!
+    topicQueueRemove(eventId: String!, topic: String!): EventQuestionEdgeContainer!
 }
 
 type Query {
