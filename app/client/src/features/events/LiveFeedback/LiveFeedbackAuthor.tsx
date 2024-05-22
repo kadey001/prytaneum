@@ -5,6 +5,7 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
 import type { LiveFeedbackAuthorFragment$key } from '@local/__generated__/LiveFeedbackAuthorFragment.graphql';
 import { formatDate } from '@local/utils/format';
+import { getHashedColor } from '../../../core/getHashedColor';
 
 export type LiveFeedbackAuthorProps = {
     fragmentRef: LiveFeedbackAuthorFragment$key;
@@ -44,20 +45,22 @@ export function LiveFeedbackAuthor({ fragmentRef, ...props }: LiveFeedbackAuthor
         [time, month]
     );
     // make author name given available data
-    const createAuthorName = () => {
-        let authorName = 'Unknown User';
+    const authorName = useMemo(() => {
+        let _authorName = 'Unknown User';
         if (authorData.createdBy && authorData.createdBy.firstName) {
-            authorName = authorData.createdBy.firstName;
-            if (authorData.createdBy.lastName) authorName = `${authorName} ${authorData.createdBy.lastName}`;
+            _authorName = authorData.createdBy.firstName;
+            if (authorData.createdBy.lastName) _authorName = `${_authorName} ${authorData.createdBy.lastName}`;
         }
-        return authorName;
-    };
-    const authorName = createAuthorName();
+        return _authorName;
+    }, [authorData.createdBy]);
+    const avatarColor = useMemo(() => {
+        return getHashedColor(authorName);
+    }, [authorName]);
 
     return (
         <CardHeader
             // get first letter of name to use as avatar
-            avatar={<Avatar>{authorName[0]}</Avatar>}
+            avatar={<Avatar sx={{ bgcolor: avatarColor }}>{authorName[0]}</Avatar>}
             title={
                 <React.Fragment>
                     <Typography>
