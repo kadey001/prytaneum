@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { graphql, useMutation } from 'react-relay';
-import { Button, IconButton, Grid } from '@mui/material';
+import { Button, IconButton, Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
@@ -88,8 +88,8 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
     };
 
     return (
-        <Grid item container justifyContent='center' alignContent='center' alignItems='center' width='100%' spacing={1}>
-            <Grid item>
+        <Stack direction='column' paddingTop='1rem'>
+            <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
                 <IconButton
                     sx={{
                         backgroundColor: theme.palette.primary.main,
@@ -104,17 +104,13 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
                         <FullscreenExitIcon sx={{ color: 'white' }} />
                     )}
                 </IconButton>
-            </Grid>
-            {/* <Grid item>
-                <Button variant='contained' onClick={() => console.log('TODO')}>
+                {/* <Button variant='contained' onClick={() => console.log('TODO')}>
                     Intermission
-                </Button>
-            </Grid> */}
-            <Grid item>
+                </Button> */}
                 <Button variant='contained' color={isLive ? 'error' : 'success'} onClick={openConfirmationDialog}>
                     {isLive ? 'End Event' : 'Start Event'}
                 </Button>
-            </Grid>
+            </Stack>
             <ConfirmationDialog
                 title='Update Event Status'
                 open={isConfirmationDialogOpen}
@@ -123,6 +119,6 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
             >
                 <React.Fragment>Are you sure you want to {isLive ? 'end' : 'start'} the event?</React.Fragment>
             </ConfirmationDialog>
-        </Grid>
+        </Stack>
     );
 }
