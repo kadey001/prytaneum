@@ -27,8 +27,8 @@ export const normalizeHash = (hash: number, min: number, max: number) => {
 
 // Used to ensure that the generated colors are not too dark or too light
 const hRange = [0, 360];
-const sRange = [55, 65];
-const lRange = [45, 55];
+const sRange = [65, 75];
+const lRange = [45, 65];
 
 export const generateHSL = (name: string): HSL => {
     const hash = getHashOfString(name);
@@ -58,6 +58,12 @@ export function getHashedColor(str: string) {
 
         return hslColorString;
     }
+}
+
+export function getHashedColorGradient(str: string) {
+    const startColor = getHashedColor(str);
+    const endColor = getHashedColor(str + '%');
+    return `linear-gradient(to right bottom, ${startColor}, ${endColor})`;
 }
 
 /**
