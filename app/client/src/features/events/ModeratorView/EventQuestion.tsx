@@ -25,7 +25,7 @@ interface Props {
 /**
  * @description EventQuestion component that displays only on the moderator view
  */
-export default function EventQuestion({ question, connections, deleteEnabled = true, queueEnabled = true }: Props) {
+export default function EventQuestion({ question, deleteEnabled = true, queueEnabled = true }: Props) {
     const { isModerator } = useEvent();
     const { user } = useUser();
     const data = useFragment<QuestionActionsFragment$key>(QUESTION_ACTIONS_FRAGMENT, question);
@@ -50,6 +50,16 @@ export default function EventQuestion({ question, connections, deleteEnabled = t
         handleClick();
         handleClose();
     };
+
+    // Ensure consistent topic chip order
+    const sortedTopics = React.useMemo(() => {
+        const topics: { topic: string; description: string; position: string }[] = [];
+        if (!question.topics) return topics;
+        question.topics.forEach((topic) => {
+            topics.push({ topic: topic.topic, description: topic.description, position: topic.position });
+        });
+        return topics.sort((a, b) => (a.topic > b.topic ? 1 : -1));
+    }, [question.topics]);
 
     return (
         <React.Suspense fallback={<Loader />}>
@@ -95,7 +105,7 @@ export default function EventQuestion({ question, connections, deleteEnabled = t
                         quoteEnabled={!isModerator && Boolean(user)}
                         queueEnabled={false}
                         deleteEnabled={false}
-                        connections={connections}
+                        connections={[]}
                         fragmentRef={question}
                     />
                     {isModerator && ( // filler to justify moderator queue button
@@ -122,7 +132,7 @@ export default function EventQuestion({ question, connections, deleteEnabled = t
                         },
                     }}
                 >
-                    {question?.topics?.map((_topic) => (
+                    {sortedTopics.map((_topic) => (
                         <Tooltip key={_topic.topic} title={_topic.description} placement='bottom'>
                             <Chip
                                 label={_topic.topic}
