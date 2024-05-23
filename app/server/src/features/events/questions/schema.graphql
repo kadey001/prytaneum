@@ -125,6 +125,7 @@ type Subscription {
     questionCreated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
     questionUpdated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
     questionDeleted(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
+    questionCreatedByTopic(eventId: ID!, topic: String!): EventQuestionEdgeContainer!
 
     questionEnqueued(eventId: String!, topic: String!): EventQuestionEdgeContainer!
     questionDequeued(eventId: String!, topic: String!): EventQuestionEdgeContainer!

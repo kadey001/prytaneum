@@ -20,7 +20,10 @@ export const resolvers: Resolvers = {
             return runMutation(async () => {
                 if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
                 const { id: eventId } = fromGlobalId(args.input.eventId);
-                const question = await Question.createQuestion(ctx.viewer.id, ctx.prisma, { ...args.input, eventId });
+                const { question, topics } = await Question.createQuestion(ctx.viewer.id, ctx.prisma, {
+                    ...args.input,
+                    eventId,
+                });
                 const formattedQuestion = toQuestionId(question);
                 if (formattedQuestion.refQuestion)
                     formattedQuestion.refQuestion = toQuestionId(formattedQuestion.refQuestion);
@@ -33,6 +36,14 @@ export const resolvers: Resolvers = {
                     payload: {
                         questionCreated: { edge },
                         authorId: ctx.viewer.id,
+                    },
+                });
+                ctx.pubsub.publish({
+                    topic: 'questionCreatedByTopic',
+                    payload: {
+                        questionCreatedByTopic: { edge },
+                        eventId,
+                        topics,
                     },
                 });
 
@@ -132,6 +143,21 @@ export const resolvers: Resolvers = {
                 }
             ),
         },
+        questionCreatedByTopic: {
+            subscribe: withFilter<{
+                questionCreatedByTopic: EventQuestionEdgeContainer;
+                eventId: string;
+                topics: string[];
+            }>(
+                (parent, args, ctx) => ctx.pubsub.subscribe('questionCreatedByTopic'),
+                (payload, args, ctx) => {
+                    const { id: eventId } = fromGlobalId(args.eventId);
+                    // Not filtering by topic server side since the question may be created with multiple topics
+                    // All the connections will be updated respectively on the client side relay updater
+                    return eventId === payload.eventId;
+                }
+            ),
+        },
         questionAddedToRecord: {
             subscribe: withFilter<{ questionAddedToRecord: EventQuestionEdgeContainer }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionAddedToRecord'),
@@ -228,7 +254,6 @@ export const resolvers: Resolvers = {
                 async (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
                     const { id: questionId } = fromGlobalId(payload.recordRemoveQuestion.edge.node.id);
-                    const temp = await Question.doesEventMatch(eventId, questionId, ctx.prisma);
                     return Question.doesEventMatch(eventId, questionId, ctx.prisma);
                 }
             ),
@@ -237,9 +262,7 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{ topicQueuePush: EventQuestionEdgeContainer; eventId: string; topic: string }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('topicQueuePush'),
                 (payload, args, ctx) => {
-                    console.log('Args', args, 'Payload', payload);
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.topicQueuePush.edge.node.id);
                     return eventId === payload.eventId;
                 }
             ),
@@ -249,7 +272,6 @@ export const resolvers: Resolvers = {
                 (parent, args, ctx) => ctx.pubsub.subscribe('topicQueueRemove'),
                 (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.topicQueueRemove.edge.node.id);
                     return eventId === payload.eventId;
                 }
             ),
@@ -259,9 +281,7 @@ export const resolvers: Resolvers = {
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionEnqueued'),
                 (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionEnqueued.edge.node.id);
                     if (eventId === payload.eventId) {
-                        if (args.topic === 'default') return true;
                         return payload.topic === args.topic;
                     }
                     return false;
@@ -280,7 +300,7 @@ export const resolvers: Resolvers = {
                     const { id: eventId } = fromGlobalId(args.eventId);
                     const { id: questionId } = fromGlobalId(payload.questionDequeued.edge.node.id);
                     if (eventId === payload.eventId) {
-                        if (args.topic === 'default') return true;
+                        // if (args.topic === 'default') return true;
                         return payload.topic === args.topic;
                     }
                     return false;

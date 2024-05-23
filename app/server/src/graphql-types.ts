@@ -967,6 +967,7 @@ export type Subscription = {
     questionCreated: EventQuestionEdgeContainer;
     questionUpdated: EventQuestionEdgeContainer;
     questionDeleted: EventQuestionEdgeContainer;
+    questionCreatedByTopic: EventQuestionEdgeContainer;
     questionEnqueued: EventQuestionEdgeContainer;
     questionDequeued: EventQuestionEdgeContainer;
     questionAddedToRecord: EventQuestionEdgeContainer;
@@ -1045,6 +1046,11 @@ export type SubscriptionquestionUpdatedArgs = {
 export type SubscriptionquestionDeletedArgs = {
     eventId: Scalars['ID'];
     viewerOnly?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type SubscriptionquestionCreatedByTopicArgs = {
+    eventId: Scalars['ID'];
+    topic: Scalars['String'];
 };
 
 export type SubscriptionquestionEnqueuedArgs = {
@@ -3167,6 +3173,13 @@ export type SubscriptionResolvers<
         ParentType,
         ContextType,
         RequireFields<SubscriptionquestionDeletedArgs, 'eventId'>
+    >;
+    questionCreatedByTopic?: SubscriptionResolver<
+        ResolversTypes['EventQuestionEdgeContainer'],
+        'questionCreatedByTopic',
+        ParentType,
+        ContextType,
+        RequireFields<SubscriptionquestionCreatedByTopicArgs, 'eventId' | 'topic'>
     >;
     questionEnqueued?: SubscriptionResolver<
         ResolversTypes['EventQuestionEdgeContainer'],

@@ -928,6 +928,7 @@ type Subscription {
 
   """Question subscription for all operations performed on questions"""
   questionCreated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
+  questionCreatedByTopic(eventId: ID!, topic: String!): EventQuestionEdgeContainer!
   questionDeleted(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
   questionDequeued(eventId: String!, topic: String!): EventQuestionEdgeContainer!
   questionEnqueued(eventId: String!, topic: String!): EventQuestionEdgeContainer!

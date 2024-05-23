@@ -59,7 +59,7 @@ export async function createQuestion(userId: string, prisma: PrismaClient, input
         select: { id: true },
     });
 
-    return prisma.eventQuestion.create({
+    const newQuestion = await prisma.eventQuestion.create({
         data: {
             eventId,
             question,
@@ -81,6 +81,7 @@ export async function createQuestion(userId: string, prisma: PrismaClient, input
             refQuestion: true,
         },
     });
+    return { question: newQuestion, topics };
 }
 /**
  *  Remove a question from an event

@@ -1445,6 +1445,7 @@ export type Subscription = {
   questionAddedToRecord: EventQuestionEdgeContainer;
   /** Question subscription for all operations performed on questions */
   questionCreated: EventQuestionEdgeContainer;
+  questionCreatedByTopic: EventQuestionEdgeContainer;
   questionDeleted: EventQuestionEdgeContainer;
   questionDequeued: EventQuestionEdgeContainer;
   questionEnqueued: EventQuestionEdgeContainer;
@@ -1542,6 +1543,12 @@ export type SubscriptionQuestionAddedToRecordArgs = {
 export type SubscriptionQuestionCreatedArgs = {
   eventId: Scalars['ID'];
   viewerOnly?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type SubscriptionQuestionCreatedByTopicArgs = {
+  eventId: Scalars['ID'];
+  topic: Scalars['String'];
 };
 
 
