@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { graphql, useMutation, useSubscription } from 'react-relay';
-import { ConnectionHandler, GraphQLSubscriptionConfig } from 'relay-runtime';
+import { GraphQLSubscriptionConfig } from 'relay-runtime';
 
 import type { useOnDeckDequeuedSubscription } from '@local/__generated__/useOnDeckDequeuedSubscription.graphql';
 import { useEvent } from '@local/features/events/useEvent';
@@ -37,14 +37,9 @@ export const USE_ON_DECK_DEQUEUED = graphql`
             edge {
                 node {
                     id @deleteEdge(connections: $connections)
-                    ...QuestionAuthorFragment
-                    ...QuestionStatsFragment
-                    ...QuestionContentFragment
                     position
                     onDeckPosition
                     topics {
-                        topic
-                        description
                         position
                     }
                 }
@@ -70,38 +65,6 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
                 connections,
             },
             subscription: USE_ON_DECK_DEQUEUED,
-            // TODO: Use updater, relative card position, and current topic to move the question to the correct position in the correct queue
-            updater: (store) => {
-                // Add question to the correct position in the correct queue
-                const eventRecord = store.get(eventId);
-                if (!eventRecord) return console.error('Event Record not found');
-                const connection = ConnectionHandler.getConnectionID(
-                    eventRecord.getDataID(),
-                    'useQuestionModQueueFragment_questionModQueue'
-                );
-
-                const payload = store.getRootField('enqueuedRemoveQuestion');
-                if (!payload) return console.error('Payload not found');
-
-                const serverEdge = payload.getLinkedRecord('body');
-                if (!serverEdge) return console.error('Server edge not found');
-                const questionId = serverEdge.getValue('id')?.toString();
-                if (!questionId) return console.error('Question ID not found');
-
-                const connectionRecord = store.get(connection);
-                if (!connectionRecord) return console.error('Connection record not found');
-                const question = store.get(questionId);
-                if (!question) return console.error('Question not found');
-                const newEdge = ConnectionHandler.buildConnectionEdge(store, connectionRecord, serverEdge);
-                if (!newEdge) return console.error('New edge not found');
-                ConnectionHandler.insertEdgeAfter(connectionRecord, newEdge, null);
-
-                // Remove question from onDeck list
-                const onDeckConnectionId = `client:${eventId}:questionQueue:__useOnDeckFragment_enqueuedQuestions_connection`;
-                const onDeckConnection = store.get(onDeckConnectionId);
-                if (!onDeckConnection) return console.error('onDeckConnection not found');
-                ConnectionHandler.deleteNode(onDeckConnection, questionId);
-            },
         }),
         [eventId, connections]
     );
@@ -144,8 +107,9 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
             const prevQuestion = list[movedQuestionIndex - 1];
             console.log('prevQuestion:', prevQuestion);
             const previousQuestionTopic = prevQuestion?.topics?.find((t) => t.topic === currentTopic);
-            if (!previousQuestionTopic) throw new Error('No topic found');
-            const prevQuestionPosition = parseInt(previousQuestionTopic.position);
+            const prevQuestionPosition = !previousQuestionTopic
+                ? parseInt(prevQuestion.position)
+                : parseInt(previousQuestionTopic.position);
             console.log('prevQuestionPosition:', prevQuestionPosition);
             const nextQuestion = list[movedQuestionIndex + 1];
             console.log('nextQuestion:', nextQuestion);
@@ -156,9 +120,11 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
             // If there is a next question then the new position should be between the previous and next question
             const nextQuestionTopic = nextQuestion?.topics?.find((t) => t.topic === currentTopic);
             if (!nextQuestionTopic) throw new Error('No topic found');
-            const position = Math.round(
-                (parseInt(previousQuestionTopic.position) + parseInt(nextQuestionTopic.position)) / 2
-            );
+            const nextQuestionPosition = !nextQuestionTopic
+                ? parseInt(nextQuestion.position)
+                : parseInt(nextQuestionTopic.position);
+            // const previousQuestionPosition = !previousQuestionTopic ? parseInt(prevQuestion.position) : parseInt(previousQuestionTopic.position);
+            const position = Math.round(prevQuestionPosition + nextQuestionPosition) / 2;
             if (position < -1) throw new Error('Invalid position');
             return position;
         },
@@ -189,36 +155,9 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
                         newPosition: newPosition.toString(),
                     },
                 },
-                // TODO: Use updater, relative card position, and current topic to move the question to the correct position in the correct queue
-                updater: (store) => {
-                    // Add question to the correct position in the correct queue
-                    const eventRecord = store.get(eventId);
-                    if (!eventRecord) return console.error('Event Record not found');
-                    const connection = ConnectionHandler.getConnectionID(
-                        eventRecord.getDataID(),
-                        'useQuestionModQueueFragment_questionModQueue'
-                    );
-                    const connectionRecord = store.get(connection);
-                    if (!connectionRecord) return console.error('Connection record not found');
-                    const question = store.get(input.questionId);
-                    if (!question) return console.error('Question not found');
-                    const payload = store.getRootField('removeQuestionFromOnDeck');
-                    if (!payload) return console.error('Payload not found');
-                    const serverEdge = payload.getLinkedRecord('body');
-                    if (!serverEdge) return console.error('Server edge not found');
-                    const newEdge = ConnectionHandler.buildConnectionEdge(store, connectionRecord, serverEdge);
-                    if (!newEdge) return console.error('New edge not found');
-                    ConnectionHandler.insertEdgeAfter(connectionRecord, newEdge, null);
-
-                    // Remove question from onDeck list
-                    const onDeckConnectionId = `client:${eventId}:questionQueue:__useOnDeckFragment_enqueuedQuestions_connection`;
-                    const onDeckConnection = store.get(onDeckConnectionId);
-                    if (!onDeckConnection) return console.error('onDeckConnection not found');
-                    ConnectionHandler.deleteNode(onDeckConnection, input.questionId);
-                },
             });
         },
-        [calculatePosition, commit, currentTopic, eventId]
+        [calculatePosition, commit, currentTopic]
     );
 
     return { removeFromOnDeck };

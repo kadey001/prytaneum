@@ -39,9 +39,6 @@ export const USE_ON_DECK_ENQUEUED = graphql`
                 cursor
                 node {
                     id
-                    # ...QuestionAuthorFragment
-                    # ...QuestionStatsFragment
-                    # ...QuestionContentFragment
                     position
                     onDeckPosition
                     topics {
@@ -127,44 +124,71 @@ export function useOnDeckEnqueued({ connections, topics }: Props) {
     // NOTE: Should always order the onDeck list from lowest to highest
     // That way, whenever the list is empty and a new one is added (which is set to the time in ms),
     // it will always be after the current question.
-    const calculatePosition = React.useCallback((list: Question[], movedQuestionIndex: number) => {
-        // If the list is length 1 then it is likely the first item added to the list, calculate a new position
-        if (!list || list.length <= 1) {
-            const currentTimeMs = new Date().getTime();
-            const currentTimeMsStr = currentTimeMs.toString();
-            const calculatedPosition = parseInt(currentTimeMsStr);
-            return calculatedPosition;
-        }
+    const calculatePosition = React.useCallback(
+        (list: Question[], movedQuestionIndex: number, currentQuestionPosition: number) => {
+            // If the list is length 1 then it is likely the first item added to the list, calculate a new position
+            if (!list || (list.length <= 1 && currentQuestionPosition === -1)) {
+                const currentTimeMs = new Date().getTime();
+                const currentTimeMsStr = currentTimeMs.toString();
+                const calculatedPosition = parseInt(currentTimeMsStr);
+                return calculatedPosition;
+            } else if (!list || list.length <= 1) {
+                // If the list is length 1 and the current question position is not -1 then there is a curr question and an empty on Deck queue
+                // so we can use the current question position to calculate the new position or just use time since it will be later
+                const currentTimeMs = new Date().getTime();
+                const currentTimeMsStr = currentTimeMs.toString();
+                const calculatedPosition = parseInt(currentTimeMsStr);
+                if (calculatedPosition < currentQuestionPosition) throw new Error('Invalid position');
+                return calculatedPosition;
+            }
 
-        // The source indx is useless here since we are moving from a different list, can only use destination index
-        // The destination index will be where the moved quesiton is as the list is updated while moving it.
-        // Should check if there at the end of the list or the start of the list
-        // If not, then calculate the position based on the two questions around it
-        // Already handled case with it being the first, so if the index is 0 then there should be at least one question below it
-        if (movedQuestionIndex === 0) {
-            // If the index is 0 then the new position should be less than the next question in the list
+            // The source indx is useless here since we are moving from a different list, can only use destination index
+            // The destination index will be where the moved quesiton is as the list is updated while moving it.
+            // Should check if there at the end of the list or the start of the list
+            // If not, then calculate the position based on the two questions around it
+            // Already handled case with it being the first, so if the index is 0 then there should be at least one question below it
+            if (movedQuestionIndex === 0) {
+                // If the index is 0 then the new position should be less than the next question in the list
+                const nextQuestion = list[movedQuestionIndex + 1];
+                // console.log('nextQuestion:', nextQuestion);
+                if (nextQuestion.onDeckPosition === '-1') throw new Error('Invalid next question position');
+                const nextQuestionPosition = parseInt(nextQuestion.onDeckPosition);
+                // NOTE: race condition, since we're using time for ordering, then adding 1000 ms (1s) will mean that the order
+                // at the very end may be messed up, but that's okay, the start is what's important
+
+                // If there is no next question then the new position just needs to be less than the current question
+                if (currentQuestionPosition === -1) return nextQuestionPosition - 1000;
+                const diff = Math.abs(nextQuestionPosition - currentQuestionPosition);
+                return Math.round(currentQuestionPosition + diff / 2);
+            }
+
+            // In this case we should have at least one question above it to reference and calculate the new position
+            const prevQuestion = list[movedQuestionIndex - 1];
+            console.log('prevQuestion:', prevQuestion);
+            const prevQuestionPosition = parseInt(prevQuestion.onDeckPosition);
+            if (prevQuestionPosition === -1) throw new Error('Invalid previous question position');
             const nextQuestion = list[movedQuestionIndex + 1];
             console.log('nextQuestion:', nextQuestion);
+            // If there is no next question then we should be at the end of the list
+            if (!nextQuestion) {
+                // If there is no next question then the new position should be greater than the previous question
+                return prevQuestionPosition + 1000;
+            }
             const nextQuestionPosition = parseInt(nextQuestion.onDeckPosition);
-            // NOTE: race condition, since we're using time for ordering, then adding 1000 ms (1s) will mean that the order
-            // at the very end may be messed up, but that's okay, the start is what's important
-            return nextQuestionPosition - 1000;
-        }
-
-        // In this case we should have at least one question above it to reference and calculate the new position
-        const prevQuestion = list[movedQuestionIndex - 1];
-        console.log('prevQuestion:', prevQuestion);
-        const prevQuestionPosition = parseInt(prevQuestion.onDeckPosition);
-        const nextQuestion = list[movedQuestionIndex + 1];
-        if (!nextQuestion) {
-            // If there is no next question then the new position should be greater than the previous question
-            return prevQuestionPosition + 1000;
-        }
-        // If there is a next question then the new position should be between the previous and next question
-        const position = Math.round((prevQuestionPosition + parseInt(nextQuestion.onDeckPosition)) / 2);
-        if (position < -1) throw new Error('Invalid position');
-        return position;
-    }, []);
+            // console.log('Next Question Position:', nextQuestionPosition);
+            // console.log('Prev Question Position:', prevQuestionPosition);
+            // If there is a next question then the new position should be between the previous and next question
+            // Since the numbers are so large (time in ms) then we can just find the difference and add half of it to the previous question
+            const diff = Math.abs(nextQuestionPosition - prevQuestionPosition);
+            console.log('diff:', diff);
+            if (diff <= 0) throw new Error('Invalid difference');
+            const position = Math.round(prevQuestionPosition + diff / 2);
+            // const position = Math.round((prevQuestionPosition + parseInt(nextQuestion.onDeckPosition)) / 2);
+            if (position < -1) throw new Error('Invalid position');
+            return position;
+        },
+        []
+    );
 
     type AddQuestionToOnDeckInput = {
         questionId: string;
@@ -172,6 +196,7 @@ export function useOnDeckEnqueued({ connections, topics }: Props) {
         list: Question[];
         movedQuestionIndex: number; // Index of where the question was moved to in the on deck list
         cursor: string;
+        currentQuestionPosition: number;
     };
 
     // TODO: Improve with optimistic updater
@@ -179,8 +204,9 @@ export function useOnDeckEnqueued({ connections, topics }: Props) {
     const addQuestionToOnDeck = React.useCallback(
         (input: AddQuestionToOnDeckInput) => {
             const { list, movedQuestionIndex } = input;
-            const newPosition = calculatePosition(list, movedQuestionIndex);
-            if (newPosition === -1) {
+            const newPosition = calculatePosition(list, movedQuestionIndex, input.currentQuestionPosition);
+            console.log('newPosition:', newPosition);
+            if (newPosition <= -1) {
                 displaySnack('Invalid new position', { variant: 'error' });
             }
 
@@ -232,18 +258,18 @@ export function useOnDeckEnqueued({ connections, topics }: Props) {
                         ConnectionHandler.deleteNode(connectionRecord, input.questionId);
                     });
 
-                    const onDeckConnectionId = `client:${eventId}:questionQueue:__useOnDeckFragment_enqueuedQuestions_connection`;
-                    console.log('onDeckConnection:', onDeckConnectionId);
-                    const onDeckConnectionRecord = store.get(onDeckConnectionId);
-                    if (!onDeckConnectionRecord) return console.error('On Deck Connection record not found');
+                    // const onDeckConnectionId = `client:${eventId}:questionQueue:__useOnDeckFragment_enqueuedQuestions_connection`;
+                    // console.log('onDeckConnection:', onDeckConnectionId);
+                    // const onDeckConnectionRecord = store.get(onDeckConnectionId);
+                    // if (!onDeckConnectionRecord) return console.error('On Deck Connection record not found');
 
-                    const payload = store.getRootField('addQuestionToOnDeck');
-                    if (!payload) return console.error('Payload not found');
-                    const serverEdge = payload.getLinkedRecord('body');
-                    if (!serverEdge) return console.error('Edge not found');
-                    const newEdge = ConnectionHandler.buildConnectionEdge(store, onDeckConnectionRecord, serverEdge);
-                    if (!newEdge) return console.error('New Edge not found');
-                    ConnectionHandler.insertEdgeBefore(onDeckConnectionRecord, newEdge);
+                    // const payload = store.getRootField('addQuestionToOnDeck');
+                    // if (!payload) return console.error('Payload not found');
+                    // const serverEdge = payload.getLinkedRecord('body');
+                    // if (!serverEdge) return console.error('Edge not found');
+                    // const newEdge = ConnectionHandler.buildConnectionEdge(store, onDeckConnectionRecord, serverEdge);
+                    // if (!newEdge) return console.error('New Edge not found');
+                    // ConnectionHandler.insertEdgeBefore(onDeckConnectionRecord, newEdge);
                 },
                 // optimisticResponse: {
                 //     addQuestionToOnDeck: {
