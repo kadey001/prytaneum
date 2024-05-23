@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { graphql, useMutation, useSubscription, ConnectionHandler } from 'react-relay';
-import { GraphQLSubscriptionConfig } from 'relay-runtime';
+import { graphql, useMutation, ConnectionHandler } from 'react-relay';
+// import { GraphQLSubscriptionConfig } from 'relay-runtime';
 
-import type { useOnDeckEnqueuedSubscription } from '@local/__generated__/useOnDeckEnqueuedSubscription.graphql';
+// import type { useOnDeckEnqueuedSubscription } from '@local/__generated__/useOnDeckEnqueuedSubscription.graphql';
 import { useEvent } from '@local/features/events/useEvent';
 import { Question, Topic } from '../../types';
 import { useSnack } from '@local/core';
@@ -52,75 +52,83 @@ export const USE_ON_DECK_ENQUEUED = graphql`
     }
 `;
 
-// TODO: Fix the local client not updaing the data in store properly
-// Causes an issue since it is stuck at -1 but if you add another it will make a negative number
 interface Props {
     connections: string[];
     topics: readonly Topic[];
 }
 
-export function useOnDeckEnqueued({ connections, topics }: Props) {
+export function useOnDeckEnqueued({ topics }: Props) {
     const { eventId } = useEvent();
     const { displaySnack } = useSnack();
 
-    const enqueuedPushConfig = React.useMemo<GraphQLSubscriptionConfig<useOnDeckEnqueuedSubscription>>(
-        () => ({
-            variables: {
-                eventId,
-                connections,
-            },
-            subscription: USE_ON_DECK_ENQUEUED,
-            updater: (store) => {
-                const eventRecord = store.get(eventId);
-                if (!eventRecord) return console.error('Event Record not found');
+    // Not using for now, some issue but using "useEnqueuedPush" instead in CurrentQuesionCard which works for now
+    // const enqueuedPushConfig = React.useMemo<GraphQLSubscriptionConfig<useOnDeckEnqueuedSubscription>>(
+    //     () => ({
+    //         variables: {
+    //             eventId,
+    //             connections,
+    //         },
+    //         subscription: USE_ON_DECK_ENQUEUED,
+    //         onError: (error) => {
+    //             console.error('Error:', error);
+    //         },
+    //         onNext: (response) => {
+    //             console.log('Response:', response);
+    //         },
+    //         updater: (store) => {
+    //             console.log('Updater Called');
+    //             const eventRecord = store.get(eventId);
+    //             if (!eventRecord) return console.error('Event Record not found');
 
-                const payload = store.getRootField('enqueuedPushQuestion');
-                if (!payload) return console.error('Payload not found');
+    //             const payload = store.getRootField('enqueuedPushQuestion');
+    //             if (!payload) return console.error('Payload not found');
+    //             console.log('Payload:', payload);
 
-                const serverEdge = payload.getLinkedRecord('edge');
-                if (!serverEdge) return console.error('Edge not found');
+    //             const serverEdge = payload.getLinkedRecord('edge');
+    //             if (!serverEdge) return console.error('Edge not found');
 
-                const questionId = serverEdge.getValue('id')?.toString();
-                if (!questionId) return console.error('Question ID not found');
+    //             const questionId = serverEdge.getValue('id')?.toString();
+    //             if (!questionId) return console.error('Question ID not found');
 
-                // Remove from modQueue
-                const modQueueConnection = ConnectionHandler.getConnectionID(
-                    eventRecord.getDataID(),
-                    'useQuestionModQueueFragment_questionModQueue'
-                );
-                const modQueueConnectionRecord = store.get(modQueueConnection);
-                if (!modQueueConnectionRecord) return console.error('Mod Queue Connection record not found');
-                ConnectionHandler.deleteNode(modQueueConnectionRecord, questionId);
+    //             // Remove from modQueue
+    //             const modQueueConnection = ConnectionHandler.getConnectionID(
+    //                 eventRecord.getDataID(),
+    //                 'useQuestionModQueueFragment_questionModQueue'
+    //             );
+    //             const modQueueConnectionRecord = store.get(modQueueConnection);
+    //             if (!modQueueConnectionRecord) return console.error('Mod Queue Connection record not found');
+    //             ConnectionHandler.deleteNode(modQueueConnectionRecord, questionId);
 
-                // Start with default, then remove the question from all question lists
-                const defaultConnection = ConnectionHandler.getConnectionID(
-                    eventRecord.getDataID(),
-                    'useQuestionsByTopicFragment_questions'
-                );
-                eventRecord.setValue(null, 'modQueueCursor');
-                const defaultConnectionId = defaultConnection + '(topic:"default")';
-                const defaultConnectionRecord = store.get(defaultConnectionId);
-                if (!defaultConnectionRecord) return console.error('Default Connection record not found');
-                ConnectionHandler.deleteNode(defaultConnectionRecord, questionId);
+    //             // Start with default, then remove the question from all question lists
+    //             const defaultConnection = ConnectionHandler.getConnectionID(
+    //                 eventRecord.getDataID(),
+    //                 'useQuestionsByTopicFragment_questions'
+    //             );
+    //             eventRecord.setValue(null, 'modQueueCursor');
+    //             const defaultConnectionId = defaultConnection + '(topic:"default")';
+    //             const defaultConnectionRecord = store.get(defaultConnectionId);
+    //             if (!defaultConnectionRecord) return console.error('Default Connection record not found');
+    //             ConnectionHandler.deleteNode(defaultConnectionRecord, questionId);
 
-                topics.forEach(({ topic }) => {
-                    const connection = ConnectionHandler.getConnectionID(
-                        eventRecord.getDataID(),
-                        'useQuestionsByTopicFragment_questions'
-                    );
-                    if (!connection) return console.error('Connection not found');
-                    const connectionId = connection + `(topic:"${topic}")`;
-                    const connectionRecord = store.get(connectionId);
-                    if (!connectionRecord) return console.error(`Connection record ${connectionId} not found`);
-                    ConnectionHandler.deleteNode(connectionRecord, questionId);
-                });
-            },
-        }),
-        [eventId, connections, topics]
-    );
+    //             topics.forEach(({ topic }) => {
+    //                 const connection = ConnectionHandler.getConnectionID(
+    //                     eventRecord.getDataID(),
+    //                     'useQuestionsByTopicFragment_questions'
+    //                 );
+    //                 if (!connection) return console.error('Connection not found');
+    //                 const connectionId = connection + `(topic:"${topic}")`;
+    //                 const connectionRecord = store.get(connectionId);
+    //                 if (!connectionRecord) return console.error(`Connection record ${connectionId} not found`);
+    //                 ConnectionHandler.deleteNode(connectionRecord, questionId);
+    //             });
+    //         },
+    //     }),
+    //     [eventId, connections, topics]
+    // );
 
-    useSubscription<useOnDeckEnqueuedSubscription>(enqueuedPushConfig);
+    // useSubscription<useOnDeckEnqueuedSubscription>(enqueuedPushConfig);
 
+    // TODO: Still an issue with adding it to places other than the top of the list (issue on subscriptoin side)
     // NOTE: Should always order the onDeck list from lowest to highest
     // That way, whenever the list is empty and a new one is added (which is set to the time in ms),
     // it will always be after the current question.
@@ -240,7 +248,7 @@ export function useOnDeckEnqueued({ connections, topics }: Props) {
                         eventRecord.getDataID(),
                         'useQuestionsByTopicFragment_questions'
                     );
-                    eventRecord.setValue(null, 'modQueueCursor');
+
                     const defaultConnectionId = defaultConnection + '(topic:"default")';
                     const defaultConnectionRecord = store.get(defaultConnectionId);
                     if (!defaultConnectionRecord) return console.error('Default Connection record not found');
@@ -306,7 +314,7 @@ export function useOnDeckEnqueued({ connections, topics }: Props) {
                 // },
             });
         },
-        [commit, displaySnack, eventId, topics]
+        [calculatePosition, commit, displaySnack, eventId, topics]
     );
 
     return { addQuestionToOnDeck };
