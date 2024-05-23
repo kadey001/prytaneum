@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<94a266a848c7ac61a4d24f1534eece28>>
+ * @generated SignedSource<<68dbf41db80d9293f9e5ad9e70b6222c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,7 +14,7 @@ export type EventSidebarFragment$data = {
   readonly id: string;
   readonly isQuestionFeedVisible: boolean | null;
   readonly isViewerModerator: boolean | null;
-  readonly " $fragmentSpreads": FragmentRefs<"QuestionCarouselFragment" | "SpeakerListFragment" | "useBroadcastMessageListFragment" | "useLiveFeedbackListFragment" | "useQuestionListFragment" | "useQuestionQueueFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"QuestionCarouselFragment" | "SpeakerListFragment" | "useBroadcastMessageListFragment" | "useLiveFeedbackListFragment" | "useOnDeckFragment" | "useQuestionListFragment" | "useQuestionQueueFragment">;
   readonly " $fragmentType": "EventSidebarFragment";
 };
 export type EventSidebarFragment$key = {
@@ -89,12 +89,17 @@ const node: ReaderFragment = {
       ],
       "kind": "FragmentSpread",
       "name": "useLiveFeedbackListFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "useOnDeckFragment"
     }
   ],
   "type": "Event",
   "abstractKey": null
 };
 
-(node as any).hash = "f24286a7daf88bc6c623ec098faf2453";
+(node as any).hash = "5e70c1cc306e4bed93d72f7475668776";
 
 export default node;

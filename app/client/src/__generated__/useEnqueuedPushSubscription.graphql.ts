@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a8d5560f16b24da146b1e4df140c435a>>
+ * @generated SignedSource<<88ae686e47ca3ece0ba95b2740ec2a39>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,7 +20,13 @@ export type useEnqueuedPushSubscription$data = {
       readonly cursor: string;
       readonly node: {
         readonly id: string;
+        readonly onDeckPosition: string;
         readonly position: string;
+        readonly topics: ReadonlyArray<{
+          readonly description: string;
+          readonly position: string;
+          readonly topic: string;
+        }> | null;
         readonly " $fragmentSpreads": FragmentRefs<"QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
       };
     };
@@ -64,6 +70,39 @@ v4 = {
   "storageKey": null
 },
 v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "onDeckPosition",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "EventQuestionTopic",
+  "kind": "LinkedField",
+  "name": "topics",
+  "plural": true,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "topic",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "description",
+      "storageKey": null
+    },
+    (v4/*: any*/)
+  ],
+  "storageKey": null
+},
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -120,11 +159,13 @@ return {
                     "kind": "FragmentSpread",
                     "name": "QuestionContentFragment"
                   },
-                  (v4/*: any*/)
+                  (v4/*: any*/),
+                  (v5/*: any*/),
+                  (v6/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v5/*: any*/)
+              (v7/*: any*/)
             ],
             "storageKey": null
           }
@@ -223,11 +264,13 @@ return {
                     "name": "question",
                     "storageKey": null
                   },
-                  (v4/*: any*/)
+                  (v4/*: any*/),
+                  (v5/*: any*/),
+                  (v6/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v5/*: any*/)
+              (v7/*: any*/)
             ],
             "storageKey": null
           },
@@ -253,16 +296,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "67c87713b931d5b1f7adb5afcf1b64b0",
+    "cacheID": "a6f513afd5d25d7230276d8781149c95",
     "id": null,
     "metadata": {},
     "name": "useEnqueuedPushSubscription",
     "operationKind": "subscription",
-    "text": "subscription useEnqueuedPushSubscription(\n  $eventId: ID!\n) {\n  enqueuedPushQuestion(eventId: $eventId) {\n    edge {\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment\n        position\n      }\n      cursor\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
+    "text": "subscription useEnqueuedPushSubscription(\n  $eventId: ID!\n) {\n  enqueuedPushQuestion(eventId: $eventId) {\n    edge {\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment\n        position\n        onDeckPosition\n        topics {\n          topic\n          description\n          position\n        }\n      }\n      cursor\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
   }
 };
 })();
 
-(node as any).hash = "46ed48d79487121ab1e593a9d24cbd92";
+(node as any).hash = "d69496527b93a3db084ae91ac17b05e2";
 
 export default node;
