@@ -34,6 +34,7 @@ export const EVENT_LIVE_QUERY = graphql`
                 ...EventVideoFragment
                 ...useEventDetailsFragment
                 ...SpeakerListFragment
+                ...useOnDeckFragment
             }
         }
     }
