@@ -15,6 +15,12 @@ export const USE_ENQUEUED_PUSH_SUBSCRIPTION = graphql`
                     ...QuestionStatsFragment
                     ...QuestionContentFragment
                     position
+                    onDeckPosition
+                    topics {
+                        topic
+                        description
+                        position
+                    }
                 }
                 cursor
             }
