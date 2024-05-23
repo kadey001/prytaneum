@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<53cdbc233674c28aaa76ab016b7697ff>>
+ * @generated SignedSource<<e5d46bc145e0ea973717a8e0e69042bc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,6 +21,7 @@ export type useQuestionDequeuedSubscription$data = {
       readonly cursor: string;
       readonly node: {
         readonly id: string;
+        readonly onDeckPosition: string;
         readonly position: string;
         readonly topics: ReadonlyArray<{
           readonly position: string;
@@ -101,6 +102,13 @@ v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "onDeckPosition",
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "cursor",
   "storageKey": null
 };
@@ -156,11 +164,12 @@ return {
                     "name": "QuestionContentFragment"
                   },
                   (v6/*: any*/),
-                  (v5/*: any*/)
+                  (v5/*: any*/),
+                  (v7/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v7/*: any*/)
+              (v8/*: any*/)
             ],
             "storageKey": null
           }
@@ -261,11 +270,12 @@ return {
                     "storageKey": null
                   },
                   (v6/*: any*/),
-                  (v5/*: any*/)
+                  (v5/*: any*/),
+                  (v7/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v7/*: any*/)
+              (v8/*: any*/)
             ],
             "storageKey": null
           },
@@ -291,16 +301,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3a046f7738dd43890d02dab441c43f15",
+    "cacheID": "ead3382ca4892c7fc3ffacb084679349",
     "id": null,
     "metadata": {},
     "name": "useQuestionDequeuedSubscription",
     "operationKind": "subscription",
-    "text": "subscription useQuestionDequeuedSubscription(\n  $eventId: String!\n  $topic: String!\n) {\n  questionDequeued(eventId: $eventId, topic: $topic) {\n    edge {\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment\n        topics {\n          topic\n          position\n        }\n        position\n      }\n      cursor\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
+    "text": "subscription useQuestionDequeuedSubscription(\n  $eventId: String!\n  $topic: String!\n) {\n  questionDequeued(eventId: $eventId, topic: $topic) {\n    edge {\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment\n        topics {\n          topic\n          position\n        }\n        position\n        onDeckPosition\n      }\n      cursor\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
   }
 };
 })();
 
-(node as any).hash = "443201ff7ef6cb3e4bb57db35ae5e788";
+(node as any).hash = "a168ffbda94b4f265d8c5f33f066011b";
 
 export default node;

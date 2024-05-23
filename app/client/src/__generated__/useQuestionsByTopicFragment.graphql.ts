@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<df6ff76cc4ab5f052b3afb12b593ae4c>>
+ * @generated SignedSource<<9324220051758e4cc0b205ff653a4cd8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,6 +22,7 @@ export type useQuestionsByTopicFragment$data = {
           readonly firstName: string | null;
         } | null;
         readonly id: string;
+        readonly onDeckPosition: string;
         readonly position: string;
         readonly question: string;
         readonly refQuestion: {
@@ -73,7 +74,7 @@ return {
       "name": "after"
     },
     {
-      "defaultValue": 50,
+      "defaultValue": 500,
       "kind": "LocalArgument",
       "name": "first"
     },
@@ -165,6 +166,13 @@ return {
                   "storageKey": null
                 },
                 (v2/*: any*/),
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "onDeckPosition",
+                  "storageKey": null
+                },
                 {
                   "alias": null,
                   "args": null,
@@ -311,6 +319,6 @@ return {
 };
 })();
 
-(node as any).hash = "5637ed11e38a778731601ded2cac063e";
+(node as any).hash = "3a716ab23ce9751c28b636d3077c2b8e";
 
 export default node;

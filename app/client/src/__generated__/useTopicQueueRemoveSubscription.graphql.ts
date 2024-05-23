@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ad7020a5927797c1686194daf6693191>>
+ * @generated SignedSource<<c95f009c42296cce13160edefc8de4b1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,6 @@
 // @ts-nocheck
 
 import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
 export type useTopicQueueRemoveSubscription$variables = {
   connections: ReadonlyArray<string>;
   eventId: string;
@@ -21,13 +20,6 @@ export type useTopicQueueRemoveSubscription$data = {
       readonly cursor: string;
       readonly node: {
         readonly id: string;
-        readonly onDeckPosition: string;
-        readonly position: string;
-        readonly topics: ReadonlyArray<{
-          readonly position: string;
-          readonly topic: string;
-        }> | null;
-        readonly " $fragmentSpreads": FragmentRefs<"QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
       };
     };
   };
@@ -76,39 +68,6 @@ v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "position",
-  "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "concreteType": "EventQuestionTopic",
-  "kind": "LinkedField",
-  "name": "topics",
-  "plural": true,
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "topic",
-      "storageKey": null
-    },
-    (v5/*: any*/)
-  ],
-  "storageKey": null
-},
-v7 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "onDeckPosition",
-  "storageKey": null
-},
-v8 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "cursor",
   "storageKey": null
 };
@@ -147,29 +106,11 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/),
-                  {
-                    "args": null,
-                    "kind": "FragmentSpread",
-                    "name": "QuestionAuthorFragment"
-                  },
-                  {
-                    "args": null,
-                    "kind": "FragmentSpread",
-                    "name": "QuestionStatsFragment"
-                  },
-                  {
-                    "args": null,
-                    "kind": "FragmentSpread",
-                    "name": "QuestionContentFragment"
-                  },
-                  (v6/*: any*/),
-                  (v5/*: any*/),
-                  (v7/*: any*/)
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v8/*: any*/)
+              (v5/*: any*/)
             ],
             "storageKey": null
           }
@@ -230,69 +171,11 @@ return {
                         "variableName": "connections"
                       }
                     ]
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "User",
-                    "kind": "LinkedField",
-                    "name": "createdBy",
-                    "plural": false,
-                    "selections": [
-                      (v4/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "firstName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "lastName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "avatar",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  },
-                  (v4/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "likedByCount",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "question",
-                    "storageKey": null
-                  },
-                  (v6/*: any*/),
-                  (v5/*: any*/),
-                  (v7/*: any*/)
+                  }
                 ],
                 "storageKey": null
               },
-              (v8/*: any*/)
+              (v5/*: any*/)
             ],
             "storageKey": null
           }
@@ -302,16 +185,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "41d91bee61e175af1bcec69023ef0f3f",
+    "cacheID": "e3332abd17c0ee25c4fbdc3e0fb6b7b0",
     "id": null,
     "metadata": {},
     "name": "useTopicQueueRemoveSubscription",
     "operationKind": "subscription",
-    "text": "subscription useTopicQueueRemoveSubscription(\n  $eventId: String!\n  $topic: String!\n) {\n  topicQueueRemove(eventId: $eventId, topic: $topic) {\n    edge {\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment\n        topics {\n          topic\n          position\n        }\n        position\n        onDeckPosition\n      }\n      cursor\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
+    "text": "subscription useTopicQueueRemoveSubscription(\n  $eventId: String!\n  $topic: String!\n) {\n  topicQueueRemove(eventId: $eventId, topic: $topic) {\n    edge {\n      node {\n        id\n      }\n      cursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "510ae426bf687286a216cfe0140495e6";
+(node as any).hash = "4a2d0b55f16e643175027923a5ed0cd7";
 
 export default node;
