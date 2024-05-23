@@ -288,7 +288,7 @@ export const resolvers: Resolvers = {
             const queryResult = await Event.findQuestionQueueByEventId(eventId, ctx.prisma);
             const toQuestionEdge = (question: EventQuestion) => ({
                 node: question,
-                cursor: question.position,
+                cursor: question.onDeckPosition,
             });
             const makeConnection = <T extends ReturnType<typeof toQuestionEdge>[]>(edges: T) => ({
                 edges,
