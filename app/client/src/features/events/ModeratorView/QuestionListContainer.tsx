@@ -12,7 +12,6 @@ import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer'
 import ListFilter, { useFilters, Accessors } from '@local/components/ListFilter';
 import { ArrayElement } from '@local/utils/ts-utils';
 import { useEvent } from '@local/features/events';
-import { useQuestionCreated } from '@local/features/events/Questions/QuestionList/useQuestionCreated';
 import { useQuestionUpdated } from '@local/features/events/Questions/QuestionList/useQuestionUpdated';
 import { useQuestionDeleted } from '@local/features/events/Questions/QuestionList/useQuestionDeleted';
 import AskQuestion from '@local/features/events/Questions/AskQuestion';
@@ -20,6 +19,9 @@ import { useQuestionsByTopic } from './hooks/useQuestionsByTopic';
 import { useQuestionsByTopicFragment$key } from '@local/__generated__/useQuestionsByTopicFragment.graphql';
 import EventQuestion from './EventQuestion';
 import { Topic } from './types';
+import { useQuestionDequeued } from './hooks/useQuestionDequeued';
+import { useQuestionEnqueued } from './hooks/useQuestionEnqueued';
+import { useQuestionCreatedByTopic } from './hooks/useQuestionCreatedByTopic';
 
 interface Props {
     fragmentRef: useQuestionsByTopicFragment$key;
@@ -59,9 +61,12 @@ export function QuestionListContainer({
         () => [...connections, ...questionsByTopicConnections],
         [connections, questionsByTopicConnections]
     );
-    useQuestionCreated({ connections: questionsByTopicConnections });
+
+    useQuestionCreatedByTopic({ topic, connections: questionsByTopicConnections });
     useQuestionUpdated({ connections });
     useQuestionDeleted({ connections: questionsByTopicConnections });
+    useQuestionDequeued({ eventId, topic, connections: questionsByTopicConnections });
+    useQuestionEnqueued({ eventId, topic, connections: questionsByTopicConnections });
 
     // Ensure that all topic lists are subscribed to.
     // Otherwise any updates to a non selected topic will not be updated without a page refresh
