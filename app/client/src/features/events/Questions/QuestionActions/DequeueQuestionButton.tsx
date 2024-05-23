@@ -78,9 +78,6 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
                 if (!payload) return console.error('Update failed: No payload found!');
                 const serverEdge = payload.getLinkedRecord('body');
                 if (!serverEdge) return console.error('Update failed: No edge found!');
-                // check if the question is already in the question list (no need to add it again)
-                const question = store.get(questionId);
-                console.log('QUESTION', question);
                 ConnectionHandler.insertEdgeAfter(questionsByTopicConnectionRecord, serverEdge);
             },
         });
