@@ -51,7 +51,11 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
     const { id: eventId } = node;
     const [topic, setTopic] = useState<string>('default');
     const { queue, connections: queueConnections } = useQuestionModQueue({ fragmentRef: node, topic });
-    const { enqueuedQuestions, connections: onDeckConnections } = useOnDeck({ fragmentRef: node });
+    const {
+        enqueuedQuestions,
+        connections: onDeckConnections,
+        currentQuestionPosition,
+    } = useOnDeck({ fragmentRef: node });
     const [previousContainer, setPreviousContainer] = useState<string | number | null>(null);
     const [items, setItems] = useState<ItemsType>({
         topicQueue: queue,
@@ -106,18 +110,21 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
     });
     const sensors = useSensors(pointerSensor, mouseSensor, useSensor(KeyboardSensor));
 
-    function findContainer(id: UniqueIdentifier) {
-        for (let i = 0; i < Object.keys(items).length; i++) {
-            const key = Object.keys(items)[i] as keyof ItemsType;
-            if (key === id) return id;
-            const _questions = items[key];
-            const found = _questions.find((question) => question.id === id);
-            if (found) {
-                return key as keyof ItemsType;
+    const findContainer = React.useCallback(
+        (id: UniqueIdentifier) => {
+            for (let i = 0; i < Object.keys(items).length; i++) {
+                const key = Object.keys(items)[i] as keyof ItemsType;
+                if (key === id) return id;
+                const _questions = items[key];
+                const found = _questions.find((question) => question.id === id);
+                if (found) {
+                    return key as keyof ItemsType;
+                }
             }
-        }
-        return null;
-    }
+            return null;
+        },
+        [items]
+    );
 
     function handleDragStart(event: DragStartEvent) {
         const { active } = event;
@@ -173,77 +180,96 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
     // Debounce the drag over event to prevent too many state updates in a short period of time
     const handleDebouncedDragOver = useDebounce(handleDragOver, 250);
 
-    function handleDragEnd(event: DragEndEvent) {
-        const { active, over } = event;
-        const { id } = active;
-        if (!over) return;
-        const { id: overId } = over;
+    const handleDragEnd = React.useCallback(
+        (event: DragEndEvent) => {
+            const { active, over } = event;
+            const { id } = active;
+            if (!over) return;
+            const { id: overId } = over;
 
-        // Since the lists are changed by onDragOver, the active and over containers are the same
-        // We can use previousContainer to find the original container the item came from
-        const activeContainer = findContainer(id);
-        const overContainer = findContainer(overId);
+            // Since the lists are changed by onDragOver, the active and over containers are the same
+            // We can use previousContainer to find the original container the item came from
+            const activeContainer = findContainer(id);
+            const overContainer = findContainer(overId);
 
-        if (!activeContainer || !overContainer || activeContainer !== overContainer) {
-            return;
-        }
+            if (!activeContainer || !overContainer || activeContainer !== overContainer) {
+                return;
+            }
 
-        const activeIndex = items[activeContainer].findIndex((question) => question.id === id);
-        const overIndex = items[overContainer].findIndex((question) => question.id === overId);
+            const activeIndex = items[activeContainer].findIndex((question) => question.id === id);
+            const overIndex = items[overContainer].findIndex((question) => question.id === overId);
 
-        if (activeIndex !== overIndex) {
-            setItems((_items) => ({
-                ..._items,
-                [overContainer]: arrayMove(_items[overContainer], activeIndex, overIndex),
-            }));
-        }
+            const activeQuestion = items[activeContainer][activeIndex];
 
-        const activeQuestion = items[activeContainer][activeIndex];
+            if (previousContainer === overContainer) {
+                if (activeContainer === 'onDeck') {
+                    // Update the onDeck position before calculating the new position
+                    // This way we know the destination index is correctly pointing to the moved question
+                    // This consistancy is key to always properly calculating the new position
+                    const onDeck = items.onDeck;
+                    const updatedOnDeck = arrayMove(onDeck, activeIndex, overIndex);
+                    updateOnDeckPosition({
+                        questionId: activeQuestion.id.toString(),
+                        list: updatedOnDeck,
+                        sourceIdx: activeIndex,
+                        destinationIdx: overIndex,
+                        currentQuestionPosition,
+                    });
+                }
+                if (activeContainer === 'topicQueue') {
+                    console.log('Reordering topic queue');
+                }
+                // TODO: Otherwise, handle reordering topic queue
+            }
 
-        if (previousContainer === overContainer) {
-            // TODO: If onDeck, handle reordering onDeck
-            if (activeContainer === 'onDeck') {
-                console.log('Reordering onDeck');
-                const minPosition = parseInt(activeQuestion.onDeckPosition || '0');
-                updateOnDeckPosition({
-                    questionId: id.toString(),
-                    list: items.onDeck,
-                    sourceIdx: activeIndex,
-                    destinationIdx: overIndex,
-                    minPosition,
+            // Moving questions from topic queue to onDeck
+            if (activeContainer === 'onDeck' && previousContainer === 'topicQueue') {
+                // Update the onDeck position before calculating the new position
+                // This way we know the destination index is correctly pointing to the moved question
+                // This consistancy is key to always properly calculating the new position
+                const onDeck = items.onDeck;
+                const updatedOnDeck = arrayMove(onDeck, activeIndex, overIndex);
+                console.log('Updated onDeck', updatedOnDeck);
+                addQuestionToOnDeck({
+                    eventId,
+                    questionId: activeQuestion.id.toString(),
+                    list: updatedOnDeck,
+                    movedQuestionIndex: overIndex,
+                    cursor: activeQuestion.cursor,
+                    currentQuestionPosition,
                 });
             }
-            if (activeContainer === 'topicQueue') {
-                console.log('Reordering topic queue');
+
+            // Moving questions from onDeck to topic queue
+            if (activeContainer === 'topicQueue' && previousContainer === 'onDeck') {
+                // Update the topic queue position before calculating the new position
+                // This way we know the destination index is correctly pointing to the moved question
+                // This consistancy is key to always properly calculating the new position
+                const topicQueue = items.topicQueue;
+                const updatedTopicQueue = arrayMove(topicQueue, activeIndex, overIndex);
+                removeFromOnDeck({
+                    eventId,
+                    list: updatedTopicQueue,
+                    questionId: activeQuestion.id.toString(),
+                    movedQuestionIndex: overIndex,
+                });
             }
-            // TODO: Otherwise, handle reordering topic queue
-        }
 
-        // Moving questions from topic queue to onDeck
-        if (activeContainer === 'onDeck' && previousContainer === 'topicQueue') {
-            addQuestionToOnDeck({
-                eventId,
-                questionId: activeQuestion.id.toString(),
-                list: items.onDeck,
-                movedQuestionIndex: overIndex,
-                cursor: activeQuestion.cursor,
-            });
-        }
-
-        // Moving questions from onDeck to topic queue
-        if (activeContainer === 'topicQueue' && previousContainer === 'onDeck') {
-            removeFromOnDeck({
-                eventId,
-                list: items.topicQueue,
-                questionId: activeQuestion.id.toString(),
-                movedQuestionIndex: overIndex,
-            });
-        }
-
-        // Cleanup the state
-        setActiveId(null);
-        setPreviousContainer(null);
-    }
+            // Cleanup the state
+            setActiveId(null);
+            setPreviousContainer(null);
+        },
+        [
+            findContainer,
+            items,
+            previousContainer,
+            updateOnDeckPosition,
+            addQuestionToOnDeck,
+            eventId,
+            currentQuestionPosition,
+            removeFromOnDeck,
+        ]
+    );
 
     function handleChange(event: SelectChangeEvent<typeof topic>) {
         event.preventDefault();
