@@ -3,21 +3,22 @@ import { Grid, Chip, Card, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
-import type { useQuestionQueueFragment$key } from '@local/__generated__/useQuestionQueueFragment.graphql';
+import type { useOnDeckFragment$key } from '@local/__generated__/useOnDeckFragment.graphql';
 import { QuestionAuthor, QuestionContent, QuestionQuote } from '../../Questions';
 import { NextQuestionButton } from './NextQuestionButton';
 import { PreviousQuestionButton } from './PreviousQuestionButton';
-import { useQuestionQueue } from './useQuestionQueue';
+// import { useQuestionQueue } from './useQuestionQueue';
 import { useRecordPush } from './useRecordPush';
 import { useRecordRemove } from './useRecordRemove';
 import { useRecordUnshift } from './useRecordUnshift';
 import { useEnqueuedPush } from './useEnqueuedPush';
 import { useEnqueuedRemove } from './useEnqueuedRemove';
 import { useEnqueuedUnshift } from './useEnqueuedUnshift';
+import { useOnDeck } from '../../ModeratorView/hooks/OnDeck/useOnDeck';
 
 interface QuestionQueueProps {
     isViewerModerator: boolean;
-    fragmentRef: useQuestionQueueFragment$key;
+    fragmentRef: useOnDeckFragment$key;
 }
 
 export function CurrentQuestionCard({ isViewerModerator, fragmentRef }: QuestionQueueProps) {
@@ -25,43 +26,19 @@ export function CurrentQuestionCard({ isViewerModerator, fragmentRef }: Question
     //
     // ─── HOOKS ──────────────────────────────────────────────────────────────────────
     //
-    const { questionQueue } = useQuestionQueue({ fragmentRef });
-    const recordConnection = React.useMemo(
-        () => ({ connection: questionQueue?.questionRecord?.__id ?? '' }),
-        [questionQueue?.questionRecord]
-    );
-    const enqueuedConnection = React.useMemo(
-        () => ({ connection: questionQueue?.enqueuedQuestions?.__id ?? '' }),
-        [questionQueue?.enqueuedQuestions]
-    );
+    const { enqueuedQuestions, questionRecord, recordConnection, queueConnection } = useOnDeck({ fragmentRef });
 
     //
     // ─── SUBSCRIPTION HOOKS ─────────────────────────────────────────────────────────
     //
-    useRecordPush(recordConnection);
-    useRecordRemove(recordConnection);
-    useRecordUnshift(recordConnection);
-    useEnqueuedPush(enqueuedConnection);
-    useEnqueuedRemove(enqueuedConnection);
-    useEnqueuedUnshift(enqueuedConnection);
+    useRecordPush({ connection: recordConnection });
+    useRecordRemove({ connection: recordConnection });
+    useRecordUnshift({ connection: recordConnection });
 
-    //
-    // ─── COMPUTED VALUES ────────────────────────────────────────────────────────────
-    //
-    const enqueuedQuestions = React.useMemo(
-        () =>
-            questionQueue?.enqueuedQuestions?.edges
-                ?.slice(0) // hacky way to copy the array, except current question -- feeling lazy TODO: more elegant solution
-                ?.sort(({ node: a }, { node: b }) => (parseInt(a?.position) ?? 0) - (parseInt(b?.position) ?? 0)) ?? [],
-        [questionQueue]
-    );
-    const questionRecord = React.useMemo(
-        () =>
-            questionQueue?.questionRecord?.edges
-                ?.slice(0) // hacky way to copy the array, except current question -- feeling lazy TODO: more elegant solution
-                ?.sort(({ node: a }, { node: b }) => (parseInt(a?.position) ?? 0) - (parseInt(b?.position) ?? 0)) ?? [],
-        [questionQueue]
-    );
+    useEnqueuedPush({ connection: queueConnection });
+    useEnqueuedRemove({ connection: queueConnection });
+    useEnqueuedUnshift({ connection: queueConnection });
+
     const canGoBackward = React.useMemo(() => questionRecord.length > 0, [questionRecord]);
     const canGoForward = React.useMemo(() => enqueuedQuestions.length > 0, [enqueuedQuestions]);
     const currentQuestion = React.useMemo(
@@ -97,11 +74,11 @@ export function CurrentQuestionCard({ isViewerModerator, fragmentRef }: Question
                     fontWeight: 600,
                 }}
             />
-            {currentQuestion && <QuestionAuthor fragmentRef={currentQuestion.node} />}
-            {currentQuestion && currentQuestion.node.refQuestion && (
-                <QuestionQuote fragmentRef={currentQuestion.node.refQuestion} />
+            {currentQuestion && <QuestionAuthor fragmentRef={currentQuestion} />}
+            {currentQuestion && currentQuestion.refQuestion && (
+                <QuestionQuote fragmentRef={currentQuestion.refQuestion} />
             )}
-            {currentQuestion && <QuestionContent fragmentRef={currentQuestion.node} />}
+            {currentQuestion && <QuestionContent fragmentRef={currentQuestion} />}
             <Grid container alignItems='center' style={{ alignItems: 'center' }}>
                 {!currentQuestion && (
                     <Typography style={{ margin: 'auto', paddingTop: '20px' }}>No Current Question</Typography>
