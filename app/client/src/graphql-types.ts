@@ -1173,7 +1173,7 @@ export type MutationUpdateTopicArgs = {
 
 
 export type MutationUpdateTopicQueuePositionArgs = {
-  input: UpdateQuestionPosition;
+  input: UpdateTopicQueuePosition;
 };
 
 

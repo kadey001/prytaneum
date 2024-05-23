@@ -570,7 +570,7 @@ export type MutationupdateOnDeckPositionArgs = {
 };
 
 export type MutationupdateTopicQueuePositionArgs = {
-    input: UpdateQuestionPosition;
+    input: UpdateTopicQueuePosition;
 };
 
 export type MutationcreateModeratorArgs = {

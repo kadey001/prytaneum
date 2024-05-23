@@ -102,7 +102,7 @@ type Mutation {
     addQuestionToOnDeck(input: AddQuestionToOnDeck!): EventQuestionMutationResponse!
     removeQuestionFromOnDeck(input: RemoveQuestionFromOnDeck!): EventQuestionMutationResponse!
     updateOnDeckPosition(input: UpdateOnDeckPosition!): EventQuestionMutationResponse!
-    updateTopicQueuePosition(input: UpdateQuestionPosition!): EventQuestionMutationResponse!
+    updateTopicQueuePosition(input: UpdateTopicQueuePosition!): EventQuestionMutationResponse!
 
     """
     Add a new moderator to the given event

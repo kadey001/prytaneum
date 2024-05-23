@@ -735,7 +735,7 @@ type Mutation {
   updateQuestionPosition(input: UpdateQuestionPosition!): EventQuestionMutationResponse!
   updateSpeaker(input: UpdateSpeaker!): EventSpeakerMutationResponse!
   updateTopic(description: String!, eventId: String!, newTopic: String!, oldTopic: String!): TopicMutationResponse
-  updateTopicQueuePosition(input: UpdateQuestionPosition!): EventQuestionMutationResponse!
+  updateTopicQueuePosition(input: UpdateTopicQueuePosition!): EventQuestionMutationResponse!
   updateVideo(input: UpdateVideo!): EventVideoMutationResponse!
 }
 
