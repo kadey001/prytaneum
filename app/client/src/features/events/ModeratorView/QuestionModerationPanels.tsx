@@ -35,6 +35,7 @@ import { useOnDeckEnqueued } from './hooks/OnDeck/useOnDeckEnqueued';
 import { useOnDeckDequeued } from './hooks/OnDeck/useOnDeckDequeued';
 import { Loader } from '@local/components';
 import { useUpdateOnDeckPosition } from './hooks/OnDeck/useUpdateOnDeckPosition';
+import { useUpdateTopicQueuePosition } from './hooks/TopicQueue/useUpdateTopicQueuePosition';
 
 type ItemsType = {
     topicQueue: Question[];
@@ -68,6 +69,7 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
 
     useTopicQueuePush({ eventId, topic, connections: queueConnections });
     useTopicQueueRemove({ eventId, topic, connections: queueConnections });
+    const { updateTopicQueuePosition } = useUpdateTopicQueuePosition({ eventId, topic });
     const { addQuestionToOnDeck } = useOnDeckEnqueued({ connections: onDeckConnections, topics });
     const { removeFromOnDeck } = useOnDeckDequeued({ connections: onDeckConnections, topics, topic });
 
@@ -198,7 +200,6 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
 
             const activeIndex = items[activeContainer].findIndex((question) => question.id === id);
             const overIndex = items[overContainer].findIndex((question) => question.id === overId);
-
             const activeQuestion = items[activeContainer][activeIndex];
 
             if (previousContainer === overContainer) {
@@ -217,9 +218,18 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                     });
                 }
                 if (activeContainer === 'topicQueue') {
-                    console.log('Reordering topic queue');
+                    // Update the topic queue position before calculating the new position
+                    const topicQueue = items.topicQueue;
+                    const updatedTopicQueue = arrayMove(topicQueue, activeIndex, overIndex);
+                    updateTopicQueuePosition({
+                        questionId: activeQuestion.id.toString(),
+                        list: updatedTopicQueue,
+                        sourceIdx: activeIndex,
+                        destinationIdx: overIndex,
+                        currentQuestionPosition,
+                        currentTopic: topic,
+                    });
                 }
-                // TODO: Otherwise, handle reordering topic queue
             }
 
             // Moving questions from topic queue to onDeck
@@ -264,9 +274,11 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
             items,
             previousContainer,
             updateOnDeckPosition,
+            currentQuestionPosition,
+            updateTopicQueuePosition,
+            topic,
             addQuestionToOnDeck,
             eventId,
-            currentQuestionPosition,
             removeFromOnDeck,
         ]
     );
