@@ -82,11 +82,7 @@ export const resolvers: Resolvers = {
             if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
             const { id: eventId } = fromGlobalId(args.eventId);
 
-            const { event, newCurrentQuestion } = await Moderation.incrementQuestion(
-                ctx.viewer.id,
-                ctx.prisma,
-                eventId
-            );
+            const { event, newCurrentQuestion } = await Moderation.incrementOnDeck(ctx.viewer.id, eventId, ctx.prisma);
             const eventWithGlobalId = toEventId(event);
             const newCurrentQuestionWithGlobalId = toQuestionId(newCurrentQuestion);
 
@@ -122,11 +118,7 @@ export const resolvers: Resolvers = {
             if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
             const { id: eventId } = fromGlobalId(args.eventId);
 
-            const { event, prevCurrentQuestion } = await Moderation.decrementQuestion(
-                ctx.viewer.id,
-                ctx.prisma,
-                eventId
-            );
+            const { event, prevCurrentQuestion } = await Moderation.decrementOnDeck(ctx.viewer.id, eventId, ctx.prisma);
 
             const eventWithGlobalId = toEventId(event);
             const prevCurrentQuestionWithGlobalId = toQuestionId(prevCurrentQuestion);
@@ -210,6 +202,14 @@ export const resolvers: Resolvers = {
                         topic: args.input.topic,
                     },
                 });
+                ctx.pubsub.publish({
+                    topic: 'questionEnqueued',
+                    payload: {
+                        questionEnqueued: { edge },
+                        eventId: updatedQuestion.eventId,
+                        topic: args.input.topic,
+                    },
+                });
                 return edge;
             });
         },
@@ -232,6 +232,14 @@ export const resolvers: Resolvers = {
                     topic: 'topicQueueRemove',
                     payload: {
                         topicQueueRemove: { edge },
+                        eventId: updatedQuestion.eventId,
+                        topic: args.input.topic,
+                    },
+                });
+                ctx.pubsub.publish({
+                    topic: 'questionDequeued',
+                    payload: {
+                        questionDequeued: { edge },
                         eventId: updatedQuestion.eventId,
                         topic: args.input.topic,
                     },
@@ -347,9 +355,10 @@ export const resolvers: Resolvers = {
                         },
                     });
                     ctx.pubsub.publish({
-                        topic: 'questionUpdated',
+                        topic: 'topicQueueRemove',
                         payload: {
-                            questionUpdated: { edge },
+                            topicQueueRemove: { edge },
+                            eventId: updatedQuestion.eventId,
                         },
                     });
                     return edge;
@@ -405,9 +414,10 @@ export const resolvers: Resolvers = {
                         },
                     });
                     ctx.pubsub.publish({
-                        topic: 'questionUpdated',
+                        topic: 'topicQueuePush',
                         payload: {
-                            questionUpdated: { edge },
+                            topicQueuePush: { edge },
+                            eventId: updatedQuestion.eventId,
                         },
                     });
                     return edge;

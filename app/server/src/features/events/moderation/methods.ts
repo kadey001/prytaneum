@@ -166,7 +166,7 @@ export async function changeCurrentQuestion(userId: string, prisma: PrismaClient
 
     const updatedEvent = await prisma.event.update({
         where: { id: eventId },
-        data: { currentQuestion: nextQuestion?.position ?? '-1' },
+        data: { currentQuestion: nextQuestion?.onDeckPosition ?? '-1' },
         select: { currentQuestion: true, id: true },
     });
     return { event: updatedEvent, newCurrentQuestion: nextQuestion, prevCurrentQuestion: currentQuestion };
@@ -261,12 +261,13 @@ export async function incrementOnDeck(userId: string, eventId: string, prisma: P
         `
         SELECT * FROM "EventQuestion"
         WHERE "eventId" = $1::uuid
-        AND "onDeckPosition" > $2::BigInt
+        AND "onDeckPosition"::BigInt > $2::BigInt
         ORDER BY "onDeckPosition"::BigInt ASC LIMIT 1
     `,
         eventId,
         currentQuestionPosition
     );
+    console.debug('Increment On Deck', queryResponse);
 
     const nextQuestion = queryResponse.length === 0 ? null : queryResponse[0];
 
@@ -294,7 +295,7 @@ export async function decrementOnDeck(userId: string, eventId: string, prisma: P
         `
         SELECT * FROM "EventQuestion"
         WHERE "eventId" = $1::uuid
-        AND "onDeckPosition" < $2::BigInt
+        AND "onDeckPosition"::BigInt < $2::BigInt
         ORDER BY "onDeckPosition"::BigInt DESC LIMIT 1
     `,
         eventId,
@@ -305,6 +306,15 @@ export async function decrementOnDeck(userId: string, eventId: string, prisma: P
 
     if (!nextQuestion) throw new ProtectedError({ userMessage: 'Cannot increment question' });
 
+    const prevCurrentQuestion = await prisma.eventQuestion.findFirst({
+        where: {
+            eventId,
+            onDeckPosition: { equals: _currentQuestionPosition },
+        },
+    });
+
+    if (!prevCurrentQuestion) throw new ProtectedError({ userMessage: 'Could not find previous question.' });
+
     const updatedEvent = await prisma.event.update({
         where: { id: eventId },
         data: { currentQuestion: nextQuestion.onDeckPosition || '' },
@@ -314,6 +324,7 @@ export async function decrementOnDeck(userId: string, eventId: string, prisma: P
     return {
         event: updatedEvent,
         newCurrentQuestion: nextQuestion,
+        prevCurrentQuestion,
     };
 }
 
@@ -369,12 +380,14 @@ export async function addQuestionToTopicQueue(userId: string, prisma: PrismaClie
     if (!question) throw new ProtectedError({ userMessage: 'Question is already in queue.' });
 
     if (topic === '' || topic === 'default') {
-        return prisma.eventQuestion.update({
+        const reult = await prisma.eventQuestion.update({
             where: { id: questionId },
             data: {
                 position: calculatedPosition.toString(),
             },
         });
+        console.debug('Added to default queue', reult);
+        return reult;
     }
     // Get the topic if it exists
     const topicResult = await prisma.eventTopic.findUnique({ where: { eventId_topic: { eventId, topic } } });
