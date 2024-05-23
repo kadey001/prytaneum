@@ -115,7 +115,6 @@ export function useUpdateOnDeckPosition({ eventId }: Props) {
             // No need to update if the source and destination are the same
             if (sourceIdx === destinationIdx) return;
             const newPosition = calculatePosition(list, destinationIdx, currentQuestionPosition);
-            console.log('New Position:', newPosition);
 
             commit({
                 variables: {

@@ -371,13 +371,11 @@ export const resolvers: Resolvers = {
                         eventId,
                         questionId,
                     });
-                    console.log('Updated Question: ', updatedQuestion);
                     const questionWithGlobalId = toQuestionId(updatedQuestion);
                     const edge = {
                         cursor: updatedQuestion.onDeckPosition ?? updatedQuestion.createdAt.getTime().toString(),
                         node: questionWithGlobalId,
                     };
-                    console.log('EDGE: ', edge);
                     ctx.pubsub.publish({
                         topic: 'enqueuedPushQuestion',
                         payload: {
