@@ -264,7 +264,6 @@ export async function findQuestionsByEventId(eventId: string, topic: string, pri
                 },
             },
         },
-        include: { topics: true },
         orderBy: { createdAt: 'desc' },
     });
 }
@@ -332,7 +331,7 @@ export async function findQuestionQueueByEventId(eventId: string, prisma: Prisma
     return prisma.event.findUnique({
         where: { id: eventId },
         select: {
-            questions: { where: { onDeckPosition: { not: '-1' } }, orderBy: { position: 'asc' } },
+            questions: { where: { isVisible: true, onDeckPosition: { not: '-1' } }, orderBy: { position: 'asc' } },
             currentQuestion: true,
         },
     });
@@ -439,16 +438,18 @@ export async function findQuestionModQueueByEventId(eventId: string, prisma: Pri
     // Get questions that are in a topic queue
     const questionIds = await prisma.eventQuestionTopic.findMany({
         where: {
-            topicId: { in: topics.map((topic) => topic.id) },
-            position: { not: '-1' },
-            question: { onDeckPosition: { equals: '-1' } },
+            question: { onDeckPosition: { equals: '-1' }, eventId, isVisible: true },
+            AND: [{ position: { not: '-1' } }, { topicId: { in: topics.map((topic) => topic.id) } }],
         },
         orderBy: { position: 'asc' },
         select: { questionId: true },
     });
     console.log('Getting Mod Queue: ', questionIds);
     const questions = await prisma.eventQuestion.findMany({
-        where: { id: { in: questionIds.map((question) => question.questionId) } },
+        where: {
+            eventId,
+            OR: [{ id: { in: questionIds.map((question) => question.questionId) } }, { position: { not: '-1' } }],
+        },
         // include: { topics: true },
     });
     return questions;

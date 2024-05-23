@@ -198,7 +198,21 @@ export const resolvers: Resolvers = {
                 return connectionFromArray(questions.map(toQuestionId), args);
             } else {
                 const questions = await Event.findQuestionsByEventId(eventId, topic || '', ctx.prisma);
-                return connectionFromArray(questions.map(toQuestionId), args);
+                const toQuestionEdge = (question: EventQuestion) => ({
+                    node: question,
+                    cursor: question.createdAt.getTime().toString(),
+                });
+                const makeConnection = <T extends ReturnType<typeof toQuestionEdge>[]>(edges: T) => ({
+                    edges,
+                    pageInfo: {
+                        hasNextPage: false,
+                        hasPreviousPage: false,
+                        startCursor: edges.length > 0 ? edges[0].cursor : '',
+                        endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : '',
+                    },
+                });
+                const questionEdges = questions.map(toQuestionId).map(toQuestionEdge);
+                return makeConnection(questionEdges);
             }
         },
         async topicQueue(parent, args, ctx, info) {
@@ -211,7 +225,22 @@ export const resolvers: Resolvers = {
             const { id: eventId } = fromGlobalId(parent.id);
             const { first, after } = args;
             const questions = await Event.findQuestionModQueueByEventId(eventId, ctx.prisma);
-            return connectionFromArray(questions.map(toQuestionId), args);
+
+            const toQuestionEdge = (question: EventQuestion) => ({
+                node: question,
+                cursor: question.createdAt.getTime().toString(),
+            });
+            const makeConnection = <T extends ReturnType<typeof toQuestionEdge>[]>(edges: T) => ({
+                edges,
+                pageInfo: {
+                    hasNextPage: false,
+                    hasPreviousPage: false,
+                    startCursor: edges.length > 0 ? edges[0].cursor : '',
+                    endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : '',
+                },
+            });
+            const questionEdges = questions.map(toQuestionId).map(toQuestionEdge);
+            return makeConnection(questionEdges);
         },
         async broadcastMessages(parent, args, ctx, info) {
             const { id: eventId } = fromGlobalId(parent.id);
