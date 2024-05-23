@@ -17,6 +17,7 @@ const USE_QUESTION_DEQUEUED = graphql`
                         position
                     }
                     position
+                    onDeckPosition
                 }
                 cursor
             }

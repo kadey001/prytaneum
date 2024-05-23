@@ -6,20 +6,11 @@ import { graphql, GraphQLSubscriptionConfig } from 'relay-runtime';
 
 const USE_QUESTION_ENQUEUED = graphql`
     subscription useQuestionEnqueuedSubscription($eventId: String!, $topic: String!, $connections: [ID!]!) {
-        questionDequeued(eventId: $eventId, topic: $topic) {
+        questionEnqueued(eventId: $eventId, topic: $topic) {
             edge {
                 node {
                     id @deleteEdge(connections: $connections)
-                    ...QuestionAuthorFragment
-                    ...QuestionStatsFragment
-                    ...QuestionContentFragment
-                    topics {
-                        topic
-                        position
-                    }
-                    position
                 }
-                cursor
             }
         }
     }

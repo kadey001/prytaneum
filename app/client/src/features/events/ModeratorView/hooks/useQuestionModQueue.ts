@@ -67,7 +67,7 @@ export function useQuestionModQueue({ fragmentRef, topic: currentTopic }: Props)
             let enqueuedFound = false;
             // If the question is on deck, it should be not be shown in this queue
             if (node.onDeckPosition !== '-1') return false;
-            if (currentTopic === 'default') return node.position !== '-1';
+            if (currentTopic === 'default' && node.position !== '-1') return true;
             topics.forEach((_topic) => {
                 if (currentTopic === _topic.topic && _topic.position !== '-1') enqueuedFound = true;
             });
@@ -76,6 +76,9 @@ export function useQuestionModQueue({ fragmentRef, topic: currentTopic }: Props)
         const unsortedQueue = filteredQueue.map(({ node, cursor }) => {
             return { ...node, cursor };
         });
+        // TODO: Sort in descending order on the topic position (largest postion should be at the bottom of the list)
+        if (currentTopic === 'default')
+            return unsortedQueue.sort((a, b) => (parseInt(a.position) > parseInt(b.position) ? 1 : -1));
         // Sort the queue based on the position of the selected topic
         return unsortedQueue.sort((a, b) => {
             const topicA = a.topics?.find((_topic) => _topic.topic === currentTopic);
