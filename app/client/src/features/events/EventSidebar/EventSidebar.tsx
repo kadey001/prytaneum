@@ -34,6 +34,7 @@ export const EVENT_SIDEBAR_FRAGMENT = graphql`
         ...useQuestionQueueFragment
         ...QuestionCarouselFragment
         ...useLiveFeedbackListFragment @arguments(eventId: $eventId)
+        ...useOnDeckFragment
     }
 `;
 
