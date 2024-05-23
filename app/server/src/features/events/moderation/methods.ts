@@ -8,6 +8,7 @@ import {
     EventQuestion,
     RemoveQuestionFromOnDeck,
     RemoveQuestionFromTopicQueue,
+    UpdateTopicQueuePosition,
 } from '../../../graphql-types';
 import type {
     CreateModerator,
@@ -619,4 +620,49 @@ export async function updateOnDeckPosition(
             onDeckPosition: newPosition,
         },
     });
+}
+
+export async function updateTopicQueuePosition(userId: string, prisma: PrismaClient, input: UpdateTopicQueuePosition) {
+    const { eventId, questionId, newPosition, topic } = input;
+    // permission check
+    const hasPermission = await isModerator(userId, eventId, prisma);
+    if (!hasPermission) throw new ProtectedError({ userMessage: errors.permissions });
+
+    // Check if the question is in the default queue and update the position if so
+    if (topic === '' || topic === 'default') {
+        return prisma.eventQuestion.update({
+            where: { id: questionId },
+            data: {
+                position: newPosition,
+            },
+        });
+    }
+
+    // Find topic id and update the topic queue position
+    const topicQueryResult = await prisma.eventTopic.findUnique({
+        where: { eventId_topic: { eventId, topic } },
+        select: { id: true },
+    });
+
+    if (!topicQueryResult)
+        throw new ProtectedError({
+            userMessage: 'Topic not found.',
+            internalMessage: `Topic ${topic} cannot be found on event ${eventId}.`,
+        });
+    const { id: topicId } = topicQueryResult;
+
+    const updateResult = await prisma.eventQuestionTopic.update({
+        where: { questionId_topicId: { questionId, topicId } },
+        data: {
+            position: newPosition,
+        },
+        select: { question: true },
+    });
+    return updateResult.question;
+}
+
+export function getTopicPosition(question: EventQuestion, topic: string) {
+    const topicPosition = question?.topics?.find((t) => t.topic === topic)?.position;
+    if (!topicPosition) return parseInt(question.position);
+    return parseInt(topicPosition);
 }

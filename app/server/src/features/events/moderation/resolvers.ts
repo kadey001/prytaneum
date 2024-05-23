@@ -77,6 +77,34 @@ export const resolvers: Resolvers = {
                 }
             });
         },
+        async updateTopicQueuePosition(parent, args, ctx, info) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { id: questionId } = fromGlobalId(args.input.questionId);
+                const { topic } = args.input;
+
+                const updatedQuestion = await Moderation.updateTopicQueuePosition(ctx.viewer.id, ctx.prisma, {
+                    ...args.input,
+                    eventId,
+                    questionId,
+                });
+                const questionWithGlobalId = toQuestionId(updatedQuestion);
+                // Can use the topic position as the cursor since it is unique
+                const topicPosition = Moderation.getTopicPosition(updatedQuestion, topic);
+                const edge = {
+                    node: questionWithGlobalId,
+                    cursor: topicPosition.toString() ?? questionWithGlobalId.createdAt.getTime().toString(),
+                };
+                ctx.pubsub.publish({
+                    topic: 'questionUpdated',
+                    payload: {
+                        questionUpdated: { edge },
+                    },
+                });
+                return edge;
+            });
+        },
         // TODO: make this a normal mutation response
         async nextQuestion(parent, args, ctx, info) {
             if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
@@ -343,11 +371,13 @@ export const resolvers: Resolvers = {
                         eventId,
                         questionId,
                     });
+                    console.log('Updated Question: ', updatedQuestion);
                     const questionWithGlobalId = toQuestionId(updatedQuestion);
                     const edge = {
-                        cursor: updatedQuestion.createdAt.getTime().toString(),
+                        cursor: updatedQuestion.onDeckPosition ?? updatedQuestion.createdAt.getTime().toString(),
                         node: questionWithGlobalId,
                     };
+                    console.log('EDGE: ', edge);
                     ctx.pubsub.publish({
                         topic: 'enqueuedPushQuestion',
                         payload: {
@@ -404,7 +434,7 @@ export const resolvers: Resolvers = {
                     });
                     const questionWithGlobalId = toQuestionId(updatedQuestion);
                     const edge = {
-                        cursor: updatedQuestion.createdAt.getTime().toString(),
+                        cursor: updatedQuestion.onDeckPosition ?? updatedQuestion.createdAt.getTime().toString(),
                         node: questionWithGlobalId,
                     };
                     ctx.pubsub.publish({
@@ -527,7 +557,7 @@ export const resolvers: Resolvers = {
                     });
                     const questionWithGlobalId = toQuestionId(updatedQuestion);
                     const edge = {
-                        cursor: updatedQuestion.createdAt.getTime().toString(),
+                        cursor: updatedQuestion.onDeckPosition ?? updatedQuestion.createdAt.getTime().toString(),
                         node: questionWithGlobalId,
                     };
                     ctx.pubsub.publish({
