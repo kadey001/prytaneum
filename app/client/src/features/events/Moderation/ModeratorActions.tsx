@@ -60,7 +60,7 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
                     closeConfirmationDialog();
                     displaySnack(
                         'Event has ended! Please note that it may take up to 30 seconds for participants to be routed to the post event page.',
-                        { variant: 'error' }
+                        { variant: 'info', anchorOrigin: { vertical: 'top', horizontal: 'center' } }
                     );
                     setIsLive(false);
                 },
@@ -74,7 +74,7 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
                     closeConfirmationDialog();
                     displaySnack(
                         'Event has started! Please note that it may take up to 30 seconds for participants to enter.',
-                        { variant: 'success' }
+                        { variant: 'info', anchorOrigin: { vertical: 'top', horizontal: 'center' } }
                     );
                     setIsLive(true);
                 },
@@ -82,28 +82,9 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
         }
     };
 
-    const handleRouting = () => {
-        if (router.pathname === '/events/[id]/live') router.push(`/events/${eventId}/mod`);
-        else router.push(`/events/${eventId}/live`);
-    };
-
     return (
         <Stack direction='column' paddingTop='1rem'>
             <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
-                <IconButton
-                    sx={{
-                        backgroundColor: theme.palette.primary.main,
-                        ':hover': { backgroundColor: theme.palette.primary.dark },
-                    }}
-                    aria-label='moderator-view'
-                    onClick={handleRouting}
-                >
-                    {router.pathname === '/events/[id]/live' ? (
-                        <FullscreenIcon sx={{ color: 'white' }} />
-                    ) : (
-                        <FullscreenExitIcon sx={{ color: 'white' }} />
-                    )}
-                </IconButton>
                 {/* <Button variant='contained' onClick={() => console.log('TODO')}>
                     Intermission
                 </Button> */}
