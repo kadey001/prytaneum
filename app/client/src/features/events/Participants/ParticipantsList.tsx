@@ -39,10 +39,9 @@ type Node = {
 
 interface ParticipantsListProps {
     node: Node;
-    isVisible: boolean;
 }
 
-export function ParticipantsList({ node, isVisible }: ParticipantsListProps) {
+export function ParticipantsList({ node }: ParticipantsListProps) {
     const { eventId } = useEvent();
     const { participants, refresh } = useParticipantList({ fragmentRef: node, eventId });
     // Refreshes the list when a participant is muted/unmuted
@@ -54,8 +53,6 @@ export function ParticipantsList({ node, isVisible }: ParticipantsListProps) {
     );
 
     const [filteredList, handleSearch, handleFilterChange] = useFilters(participants, accessors);
-
-    if (!isVisible) return <React.Fragment />;
 
     return (
         <Grid container display='grid' height={0} width='100%'>
@@ -89,22 +86,20 @@ export function ParticipantsList({ node, isVisible }: ParticipantsListProps) {
 
 interface ParticipantsListContainerProps {
     queryRef: PreloadedQuery<ParticipantsListQuery>;
-    isVisible: boolean;
 }
 
-export function ParticipantsListContainer({ queryRef, isVisible }: ParticipantsListContainerProps) {
+export function ParticipantsListContainer({ queryRef }: ParticipantsListContainerProps) {
     const { node } = usePreloadedQuery(PARTICIPANTS_LIST_QUERY, queryRef);
 
     if (!node) return <Loader />;
-    return <ParticipantsList node={node} isVisible={isVisible} />;
+    return <ParticipantsList node={node} />;
 }
 
 interface PreloadedParticipantsListProps {
     eventId: string;
-    isVisible: boolean;
 }
 
-export function PreloadedParticipantsList({ eventId, isVisible }: PreloadedParticipantsListProps) {
+export function PreloadedParticipantsList({ eventId }: PreloadedParticipantsListProps) {
     const [queryRef, loadQuery, disposeQuery] = useQueryLoader<ParticipantsListQuery>(PARTICIPANTS_LIST_QUERY);
 
     React.useEffect(() => {
@@ -117,8 +112,8 @@ export function PreloadedParticipantsList({ eventId, isVisible }: PreloadedParti
 
     return (
         <ConditionalRender client>
-            <React.Suspense fallback={<ParticipantsListContainer queryRef={queryRef} isVisible={isVisible} />}>
-                <ParticipantsListContainer queryRef={queryRef} isVisible={isVisible} />
+            <React.Suspense fallback={<Loader />}>
+                <ParticipantsListContainer queryRef={queryRef} />
             </React.Suspense>
         </ConditionalRender>
     );

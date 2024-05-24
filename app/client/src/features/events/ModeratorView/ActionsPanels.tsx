@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import * as React from 'react';
-import { Grid, Tab, Divider, Tooltip } from '@mui/material';
+import { Grid, Tab, Tooltip } from '@mui/material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import HandymanIcon from '@mui/icons-material/Handyman';
 import PodcastsIcon from '@mui/icons-material/Podcasts';
 import FeedbackIcon from '@mui/icons-material/Feedback';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { Panel, PanelGroup } from 'react-resizable-panels';
 
 import { EventVideo } from '@local/features/events';
 import { EventDetailsCard } from '../EventDetailsCard';
@@ -19,6 +19,7 @@ import { LiveFeedbackList } from '../LiveFeedback';
 import { BroadcastMessageList } from '../BroadcastMessages/BroadcastMessageList';
 import { Node } from './EventLiveNewModeratorView';
 import { useEventDetailsFragment$data } from '@local/__generated__/useEventDetailsFragment.graphql';
+import { HorizontalResizeHandle } from '@local/components/PanelHandle';
 
 interface ActionsPanelProps {
     node: Node;
@@ -38,7 +39,7 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
 
     return (
         <PanelGroup autoSaveId='mod-panels-child-persistence' direction='vertical'>
-            <Panel defaultSize={25} minSize={20}>
+            <Panel defaultSize={25} minSize={10}>
                 <Grid
                     sx={{
                         overflow: 'auto',
@@ -50,9 +51,7 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
                     <SpeakerList fragmentRef={node} />
                 </Grid>
             </Panel>
-            <PanelResizeHandle>
-                <Divider sx={{ width: '100%', height: '0.5rem', transform: 'translateY(-0.5rem)' }} />
-            </PanelResizeHandle>
+            <HorizontalResizeHandle />
             <Panel defaultSize={50} minSize={20}>
                 <Grid
                     item
@@ -186,10 +185,10 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
                         />
                     </StyledTabs>
                     <StyledColumnGrid
-                        props={{ width: '98%', display: 'flex', flexGrow: 1, padding: 0 }}
+                        props={{ width: '100%', display: 'flex', flexGrow: 1, padding: 0 }}
                         scrollable={tab == 'Participants'}
                     >
-                        <PreloadedParticipantsList eventId={eventData.id} isVisible={tab === 'Participants'} />
+                        {tab === 'Participants' && <PreloadedParticipantsList eventId={eventData.id} />}
                         {tab === 'Moderator' && (
                             <ModeratorActions isLive={isLive} setIsLive={setIsLive} eventId={eventData.id} />
                         )}
