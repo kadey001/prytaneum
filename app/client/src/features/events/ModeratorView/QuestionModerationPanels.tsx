@@ -13,10 +13,12 @@ import {
     KeyboardSensor,
     PointerSensor,
 } from '@dnd-kit/core';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { Panel, PanelGroup } from 'react-resizable-panels';
 import { arrayMove } from '@dnd-kit/sortable';
 import { QuestionListContainer } from './QuestionListContainer';
-import { FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Tab } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Tab, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+
 import { Node } from './EventLiveNewModeratorView';
 import { useOnDeck } from './hooks/OnDeck/useOnDeck';
 import type { Question, Topic } from './types';
@@ -36,6 +38,9 @@ import { useOnDeckDequeued } from './hooks/OnDeck/useOnDeckDequeued';
 import { Loader } from '@local/components';
 import { useUpdateOnDeckPosition } from './hooks/OnDeck/useUpdateOnDeckPosition';
 import { useUpdateTopicQueuePosition } from './hooks/TopicQueue/useUpdateTopicQueuePosition';
+import { QuestionListSkeleton } from '@local/components/QuestionListSkeleton/QuestionListSkeleton';
+import { useSnack } from '@local/core';
+import { VerticalPanelResizeHandle } from '@local/components/PanelHandle';
 
 type ItemsType = {
     topicQueue: Question[];
@@ -49,6 +54,9 @@ interface QuestionModerationPanelsProps {
 }
 
 export function QuestionModerationPanels({ node, topics }: QuestionModerationPanelsProps) {
+    const theme = useTheme();
+    const xlUpBreakpoint = useMediaQuery(theme.breakpoints.up('xl'));
+    const { displaySnack } = useSnack();
     const { id: eventId } = node;
     const [topic, setTopic] = useState<string>('default');
     const { queue, connections: queueConnections } = useQuestionModQueue({ fragmentRef: node, topic });
@@ -133,7 +141,7 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
         const { id } = active;
         const activeContainer = findContainer(id);
         if (!activeContainer) {
-            throw new Error('No active container found.');
+            return displaySnack('Active container not found', { variant: 'error' });
         }
         setPreviousContainer(activeContainer);
         setActiveId(id);
@@ -239,7 +247,6 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                 // This consistancy is key to always properly calculating the new position
                 const onDeck = items.onDeck;
                 const updatedOnDeck = arrayMove(onDeck, activeIndex, overIndex);
-                console.log('Updated onDeck', updatedOnDeck);
                 addQuestionToOnDeck({
                     eventId,
                     questionId: activeQuestion.id.toString(),
@@ -311,7 +318,7 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                 </DragOverlay>
                 <PanelGroup autoSaveId='question-mod-panels' direction='horizontal'>
                     <Panel defaultSize={33} minSize={25} maxSize={50} style={{ paddingTop: '1rem' }}>
-                        <Grid container justifyContent='center'>
+                        <Stack direction='column' alignItems='center' height='100%' width='100%'>
                             <FormControl sx={{ width: '95%', marginBottom: '0.5rem' }}>
                                 <InputLabel id='topic-select-label'>Topic</InputLabel>
                                 <Select
@@ -329,29 +336,30 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                                     ))}
                                 </Select>
                             </FormControl>
-                        </Grid>
-                        <StyledColumnGrid
-                            props={{
-                                id: 'scrollable-tab',
-                                display: 'flex',
-                                flexGrow: 1,
-                                width: '98%',
-                                height: '100%',
-                                padding: 0,
-                                paddingBottom: '3rem',
-                            }}
-                            scrollable={false}
-                        >
-                            <QuestionListContainer
-                                fragmentRef={node}
-                                isVisible={true}
-                                topic={topic}
-                                connections={connections}
-                                topics={topics}
-                            />
-                        </StyledColumnGrid>
+                            <StyledColumnGrid
+                                props={{
+                                    id: 'scrollable-tab',
+                                    display: 'flex',
+                                    flexGrow: 1,
+                                    width: '100%',
+                                    height: '100%',
+                                    padding: 0,
+                                }}
+                                scrollable={false}
+                            >
+                                <React.Suspense fallback={<QuestionListSkeleton xlUpBreakpoint={xlUpBreakpoint} />}>
+                                    <QuestionListContainer
+                                        fragmentRef={node}
+                                        isVisible={true}
+                                        topic={topic}
+                                        connections={connections}
+                                        topics={topics}
+                                    />
+                                </React.Suspense>
+                            </StyledColumnGrid>
+                        </Stack>
                     </Panel>
-                    <PanelResizeHandle />
+                    <VerticalPanelResizeHandle />
                     <Panel defaultSize={33} minSize={25} maxSize={50}>
                         <StyledTabs value='Topic Queue'>
                             <Tab label='Topic Queue' value='Topic Queue' />
@@ -361,17 +369,19 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                                 id: 'scrollable-tab',
                                 display: 'flex',
                                 flexGrow: 1,
-                                width: '98%',
-                                height: '96%',
+                                width: '100%',
+                                height: '100%',
+                                maxHeight: '95%',
                                 padding: 0,
-                                // paddingBottom: '48px',
                             }}
                             scrollable={true}
                         >
-                            <QuestionQueueContainer id='topicQueue' questions={items.topicQueue} topic={topic} />
+                            <React.Suspense fallback={<Loader />}>
+                                <QuestionQueueContainer id='topicQueue' questions={items.topicQueue} topic={topic} />
+                            </React.Suspense>
                         </StyledColumnGrid>
                     </Panel>
-                    <PanelResizeHandle />
+                    <VerticalPanelResizeHandle />
                     <Panel defaultSize={33} minSize={25} maxSize={50}>
                         <Stack direction='column' alignItems='center' height='100%' width='100%'>
                             <CurrentQuestionCard isViewerModerator={true} fragmentRef={node} />
@@ -383,14 +393,17 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                                     id: 'scrollable-tab',
                                     display: 'flex',
                                     flexGrow: 1,
-                                    width: '98%',
+                                    width: '100%',
                                     height: '100%',
                                     maxWidth: '100%',
+                                    maxHeight: '95%',
                                     padding: 0,
                                 }}
                                 scrollable={true}
                             >
-                                <OnDeckContainer id='onDeck' questions={items.onDeck} connections={connections} />
+                                <React.Suspense fallback={<Loader />}>
+                                    <OnDeckContainer id='onDeck' questions={items.onDeck} connections={connections} />
+                                </React.Suspense>
                             </StyledColumnGrid>
                         </Stack>
                     </Panel>
