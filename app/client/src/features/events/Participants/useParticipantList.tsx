@@ -48,7 +48,6 @@ interface Props {
 export function useParticipantList({ fragmentRef }: Props) {
     const [data, refetch] = useRefetchableFragment(USE_PARTICIPANT_LIST_FRAGMENT, fragmentRef);
     const REFRESH_INTERVAL = 30000; // 30 seconds
-    const INITIAL_TIMEOUT = 1000; // 1 second
 
     const refresh = React.useCallback(() => {
         refetch({}, { fetchPolicy: 'network-only' });
@@ -56,12 +55,9 @@ export function useParticipantList({ fragmentRef }: Props) {
 
     useRefresh({ refreshInterval: REFRESH_INTERVAL, callback: refresh });
 
-    // Refresh a second after initial load to ensure a ping was received on the server
+    // Refresh on initial load since it isn't updated when not on the tab.
     React.useEffect(() => {
-        const timeout = setTimeout(() => {
-            refresh();
-        }, INITIAL_TIMEOUT);
-        return () => clearTimeout(timeout);
+        refresh();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
