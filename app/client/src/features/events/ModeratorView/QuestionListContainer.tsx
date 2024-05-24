@@ -74,12 +74,12 @@ export function QuestionListContainer({
         topics.forEach((t) => {
             refetch({ topic: t.topic }, { fetchPolicy: 'network-only' });
         });
-        refetch({ topic }, { fetchPolicy: 'network-only' });
+        refetch({ topic }, { fetchPolicy: 'store-and-network' });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     React.useEffect(() => {
-        refetch({ topic }, { fetchPolicy: 'network-only' });
+        refetch({ topic }, { fetchPolicy: 'store-and-network' });
         // TODO: Find a better way to scroll to top when topic changes
         const timeout = setTimeout(() => {
             if (listRef.current) {
@@ -167,103 +167,93 @@ export function QuestionListContainer({
     if (!isVisible) return <React.Fragment />;
 
     return (
-        <Stack direction='column' alignItems='stretch' width='100%' padding={1} paddingRight={0}>
-            {isVisible && (
-                <React.Fragment>
-                    <Paper sx={{ padding: '1rem', marginX: '8px', marginBottom: '0.5rem' }}>
-                        {!searchOnly && (
-                            <Stack
-                                direction='row'
-                                justifyContent='space-between'
-                                alignItems='center'
-                                marginBottom={isSearchOpen ? '.5rem' : '0rem'}
-                            >
-                                <Grid item xs='auto'>
-                                    <IconButton onClick={togglePause}>
-                                        {isFrozen ? (
-                                            <Badge
-                                                badgeContent={questions.length - frozenQuestions.length}
-                                                color='secondary'
-                                            >
-                                                <Tooltip title='Un-Pause Question List'>
-                                                    <PlayCircleIcon
-                                                        fontSize='large'
-                                                        sx={{ color: theme.palette.primary.main }}
-                                                    />
-                                                </Tooltip>
-                                            </Badge>
-                                        ) : (
-                                            <Tooltip title='Pause Question List' placement='top'>
-                                                <PauseCircleIcon
-                                                    fontSize='large'
-                                                    sx={{ color: theme.palette.primary.main }}
-                                                />
-                                            </Tooltip>
-                                        )}
-                                    </IconButton>
-                                    <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
-                                        <Tooltip title='Search Bar' placement='top'>
-                                            <SearchIcon fontSize='large' />
+        <Stack direction='column' alignItems='stretch' width='100%' height='100%' paddingTop={1} paddingRight={0}>
+            <Paper sx={{ padding: '1rem', marginX: '8px', marginBottom: '0.5rem' }}>
+                {!searchOnly && (
+                    <Stack
+                        direction='row'
+                        justifyContent='space-between'
+                        alignItems='center'
+                        marginBottom={isSearchOpen ? '.5rem' : '0rem'}
+                    >
+                        <Grid item xs='auto'>
+                            <IconButton onClick={togglePause}>
+                                {isFrozen ? (
+                                    <Badge badgeContent={questions.length - frozenQuestions.length} color='secondary'>
+                                        <Tooltip title='Un-Pause Question List'>
+                                            <PlayCircleIcon
+                                                fontSize='large'
+                                                sx={{ color: theme.palette.primary.main }}
+                                            />
                                         </Tooltip>
-                                    </IconButton>
-                                </Grid>
-                                {!isModerator && askQuestionEnabled && <AskQuestion eventId={eventId} />}
-                            </Stack>
-                        )}
-                        <ListFilter
-                            // filterMap={filterFuncs}
-                            onFilterChange={handleFilterChange}
-                            onSearch={handleSearch}
-                            length={filteredList.length}
-                            isSearchOpen={isSearchOpen || searchOnly}
-                            isFrozen={isFrozen}
-                        />
-                    </Paper>
-                    {filteredList.length === 0 && questions.length !== 0 && (
-                        <Typography align='center' variant='body2' marginTop='1rem'>
-                            No results to display
-                        </Typography>
-                    )}
-                    {questions.length === 0 && (
-                        <Typography align='center' variant='h5' marginTop='1rem'>
-                            <Stack direction='row' justifyContent='center' alignItems='center'>
-                                No Questions to display
-                                <SentimentDissatisfiedIcon />
-                            </Stack>
-                        </Typography>
-                    )}
-                    <div style={{ width: '100%', height: '100%', marginBottom: '0.5rem' }}>
-                        <InfiniteLoader
-                            isRowLoaded={isRowLoaded}
-                            loadMoreRows={loadMoreRows}
-                            minimumBatchSize={QUESTIONS_BATCH_SIZE}
-                            rowCount={listLength}
-                            threshold={5}
-                        >
-                            {({ onRowsRendered, registerChild }) => (
-                                <AutoSizer>
-                                    {({ width, height }) => (
-                                        <VirtualizedList
-                                            ref={(list) => {
-                                                registerChild(list);
-                                                registerListRef(list);
-                                            }}
-                                            height={height}
-                                            width={width}
-                                            rowCount={listLength}
-                                            deferredMeasurementCache={cache}
-                                            rowHeight={cache.rowHeight}
-                                            rowRenderer={rowRenderer}
-                                            onRowsRendered={onRowsRendered}
-                                            scrollToRow={1}
-                                        />
-                                    )}
-                                </AutoSizer>
-                            )}
-                        </InfiniteLoader>
-                    </div>
-                </React.Fragment>
+                                    </Badge>
+                                ) : (
+                                    <Tooltip title='Pause Question List' placement='top'>
+                                        <PauseCircleIcon fontSize='large' sx={{ color: theme.palette.primary.main }} />
+                                    </Tooltip>
+                                )}
+                            </IconButton>
+                            <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
+                                <Tooltip title='Search Bar' placement='top'>
+                                    <SearchIcon fontSize='large' />
+                                </Tooltip>
+                            </IconButton>
+                        </Grid>
+                        {!isModerator && askQuestionEnabled && <AskQuestion eventId={eventId} />}
+                    </Stack>
+                )}
+                <ListFilter
+                    // filterMap={filterFuncs}
+                    onFilterChange={handleFilterChange}
+                    onSearch={handleSearch}
+                    length={filteredList.length}
+                    isSearchOpen={isSearchOpen || searchOnly}
+                    isFrozen={isFrozen}
+                />
+            </Paper>
+            {filteredList.length === 0 && questions.length !== 0 && (
+                <Typography align='center' variant='body2' marginTop='1rem'>
+                    No results to display
+                </Typography>
             )}
+            {questions.length === 0 && (
+                <Typography align='center' variant='h5' marginTop='1rem'>
+                    <Stack direction='row' justifyContent='center' alignItems='center'>
+                        No Questions to display
+                        <SentimentDissatisfiedIcon />
+                    </Stack>
+                </Typography>
+            )}
+            <div style={{ width: '100%', height: '100%' }}>
+                <InfiniteLoader
+                    isRowLoaded={isRowLoaded}
+                    loadMoreRows={loadMoreRows}
+                    minimumBatchSize={QUESTIONS_BATCH_SIZE}
+                    rowCount={listLength}
+                    threshold={5}
+                >
+                    {({ onRowsRendered, registerChild }) => (
+                        <AutoSizer>
+                            {({ width, height }) => (
+                                <VirtualizedList
+                                    ref={(list) => {
+                                        registerChild(list);
+                                        registerListRef(list);
+                                    }}
+                                    height={height}
+                                    width={width}
+                                    rowCount={listLength}
+                                    deferredMeasurementCache={cache}
+                                    rowHeight={cache.rowHeight}
+                                    rowRenderer={rowRenderer}
+                                    onRowsRendered={onRowsRendered}
+                                    scrollToRow={1}
+                                />
+                            )}
+                        </AutoSizer>
+                    )}
+                </InfiniteLoader>
+            </div>
         </Stack>
     );
 }
