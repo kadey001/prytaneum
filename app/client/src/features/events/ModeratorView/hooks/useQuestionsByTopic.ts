@@ -9,12 +9,11 @@ import type { useQuestionsByTopicFragment$key } from '@local/__generated__/useQu
 import type { Question } from '../types';
 import { useTopic } from '../useTopic';
 
-// Fetching 500 questions initially, shouldn't be too expensive and easily able to render with virtualized list
 export const USE_QUESTIONS_BY_TOPIC = graphql`
     fragment useQuestionsByTopicFragment on Event
     @refetchable(queryName: "questionsByTopicPagination")
     @argumentDefinitions(
-        first: { type: "Int", defaultValue: 500 }
+        first: { type: "Int", defaultValue: 100 }
         after: { type: "String", defaultValue: "" }
         topic: { type: "String", defaultValue: "default" }
     ) {
