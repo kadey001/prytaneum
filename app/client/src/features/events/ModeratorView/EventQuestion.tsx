@@ -13,7 +13,6 @@ import { QueueButton } from '../Questions/QuestionActions/QueueButton';
 import { QuestionActionsFragment$key } from '@local/__generated__/QuestionActionsFragment.graphql';
 import { useHideQuestion } from '../Questions/QuestionActions/useHideQuestion';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Loader } from '@local/components';
 
 interface Props {
     question: Question;
@@ -62,90 +61,84 @@ export default function EventQuestion({ question, deleteEnabled = true, queueEna
     }, [question.topics]);
 
     return (
-        <React.Suspense fallback={<Loader />}>
-            <Card
+        <Card
+            sx={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                paddingTop: (theme) => theme.spacing(0.5),
+                borderRadius: '10px',
+            }}
+        >
+            <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+                <QuestionAuthor fragmentRef={question} />
+                <Stack direction='row' sx={{ paddingRight: '0.25rem' }}>
+                    {queueEnabled && <QueueButton fragmentRef={data} />}
+                    {deleteEnabled && (
+                        <div>
+                            <IconButton onClick={handleOpen}>
+                                <MoreVertIcon />
+                            </IconButton>
+                            <Menu anchorEl={anchorEl} open={anchored} onClick={handleClose}>
+                                <MenuItem onClick={handleDelete}>
+                                    <DeleteIcon color='error' />
+                                    <Typography color='error'>Delete</Typography>
+                                </MenuItem>
+                            </Menu>
+                        </div>
+                    )}
+                </Stack>
+            </Stack>
+            {question?.refQuestion && <QuestionQuote fragmentRef={question.refQuestion} />}
+            <QuestionContent fragmentRef={question} />
+            <Grid container alignItems='center' justifyContent='space-between'>
+                {isModerator && <QuestionStats fragmentRef={question} />}
+                <QuestionActions
+                    style={!isModerator ? { width: '100%' } : { width: '100%', maxWidth: '10rem' }}
+                    likeEnabled={!isModerator && Boolean(user)}
+                    quoteEnabled={!isModerator && Boolean(user)}
+                    queueEnabled={false}
+                    deleteEnabled={false}
+                    connections={[]}
+                    fragmentRef={question}
+                />
+                {isModerator && ( // filler to justify moderator queue button
+                    <span style={{ visibility: 'hidden' }}>
+                        <QuestionStats fragmentRef={question} />
+                    </span>
+                )}
+            </Grid>
+            <Grid
+                container
                 sx={{
-                    flex: 1,
                     display: 'flex',
-                    flexDirection: 'column',
-                    paddingTop: (theme) => theme.spacing(0.5),
-                    borderRadius: '10px',
+                    justifyContent: 'left',
+                    flexWrap: 'nowrap',
+                    listStyle: 'none',
+                    padding: (theme) => theme.spacing(0.5),
+                    margin: 0,
+                    overflow: 'auto',
+                    maxWidth: '100%',
+                    width: '100%',
+                    backgroundColor: 'transparent',
+                    '::-webkit-scrollbar': {
+                        height: '0.35rem',
+                    },
                 }}
             >
-                <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
-                    <QuestionAuthor fragmentRef={question} />
-                    <Stack direction='row' sx={{ paddingRight: '0.25rem' }}>
-                        {queueEnabled && (
-                            <div style={{}}>
-                                <QueueButton fragmentRef={data} />
-                            </div>
-                        )}
-                        {deleteEnabled && (
-                            <div>
-                                <IconButton onClick={handleOpen}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                                <Menu anchorEl={anchorEl} open={anchored} onClick={handleClose}>
-                                    <MenuItem onClick={handleDelete}>
-                                        <DeleteIcon color='error' />
-                                        <Typography color='error'>Delete</Typography>
-                                    </MenuItem>
-                                </Menu>
-                            </div>
-                        )}
-                    </Stack>
-                </Stack>
-                {question?.refQuestion && <QuestionQuote fragmentRef={question.refQuestion} />}
-                <QuestionContent fragmentRef={question} />
-                <Grid container alignItems='center' justifyContent='space-between'>
-                    {isModerator && <QuestionStats fragmentRef={question} />}
-                    <QuestionActions
-                        style={!isModerator ? { width: '100%' } : { width: '100%', maxWidth: '10rem' }}
-                        likeEnabled={!isModerator && Boolean(user)}
-                        quoteEnabled={!isModerator && Boolean(user)}
-                        queueEnabled={false}
-                        deleteEnabled={false}
-                        connections={[]}
-                        fragmentRef={question}
-                    />
-                    {isModerator && ( // filler to justify moderator queue button
-                        <span style={{ visibility: 'hidden' }}>
-                            <QuestionStats fragmentRef={question} />
-                        </span>
-                    )}
-                </Grid>
-                <Grid
-                    container
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'left',
-                        flexWrap: 'nowrap',
-                        listStyle: 'none',
-                        padding: (theme) => theme.spacing(0.5),
-                        margin: 0,
-                        overflow: 'auto',
-                        maxWidth: '100%',
-                        width: '100%',
-                        backgroundColor: 'transparent',
-                        '::-webkit-scrollbar': {
-                            height: '0.35rem',
-                        },
-                    }}
-                >
-                    {sortedTopics.map((_topic) => (
-                        <Tooltip key={_topic.topic} title={_topic.description} placement='bottom'>
-                            <Chip
-                                label={_topic.topic}
-                                sx={{
-                                    color: 'white',
-                                    backgroundColor: topicColor(_topic.topic),
-                                    margin: '0.25rem',
-                                }}
-                            />
-                        </Tooltip>
-                    ))}
-                </Grid>
-            </Card>
-        </React.Suspense>
+                {sortedTopics.map((_topic) => (
+                    <Tooltip key={_topic.topic} title={_topic.description} placement='bottom'>
+                        <Chip
+                            label={_topic.topic}
+                            sx={{
+                                color: 'white',
+                                backgroundColor: topicColor(_topic.topic),
+                                margin: '0.25rem',
+                            }}
+                        />
+                    </Tooltip>
+                ))}
+            </Grid>
+        </Card>
     );
 }
