@@ -4,7 +4,9 @@ import { useQueryLoader, PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import { FragmentRefs, graphql } from 'relay-runtime';
 import { Loader } from '@local/components/Loader';
 import { useRouter } from 'next/router';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { Panel, PanelGroup } from 'react-resizable-panels';
+import { Backdrop, CircularProgress, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import { EventContext } from '@local/features/events';
 import { useSnack } from '@local/core';
@@ -14,7 +16,7 @@ import { usePingEvent } from '../Participants/usePingEvent';
 import { EventLiveNewModeratorViewQuery } from '@local/__generated__/EventLiveNewModeratorViewQuery.graphql';
 import { ActionsPanels } from './ActionsPanels';
 import { QuestionModerationPanels } from './QuestionModerationPanels';
-import { Backdrop, CircularProgress } from '@mui/material';
+import { VerticalPanelResizeHandle } from '@local/components/PanelHandle';
 
 export const EVENT_LIVE_MODERATOR_VIEW_QUERY = graphql`
     query EventLiveNewModeratorViewQuery($eventId: ID!) {
@@ -33,7 +35,6 @@ export const EVENT_LIVE_MODERATOR_VIEW_QUERY = graphql`
                 ...EventVideoFragment
                 ...useEventDetailsFragment
                 ...SpeakerListFragment
-                # ...useQuestionListFragment
                 ...useBroadcastMessageListFragment
                 ...useQuestionQueueFragment
                 ...QuestionCarouselFragment
@@ -60,6 +61,8 @@ interface EventLiveProps {
 }
 
 function EventLiveNewModeratorView({ node, refresh }: EventLiveProps) {
+    const theme = useTheme();
+    const isXlDownBreakpoint = useMediaQuery(theme.breakpoints.down('xl')); // Below 1080p (likely 720p)
     const { eventData, isLive, setIsLive, pauseEventDetailsRefresh, resumeEventDetailsRefresh } = useEventDetails({
         fragmentRef: node,
     });
@@ -87,21 +90,15 @@ function EventLiveNewModeratorView({ node, refresh }: EventLiveProps) {
                 resumeParentRefreshing,
             }}
         >
-            <PanelGroup autoSaveId='mod-panels-persistence' direction='horizontal'>
-                <Panel defaultSize={25} minSize={20} maxSize={30}>
+            <PanelGroup direction='horizontal'>
+                <Panel defaultSize={isXlDownBreakpoint ? 30 : 20} minSize={isXlDownBreakpoint ? 25 : 18} maxSize={40}>
                     <React.Suspense fallback={<Loader />}>
                         <ActionsPanels node={node} eventData={eventData} isLive={isLive} setIsLive={setIsLive} />
                     </React.Suspense>
                 </Panel>
-                <PanelResizeHandle />
-                <Panel defaultSize={75} minSize={70} maxSize={80}>
-                    <React.Suspense
-                        fallback={
-                            <Backdrop open={true}>
-                                <CircularProgress color='inherit' />
-                            </Backdrop>
-                        }
-                    >
+                <VerticalPanelResizeHandle />
+                <Panel defaultSize={isXlDownBreakpoint ? 70 : 80} minSize={60} maxSize={isXlDownBreakpoint ? 75 : 82}>
+                    <React.Suspense fallback={<Loader />}>
                         <QuestionModerationPanels node={node} topics={eventData?.topics || []} refresh={refresh} />
                     </React.Suspense>
                 </Panel>
@@ -159,7 +156,13 @@ export function PreloadedEventLiveNewModratorView({ eventId }: PreloadedEventLiv
 
     if (!queryRef) return <Loader />;
     return (
-        <React.Suspense fallback={<Loader />}>
+        <React.Suspense
+            fallback={
+                <Backdrop open={true}>
+                    <CircularProgress color='inherit' />
+                </Backdrop>
+            }
+        >
             <EventLiveNewModeratorViewContainer queryRef={queryRef} eventId={eventId} refresh={refresh} />
         </React.Suspense>
     );
