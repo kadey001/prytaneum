@@ -11,20 +11,12 @@ interface Props {
     topic: string;
 }
 
+//TODO: Fix height issue (currently a workaround)
 export function QuestionQueueContainer({ id, questions, topic }: Props) {
     const { setNodeRef } = useDroppable({ id });
 
     return (
-        <Stack
-            direction='column'
-            alignItems='stretch'
-            width='100%'
-            height='100%'
-            minHeight={0}
-            maxHeight={0}
-            padding={1}
-            paddingRight={0}
-        >
+        <Stack direction='column' maxHeight={0}>
             {questions.length === 0 && (
                 <Grid container justifyContent='center' padding='1rem'>
                     <Typography align='center' variant='h5' marginTop='1rem'>

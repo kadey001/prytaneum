@@ -11,20 +11,12 @@ interface Props {
     connections: string[];
 }
 
+// TODO: Fix the workaround height issue
 export function OnDeckContainer({ id, questions, connections }: Props) {
     const { setNodeRef } = useDroppable({ id });
 
     return (
-        <Stack
-            direction='column'
-            alignItems='stretch'
-            width='100%'
-            height='100%'
-            minHeight={0}
-            maxHeight={0}
-            padding={1}
-            paddingRight={0}
-        >
+        <Stack direction='column' maxHeight={0}>
             {questions.length === 0 && (
                 <Grid container paddingRight={1}>
                     <Box
