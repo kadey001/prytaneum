@@ -3,7 +3,7 @@ import { PrismaClient } from '@local/__generated__/prisma';
 import { errors } from '@local/features/utils';
 import { ProtectedError } from '@local/lib/ProtectedError';
 import type { CreateQuestion, AlterLike } from '@local/graphql-types';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 /**
  * submit a question, in the future this may plug into an event broker like kafka or redis
@@ -39,18 +39,28 @@ export async function createQuestion(userId: string, prisma: PrismaClient, input
             [key: string]: boolean;
         };
     };
-    const response = await axios.post(
-        process.env.MODERATION_URL,
-        {
-            stage: 'moderation',
-            question: question,
-            eventId: eventId,
-        },
-        {
-            headers: { 'Content-Type': 'application/json' },
-        }
-    );
-    const data = response.data as ExpectedResponse;
+    let response: AxiosResponse<ExpectedResponse> | null = null;
+    try {
+        response = await axios.post(
+            process.env.MODERATION_URL,
+            {
+                stage: 'moderation',
+                question: question,
+                eventId: eventId,
+            },
+            {
+                headers: { 'Content-Type': 'application/json' },
+            }
+        );
+        if (!response) throw new Error('No response from moderation service');
+    } catch (error) {
+        throw new ProtectedError({
+            userMessage: 'Unable to process question, please try again.',
+            internalMessage: error instanceof Error ? error.message : `Error processing question: ${question}`,
+        });
+    }
+
+    const data = response.data;
     // Get all the topis that are related to the question
     const topics = Object.keys(data.topics).filter((key) => data.topics[key]);
     // Get the topic ids (and ensure they are valid topics in the event)
