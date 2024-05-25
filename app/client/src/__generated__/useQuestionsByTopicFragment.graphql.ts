@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3d1e1cd5368ab2499306117eb5059583>>
+ * @generated SignedSource<<b941eef47c9e24365756d3fa935f8b48>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,7 @@ import { FragmentRefs } from "relay-runtime";
 export type useQuestionsByTopicFragment$data = {
   readonly currentQuestion: string | null;
   readonly id: string;
-  readonly questions: {
+  readonly questionsByTopic: {
     readonly __id: string;
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
@@ -50,7 +50,7 @@ export type useQuestionsByTopicFragment$key = {
 
 const node: ReaderFragment = (function(){
 var v0 = [
-  "questions"
+  "questionsByTopic"
 ],
 v1 = {
   "alias": null,
@@ -121,7 +121,7 @@ return {
       "storageKey": null
     },
     {
-      "alias": "questions",
+      "alias": "questionsByTopic",
       "args": [
         {
           "kind": "Variable",
@@ -131,7 +131,7 @@ return {
       ],
       "concreteType": "EventQuestionConnection",
       "kind": "LinkedField",
-      "name": "__useQuestionsByTopicFragment_questions_connection",
+      "name": "__useQuestionsByTopicFragment_questionsByTopic_connection",
       "plural": false,
       "selections": [
         {
@@ -319,6 +319,6 @@ return {
 };
 })();
 
-(node as any).hash = "7cc19b6a03a348662aa473de32f766cc";
+(node as any).hash = "bbd433bf2c7ff6bd8bc9d03a9ba4a7b9";
 
 export default node;

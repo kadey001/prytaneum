@@ -1,7 +1,3 @@
-// Hook to fetch the questions (can be filtered by a specific topic).
-// The 2 lists of the moderation pannels are all managed by this hook.
-// Split into 2 lists: 'questions', 'queue' (all questions that are not in the 'onDeck' list).
-// The queue is based on the chosen topic.
 import * as React from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 
@@ -19,8 +15,8 @@ export const USE_QUESTIONS_BY_TOPIC = graphql`
     ) {
         id
         currentQuestion
-        questions(first: $first, after: $after, topic: $topic)
-            @connection(key: "useQuestionsByTopicFragment_questions", filters: ["topic"]) {
+        questionsByTopic(first: $first, after: $after, topic: $topic)
+            @connection(key: "useQuestionsByTopicFragment_questionsByTopic", filters: ["topic"]) {
             __id
             edges {
                 cursor
@@ -64,7 +60,7 @@ export function useQuestionsByTopic({ fragmentRef }: Props) {
     // Use pagination fragment for the list of questions by topic
     const { data, loadNext, loadPrevious, hasNext, hasPrevious, isLoadingNext, isLoadingPrevious, refetch } =
         usePaginationFragment(USE_QUESTIONS_BY_TOPIC, fragmentRef);
-    const { questions: _questions, id: eventId, currentQuestion } = data;
+    const { questionsByTopic: _questions, id: eventId, currentQuestion } = data;
 
     const questions: Question[] = React.useMemo(() => {
         if (!_questions?.edges) return [];

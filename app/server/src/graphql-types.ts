@@ -735,6 +735,7 @@ export type Event = Node & {
     isPrivate?: Maybe<Scalars['Boolean']>;
     /** All questions relating to this event */
     questions?: Maybe<EventQuestionConnection>;
+    questionsByTopic?: Maybe<EventQuestionConnection>;
     topicQueue?: Maybe<EventQuestionConnection>;
     questionModQueue?: Maybe<EventQuestionConnection>;
     broadcastMessages?: Maybe<EventBroadcastMessagesConnection>;
@@ -771,6 +772,12 @@ export type EventquestionsArgs = {
     first?: InputMaybe<Scalars['Int']>;
     after?: InputMaybe<Scalars['String']>;
     viewerOnly?: InputMaybe<Scalars['Boolean']>;
+    topic?: InputMaybe<Scalars['String']>;
+};
+
+export type EventquestionsByTopicArgs = {
+    first?: InputMaybe<Scalars['Int']>;
+    after?: InputMaybe<Scalars['String']>;
     topic?: InputMaybe<Scalars['String']>;
 };
 
@@ -2905,6 +2912,12 @@ export type EventResolvers<
         ContextType,
         Partial<EventquestionsArgs>
     >;
+    questionsByTopic?: Resolver<
+        Maybe<ResolversTypes['EventQuestionConnection']>,
+        ParentType,
+        ContextType,
+        Partial<EventquestionsByTopicArgs>
+    >;
     topicQueue?: Resolver<
         Maybe<ResolversTypes['EventQuestionConnection']>,
         ParentType,
@@ -4067,6 +4080,7 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         isForumEnabled?: LoaderResolver<Maybe<Scalars['Boolean']>, Event, {}, TContext>;
         isPrivate?: LoaderResolver<Maybe<Scalars['Boolean']>, Event, {}, TContext>;
         questions?: LoaderResolver<Maybe<EventQuestionConnection>, Event, EventquestionsArgs, TContext>;
+        questionsByTopic?: LoaderResolver<Maybe<EventQuestionConnection>, Event, EventquestionsByTopicArgs, TContext>;
         topicQueue?: LoaderResolver<Maybe<EventQuestionConnection>, Event, EventtopicQueueArgs, TContext>;
         questionModQueue?: LoaderResolver<Maybe<EventQuestionConnection>, Event, EventquestionModQueueArgs, TContext>;
         broadcastMessages?: LoaderResolver<

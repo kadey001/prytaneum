@@ -56,6 +56,7 @@ type Event implements Node {
     All questions relating to this event
     """
     questions(first: Int, after: String, viewerOnly: Boolean, topic: String): EventQuestionConnection
+    questionsByTopic(first: Int, after: String, topic: String): EventQuestionConnection
     topicQueue(first: Int, after: String, topic: String): EventQuestionConnection
     questionModQueue(first: Int, after: String): EventQuestionConnection
 

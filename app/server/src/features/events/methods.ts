@@ -234,10 +234,17 @@ export async function findOrgByEventId(eventId: string, prisma: PrismaClient) {
     return result.organization;
 }
 
+export async function findQuestionsByEventId(eventId: string, prisma: PrismaClient) {
+    return prisma.eventQuestion.findMany({
+        where: { eventId, isVisible: true },
+        orderBy: { createdAt: 'desc' },
+    });
+}
+
 /**
  * find questions by event id
  */
-export async function findQuestionsByEventId(eventId: string, topic: string, prisma: PrismaClient) {
+export async function findQuestionsByEventIdAndTopic(eventId: string, topic: string, prisma: PrismaClient) {
     console.log('findQuestionsByEventId', topic);
     if (topic === 'default' || topic === '') {
         // Get all questions that are not in any topic queue

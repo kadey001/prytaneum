@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0de79563c553a568073cc497fca4fed9>>
+ * @generated SignedSource<<be3ad89a1936c09de34454522428d786>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -195,7 +195,7 @@ return {
                 "args": (v5/*: any*/),
                 "concreteType": "EventQuestionConnection",
                 "kind": "LinkedField",
-                "name": "questions",
+                "name": "questionsByTopic",
                 "plural": false,
                 "selections": [
                   {
@@ -377,9 +377,9 @@ return {
                   "topic"
                 ],
                 "handle": "connection",
-                "key": "useQuestionsByTopicFragment_questions",
+                "key": "useQuestionsByTopicFragment_questionsByTopic",
                 "kind": "LinkedHandle",
-                "name": "questions"
+                "name": "questionsByTopic"
               }
             ],
             "type": "Event",
@@ -391,16 +391,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a2e849653feb9f517cb564d493ffc2dd",
+    "cacheID": "7dee52744d796a3905e2b5b4490a2d90",
     "id": null,
     "metadata": {},
     "name": "questionsByTopicPagination",
     "operationKind": "query",
-    "text": "query questionsByTopicPagination(\n  $after: String = \"\"\n  $first: Int = 100\n  $topic: String = \"default\"\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useQuestionsByTopicFragment_3H91sL\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment on EventQuestion {\n  id\n  ...QuoteFragment\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionQuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment useQuestionsByTopicFragment_3H91sL on Event {\n  id\n  currentQuestion\n  questions(first: $first, after: $after, topic: $topic) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        position\n        onDeckPosition\n        topics {\n          topic\n          description\n          position\n        }\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment\n          id\n        }\n        ...QuestionActionsFragment\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query questionsByTopicPagination(\n  $after: String = \"\"\n  $first: Int = 100\n  $topic: String = \"default\"\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useQuestionsByTopicFragment_3H91sL\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment on EventQuestion {\n  id\n  ...QuoteFragment\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionQuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment useQuestionsByTopicFragment_3H91sL on Event {\n  id\n  currentQuestion\n  questionsByTopic(first: $first, after: $after, topic: $topic) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        position\n        onDeckPosition\n        topics {\n          topic\n          description\n          position\n        }\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment\n          id\n        }\n        ...QuestionActionsFragment\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "7cc19b6a03a348662aa473de32f766cc";
+(node as any).hash = "bbd433bf2c7ff6bd8bc9d03a9ba4a7b9";
 
 export default node;

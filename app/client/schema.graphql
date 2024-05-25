@@ -238,6 +238,7 @@ type Event implements Node {
 
   """All questions relating to this event"""
   questions(after: String, first: Int, topic: String, viewerOnly: Boolean): EventQuestionConnection
+  questionsByTopic(after: String, first: Int, topic: String): EventQuestionConnection
 
   """Registrants for this event -- individuals invited"""
   registrants: UserConnection

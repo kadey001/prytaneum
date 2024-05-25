@@ -222,6 +222,7 @@ export type Event = Node & {
   questionQueue?: Maybe<EventQuestionQueue>;
   /** All questions relating to this event */
   questions?: Maybe<EventQuestionConnection>;
+  questionsByTopic?: Maybe<EventQuestionConnection>;
   /** Registrants for this event -- individuals invited */
   registrants?: Maybe<UserConnection>;
   /** Speakers for this event */
@@ -291,6 +292,13 @@ export type EventQuestionsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   topic?: InputMaybe<Scalars['String']>;
   viewerOnly?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type EventQuestionsByTopicArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  topic?: InputMaybe<Scalars['String']>;
 };
 
 

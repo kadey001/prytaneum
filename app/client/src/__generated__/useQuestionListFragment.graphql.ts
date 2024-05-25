@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a84e58d0235ba84fd5051a909cbce4fe>>
+ * @generated SignedSource<<e576597a9776a53a2b26580da59744d5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -61,11 +61,6 @@ return {
       "defaultValue": 50,
       "kind": "LocalArgument",
       "name": "first"
-    },
-    {
-      "defaultValue": "default",
-      "kind": "LocalArgument",
-      "name": "topic"
     }
   ],
   "kind": "Fragment",
@@ -106,13 +101,7 @@ return {
     },
     {
       "alias": "questions",
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "topic",
-          "variableName": "topic"
-        }
-      ],
+      "args": null,
       "concreteType": "EventQuestionConnection",
       "kind": "LinkedField",
       "name": "__useQuestionListFragment_questions_connection",
@@ -276,6 +265,6 @@ return {
 };
 })();
 
-(node as any).hash = "1fa930264784555f9c5cd17d07e4c0a6";
+(node as any).hash = "707a63d5b6dac19a297dfdf1a18bc460";
 
 export default node;

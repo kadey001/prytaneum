@@ -73,8 +73,9 @@ function AskQuestion({ className, eventId }: AskQuestionProps) {
                         displaySnack('Question submitted!', { variant: 'success' });
                     } catch (err) {
                         setIsLoading(false);
-                        if (err instanceof Error) displaySnack(err.message, { variant: 'error' });
-                        else displaySnack('Something went wrong!');
+                        displaySnack(err instanceof Error ? err.message : 'Something went wrong!', {
+                            variant: 'error',
+                        });
                     }
                 },
                 onError(err) {
@@ -85,12 +86,11 @@ function AskQuestion({ className, eventId }: AskQuestionProps) {
                     const eventRecord = store.get(eventId);
                     if (!eventRecord) return console.error('Update failed: Event record not found!');
 
-                    const connection = ConnectionHandler.getConnectionID(
+                    const connectionId = ConnectionHandler.getConnectionID(
                         eventRecord.getDataID(),
                         'useQuestionListFragment_questions'
                     );
                     // Need to do this workaround because the compiler in current version doesn't allow correctly naming the connection with _connection at the end.
-                    const connectionId = connection + '(topic:"default")';
                     const connectionRecord = store.get(connectionId);
                     if (!connectionRecord) return console.error('Update failed: Connection record not found!');
 
@@ -106,16 +106,16 @@ function AskQuestion({ className, eventId }: AskQuestionProps) {
                     ConnectionHandler.insertEdgeBefore(connectionRecord, newEdge);
                 },
                 optimisticUpdater: (store) => {
+                    console.log('Optimistic update');
                     // Get the record for the Feedback object
                     const eventRecord = store.get(eventId);
                     if (!eventRecord) return console.error('Optimistic update failed: Event record not found!');
                     // Get the connection for the question list
-                    const connection = ConnectionHandler.getConnectionID(
+                    const connectionId = ConnectionHandler.getConnectionID(
                         eventRecord.getDataID(),
                         'useQuestionListFragment_questions'
                     );
                     // Need to do this workaround because the compiler in current version doesn't allow correctly naming the connection with _connection at the end.
-                    const connectionId = connection + '(topic:"default")';
                     const connectionRecord = store.get(connectionId);
                     if (!connectionRecord)
                         return console.error('Optimistic update failed: Connection record not found!');
@@ -171,7 +171,7 @@ function AskQuestion({ className, eventId }: AskQuestionProps) {
     }
 
     return (
-        <>
+        <React.Fragment>
             <ResponsiveDialog open={isOpen} onClose={close}>
                 <DialogContent>
                     <QuestionForm onCancel={close} onSubmit={handleSubmit} isLoading={isLoading} />
@@ -191,7 +191,7 @@ function AskQuestion({ className, eventId }: AskQuestionProps) {
             >
                 {user ? 'Ask My Question' : 'Sign in to ask a question'}
             </Button>
-        </>
+        </React.Fragment>
     );
 }
 
