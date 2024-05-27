@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Grid, Chip, Card, Typography } from '@mui/material';
+import { Grid, Chip, Card, Typography, Stack, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
@@ -15,6 +15,7 @@ import { useEnqueuedPush } from './useEnqueuedPush';
 import { useEnqueuedRemove } from './useEnqueuedRemove';
 import { useEnqueuedUnshift } from './useEnqueuedUnshift';
 import { useOnDeck } from '../../ModeratorView/hooks/OnDeck/useOnDeck';
+import { QuestionTopics } from '../../Questions/QuestionTopics';
 
 interface QuestionQueueProps {
     isViewerModerator: boolean;
@@ -47,54 +48,55 @@ export function CurrentQuestionCard({ isViewerModerator, fragmentRef }: Question
     );
 
     return (
-        <Card
-            style={{
-                width: '100%',
-                borderRadius: '10px',
-                position: 'relative',
-                overflow: 'visible',
-                paddingTop: theme.spacing(0.5),
-                marginTop: theme.spacing(3),
-            }}
-        >
-            <Chip
-                color='secondary'
-                icon={<BookmarkIcon fontSize='small' />}
-                label='Answering Now'
-                style={{
-                    padding: theme.spacing(0.5),
-                    position: 'absolute',
-                    top: theme.spacing(-2),
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    backgroundColor: theme.palette.custom.creamCan,
-                    background: theme.palette.custom.creamCan,
-                    color: 'white',
-                    textTransform: 'uppercase',
-                    fontWeight: 600,
-                }}
-            />
-            {currentQuestion && <QuestionAuthor fragmentRef={currentQuestion} />}
-            {currentQuestion && currentQuestion.refQuestion && (
-                <QuestionQuote fragmentRef={currentQuestion.refQuestion} />
-            )}
-            {currentQuestion && <QuestionContent fragmentRef={currentQuestion} />}
-            <Grid container alignItems='center' style={{ alignItems: 'center' }}>
-                {!currentQuestion && (
-                    <Typography style={{ margin: 'auto', paddingTop: '20px' }}>No Current Question</Typography>
-                )}
-            </Grid>
+        <React.Fragment>
             {isViewerModerator && (
-                <Grid
-                    container
+                <Stack
+                    direction='row'
+                    width='100%'
                     alignItems='center'
                     justifyContent='space-between'
-                    style={{ padding: theme.spacing(0, 1, 1, 1) }}
+                    style={{ padding: theme.spacing(0, 1, 0, 1) }}
                 >
                     <PreviousQuestionButton disabled={!canGoBackward} />
+                    <Tooltip title='Answering Now' placement='top'>
+                        <Chip
+                            color='secondary'
+                            icon={<BookmarkIcon fontSize='small' />}
+                            label='Answering Now'
+                            style={{
+                                padding: theme.spacing(0.5),
+                                width: '50%',
+                                backgroundColor: theme.palette.custom.creamCan,
+                                background: theme.palette.custom.creamCan,
+                                color: 'white',
+                                textTransform: 'uppercase',
+                                fontWeight: 600,
+                            }}
+                        />
+                    </Tooltip>
                     <NextQuestionButton disabled={!canGoForward} />
-                </Grid>
+                </Stack>
             )}
-        </Card>
+            <Card
+                sx={{
+                    minHeight: '190px',
+                    maxHeight: '300px',
+                    width: '100%',
+                    overflowY: 'scroll',
+                }}
+            >
+                {!currentQuestion && (
+                    <Grid container alignItems='center'>
+                        <Typography style={{ margin: 'auto', paddingTop: '20px' }}>No Current Question</Typography>
+                    </Grid>
+                )}
+                {currentQuestion && <QuestionAuthor fragmentRef={currentQuestion} />}
+                {currentQuestion && currentQuestion.refQuestion && (
+                    <QuestionQuote fragmentRef={currentQuestion.refQuestion} />
+                )}
+                {currentQuestion && <QuestionContent fragmentRef={currentQuestion} />}
+                {isViewerModerator && currentQuestion && <QuestionTopics fragmentRef={currentQuestion} />}
+            </Card>
+        </React.Fragment>
     );
 }
