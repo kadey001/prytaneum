@@ -1,10 +1,6 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import { graphql, useMutation } from 'react-relay';
-import { Button, IconButton, Stack } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import { Button, Stack } from '@mui/material';
 
 import type { ModeratorActionsStartEventMutation } from '@local/__generated__/ModeratorActionsStartEventMutation.graphql';
 import type { ModeratorActionsEndEventMutation } from '@local/__generated__/ModeratorActionsEndEventMutation.graphql';
@@ -34,9 +30,7 @@ export interface ModeratorActionsProps {
 }
 
 export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorActionsProps) {
-    const theme = useTheme();
     const { displaySnack } = useSnack();
-    const router = useRouter();
     const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = React.useState(false);
 
     const openConfirmationDialog = React.useCallback(() => {
