@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cd88ce945280e6db04c72f730778df3c>>
+ * @generated SignedSource<<a8d567bce5450c5d471043aae024cc2c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,7 +33,7 @@ export type useQueueByTopicFragment$data = {
           readonly position: string;
           readonly topic: string;
         }> | null;
-        readonly " $fragmentSpreads": FragmentRefs<"QuestionActionsFragment" | "QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
+        readonly " $fragmentSpreads": FragmentRefs<"QuestionActionsFragment" | "QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment" | "QuestionTopicsFragment">;
       };
     }> | null;
     readonly pageInfo: {
@@ -254,6 +254,11 @@ return {
                   "name": "QuestionStatsFragment"
                 },
                 {
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "QuestionTopicsFragment"
+                },
+                {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
@@ -319,6 +324,6 @@ return {
 };
 })();
 
-(node as any).hash = "9876e6ba4fc35c56f629ad58c74ec815";
+(node as any).hash = "43f7c4fcf38a51f61df52067db40021f";
 
 export default node;

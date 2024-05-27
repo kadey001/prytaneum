@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<df5131ab319a2a9ad5069cbafdefc9fb>>
+ * @generated SignedSource<<7dd9e64c6bd0575b22209b7580e70f68>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -34,7 +34,7 @@ export type useOnDeckFragment$data = {
             readonly position: string;
             readonly topic: string;
           }> | null;
-          readonly " $fragmentSpreads": FragmentRefs<"QuestionActionsFragment" | "QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
+          readonly " $fragmentSpreads": FragmentRefs<"QuestionActionsFragment" | "QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment" | "QuestionTopicsFragment">;
         };
       }> | null;
     } | null;
@@ -58,7 +58,7 @@ export type useOnDeckFragment$data = {
             readonly position: string;
             readonly topic: string;
           }> | null;
-          readonly " $fragmentSpreads": FragmentRefs<"QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
+          readonly " $fragmentSpreads": FragmentRefs<"QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment" | "QuestionTopicsFragment">;
         };
       }> | null;
     } | null;
@@ -159,13 +159,18 @@ v8 = {
   "name": "QuestionContentFragment"
 },
 v9 = {
+  "args": null,
+  "kind": "FragmentSpread",
+  "name": "QuestionTopicsFragment"
+},
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "onDeckPosition",
   "storageKey": null
 },
-v10 = {
+v11 = {
   "alias": null,
   "args": null,
   "concreteType": "EventQuestion",
@@ -181,14 +186,14 @@ v10 = {
   ],
   "storageKey": null
 },
-v11 = {
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v12 = {
+v13 = {
   "alias": null,
   "args": null,
   "concreteType": "PageInfo",
@@ -213,7 +218,7 @@ v12 = {
   ],
   "storageKey": null
 },
-v13 = {
+v14 = {
   "kind": "ClientExtension",
   "selections": [
     {
@@ -311,18 +316,19 @@ return {
                     (v6/*: any*/),
                     (v7/*: any*/),
                     (v8/*: any*/),
-                    (v3/*: any*/),
                     (v9/*: any*/),
+                    (v3/*: any*/),
                     (v10/*: any*/),
-                    (v11/*: any*/)
+                    (v11/*: any*/),
+                    (v12/*: any*/)
                   ],
                   "storageKey": null
                 }
               ],
               "storageKey": null
             },
-            (v12/*: any*/),
-            (v13/*: any*/)
+            (v13/*: any*/),
+            (v14/*: any*/)
           ],
           "storageKey": null
         },
@@ -363,18 +369,19 @@ return {
                     (v6/*: any*/),
                     (v7/*: any*/),
                     (v8/*: any*/),
-                    (v3/*: any*/),
                     (v9/*: any*/),
+                    (v3/*: any*/),
                     (v10/*: any*/),
-                    (v11/*: any*/)
+                    (v11/*: any*/),
+                    (v12/*: any*/)
                   ],
                   "storageKey": null
                 }
               ],
               "storageKey": null
             },
-            (v12/*: any*/),
-            (v13/*: any*/)
+            (v13/*: any*/),
+            (v14/*: any*/)
           ],
           "storageKey": null
         }
@@ -387,6 +394,6 @@ return {
 };
 })();
 
-(node as any).hash = "f13dc96d220c4cf27f9b02843a4e6be3";
+(node as any).hash = "20e8edd554a79c17609814ea5e283861";
 
 export default node;
