@@ -16,7 +16,7 @@ export function OnDeckContainer({ id, questions, connections }: Props) {
     const { setNodeRef } = useDroppable({ id });
 
     return (
-        <Stack direction='column' maxHeight={0}>
+        <Stack direction='column' maxHeight={0} width='100%'>
             {questions.length === 0 && (
                 <Grid container paddingRight={1}>
                     <Box

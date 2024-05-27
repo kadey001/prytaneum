@@ -16,7 +16,7 @@ export function QuestionQueueContainer({ id, questions, topic }: Props) {
     const { setNodeRef } = useDroppable({ id });
 
     return (
-        <Stack direction='column' maxHeight={0}>
+        <Stack direction='column' maxHeight={0} width='100%'>
             {questions.length === 0 && (
                 <Grid container justifyContent='center' padding='1rem'>
                     <Typography align='center' variant='h5' marginTop='1rem'>
