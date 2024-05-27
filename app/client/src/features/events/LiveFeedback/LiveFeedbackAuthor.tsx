@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Avatar, Typography, CardHeader, CardHeaderProps } from '@mui/material';
+import { Avatar, Typography, CardHeader, CardHeaderProps, Stack, Tooltip } from '@mui/material';
 import { graphql, useFragment } from 'react-relay';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
@@ -62,12 +62,14 @@ export function LiveFeedbackAuthor({ fragmentRef, ...props }: LiveFeedbackAuthor
             // get first letter of name to use as avatar
             avatar={<Avatar sx={{ bgcolor: avatarColor }}>{authorName[0]}</Avatar>}
             title={
-                <React.Fragment>
-                    <Typography>
-                        {isModerator && <VerifiedUserIcon fontSize='small' />}
-                        {authorName}
-                    </Typography>
-                </React.Fragment>
+                <Stack direction='row' alignItems='center' spacing={0.5}>
+                    {isModerator && (
+                        <Tooltip title='Verified Moderator' placement='top'>
+                            <VerifiedUserIcon fontSize='small' sx={{ color: (theme) => theme.palette.primary.main }} />
+                        </Tooltip>
+                    )}
+                    <Typography>{authorName}</Typography>
+                </Stack>
             }
             subheader={subheader}
             {...props}

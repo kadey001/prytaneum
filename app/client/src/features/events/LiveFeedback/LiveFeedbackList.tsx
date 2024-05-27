@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Card, CardContent, Grid, Typography, CardActions, Paper, IconButton, Stack } from '@mui/material';
+import { Card, CardContent, Grid, Typography, CardActions, Paper, IconButton, Stack, Tooltip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { AutoSizer, List as VirtualizedList, CellMeasurer, CellMeasurerCache } from 'react-virtualized';
 import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
@@ -94,13 +94,20 @@ export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListPro
                 <Grid
                     container
                     direction='row'
-                    justifyContent='space-evenly'
+                    justifyContent='space-around'
                     alignItems='center'
                     marginBottom={isSearchOpen ? '.5rem' : '0rem'}
+                    spacing={0.5}
                 >
                     <Grid item xs='auto'>
-                        <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
-                            <SearchIcon />
+                        <IconButton
+                            color={isSearchOpen ? 'primary' : 'default'}
+                            aria-label='search-icon-button'
+                            onClick={toggleSearch}
+                        >
+                            <Tooltip title='Search Bar' placement='top'>
+                                <SearchIcon fontSize='large' />
+                            </Tooltip>
                         </IconButton>
                     </Grid>
                     <Grid item xs='auto'>
@@ -109,32 +116,29 @@ export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListPro
                     <Grid item xs='auto'>
                         <ShareFeedbackResults />
                     </Grid>
-                    {/* <Grid item>
-                        <SubmitLiveFeedback eventId={eventId} />
-                    </Grid> */}
                 </Grid>
             );
         } else {
             return (
-                <Grid
-                    container
+                <Stack
                     direction='row'
-                    justifyContent='space-between'
+                    justifyContent='center'
                     alignItems='center'
                     marginBottom={isSearchOpen ? '.5rem' : '0rem'}
                 >
                     <Grid item xs='auto'>
-                        <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
-                            <SearchIcon />
+                        <IconButton
+                            color={isSearchOpen ? 'primary' : 'default'}
+                            aria-label='search-icon-button'
+                            onClick={toggleSearch}
+                        >
+                            <Tooltip title='Search Bar' placement='top'>
+                                <SearchIcon fontSize='large' />
+                            </Tooltip>
                         </IconButton>
                     </Grid>
-                    <Grid item xs='auto'>
-                        <SubmitLiveFeedback eventId={eventId} />
-                    </Grid>
-                    <Grid item xs='auto'>
-                        <div style={{ display: 'none' }} />
-                    </Grid>
-                </Grid>
+                    <SubmitLiveFeedback eventId={eventId} />
+                </Stack>
             );
         }
     }, [eventId, isModerator, isSearchOpen, toggleSearch]);
