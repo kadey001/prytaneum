@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
-import { Avatar, Typography, CardHeader, CardHeaderProps } from '@mui/material';
 import { graphql, useFragment } from 'react-relay';
+import { Avatar, Typography, CardHeader, CardHeaderProps, Stack, Tooltip } from '@mui/material';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
 import type { BroadcastMessageAuthorFragment$key } from '@local/__generated__/BroadcastMessageAuthorFragment.graphql';
 import { formatDate } from '@local/utils/format';
+import { getHashedColor } from '@local/core/getHashedColor';
 
 export const BROADCAST_MESSAGE_AUTHOR_FRAGMENT = graphql`
     fragment BroadcastMessageAuthorFragment on EventBroadcastMessage {
@@ -40,22 +42,31 @@ export function BroadcastMessageAuthor({ fragmentRef, ...props }: BroadcastMessa
         ),
         [time, month]
     );
-    // make author name given available data
-    const createAuthorName = () => {
-        let authorName = 'Unknown User';
+
+    const authorName = useMemo(() => {
+        let _authorName = 'Unknown User';
         if (authorData.createdBy && authorData.createdBy.firstName) {
-            authorName = authorData.createdBy.firstName;
-            if (authorData.createdBy.lastName) authorName = `${authorName} ${authorData.createdBy.lastName}`;
+            _authorName = authorData.createdBy.firstName;
+            if (authorData.createdBy.lastName) _authorName = `${_authorName} ${authorData.createdBy.lastName}`;
         }
-        return authorName;
-    };
-    const authorName = createAuthorName();
+        return _authorName;
+    }, [authorData.createdBy]);
+    const avatarColor = useMemo(() => {
+        return getHashedColor(authorName);
+    }, [authorName]);
 
     return (
         <CardHeader
             // get first letter of name to display
-            avatar={<Avatar>{authorName[0]}</Avatar>}
-            title={<Typography>{authorName} [Moderator]</Typography>}
+            avatar={<Avatar sx={{ bgcolor: avatarColor }}>{authorName[0]}</Avatar>}
+            title={
+                <Stack direction='row' alignItems='center' spacing={0.5}>
+                    <Tooltip title='Verified Moderator' placement='top'>
+                        <VerifiedUserIcon fontSize='small' sx={{ color: (theme) => theme.palette.primary.main }} />
+                    </Tooltip>
+                    <Typography>{authorName}</Typography>
+                </Stack>
+            }
             subheader={subheader}
             {...props}
         />
