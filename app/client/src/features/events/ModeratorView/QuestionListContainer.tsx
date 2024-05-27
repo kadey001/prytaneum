@@ -1,5 +1,18 @@
 import * as React from 'react';
-import { Grid, Typography, IconButton, Paper, Stack, Badge, Tooltip } from '@mui/material';
+import {
+    Grid,
+    Typography,
+    IconButton,
+    Paper,
+    Stack,
+    Badge,
+    Tooltip,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    SelectChangeEvent,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
@@ -14,7 +27,6 @@ import { ArrayElement } from '@local/utils/ts-utils';
 import { useEvent } from '@local/features/events';
 import { useQuestionUpdated } from '@local/features/events/Questions/QuestionList/useQuestionUpdated';
 import { useQuestionDeleted } from '@local/features/events/Questions/QuestionList/useQuestionDeleted';
-import AskQuestion from '@local/features/events/Questions/AskQuestion';
 import { useQuestionsByTopic } from './hooks/useQuestionsByTopic';
 import { useQuestionsByTopicFragment$key } from '@local/__generated__/useQuestionsByTopicFragment.graphql';
 import EventQuestion from './EventQuestion';
@@ -29,6 +41,7 @@ interface Props {
     askQuestionEnabled?: boolean;
     searchOnly?: boolean;
     topic: string;
+    handleTopicChange: (event: SelectChangeEvent<string>) => void;
     connections: string[];
     topics: readonly Topic[];
 }
@@ -37,14 +50,14 @@ interface Props {
 export function QuestionListContainer({
     fragmentRef,
     isVisible,
-    askQuestionEnabled = true,
     searchOnly = false,
     topic,
+    handleTopicChange,
     connections,
     topics,
 }: Props) {
     const theme = useTheme();
-    const { isModerator, eventId } = useEvent();
+    const { eventId } = useEvent();
     const listRef = React.useRef<VirtualizedList | null>(null);
     const [isSearchOpen, setIsSearchOpen] = React.useState(false);
     const {
@@ -123,7 +136,7 @@ export function QuestionListContainer({
     // TODO: Clear the cache when the window or panel is resized
     const cache = new CellMeasurerCache({
         defaultHeight: 185,
-        minHeight: 148,
+        minHeight: 128,
         fixedWidth: true,
     });
 
@@ -199,7 +212,23 @@ export function QuestionListContainer({
                                 </Tooltip>
                             </IconButton>
                         </Grid>
-                        {!isModerator && askQuestionEnabled && <AskQuestion eventId={eventId} />}
+                        <FormControl sx={{ width: '100%' }}>
+                            <InputLabel id='topic-select-label'>Topic</InputLabel>
+                            <Select
+                                labelId='topic-select-label'
+                                id='topic-select'
+                                value={topic}
+                                label='Topic'
+                                onChange={handleTopicChange}
+                            >
+                                <MenuItem value='default'>Default</MenuItem>
+                                {topics.map((_topic) => (
+                                    <MenuItem key={_topic.id} value={_topic.topic}>
+                                        {_topic.topic}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </Stack>
                 )}
                 <ListFilter

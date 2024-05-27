@@ -16,7 +16,7 @@ import {
 import { Panel, PanelGroup } from 'react-resizable-panels';
 import { arrayMove } from '@dnd-kit/sortable';
 import { QuestionListContainer } from './QuestionListContainer';
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Tab, useMediaQuery } from '@mui/material';
+import { SelectChangeEvent, Stack, Tab, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { Node } from './EventLiveNewModeratorView';
@@ -314,28 +314,21 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                 autoScroll={{ layoutShiftCompensation: false }}
             >
                 <DragOverlay>
-                    {activeId && heldQuestion ? <SortableQuestion question={heldQuestion} connections={[]} /> : null}
+                    {activeId && heldQuestion ? (
+                        <SortableQuestion
+                            question={heldQuestion}
+                            connections={[]}
+                            queueEnabled={false}
+                            heldQuestion={true}
+                        />
+                    ) : null}
                 </DragOverlay>
                 <PanelGroup autoSaveId='question-mod-panels' direction='horizontal'>
-                    <Panel defaultSize={33} minSize={25} maxSize={50} style={{ paddingTop: '1rem' }}>
+                    <Panel defaultSize={33} minSize={25} maxSize={50}>
                         <Stack direction='column' alignItems='center' height='100%' width='100%'>
-                            <FormControl sx={{ width: '95%', marginBottom: '0.5rem' }}>
-                                <InputLabel id='topic-select-label'>Topic</InputLabel>
-                                <Select
-                                    labelId='topic-select-label'
-                                    id='topic-select'
-                                    value={topic}
-                                    label='Topic'
-                                    onChange={handleChange}
-                                >
-                                    <MenuItem value='default'>Default</MenuItem>
-                                    {topics.map((_topic) => (
-                                        <MenuItem key={_topic.id} value={_topic.topic}>
-                                            {_topic.topic}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                            <StyledTabs value='Question List'>
+                                <Tab label='Question List' value='Question List' />
+                            </StyledTabs>
                             <StyledColumnGrid
                                 props={{
                                     id: 'scrollable-tab',
@@ -352,6 +345,7 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                                         fragmentRef={node}
                                         isVisible={true}
                                         topic={topic}
+                                        handleTopicChange={handleChange}
                                         connections={connections}
                                         topics={topics}
                                     />
@@ -361,25 +355,30 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                     </Panel>
                     <VerticalPanelResizeHandle />
                     <Panel defaultSize={33} minSize={25} maxSize={50}>
-                        <StyledTabs value='Topic Queue'>
-                            <Tab label='Topic Queue' value='Topic Queue' />
-                        </StyledTabs>
-                        <StyledColumnGrid
-                            props={{
-                                id: 'scrollable-tab',
-                                display: 'flex',
-                                flexGrow: 1,
-                                width: '100%',
-                                height: '100%',
-                                maxHeight: '95%',
-                                padding: 0,
-                            }}
-                            scrollable={true}
-                        >
-                            <React.Suspense fallback={<Loader />}>
-                                <QuestionQueueContainer id='topicQueue' questions={items.topicQueue} topic={topic} />
-                            </React.Suspense>
-                        </StyledColumnGrid>
+                        <Stack direction='column' alignItems='center' height='100%' width='100%'>
+                            <StyledTabs value='Topic Queue'>
+                                <Tab label='Topic Queue' value='Topic Queue' />
+                            </StyledTabs>
+                            <StyledColumnGrid
+                                props={{
+                                    id: 'scrollable-tab',
+                                    display: 'flex',
+                                    flexGrow: 1,
+                                    width: '100%',
+                                    height: '100%',
+                                    padding: 0,
+                                }}
+                                scrollable={true}
+                            >
+                                <React.Suspense fallback={<Loader />}>
+                                    <QuestionQueueContainer
+                                        id='topicQueue'
+                                        questions={items.topicQueue}
+                                        topic={topic}
+                                    />
+                                </React.Suspense>
+                            </StyledColumnGrid>
+                        </Stack>
                     </Panel>
                     <VerticalPanelResizeHandle />
                     <Panel defaultSize={33} minSize={25} maxSize={50}>
@@ -396,7 +395,6 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                                     width: '100%',
                                     height: '100%',
                                     maxWidth: '100%',
-                                    maxHeight: '95%',
                                     padding: 0,
                                 }}
                                 scrollable={true}
