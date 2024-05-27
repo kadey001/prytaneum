@@ -104,7 +104,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
     // Handle private events and token validation
     React.useEffect(() => {
         if (eventData.isViewerModerator) {
-            setValidationChecked(true);
+            router.push(`/events/${eventId}/new-mod`);
             return;
         }
         if (!validateInvite?.valid && eventData.isPrivate === true) {
@@ -119,7 +119,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
         // Ensure user is logged in if invite is valid (Do not reload if user is already logged in)
         if (user === null && validateInvite?.valid && validateInvite?.user !== null) router.reload();
         else setValidationChecked(true);
-    }, [displaySnack, eventData, router, tokenProvided, user, validateInvite]);
+    }, [displaySnack, eventData, eventId, router, tokenProvided, user, validateInvite]);
 
     React.useEffect(() => {
         if (!validationChecked) return;
