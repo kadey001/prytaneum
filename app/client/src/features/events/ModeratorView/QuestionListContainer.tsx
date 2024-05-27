@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
+import InfoIcon from '@mui/icons-material/Info';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
@@ -229,6 +230,9 @@ export function QuestionListContainer({
                                 ))}
                             </Select>
                         </FormControl>
+                        <Tooltip title='Filter the question list and queue by a selected topic. Default shows all questions.'>
+                            <InfoIcon sx={{ color: theme.palette.primary.main }} />
+                        </Tooltip>
                     </Stack>
                 )}
                 <ListFilter
