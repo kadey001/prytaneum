@@ -42,7 +42,6 @@ export function QuestionAuthor({ fragmentRef, ...props }: QuestionAuthorProps) {
         ),
         [time, month]
     );
-    // make author name given available data
 
     const authorName = useMemo(() => {
         let _authorName = 'Unknown User';
