@@ -40,6 +40,7 @@ export const USE_QUESTIONS_BY_TOPIC = graphql`
                     ...QuestionAuthorFragment
                     ...QuestionContentFragment
                     ...QuestionStatsFragment
+                    ...QuestionTopicsFragment
                 }
             }
             pageInfo {

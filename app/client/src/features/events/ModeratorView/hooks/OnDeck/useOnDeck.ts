@@ -29,6 +29,7 @@ export const USE_ON_DECK_FRAGMENT = graphql`
                         ...QuestionAuthorFragment
                         ...QuestionStatsFragment
                         ...QuestionContentFragment
+                        ...QuestionTopicsFragment
                         position
                         onDeckPosition
                         refQuestion {
@@ -56,6 +57,7 @@ export const USE_ON_DECK_FRAGMENT = graphql`
                         ...QuestionAuthorFragment
                         ...QuestionStatsFragment
                         ...QuestionContentFragment
+                        ...QuestionTopicsFragment
                         position
                         onDeckPosition
                         refQuestion {

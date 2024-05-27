@@ -38,6 +38,7 @@ export const USE_QUEUE_BY_TOPIC = graphql`
                     ...QuestionAuthorFragment
                     ...QuestionContentFragment
                     ...QuestionStatsFragment
+                    ...QuestionTopicsFragment
                 }
             }
             pageInfo {
