@@ -120,6 +120,12 @@ export function QuestionListContainer({
         setFrozenQuestions(questions);
     }
 
+    // Reset the frozen state when the topic changes
+    React.useEffect(() => {
+        if (isFrozen) setIsFrozen(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [topic]);
+
     // Virtualized List variables and functions
     const listLength = React.useMemo(
         () => (isFrozen ? frozenQuestions.length : filteredList.length),
