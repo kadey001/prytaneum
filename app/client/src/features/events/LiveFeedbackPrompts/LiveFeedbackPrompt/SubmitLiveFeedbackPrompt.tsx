@@ -80,7 +80,7 @@ export function SubmitLiveFeedbackPrompt({ className, eventId }: Props) {
                 onClick={open}
                 startIcon={user ? <QuestionAnswerIcon /> : <LockIcon />}
             >
-                {user ? 'Ask For Feedback' : 'Sign in to submit live feedback'}
+                Prompt Feedback
             </Button>
         </React.Fragment>
     );
