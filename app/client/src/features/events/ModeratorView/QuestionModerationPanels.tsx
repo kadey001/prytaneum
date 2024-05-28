@@ -62,6 +62,7 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
     const { queue, connections: queueConnections } = useQuestionModQueue({ fragmentRef: node, topic });
     const {
         enqueuedQuestions,
+        questionRecord,
         connections: onDeckConnections,
         currentQuestionPosition,
     } = useOnDeck({ fragmentRef: node });
@@ -356,8 +357,8 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                     <VerticalPanelResizeHandle />
                     <Panel defaultSize={33} minSize={25} maxSize={50}>
                         <Stack direction='column' alignItems='center' height='100%' width='100%'>
-                            <StyledTabs value='Topic Queue'>
-                                <Tab label='Topic Queue' value='Topic Queue' />
+                            <StyledTabs value='Question Queue'>
+                                <Tab label='Question Queue' value='Question Queue' />
                             </StyledTabs>
                             <StyledColumnGrid
                                 props={{
@@ -400,7 +401,12 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                                 scrollable={true}
                             >
                                 <React.Suspense fallback={<Loader />}>
-                                    <OnDeckContainer id='onDeck' questions={items.onDeck} connections={connections} />
+                                    <OnDeckContainer
+                                        id='onDeck'
+                                        questions={items.onDeck}
+                                        questionRecord={questionRecord}
+                                        connections={connections}
+                                    />
                                 </React.Suspense>
                             </StyledColumnGrid>
                         </Stack>
