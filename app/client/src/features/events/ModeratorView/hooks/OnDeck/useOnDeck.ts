@@ -26,6 +26,7 @@ export const USE_ON_DECK_FRAGMENT = graphql`
                         createdBy {
                             firstName
                         }
+                        ...QuestionActionsFragment
                         ...QuestionAuthorFragment
                         ...QuestionStatsFragment
                         ...QuestionContentFragment
