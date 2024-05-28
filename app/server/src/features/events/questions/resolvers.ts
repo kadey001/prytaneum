@@ -20,7 +20,10 @@ export const resolvers: Resolvers = {
             return runMutation(async () => {
                 if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
                 const { id: eventId } = fromGlobalId(args.input.eventId);
-                const question = await Question.createQuestion(ctx.viewer.id, ctx.prisma, { ...args.input, eventId });
+                const { question, topics } = await Question.createQuestion(ctx.viewer.id, ctx.prisma, {
+                    ...args.input,
+                    eventId,
+                });
                 const formattedQuestion = toQuestionId(question);
                 if (formattedQuestion.refQuestion)
                     formattedQuestion.refQuestion = toQuestionId(formattedQuestion.refQuestion);
@@ -33,6 +36,14 @@ export const resolvers: Resolvers = {
                     payload: {
                         questionCreated: { edge },
                         authorId: ctx.viewer.id,
+                    },
+                });
+                ctx.pubsub.publish({
+                    topic: 'questionCreatedByTopic',
+                    payload: {
+                        questionCreatedByTopic: { edge },
+                        eventId,
+                        topics,
                     },
                 });
 
@@ -132,6 +143,21 @@ export const resolvers: Resolvers = {
                 }
             ),
         },
+        questionCreatedByTopic: {
+            subscribe: withFilter<{
+                questionCreatedByTopic: EventQuestionEdgeContainer;
+                eventId: string;
+                topics: string[];
+            }>(
+                (parent, args, ctx) => ctx.pubsub.subscribe('questionCreatedByTopic'),
+                (payload, args, ctx) => {
+                    const { id: eventId } = fromGlobalId(args.eventId);
+                    // Not filtering by topic server side since the question may be created with multiple topics
+                    // All the connections will be updated respectively on the client side relay updater
+                    return eventId === payload.eventId;
+                }
+            ),
+        },
         questionAddedToRecord: {
             subscribe: withFilter<{ questionAddedToRecord: EventQuestionEdgeContainer }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionAddedToRecord'),
@@ -228,8 +254,56 @@ export const resolvers: Resolvers = {
                 async (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
                     const { id: questionId } = fromGlobalId(payload.recordRemoveQuestion.edge.node.id);
-                    const temp = await Question.doesEventMatch(eventId, questionId, ctx.prisma);
                     return Question.doesEventMatch(eventId, questionId, ctx.prisma);
+                }
+            ),
+        },
+        topicQueuePush: {
+            subscribe: withFilter<{ topicQueuePush: EventQuestionEdgeContainer; eventId: string; topic: string }>(
+                (parent, args, ctx) => ctx.pubsub.subscribe('topicQueuePush'),
+                (payload, args, ctx) => {
+                    const { id: eventId } = fromGlobalId(args.eventId);
+                    return eventId === payload.eventId;
+                }
+            ),
+        },
+        topicQueueRemove: {
+            subscribe: withFilter<{ topicQueueRemove: EventQuestionEdgeContainer; eventId: string; topic: string }>(
+                (parent, args, ctx) => ctx.pubsub.subscribe('topicQueueRemove'),
+                (payload, args, ctx) => {
+                    const { id: eventId } = fromGlobalId(args.eventId);
+                    return eventId === payload.eventId;
+                }
+            ),
+        },
+        questionEnqueued: {
+            subscribe: withFilter<{ questionEnqueued: EventQuestionEdgeContainer; eventId: string; topic: string }>(
+                (parent, args, ctx) => ctx.pubsub.subscribe('questionEnqueued'),
+                (payload, args, ctx) => {
+                    const { id: eventId } = fromGlobalId(args.eventId);
+                    if (eventId === payload.eventId) {
+                        return payload.topic === args.topic;
+                    }
+                    return false;
+                }
+            ),
+        },
+        questionDequeued: {
+            subscribe: withFilter<{
+                questionDequeued: EventQuestionEdgeContainer;
+                eventId: string;
+                topic: string;
+                viewerId: string;
+            }>(
+                (parent, args, ctx) => ctx.pubsub.subscribe('questionDequeued'),
+                (payload, args, ctx) => {
+                    const { id: eventId } = fromGlobalId(args.eventId);
+                    const { id: questionId } = fromGlobalId(payload.questionDequeued.edge.node.id);
+                    if (eventId === payload.eventId) {
+                        // if (args.topic === 'default') return true;
+                        return payload.topic === args.topic;
+                    }
+                    return false;
                 }
             ),
         },
@@ -263,6 +337,10 @@ export const resolvers: Resolvers = {
             if (!ctx.viewer.id) return null;
             const { id: questionId } = fromGlobalId(parent.id);
             return Question.isMyQuestion(ctx.viewer.id, questionId, ctx.prisma);
+        },
+        async topics(parent, args, ctx, info) {
+            const { id: questionId } = fromGlobalId(parent.id);
+            return Question.findTopicsByQuestionId(questionId, ctx.prisma);
         },
     },
 };

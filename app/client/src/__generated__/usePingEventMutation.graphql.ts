@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2c0373d90f2f99383a99f4729eea5fe6>>
+ * @generated SignedSource<<f2f5bc07b063f09c8713d3d8d21ed139>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,7 +18,14 @@ export type usePingEventMutation$data = {
     readonly message: string;
   };
 };
+export type usePingEventMutation$rawResponse = {
+  readonly participantPingEvent: {
+    readonly isError: boolean;
+    readonly message: string;
+  };
+};
 export type usePingEventMutation = {
+  rawResponse: usePingEventMutation$rawResponse;
   response: usePingEventMutation$data;
   variables: usePingEventMutation$variables;
 };
@@ -92,6 +99,6 @@ return {
 };
 })();
 
-(node as any).hash = "6d0056d5add3efccab0fbce40dd1ea43";
+(node as any).hash = "04b24234cf2ac7a158d02fa3d44c0d1a";
 
 export default node;

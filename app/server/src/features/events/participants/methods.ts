@@ -2,9 +2,10 @@ import type { PrismaClient, User } from '@local/__generated__/prisma';
 import { ProtectedError } from '../../../lib/ProtectedError';
 
 export async function getByEvent(prisma: PrismaClient, eventId: string): Promise<{ user: User; isMuted: boolean }[]> {
-    const SIXTY_SECONDS = 1000 * 60;
+    const currentTime = new Date();
+    const sixtySecondsAgo = new Date(currentTime.getTime() - 60 * 1000);
     const result = await prisma.eventParticipant.findMany({
-        where: { eventId, lastPingTime: { gte: new Date(Date.now() - SIXTY_SECONDS) } },
+        where: { eventId, lastPingTime: { gte: sixtySecondsAgo, lte: new Date() } },
         select: { user: true, isMuted: true },
         orderBy: { user: { firstName: 'asc' } },
     });
@@ -12,6 +13,7 @@ export async function getByEvent(prisma: PrismaClient, eventId: string): Promise
 }
 
 export async function joinOrPingEvent(prisma: PrismaClient, eventId: string, userId: string): Promise<void> {
+    const now = new Date();
     try {
         // Check if user is already in event
         const result = await prisma.eventParticipant.findUnique({
@@ -32,7 +34,7 @@ export async function joinOrPingEvent(prisma: PrismaClient, eventId: string, use
                     },
                 },
                 data: {
-                    lastPingTime: new Date(),
+                    lastPingTime: now,
                 },
             });
             return;
@@ -42,7 +44,7 @@ export async function joinOrPingEvent(prisma: PrismaClient, eventId: string, use
             data: {
                 eventId,
                 userId,
-                lastPingTime: new Date(),
+                lastPingTime: now,
             },
         });
     } catch (e) {

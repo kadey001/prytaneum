@@ -7,7 +7,6 @@ export const USE_TOPIC_LIST = graphql`
     query useTopicListQuery($eventId: String!) {
         eventTopics(eventId: $eventId) {
             id
-            eventId
             topic
             description
         }

@@ -74,7 +74,7 @@ function createEnvironment() {
     return new Environment({
         // Create a network layer from the fetch function
         network: Network.create(makeFetchFunction(), subscribe),
-        store: new Store(new RecordSource()),
+        store: new Store(new RecordSource(), { queryCacheExpirationTime: 5 * 60 * 1000 }), // 5 minutes cache expiration
         isServer: typeof window === 'undefined',
     });
 }
@@ -101,7 +101,7 @@ export function initEnvironment(initialRecords?: RecordMap) {
 export function initServerEnvironment(fetchFunction: FetchFunction) {
     const environment = new Environment({
         network: Network.create(fetchFunction, subscribe),
-        store: new Store(new RecordSource()),
+        store: new Store(new RecordSource(), { queryCacheExpirationTime: 5 * 60 * 1000 }), // 5 minutes cache expiration
         isServer: true,
     });
     return environment;

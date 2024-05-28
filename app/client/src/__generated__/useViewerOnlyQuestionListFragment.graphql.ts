@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<99eee2134dd8122cda7be75525d171d7>>
+ * @generated SignedSource<<30767b7ab340a6ed4f52452bca71cc88>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,7 +22,7 @@ export type useViewerOnlyQuestionListFragment$data = {
           readonly firstName: string | null;
         } | null;
         readonly id: string;
-        readonly question: string | null;
+        readonly question: string;
         readonly refQuestion: {
           readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
         } | null;

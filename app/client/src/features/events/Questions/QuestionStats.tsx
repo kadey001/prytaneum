@@ -1,5 +1,5 @@
 import { graphql, useFragment } from 'react-relay';
-import { Typography, CardContent } from '@mui/material';
+import { Typography, CardContent, Tooltip } from '@mui/material';
 import ThumbUp from '@mui/icons-material/ThumbUp';
 
 import type { QuestionStatsFragment$key } from '@local/__generated__/QuestionStatsFragment.graphql';
@@ -30,7 +30,9 @@ export function QuestionStats({ fragmentRef }: QuestionStatsProps) {
                 paddingBottom: '0 !important', // added !important for filler icon (for some reason, CSS wasn't being applied)
             }}
         >
-            <ThumbUp fontSize='small' sx={{ color: (theme) => theme.palette.custom.lightBlue }} />
+            <Tooltip title='Likes'>
+                <ThumbUp fontSize='small' sx={{ color: (theme) => theme.palette.custom.lightBlue }} />
+            </Tooltip>
             <Typography>{data.likedByCount}</Typography>
         </CardContent>
     );

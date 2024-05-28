@@ -30,6 +30,7 @@ import { RegisterForm } from '@local/features/accounts/RegisterForm';
 import useLogout from '@local/features/accounts/useLogout';
 import { USER_CONTEXT_QUERY } from '@local/features/accounts/UserContext';
 import { UserContextQuery } from '@local/__generated__/UserContextQuery.graphql';
+import { getHashedColor } from '@local/core/getHashedColor';
 
 export function UserMenuLoader() {
     return (
@@ -53,6 +54,10 @@ export interface UserMenuProps {
 
 function UserName() {
     const { user } = useUser();
+    const avatarColor = React.useMemo(() => {
+        if (!user) return '#000';
+        return getHashedColor(`${user.firstName} ${user.lastName}`);
+    }, [user]);
 
     return (
         <>
@@ -62,6 +67,7 @@ function UserName() {
                         marginRight: (theme) => theme.spacing(1.5),
                         width: (theme) => theme.spacing(4.5),
                         height: (theme) => theme.spacing(4.5),
+                        bgcolor: avatarColor,
                     }}
                 >
                     {user.firstName[0]}

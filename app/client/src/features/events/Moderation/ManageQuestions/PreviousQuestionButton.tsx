@@ -1,6 +1,6 @@
-import { Button, ButtonProps } from '@mui/material';
+import { ButtonProps, IconButton, Tooltip } from '@mui/material';
 import { graphql, useMutation } from 'react-relay';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import type { PreviousQuestionButtonMutation } from '@local/__generated__/PreviousQuestionButtonMutation.graphql';
 import { useEvent } from '../../useEvent';
@@ -26,8 +26,10 @@ export function PreviousQuestionButton(props: ButtonProps) {
     };
 
     return (
-        <Button {...props} onClick={handleClick} startIcon={<SkipPreviousIcon />}>
-            Previous Question
-        </Button>
+        <Tooltip title='Previous Question' placement='right' sx={{ color: (theme) => theme.palette.primary.main }}>
+            <IconButton {...props} onClick={handleClick}>
+                <ArrowBackIcon />
+            </IconButton>
+        </Tooltip>
     );
 }

@@ -20,6 +20,8 @@ import { useSnack } from '@local/core';
 import { useUser } from '../accounts';
 import { useEventDetails } from './useEventDetails';
 import { usePingEvent } from './Participants/usePingEvent';
+import { useHashedColor } from '@local/core/getHashedColor';
+import { EventTopicContext } from './ModeratorView/EventTopicContext';
 
 export const EVENT_LIVE_QUERY = graphql`
     query EventLiveQuery($eventId: ID!) {
@@ -32,6 +34,7 @@ export const EVENT_LIVE_QUERY = graphql`
                 ...EventVideoFragment
                 ...useEventDetailsFragment
                 ...SpeakerListFragment
+                ...useOnDeckFragment
             }
         }
     }
@@ -77,6 +80,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
     const isModerator = Boolean(node.isViewerModerator);
     const { user } = useUser();
     const { id: eventId } = eventData;
+    useHashedColor();
 
     // NOTE: Defaults to paused, use startPingEvent to start pinging once participant is validated
     // since we only want participants on the live page to ping the server, thus avoiding unnecessary pings on pre/post event pages
@@ -100,7 +104,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
     // Handle private events and token validation
     React.useEffect(() => {
         if (eventData.isViewerModerator) {
-            setValidationChecked(true);
+            router.push(`/events/${eventId}/new-mod`);
             return;
         }
         if (!validateInvite?.valid && eventData.isPrivate === true) {
@@ -115,7 +119,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
         // Ensure user is logged in if invite is valid (Do not reload if user is already logged in)
         if (user === null && validateInvite?.valid && validateInvite?.user !== null) router.reload();
         else setValidationChecked(true);
-    }, [displaySnack, eventData, router, tokenProvided, user, validateInvite]);
+    }, [displaySnack, eventData, eventId, router, tokenProvided, user, validateInvite]);
 
     React.useEffect(() => {
         if (!validationChecked) return;
@@ -184,59 +188,61 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
                 resumeParentRefreshing,
             }}
         >
-            <Grid
-                component={motion.div}
-                key='townhall-live'
-                container
-                sx={[
-                    {
-                        height: '100%',
-                        flexDirection: 'column',
-                        flexWrap: 'nowrap',
-                    },
-                    mdBreakpointUp && {
-                        flexDirection: 'row',
-                        flexWrap: 'nowrap',
-                    },
-                ]}
-                onScroll={handleScroll}
-            >
-                {!isMdUp && <div ref={topRef} />}
-                <Grid container item md={8} direction='column' wrap='nowrap'>
-                    <Grid
-                        item
-                        sx={{
-                            [theme.breakpoints.down('md')]: {
-                                position: 'sticky',
-                                top: 0,
-                                zIndex: theme.zIndex.appBar,
-                            },
-                        }}
-                    >
-                        <EventVideo fragmentRef={node} />
+            <EventTopicContext.Provider value={{ topic: 'default' }}>
+                <Grid
+                    component={motion.div}
+                    key='townhall-live'
+                    container
+                    sx={[
+                        {
+                            height: '100%',
+                            flexDirection: 'column',
+                            flexWrap: 'nowrap',
+                        },
+                        mdBreakpointUp && {
+                            flexDirection: 'row',
+                            flexWrap: 'nowrap',
+                        },
+                    ]}
+                    onScroll={handleScroll}
+                >
+                    {!isMdUp && <div ref={topRef} />}
+                    <Grid container item md={8} direction='column' wrap='nowrap'>
+                        <Grid
+                            item
+                            sx={{
+                                [theme.breakpoints.down('md')]: {
+                                    position: 'sticky',
+                                    top: 0,
+                                    zIndex: theme.zIndex.appBar,
+                                },
+                            }}
+                        >
+                            <EventVideo fragmentRef={node} />
+                        </Grid>
+                        <EventDetailsCard eventData={eventData} />
+                        <SpeakerList fragmentRef={node} />
                     </Grid>
-                    <EventDetailsCard eventData={eventData} />
-                    <SpeakerList fragmentRef={node} />
+                    <Grid container item xs={12} md={4} direction='column'>
+                        <div
+                            style={{ flex: 1, display: 'flex', justifyContent: 'center' }}
+                            id='event-sidebar-scroller'
+                            onScroll={handleScroll}
+                        >
+                            {/* {isMdUp && <div ref={topRef} className={classes.target} />} */}
+                            <EventSidebar
+                                fragmentRef={node}
+                                isViewerModerator={isModerator}
+                                isLive={isLive}
+                                setIsLive={setIsLive}
+                            />
+                        </div>
+                    </Grid>
+                    <Fab onClick={handleClick} ZoomProps={{ in: isFabVisible }}>
+                        <KeyboardArrowUpIcon />
+                    </Fab>
                 </Grid>
-                <Grid container item xs={12} md={4} direction='column'>
-                    <div
-                        style={{ flex: 1, display: 'flex', justifyContent: 'center' }}
-                        id='event-sidebar-scroller'
-                        onScroll={handleScroll}
-                    >
-                        {/* {isMdUp && <div ref={topRef} className={classes.target} />} */}
-                        <EventSidebar
-                            fragmentRef={node}
-                            isViewerModerator={isModerator}
-                            isLive={isLive}
-                            setIsLive={setIsLive}
-                        />
-                    </div>
-                </Grid>
-                <Fab onClick={handleClick} ZoomProps={{ in: isFabVisible }}>
-                    <KeyboardArrowUpIcon />
-                </Fab>
-            </Grid>
+            </EventTopicContext.Provider>
         </EventContext.Provider>
     );
 }

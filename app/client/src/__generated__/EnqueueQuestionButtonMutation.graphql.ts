@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c0eefae76bc23799a562248b37219e55>>
+ * @generated SignedSource<<11c94eb8c7b99fb82a1e557975f87595>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,15 +9,16 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type AddQuestionToQueue = {
+export type AddQuestionToTopicQueue = {
   eventId: string;
   questionId: string;
+  topic: string;
 };
 export type EnqueueQuestionButtonMutation$variables = {
-  input: AddQuestionToQueue;
+  input: AddQuestionToTopicQueue;
 };
 export type EnqueueQuestionButtonMutation$data = {
-  readonly addQuestionToQueue: {
+  readonly addQuestionToTopicQueue: {
     readonly body: {
       readonly cursor: string;
       readonly node: {
@@ -54,7 +55,7 @@ v1 = [
     ],
     "concreteType": "EventQuestionMutationResponse",
     "kind": "LinkedField",
-    "name": "addQuestionToQueue",
+    "name": "addQuestionToTopicQueue",
     "plural": false,
     "selections": [
       {
@@ -136,16 +137,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "2ee72ea7f24025d17ead982a6985c51c",
+    "cacheID": "aa85dd7c9f881068ad0864792dd41278",
     "id": null,
     "metadata": {},
     "name": "EnqueueQuestionButtonMutation",
     "operationKind": "mutation",
-    "text": "mutation EnqueueQuestionButtonMutation(\n  $input: AddQuestionToQueue!\n) {\n  addQuestionToQueue(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        position\n      }\n    }\n  }\n}\n"
+    "text": "mutation EnqueueQuestionButtonMutation(\n  $input: AddQuestionToTopicQueue!\n) {\n  addQuestionToTopicQueue(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        position\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "442b6fd88947fc2bcf3172aec73d9a08";
+(node as any).hash = "87db975f9036bbac9a053a7efced47ad";
 
 export default node;

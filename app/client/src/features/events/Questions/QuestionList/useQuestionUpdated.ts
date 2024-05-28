@@ -13,6 +13,11 @@ export const USE_QUESTION_UPDATED_SUBSCRIPTION = graphql`
                 node {
                     id
                     position
+                    onDeckPosition
+                    topics {
+                        topic
+                        position
+                    }
                     ...QuestionAuthorFragment
                     ...QuestionContentFragment
                     ...QuestionStatsFragment

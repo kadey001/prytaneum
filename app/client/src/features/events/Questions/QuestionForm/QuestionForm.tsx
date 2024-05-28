@@ -7,6 +7,7 @@ import { FormContent } from '@local/components/FormContent';
 import { FormActions } from '@local/components/FormActions';
 import { useForm } from '@local/core';
 import { QUESTIONS_MAX_LENGTH } from '@local/utils/rules';
+import { LoadingButton } from '@local/components/LoadingButton';
 
 export type TQuestionFormState = { question: string };
 
@@ -14,9 +15,10 @@ export interface QuestionFormProps {
     quote?: React.ReactNode;
     onSubmit?: (state: TQuestionFormState) => void;
     onCancel?: () => void;
+    isLoading?: boolean;
 }
 
-export function QuestionForm({ quote, onSubmit, onCancel }: QuestionFormProps) {
+export function QuestionForm({ quote, onSubmit, onCancel, isLoading = false }: QuestionFormProps) {
     // form related hooks
     const [form, errors, handleSubmit, handleChange] = useForm({
         question: '',
@@ -59,9 +61,11 @@ export function QuestionForm({ quote, onSubmit, onCancel }: QuestionFormProps) {
                         Cancel
                     </Button>
                 )}
-                <Button disabled={!isQuestionValid} type='submit' variant='contained' color='primary'>
-                    Ask
-                </Button>
+                <LoadingButton loading={isLoading}>
+                    <Button disabled={!isQuestionValid} type='submit' variant='contained' color='primary'>
+                        Ask
+                    </Button>
+                </LoadingButton>
             </FormActions>
         </Form>
     );

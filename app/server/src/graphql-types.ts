@@ -357,6 +357,12 @@ export type Mutation = {
     updateQuestionPosition: EventQuestionMutationResponse;
     addQuestionToQueue: EventQuestionMutationResponse;
     removeQuestionFromQueue: EventQuestionMutationResponse;
+    addQuestionToTopicQueue: EventQuestionMutationResponse;
+    removeQuestionFromTopicQueue: EventQuestionMutationResponse;
+    addQuestionToOnDeck: EventQuestionMutationResponse;
+    removeQuestionFromOnDeck: EventQuestionMutationResponse;
+    updateOnDeckPosition: EventQuestionMutationResponse;
+    updateTopicQueuePosition: EventQuestionMutationResponse;
     /** Add a new moderator to the given event */
     createModerator: ModeratorMutationResponse;
     updateModerator: ModeratorMutationResponse;
@@ -543,6 +549,30 @@ export type MutationremoveQuestionFromQueueArgs = {
     input: RemoveQuestionFromQueue;
 };
 
+export type MutationaddQuestionToTopicQueueArgs = {
+    input: AddQuestionToTopicQueue;
+};
+
+export type MutationremoveQuestionFromTopicQueueArgs = {
+    input: RemoveQuestionFromTopicQueue;
+};
+
+export type MutationaddQuestionToOnDeckArgs = {
+    input: AddQuestionToOnDeck;
+};
+
+export type MutationremoveQuestionFromOnDeckArgs = {
+    input: RemoveQuestionFromOnDeck;
+};
+
+export type MutationupdateOnDeckPositionArgs = {
+    input: UpdateOnDeckPosition;
+};
+
+export type MutationupdateTopicQueuePositionArgs = {
+    input: UpdateTopicQueuePosition;
+};
+
 export type MutationcreateModeratorArgs = {
     input: CreateModerator;
 };
@@ -705,6 +735,9 @@ export type Event = Node & {
     isPrivate?: Maybe<Scalars['Boolean']>;
     /** All questions relating to this event */
     questions?: Maybe<EventQuestionConnection>;
+    questionsByTopic?: Maybe<EventQuestionConnection>;
+    topicQueue?: Maybe<EventQuestionConnection>;
+    questionModQueue?: Maybe<EventQuestionConnection>;
     broadcastMessages?: Maybe<EventBroadcastMessagesConnection>;
     /** Speakers for this event */
     speakers?: Maybe<EventSpeakerConnection>;
@@ -739,6 +772,24 @@ export type EventquestionsArgs = {
     first?: InputMaybe<Scalars['Int']>;
     after?: InputMaybe<Scalars['String']>;
     viewerOnly?: InputMaybe<Scalars['Boolean']>;
+    topic?: InputMaybe<Scalars['String']>;
+};
+
+export type EventquestionsByTopicArgs = {
+    first?: InputMaybe<Scalars['Int']>;
+    after?: InputMaybe<Scalars['String']>;
+    topic?: InputMaybe<Scalars['String']>;
+};
+
+export type EventtopicQueueArgs = {
+    first?: InputMaybe<Scalars['Int']>;
+    after?: InputMaybe<Scalars['String']>;
+    topic?: InputMaybe<Scalars['String']>;
+};
+
+export type EventquestionModQueueArgs = {
+    first?: InputMaybe<Scalars['Int']>;
+    after?: InputMaybe<Scalars['String']>;
 };
 
 export type EventbroadcastMessagesArgs = {
@@ -923,6 +974,9 @@ export type Subscription = {
     questionCreated: EventQuestionEdgeContainer;
     questionUpdated: EventQuestionEdgeContainer;
     questionDeleted: EventQuestionEdgeContainer;
+    questionCreatedByTopic: EventQuestionEdgeContainer;
+    questionEnqueued: EventQuestionEdgeContainer;
+    questionDequeued: EventQuestionEdgeContainer;
     questionAddedToRecord: EventQuestionEdgeContainer;
     questionRemovedFromRecord: EventQuestionEdgeContainer;
     recordPushQuestion: EventQuestionEdgeContainer;
@@ -933,6 +987,8 @@ export type Subscription = {
     enqueuedRemoveQuestion: EventQuestionEdgeContainer;
     questionAddedToEnqueued: EventQuestionEdgeContainer;
     questionRemovedFromEnqueued: EventQuestionEdgeContainer;
+    topicQueuePush: EventQuestionEdgeContainer;
+    topicQueueRemove: EventQuestionEdgeContainer;
     topicUpdated?: Maybe<EventTopic>;
 };
 
@@ -999,6 +1055,21 @@ export type SubscriptionquestionDeletedArgs = {
     viewerOnly?: InputMaybe<Scalars['Boolean']>;
 };
 
+export type SubscriptionquestionCreatedByTopicArgs = {
+    eventId: Scalars['ID'];
+    topic: Scalars['String'];
+};
+
+export type SubscriptionquestionEnqueuedArgs = {
+    eventId: Scalars['String'];
+    topic: Scalars['String'];
+};
+
+export type SubscriptionquestionDequeuedArgs = {
+    eventId: Scalars['String'];
+    topic: Scalars['String'];
+};
+
 export type SubscriptionquestionAddedToRecordArgs = {
     eventId: Scalars['ID'];
 };
@@ -1037,6 +1108,16 @@ export type SubscriptionquestionAddedToEnqueuedArgs = {
 
 export type SubscriptionquestionRemovedFromEnqueuedArgs = {
     eventId: Scalars['ID'];
+};
+
+export type SubscriptiontopicQueuePushArgs = {
+    eventId: Scalars['String'];
+    topic: Scalars['String'];
+};
+
+export type SubscriptiontopicQueueRemoveArgs = {
+    eventId: Scalars['String'];
+    topic: Scalars['String'];
 };
 
 export type SubscriptiontopicUpdatedArgs = {
@@ -1340,6 +1421,45 @@ export type UpdateQuestionQueue = {
     adding: Scalars['Boolean'];
 };
 
+export type AddQuestionToTopicQueue = {
+    questionId: Scalars['ID'];
+    eventId: Scalars['ID'];
+    topic: Scalars['String'];
+};
+
+export type RemoveQuestionFromTopicQueue = {
+    questionId: Scalars['ID'];
+    eventId: Scalars['ID'];
+    topic: Scalars['String'];
+};
+
+export type AddQuestionToOnDeck = {
+    questionId: Scalars['ID'];
+    eventId: Scalars['ID'];
+    newPosition: Scalars['String'];
+};
+
+export type RemoveQuestionFromOnDeck = {
+    questionId: Scalars['ID'];
+    eventId: Scalars['ID'];
+    /** Can use the topic and new position to properly place the question in the correct order in the correct topic queue */
+    topic: Scalars['String'];
+    newPosition: Scalars['String'];
+};
+
+export type UpdateOnDeckPosition = {
+    questionId: Scalars['ID'];
+    eventId: Scalars['ID'];
+    newPosition: Scalars['String'];
+};
+
+export type UpdateTopicQueuePosition = {
+    questionId: Scalars['ID'];
+    eventId: Scalars['ID'];
+    topic: Scalars['String'];
+    newPosition: Scalars['String'];
+};
+
 export type ModeratorMutationResponse = MutationResponse & {
     __typename?: 'ModeratorMutationResponse';
     isError: Scalars['Boolean'];
@@ -1388,13 +1508,17 @@ export type EventQuestion = Node & {
     createdAt?: Maybe<Scalars['Date']>;
     refQuestion?: Maybe<EventQuestion>;
     /** The actual content of the question */
-    question?: Maybe<Scalars['String']>;
+    question: Scalars['String'];
+    onDeckPosition: Scalars['String'];
     position: Scalars['String'];
-    isVisible?: Maybe<Scalars['Boolean']>;
+    isVisible: Scalars['Boolean'];
     isAsked?: Maybe<Scalars['Boolean']>;
     lang?: Maybe<Scalars['String']>;
     isFollowUp?: Maybe<Scalars['Boolean']>;
     isQuote?: Maybe<Scalars['Boolean']>;
+    substantive: Scalars['Boolean'];
+    offensive: Scalars['Boolean'];
+    relevant: Scalars['Boolean'];
     /** The users who have liked this question */
     likedBy?: Maybe<UserConnection>;
     /** Find the count of the likes only */
@@ -1403,6 +1527,7 @@ export type EventQuestion = Node & {
     isLikedByViewer?: Maybe<Scalars['Boolean']>;
     /** If the question is owned by the current viewer */
     isMyQuestion?: Maybe<Scalars['Boolean']>;
+    topics?: Maybe<Array<EventQuestionTopic>>;
 };
 
 /** EventQuestionQueue is the entire queue of the event */
@@ -1540,12 +1665,25 @@ export type EventSpeakerMutationResponse = MutationResponse & {
     body?: Maybe<EventSpeaker>;
 };
 
-export type EventTopic = {
-    __typename?: 'EventTopic';
+export type Topic = {
     id: Scalars['ID'];
-    eventId: Scalars['String'];
     topic: Scalars['String'];
     description: Scalars['String'];
+};
+
+export type EventTopic = Topic &
+    Node & {
+        __typename?: 'EventTopic';
+        id: Scalars['ID'];
+        topic: Scalars['String'];
+        description: Scalars['String'];
+    };
+
+export type EventQuestionTopic = {
+    __typename?: 'EventQuestionTopic';
+    topic: Scalars['String'];
+    description: Scalars['String'];
+    position: Scalars['String'];
 };
 
 export type GeneratedTopic = {
@@ -1726,6 +1864,7 @@ export type ResolversTypes = {
         | ResolversTypes['EventLiveFeedbackPromptResponse']
         | ResolversTypes['EventQuestion']
         | ResolversTypes['EventSpeaker']
+        | ResolversTypes['EventTopic']
         | ResolversTypes['EventVideo'];
     ID: ResolverTypeWrapper<Scalars['ID']>;
     Query: ResolverTypeWrapper<{}>;
@@ -1836,6 +1975,12 @@ export type ResolversTypes = {
     AddQuestionToQueue: AddQuestionToQueue;
     RemoveQuestionFromQueue: RemoveQuestionFromQueue;
     UpdateQuestionQueue: UpdateQuestionQueue;
+    AddQuestionToTopicQueue: AddQuestionToTopicQueue;
+    RemoveQuestionFromTopicQueue: RemoveQuestionFromTopicQueue;
+    AddQuestionToOnDeck: AddQuestionToOnDeck;
+    RemoveQuestionFromOnDeck: RemoveQuestionFromOnDeck;
+    UpdateOnDeckPosition: UpdateOnDeckPosition;
+    UpdateTopicQueuePosition: UpdateTopicQueuePosition;
     ModeratorMutationResponse: ResolverTypeWrapper<ModeratorMutationResponse>;
     EventParticipant: ResolverTypeWrapper<EventParticipant>;
     EventParticipantEdge: ResolverTypeWrapper<EventParticipantEdge>;
@@ -1859,7 +2004,9 @@ export type ResolversTypes = {
     UpdateSpeaker: UpdateSpeaker;
     DeleteSpeaker: DeleteSpeaker;
     EventSpeakerMutationResponse: ResolverTypeWrapper<EventSpeakerMutationResponse>;
+    Topic: ResolversTypes['EventTopic'];
     EventTopic: ResolverTypeWrapper<EventTopic>;
+    EventQuestionTopic: ResolverTypeWrapper<EventQuestionTopic>;
     GeneratedTopic: ResolverTypeWrapper<GeneratedTopic>;
     TopicGenerationMutationResponse: ResolverTypeWrapper<TopicGenerationMutationResponse>;
     TopicMutationResponse: ResolverTypeWrapper<TopicMutationResponse>;
@@ -1893,6 +2040,7 @@ export type ResolversParentTypes = {
         | ResolversParentTypes['EventLiveFeedbackPromptResponse']
         | ResolversParentTypes['EventQuestion']
         | ResolversParentTypes['EventSpeaker']
+        | ResolversParentTypes['EventTopic']
         | ResolversParentTypes['EventVideo'];
     ID: Scalars['ID'];
     Query: {};
@@ -2001,6 +2149,12 @@ export type ResolversParentTypes = {
     AddQuestionToQueue: AddQuestionToQueue;
     RemoveQuestionFromQueue: RemoveQuestionFromQueue;
     UpdateQuestionQueue: UpdateQuestionQueue;
+    AddQuestionToTopicQueue: AddQuestionToTopicQueue;
+    RemoveQuestionFromTopicQueue: RemoveQuestionFromTopicQueue;
+    AddQuestionToOnDeck: AddQuestionToOnDeck;
+    RemoveQuestionFromOnDeck: RemoveQuestionFromOnDeck;
+    UpdateOnDeckPosition: UpdateOnDeckPosition;
+    UpdateTopicQueuePosition: UpdateTopicQueuePosition;
     ModeratorMutationResponse: ModeratorMutationResponse;
     EventParticipant: EventParticipant;
     EventParticipantEdge: EventParticipantEdge;
@@ -2024,7 +2178,9 @@ export type ResolversParentTypes = {
     UpdateSpeaker: UpdateSpeaker;
     DeleteSpeaker: DeleteSpeaker;
     EventSpeakerMutationResponse: EventSpeakerMutationResponse;
+    Topic: ResolversParentTypes['EventTopic'];
     EventTopic: EventTopic;
+    EventQuestionTopic: EventQuestionTopic;
     GeneratedTopic: GeneratedTopic;
     TopicGenerationMutationResponse: TopicGenerationMutationResponse;
     TopicMutationResponse: TopicMutationResponse;
@@ -2071,6 +2227,7 @@ export type NodeResolvers<
         | 'EventLiveFeedbackPromptResponse'
         | 'EventQuestion'
         | 'EventSpeaker'
+        | 'EventTopic'
         | 'EventVideo',
         ParentType,
         ContextType
@@ -2517,6 +2674,42 @@ export type MutationResolvers<
         ContextType,
         RequireFields<MutationremoveQuestionFromQueueArgs, 'input'>
     >;
+    addQuestionToTopicQueue?: Resolver<
+        ResolversTypes['EventQuestionMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationaddQuestionToTopicQueueArgs, 'input'>
+    >;
+    removeQuestionFromTopicQueue?: Resolver<
+        ResolversTypes['EventQuestionMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationremoveQuestionFromTopicQueueArgs, 'input'>
+    >;
+    addQuestionToOnDeck?: Resolver<
+        ResolversTypes['EventQuestionMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationaddQuestionToOnDeckArgs, 'input'>
+    >;
+    removeQuestionFromOnDeck?: Resolver<
+        ResolversTypes['EventQuestionMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationremoveQuestionFromOnDeckArgs, 'input'>
+    >;
+    updateOnDeckPosition?: Resolver<
+        ResolversTypes['EventQuestionMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationupdateOnDeckPositionArgs, 'input'>
+    >;
+    updateTopicQueuePosition?: Resolver<
+        ResolversTypes['EventQuestionMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationupdateTopicQueuePositionArgs, 'input'>
+    >;
     createModerator?: Resolver<
         ResolversTypes['ModeratorMutationResponse'],
         ParentType,
@@ -2718,6 +2911,24 @@ export type EventResolvers<
         ParentType,
         ContextType,
         Partial<EventquestionsArgs>
+    >;
+    questionsByTopic?: Resolver<
+        Maybe<ResolversTypes['EventQuestionConnection']>,
+        ParentType,
+        ContextType,
+        Partial<EventquestionsByTopicArgs>
+    >;
+    topicQueue?: Resolver<
+        Maybe<ResolversTypes['EventQuestionConnection']>,
+        ParentType,
+        ContextType,
+        Partial<EventtopicQueueArgs>
+    >;
+    questionModQueue?: Resolver<
+        Maybe<ResolversTypes['EventQuestionConnection']>,
+        ParentType,
+        ContextType,
+        Partial<EventquestionModQueueArgs>
     >;
     broadcastMessages?: Resolver<
         Maybe<ResolversTypes['EventBroadcastMessagesConnection']>,
@@ -2976,6 +3187,27 @@ export type SubscriptionResolvers<
         ContextType,
         RequireFields<SubscriptionquestionDeletedArgs, 'eventId'>
     >;
+    questionCreatedByTopic?: SubscriptionResolver<
+        ResolversTypes['EventQuestionEdgeContainer'],
+        'questionCreatedByTopic',
+        ParentType,
+        ContextType,
+        RequireFields<SubscriptionquestionCreatedByTopicArgs, 'eventId' | 'topic'>
+    >;
+    questionEnqueued?: SubscriptionResolver<
+        ResolversTypes['EventQuestionEdgeContainer'],
+        'questionEnqueued',
+        ParentType,
+        ContextType,
+        RequireFields<SubscriptionquestionEnqueuedArgs, 'eventId' | 'topic'>
+    >;
+    questionDequeued?: SubscriptionResolver<
+        ResolversTypes['EventQuestionEdgeContainer'],
+        'questionDequeued',
+        ParentType,
+        ContextType,
+        RequireFields<SubscriptionquestionDequeuedArgs, 'eventId' | 'topic'>
+    >;
     questionAddedToRecord?: SubscriptionResolver<
         ResolversTypes['EventQuestionEdgeContainer'],
         'questionAddedToRecord',
@@ -3045,6 +3277,20 @@ export type SubscriptionResolvers<
         ParentType,
         ContextType,
         RequireFields<SubscriptionquestionRemovedFromEnqueuedArgs, 'eventId'>
+    >;
+    topicQueuePush?: SubscriptionResolver<
+        ResolversTypes['EventQuestionEdgeContainer'],
+        'topicQueuePush',
+        ParentType,
+        ContextType,
+        RequireFields<SubscriptiontopicQueuePushArgs, 'eventId' | 'topic'>
+    >;
+    topicQueueRemove?: SubscriptionResolver<
+        ResolversTypes['EventQuestionEdgeContainer'],
+        'topicQueueRemove',
+        ParentType,
+        ContextType,
+        RequireFields<SubscriptiontopicQueueRemoveArgs, 'eventId' | 'topic'>
     >;
     topicUpdated?: SubscriptionResolver<
         Maybe<ResolversTypes['EventTopic']>,
@@ -3368,17 +3614,22 @@ export type EventQuestionResolvers<
     createdBy?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
     createdAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
     refQuestion?: Resolver<Maybe<ResolversTypes['EventQuestion']>, ParentType, ContextType>;
-    question?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    question?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    onDeckPosition?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     position?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    isVisible?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+    isVisible?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     isAsked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     lang?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     isFollowUp?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     isQuote?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+    substantive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    offensive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    relevant?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     likedBy?: Resolver<Maybe<ResolversTypes['UserConnection']>, ParentType, ContextType>;
     likedByCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
     isLikedByViewer?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     isMyQuestion?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+    topics?: Resolver<Maybe<Array<ResolversTypes['EventQuestionTopic']>>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -3489,14 +3740,33 @@ export type EventSpeakerMutationResponseResolvers<
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TopicResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['Topic'] = ResolversParentTypes['Topic']
+> = {
+    __resolveType: TypeResolveFn<'EventTopic', ParentType, ContextType>;
+    id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+    topic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
 export type EventTopicResolvers<
     ContextType = MercuriusContext,
     ParentType extends ResolversParentTypes['EventTopic'] = ResolversParentTypes['EventTopic']
 > = {
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-    eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     topic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EventQuestionTopicResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['EventQuestionTopic'] = ResolversParentTypes['EventQuestionTopic']
+> = {
+    topic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    position?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -3684,7 +3954,9 @@ export type Resolvers<ContextType = MercuriusContext> = {
     EventSpeakerEdge?: EventSpeakerEdgeResolvers<ContextType>;
     EventSpeakerConnection?: EventSpeakerConnectionResolvers<ContextType>;
     EventSpeakerMutationResponse?: EventSpeakerMutationResponseResolvers<ContextType>;
+    Topic?: TopicResolvers<ContextType>;
     EventTopic?: EventTopicResolvers<ContextType>;
+    EventQuestionTopic?: EventQuestionTopicResolvers<ContextType>;
     GeneratedTopic?: GeneratedTopicResolvers<ContextType>;
     TopicGenerationMutationResponse?: TopicGenerationMutationResponseResolvers<ContextType>;
     TopicMutationResponse?: TopicMutationResponseResolvers<ContextType>;
@@ -3808,6 +4080,9 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         isForumEnabled?: LoaderResolver<Maybe<Scalars['Boolean']>, Event, {}, TContext>;
         isPrivate?: LoaderResolver<Maybe<Scalars['Boolean']>, Event, {}, TContext>;
         questions?: LoaderResolver<Maybe<EventQuestionConnection>, Event, EventquestionsArgs, TContext>;
+        questionsByTopic?: LoaderResolver<Maybe<EventQuestionConnection>, Event, EventquestionsByTopicArgs, TContext>;
+        topicQueue?: LoaderResolver<Maybe<EventQuestionConnection>, Event, EventtopicQueueArgs, TContext>;
+        questionModQueue?: LoaderResolver<Maybe<EventQuestionConnection>, Event, EventquestionModQueueArgs, TContext>;
         broadcastMessages?: LoaderResolver<
             Maybe<EventBroadcastMessagesConnection>,
             Event,
@@ -4096,17 +4371,22 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         createdBy?: LoaderResolver<Maybe<User>, EventQuestion, {}, TContext>;
         createdAt?: LoaderResolver<Maybe<Scalars['Date']>, EventQuestion, {}, TContext>;
         refQuestion?: LoaderResolver<Maybe<EventQuestion>, EventQuestion, {}, TContext>;
-        question?: LoaderResolver<Maybe<Scalars['String']>, EventQuestion, {}, TContext>;
+        question?: LoaderResolver<Scalars['String'], EventQuestion, {}, TContext>;
+        onDeckPosition?: LoaderResolver<Scalars['String'], EventQuestion, {}, TContext>;
         position?: LoaderResolver<Scalars['String'], EventQuestion, {}, TContext>;
-        isVisible?: LoaderResolver<Maybe<Scalars['Boolean']>, EventQuestion, {}, TContext>;
+        isVisible?: LoaderResolver<Scalars['Boolean'], EventQuestion, {}, TContext>;
         isAsked?: LoaderResolver<Maybe<Scalars['Boolean']>, EventQuestion, {}, TContext>;
         lang?: LoaderResolver<Maybe<Scalars['String']>, EventQuestion, {}, TContext>;
         isFollowUp?: LoaderResolver<Maybe<Scalars['Boolean']>, EventQuestion, {}, TContext>;
         isQuote?: LoaderResolver<Maybe<Scalars['Boolean']>, EventQuestion, {}, TContext>;
+        substantive?: LoaderResolver<Scalars['Boolean'], EventQuestion, {}, TContext>;
+        offensive?: LoaderResolver<Scalars['Boolean'], EventQuestion, {}, TContext>;
+        relevant?: LoaderResolver<Scalars['Boolean'], EventQuestion, {}, TContext>;
         likedBy?: LoaderResolver<Maybe<UserConnection>, EventQuestion, {}, TContext>;
         likedByCount?: LoaderResolver<Maybe<Scalars['Int']>, EventQuestion, {}, TContext>;
         isLikedByViewer?: LoaderResolver<Maybe<Scalars['Boolean']>, EventQuestion, {}, TContext>;
         isMyQuestion?: LoaderResolver<Maybe<Scalars['Boolean']>, EventQuestion, {}, TContext>;
+        topics?: LoaderResolver<Maybe<Array<EventQuestionTopic>>, EventQuestion, {}, TContext>;
     };
 
     EventQuestionQueue?: {
@@ -4178,9 +4458,14 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
 
     EventTopic?: {
         id?: LoaderResolver<Scalars['ID'], EventTopic, {}, TContext>;
-        eventId?: LoaderResolver<Scalars['String'], EventTopic, {}, TContext>;
         topic?: LoaderResolver<Scalars['String'], EventTopic, {}, TContext>;
         description?: LoaderResolver<Scalars['String'], EventTopic, {}, TContext>;
+    };
+
+    EventQuestionTopic?: {
+        topic?: LoaderResolver<Scalars['String'], EventQuestionTopic, {}, TContext>;
+        description?: LoaderResolver<Scalars['String'], EventQuestionTopic, {}, TContext>;
+        position?: LoaderResolver<Scalars['String'], EventQuestionTopic, {}, TContext>;
     };
 
     GeneratedTopic?: {

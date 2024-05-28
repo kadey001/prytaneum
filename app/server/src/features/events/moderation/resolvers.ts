@@ -77,16 +77,40 @@ export const resolvers: Resolvers = {
                 }
             });
         },
+        async updateTopicQueuePosition(parent, args, ctx, info) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { id: questionId } = fromGlobalId(args.input.questionId);
+                const { topic } = args.input;
+
+                const updatedQuestion = await Moderation.updateTopicQueuePosition(ctx.viewer.id, ctx.prisma, {
+                    ...args.input,
+                    eventId,
+                    questionId,
+                });
+                const questionWithGlobalId = toQuestionId(updatedQuestion);
+                // Can use the topic position as the cursor since it is unique
+                const topicPosition = Moderation.getTopicPosition(updatedQuestion, topic);
+                const edge = {
+                    node: questionWithGlobalId,
+                    cursor: topicPosition.toString() ?? questionWithGlobalId.createdAt.getTime().toString(),
+                };
+                ctx.pubsub.publish({
+                    topic: 'questionUpdated',
+                    payload: {
+                        questionUpdated: { edge },
+                    },
+                });
+                return edge;
+            });
+        },
         // TODO: make this a normal mutation response
         async nextQuestion(parent, args, ctx, info) {
             if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
             const { id: eventId } = fromGlobalId(args.eventId);
 
-            const { event, newCurrentQuestion } = await Moderation.incrementQuestion(
-                ctx.viewer.id,
-                ctx.prisma,
-                eventId
-            );
+            const { event, newCurrentQuestion } = await Moderation.incrementOnDeck(ctx.viewer.id, eventId, ctx.prisma);
             const eventWithGlobalId = toEventId(event);
             const newCurrentQuestionWithGlobalId = toQuestionId(newCurrentQuestion);
 
@@ -122,11 +146,7 @@ export const resolvers: Resolvers = {
             if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
             const { id: eventId } = fromGlobalId(args.eventId);
 
-            const { event, prevCurrentQuestion } = await Moderation.decrementQuestion(
-                ctx.viewer.id,
-                ctx.prisma,
-                eventId
-            );
+            const { event, prevCurrentQuestion } = await Moderation.decrementOnDeck(ctx.viewer.id, eventId, ctx.prisma);
 
             const eventWithGlobalId = toEventId(event);
             const prevCurrentQuestionWithGlobalId = toQuestionId(prevCurrentQuestion);
@@ -187,7 +207,75 @@ export const resolvers: Resolvers = {
                 return toUserId(deletedMod);
             });
         },
-        addQuestionToQueue(parent, args, ctx, info) {
+        async addQuestionToTopicQueue(parent, args, ctx, info) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { id: questionId } = fromGlobalId(args.input.questionId);
+                const updatedQuestion = await Moderation.addQuestionToTopicQueue(ctx.viewer.id, ctx.prisma, {
+                    ...args.input,
+                    eventId,
+                    questionId,
+                });
+                const questionWithGlobalId = toQuestionId(updatedQuestion);
+                const edge = {
+                    cursor: updatedQuestion.createdAt.getTime().toString(),
+                    node: questionWithGlobalId,
+                };
+                ctx.pubsub.publish({
+                    topic: 'topicQueuePush',
+                    payload: {
+                        topicQueuePush: { edge },
+                        eventId: updatedQuestion.eventId,
+                        topic: args.input.topic,
+                    },
+                });
+                ctx.pubsub.publish({
+                    topic: 'questionEnqueued',
+                    payload: {
+                        questionEnqueued: { edge },
+                        eventId: updatedQuestion.eventId,
+                        topic: args.input.topic,
+                    },
+                });
+                return edge;
+            });
+        },
+        async removeQuestionFromTopicQueue(parent, args, ctx, info) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { id: questionId } = fromGlobalId(args.input.questionId);
+                const updatedQuestion = await Moderation.removeQuestionFromTopicQueue(ctx.viewer.id, ctx.prisma, {
+                    ...args.input,
+                    eventId,
+                    questionId,
+                });
+                const questionWithGlobalId = toQuestionId(updatedQuestion);
+                const edge = {
+                    cursor: updatedQuestion.createdAt.getTime().toString(),
+                    node: questionWithGlobalId,
+                };
+                ctx.pubsub.publish({
+                    topic: 'topicQueueRemove',
+                    payload: {
+                        topicQueueRemove: { edge },
+                        eventId: updatedQuestion.eventId,
+                        topic: args.input.topic,
+                    },
+                });
+                ctx.pubsub.publish({
+                    topic: 'questionDequeued',
+                    payload: {
+                        questionDequeued: { edge },
+                        eventId: updatedQuestion.eventId,
+                        topic: args.input.topic,
+                    },
+                });
+                return edge;
+            });
+        },
+        async addQuestionToQueue(parent, args, ctx, info) {
             return runMutation(async () => {
                 if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
                 const { id: eventId } = fromGlobalId(args.input.eventId);
@@ -236,6 +324,13 @@ export const resolvers: Resolvers = {
                             questionUpdated: { edge },
                         },
                     });
+                    ctx.pubsub.publish({
+                        topic: 'topicQueuePush',
+                        payload: {
+                            topicQueuePush: { edge },
+                            eventId: updatedQuestion.eventId,
+                        },
+                    });
                     return edge;
                 } catch (error) {
                     throw error;
@@ -244,7 +339,124 @@ export const resolvers: Resolvers = {
                 }
             });
         },
-        removeQuestionFromQueue(parent, args, ctx, info) {
+        async addQuestionToOnDeck(parent, args, ctx, info) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { id: questionId } = fromGlobalId(args.input.questionId);
+
+                // Check cache to see if question is currently being modified
+                const lockExists = await checkForRedisLock(ctx.redis, `question-lock:${questionId}`);
+                if (lockExists) {
+                    throw new ProtectedError({
+                        userMessage: 'Question currently being modified by another moderator, please try again shortly',
+                    });
+                }
+
+                // Set the semaphore lock
+                try {
+                    const lockAquired = await tryAquireRedisLock(ctx.redis, `question-lock:${questionId}`, {
+                        lockTimeout: 5, // 5 seconds
+                        acquireTimeout: 2000, // 2 seconds
+                        acquireAttemptsLimit: 2,
+                        retryInterval: 1000, // 1 seconds
+                    });
+                    if (!lockAquired)
+                        throw new ProtectedError({
+                            userMessage: errors.unexpected,
+                            internalMessage: `Error acquiring redis lock for question: ${questionId}`,
+                        });
+                    const updatedQuestion = await Moderation.addQuestionToOnDeck(ctx.viewer.id, ctx.prisma, {
+                        ...args.input,
+                        eventId,
+                        questionId,
+                    });
+                    const questionWithGlobalId = toQuestionId(updatedQuestion);
+                    const edge = {
+                        cursor: updatedQuestion.onDeckPosition ?? updatedQuestion.createdAt.getTime().toString(),
+                        node: questionWithGlobalId,
+                    };
+                    ctx.pubsub.publish({
+                        topic: 'enqueuedPushQuestion',
+                        payload: {
+                            enqueuedPushQuestion: { edge },
+                        },
+                    });
+                    ctx.pubsub.publish({
+                        topic: 'topicQueueRemove',
+                        payload: {
+                            topicQueueRemove: { edge },
+                            eventId: updatedQuestion.eventId,
+                        },
+                    });
+                    return edge;
+                } catch (error) {
+                    throw error;
+                } finally {
+                    releaseRedisLock(ctx.redis, `question-lock:${questionId}`);
+                }
+            });
+        },
+        async removeQuestionFromOnDeck(parent, args, ctx, info) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { id: questionId } = fromGlobalId(args.input.questionId);
+                // const { topic, overQuestionId, isAboveQuestion } = args.input;
+
+                // Check cache to see if question is currently being modified
+                const lockExists = await checkForRedisLock(ctx.redis, `question-lock:${questionId}`);
+                if (lockExists) {
+                    throw new ProtectedError({
+                        userMessage: 'Question currently being modified by another moderator, please try again shortly',
+                    });
+                }
+
+                // Set the semaphore lock
+                try {
+                    const lockAquired = await tryAquireRedisLock(ctx.redis, `question-lock:${questionId}`, {
+                        lockTimeout: 5, // 5 seconds
+                        acquireTimeout: 2000, // 2 seconds
+                        acquireAttemptsLimit: 2,
+                        retryInterval: 1000, // 1 seconds
+                    });
+                    if (!lockAquired)
+                        throw new ProtectedError({
+                            userMessage: errors.unexpected,
+                            internalMessage: `Error acquiring redis lock for question: ${questionId}`,
+                        });
+                    const updatedQuestion = await Moderation.removeQuestionFromOnDeck(ctx.viewer.id, ctx.prisma, {
+                        ...args.input,
+                        eventId,
+                        questionId,
+                    });
+                    const questionWithGlobalId = toQuestionId(updatedQuestion);
+                    const edge = {
+                        cursor: updatedQuestion.onDeckPosition ?? updatedQuestion.createdAt.getTime().toString(),
+                        node: questionWithGlobalId,
+                    };
+                    ctx.pubsub.publish({
+                        topic: 'enqueuedRemoveQuestion',
+                        payload: {
+                            enqueuedRemoveQuestion: { edge },
+                        },
+                    });
+                    ctx.pubsub.publish({
+                        topic: 'topicQueuePush',
+                        payload: {
+                            topicQueuePush: { edge },
+                            eventId: updatedQuestion.eventId,
+                        },
+                    });
+                    return edge;
+                } catch (error) {
+                    throw error;
+                } finally {
+                    releaseRedisLock(ctx.redis, `question-lock:${questionId}`);
+                }
+            });
+        },
+        async removeQuestionFromQueue(parent, args, ctx, info) {
             return runMutation(async () => {
                 if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
                 const { id: eventId } = fromGlobalId(args.input.eventId);
@@ -281,12 +493,71 @@ export const resolvers: Resolvers = {
                         cursor: updatedQuestion.createdAt.getTime().toString(),
                         node: questionWithGlobalId,
                     };
+                    console.log('Call to removeQuestionFromQueue');
+                    ctx.pubsub.publish({
+                        topic: 'topicQueueRemove',
+                        payload: {
+                            topicQueueRemove: { edge },
+                            eventId: updatedQuestion.eventId,
+                        },
+                    });
                     ctx.pubsub.publish({
                         topic: 'enqueuedRemoveQuestion',
                         payload: {
                             enqueuedRemoveQuestion: { edge },
                         },
                     });
+                    ctx.pubsub.publish({
+                        topic: 'questionUpdated',
+                        payload: {
+                            questionUpdated: { edge },
+                        },
+                    });
+                    return edge;
+                } catch (error) {
+                    throw error;
+                } finally {
+                    releaseRedisLock(ctx.redis, `question-lock:${questionId}`);
+                }
+            });
+        },
+        async updateOnDeckPosition(parent, args, ctx, info) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { id: questionId } = fromGlobalId(args.input.questionId);
+
+                // Check cache to see if question is currently being modified
+                const lockExists = await checkForRedisLock(ctx.redis, `question-lock:${questionId}`);
+                if (lockExists) {
+                    throw new ProtectedError({
+                        userMessage: 'Question currently being modified by another moderator, please try again shortly',
+                    });
+                }
+
+                // Set the semaphore lock
+                try {
+                    const lockAquired = await tryAquireRedisLock(ctx.redis, `question-lock:${questionId}`, {
+                        lockTimeout: 5, // 5 seconds
+                        acquireTimeout: 2000, // 2 seconds
+                        acquireAttemptsLimit: 2,
+                        retryInterval: 1000, // 1 seconds
+                    });
+                    if (!lockAquired)
+                        throw new ProtectedError({
+                            userMessage: errors.unexpected,
+                            internalMessage: `Error acquiring redis lock for question: ${questionId}`,
+                        });
+                    const updatedQuestion = await Moderation.updateOnDeckPosition(ctx.viewer.id, ctx.prisma, {
+                        ...args.input,
+                        eventId,
+                        questionId,
+                    });
+                    const questionWithGlobalId = toQuestionId(updatedQuestion);
+                    const edge = {
+                        cursor: updatedQuestion.onDeckPosition ?? updatedQuestion.createdAt.getTime().toString(),
+                        node: questionWithGlobalId,
+                    };
                     ctx.pubsub.publish({
                         topic: 'questionUpdated',
                         payload: {

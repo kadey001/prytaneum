@@ -12,14 +12,24 @@ export const USE_QUESTION_CREATED_SUBSCRIPTION = graphql`
                 cursor
                 node {
                     id
+                    question
                     position
-                    isVisible
-                    ...QuestionAuthorFragment
-                    ...QuestionContentFragment
-                    ...QuestionStatsFragment
+                    onDeckPosition
+                    topics {
+                        topic
+                        description
+                        position
+                    }
+                    createdBy {
+                        firstName
+                    }
                     refQuestion {
                         ...QuestionQuoteFragment
                     }
+                    ...QuestionActionsFragment
+                    ...QuestionAuthorFragment
+                    ...QuestionContentFragment
+                    ...QuestionStatsFragment
                 }
             }
         }

@@ -16,6 +16,8 @@ export const USE_QUESTION_LIST_FRAGMENT = graphql`
                 node {
                     id
                     question
+                    position
+                    onDeckPosition
                     createdBy {
                         firstName
                     }

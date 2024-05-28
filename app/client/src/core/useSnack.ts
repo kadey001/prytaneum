@@ -10,6 +10,10 @@ export function useSnack() {
                 action: options?.action,
                 onExited: options?.onExited,
                 color: 'inherit',
+                anchorOrigin: options?.anchorOrigin || {
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                },
             });
         },
         [enqueueSnackbar]

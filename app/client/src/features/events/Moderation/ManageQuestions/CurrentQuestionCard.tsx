@@ -1,23 +1,25 @@
 import * as React from 'react';
-import { Grid, Chip, Card, Typography } from '@mui/material';
+import { Grid, Chip, Card, Typography, Stack, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
-import type { useQuestionQueueFragment$key } from '@local/__generated__/useQuestionQueueFragment.graphql';
+import type { useOnDeckFragment$key } from '@local/__generated__/useOnDeckFragment.graphql';
 import { QuestionAuthor, QuestionContent, QuestionQuote } from '../../Questions';
 import { NextQuestionButton } from './NextQuestionButton';
 import { PreviousQuestionButton } from './PreviousQuestionButton';
-import { useQuestionQueue } from './useQuestionQueue';
+// import { useQuestionQueue } from './useQuestionQueue';
 import { useRecordPush } from './useRecordPush';
 import { useRecordRemove } from './useRecordRemove';
 import { useRecordUnshift } from './useRecordUnshift';
 import { useEnqueuedPush } from './useEnqueuedPush';
 import { useEnqueuedRemove } from './useEnqueuedRemove';
 import { useEnqueuedUnshift } from './useEnqueuedUnshift';
+import { useOnDeck } from '../../ModeratorView/hooks/OnDeck/useOnDeck';
+import { QuestionTopics } from '../../Questions/QuestionTopics';
 
 interface QuestionQueueProps {
     isViewerModerator: boolean;
-    fragmentRef: useQuestionQueueFragment$key;
+    fragmentRef: useOnDeckFragment$key;
 }
 
 export function CurrentQuestionCard({ isViewerModerator, fragmentRef }: QuestionQueueProps) {
@@ -25,43 +27,19 @@ export function CurrentQuestionCard({ isViewerModerator, fragmentRef }: Question
     //
     // ─── HOOKS ──────────────────────────────────────────────────────────────────────
     //
-    const { questionQueue } = useQuestionQueue({ fragmentRef });
-    const recordConnection = React.useMemo(
-        () => ({ connection: questionQueue?.questionRecord?.__id ?? '' }),
-        [questionQueue?.questionRecord]
-    );
-    const enqueuedConnection = React.useMemo(
-        () => ({ connection: questionQueue?.enqueuedQuestions?.__id ?? '' }),
-        [questionQueue?.enqueuedQuestions]
-    );
+    const { enqueuedQuestions, questionRecord, recordConnection, queueConnection } = useOnDeck({ fragmentRef });
 
     //
     // ─── SUBSCRIPTION HOOKS ─────────────────────────────────────────────────────────
     //
-    useRecordPush(recordConnection);
-    useRecordRemove(recordConnection);
-    useRecordUnshift(recordConnection);
-    useEnqueuedPush(enqueuedConnection);
-    useEnqueuedRemove(enqueuedConnection);
-    useEnqueuedUnshift(enqueuedConnection);
+    useRecordPush({ connection: recordConnection });
+    useRecordRemove({ connection: recordConnection });
+    useRecordUnshift({ connection: recordConnection });
 
-    //
-    // ─── COMPUTED VALUES ────────────────────────────────────────────────────────────
-    //
-    const enqueuedQuestions = React.useMemo(
-        () =>
-            questionQueue?.enqueuedQuestions?.edges
-                ?.slice(0) // hacky way to copy the array, except current question -- feeling lazy TODO: more elegant solution
-                ?.sort(({ node: a }, { node: b }) => (parseInt(a?.position) ?? 0) - (parseInt(b?.position) ?? 0)) ?? [],
-        [questionQueue]
-    );
-    const questionRecord = React.useMemo(
-        () =>
-            questionQueue?.questionRecord?.edges
-                ?.slice(0) // hacky way to copy the array, except current question -- feeling lazy TODO: more elegant solution
-                ?.sort(({ node: a }, { node: b }) => (parseInt(a?.position) ?? 0) - (parseInt(b?.position) ?? 0)) ?? [],
-        [questionQueue]
-    );
+    useEnqueuedPush({ connection: queueConnection });
+    useEnqueuedRemove({ connection: queueConnection });
+    useEnqueuedUnshift({ connection: queueConnection });
+
     const canGoBackward = React.useMemo(() => questionRecord.length > 0, [questionRecord]);
     const canGoForward = React.useMemo(() => enqueuedQuestions.length > 0, [enqueuedQuestions]);
     const currentQuestion = React.useMemo(
@@ -70,54 +48,55 @@ export function CurrentQuestionCard({ isViewerModerator, fragmentRef }: Question
     );
 
     return (
-        <Card
-            style={{
-                width: '100%',
-                borderRadius: '10px',
-                position: 'relative',
-                overflow: 'visible',
-                paddingTop: theme.spacing(0.5),
-                marginTop: theme.spacing(3),
-            }}
-        >
-            <Chip
-                color='secondary'
-                icon={<BookmarkIcon fontSize='small' />}
-                label='Answering Now'
-                style={{
-                    padding: theme.spacing(0.5),
-                    position: 'absolute',
-                    top: theme.spacing(-2),
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    backgroundColor: theme.palette.custom.creamCan,
-                    background: theme.palette.custom.creamCan,
-                    color: 'white',
-                    textTransform: 'uppercase',
-                    fontWeight: 600,
-                }}
-            />
-            {currentQuestion && <QuestionAuthor fragmentRef={currentQuestion.node} />}
-            {currentQuestion && currentQuestion.node.refQuestion && (
-                <QuestionQuote fragmentRef={currentQuestion.node.refQuestion} />
-            )}
-            {currentQuestion && <QuestionContent fragmentRef={currentQuestion.node} />}
-            <Grid container alignItems='center' style={{ alignItems: 'center' }}>
-                {!currentQuestion && (
-                    <Typography style={{ margin: 'auto', paddingTop: '20px' }}>No Current Question</Typography>
-                )}
-            </Grid>
+        <React.Fragment>
             {isViewerModerator && (
-                <Grid
-                    container
+                <Stack
+                    direction='row'
+                    width='100%'
                     alignItems='center'
                     justifyContent='space-between'
-                    style={{ padding: theme.spacing(0, 1, 1, 1) }}
+                    style={{ padding: theme.spacing(0, 1, 0, 1) }}
                 >
                     <PreviousQuestionButton disabled={!canGoBackward} />
+                    <Tooltip title='Answering Now' placement='top'>
+                        <Chip
+                            color='secondary'
+                            icon={<BookmarkIcon fontSize='small' />}
+                            label='Answering Now'
+                            style={{
+                                padding: theme.spacing(0.5),
+                                width: '50%',
+                                backgroundColor: theme.palette.custom.creamCan,
+                                background: theme.palette.custom.creamCan,
+                                color: 'white',
+                                textTransform: 'uppercase',
+                                fontWeight: 600,
+                            }}
+                        />
+                    </Tooltip>
                     <NextQuestionButton disabled={!canGoForward} />
-                </Grid>
+                </Stack>
             )}
-        </Card>
+            <Card
+                sx={{
+                    minHeight: '190px',
+                    maxHeight: '300px',
+                    width: '100%',
+                    overflowY: 'scroll',
+                }}
+            >
+                {!currentQuestion && (
+                    <Grid container alignItems='center'>
+                        <Typography style={{ margin: 'auto', paddingTop: '20px' }}>No Current Question</Typography>
+                    </Grid>
+                )}
+                {currentQuestion && <QuestionAuthor fragmentRef={currentQuestion} />}
+                {currentQuestion && currentQuestion.refQuestion && (
+                    <QuestionQuote fragmentRef={currentQuestion.refQuestion} />
+                )}
+                {currentQuestion && <QuestionContent fragmentRef={currentQuestion} />}
+                {isViewerModerator && currentQuestion && <QuestionTopics fragmentRef={currentQuestion} />}
+            </Card>
+        </React.Fragment>
     );
 }

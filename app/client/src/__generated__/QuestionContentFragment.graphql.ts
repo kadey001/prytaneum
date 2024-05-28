@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f9f0f2078a8c8b56149c26ca50fa8092>>
+ * @generated SignedSource<<d816526dec87b6df415e832494f0b540>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type QuestionContentFragment$data = {
-  readonly question: string | null;
+  readonly question: string;
   readonly " $fragmentType": "QuestionContentFragment";
 };
 export type QuestionContentFragment$key = {

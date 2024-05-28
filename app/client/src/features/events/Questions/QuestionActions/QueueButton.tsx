@@ -12,7 +12,12 @@ export interface QueueButtonProps {
 export const QUEUE_BUTTON_FRAGMENT = graphql`
     fragment QueueButtonFragment on EventQuestion {
         id
+        question
         position
+        topics {
+            topic
+            position
+        }
     }
 `;
 
@@ -20,12 +25,17 @@ export const QUEUE_BUTTON_FRAGMENT = graphql`
  * Should only be used by moderators or when the user is a verified moderator
  */
 export function QueueButton({ fragmentRef }: QueueButtonProps) {
-    const { id: questionId, position } = useFragment(QUEUE_BUTTON_FRAGMENT, fragmentRef);
+    const { id: questionId, position, topics } = useFragment(QUEUE_BUTTON_FRAGMENT, fragmentRef);
 
     const isQueued = React.useMemo(() => {
-        if (!position || position === '-1') return false;
-        return true;
-    }, [position]);
+        let _isQueued = false;
+        if (position !== '-1') _isQueued = true;
+        if (!topics) return _isQueued;
+        topics.forEach((topic) => {
+            if (topic.position !== '-1') _isQueued = true;
+        });
+        return _isQueued;
+    }, [position, topics]);
 
     // TODO: add an animation for this using framer motion
     return isQueued ? (

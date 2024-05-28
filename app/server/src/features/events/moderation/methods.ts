@@ -2,7 +2,14 @@ import { Prisma, PrismaClient } from '@local/__generated__/prisma';
 import { errors } from '@local/features/utils';
 import { register } from '@local/features/accounts/methods';
 import { ProtectedError } from '@local/lib/ProtectedError';
-import { EventQuestion } from '../../../graphql-types';
+import {
+    AddQuestionToOnDeck,
+    AddQuestionToTopicQueue,
+    EventQuestion,
+    RemoveQuestionFromOnDeck,
+    RemoveQuestionFromTopicQueue,
+    UpdateTopicQueuePosition,
+} from '../../../graphql-types';
 import type {
     CreateModerator,
     DeleteModerator,
@@ -160,7 +167,7 @@ export async function changeCurrentQuestion(userId: string, prisma: PrismaClient
 
     const updatedEvent = await prisma.event.update({
         where: { id: eventId },
-        data: { currentQuestion: nextQuestion?.position ?? '-1' },
+        data: { currentQuestion: nextQuestion?.onDeckPosition ?? '-1' },
         select: { currentQuestion: true, id: true },
     });
     return { event: updatedEvent, newCurrentQuestion: nextQuestion, prevCurrentQuestion: currentQuestion };
@@ -245,6 +252,83 @@ export async function incrementQuestion(userId: string, prisma: PrismaClient, ev
     };
 }
 
+export async function incrementOnDeck(userId: string, eventId: string, prisma: PrismaClient) {
+    const hasPermission = await isModerator(userId, eventId, prisma);
+    if (!hasPermission) throw new ProtectedError({ userMessage: errors.permissions });
+
+    const _currentQuestionPosition = await getCurrentQuestionPosition(eventId, prisma);
+    const currentQuestionPosition = parseInt(_currentQuestionPosition || '-1');
+    const queryResponse: EventQuestion[] = await prisma.$queryRawUnsafe(
+        `
+        SELECT * FROM "EventQuestion"
+        WHERE "eventId" = $1::uuid
+        AND "onDeckPosition"::BigInt > $2::BigInt
+        ORDER BY "onDeckPosition"::BigInt ASC LIMIT 1
+    `,
+        eventId,
+        currentQuestionPosition
+    );
+    console.debug('Increment On Deck', queryResponse);
+
+    const nextQuestion = queryResponse.length === 0 ? null : queryResponse[0];
+
+    if (!nextQuestion) throw new ProtectedError({ userMessage: 'Cannot increment question' });
+
+    const updatedEvent = await prisma.event.update({
+        where: { id: eventId },
+        data: { currentQuestion: nextQuestion.onDeckPosition || '' },
+        select: { currentQuestion: true, id: true },
+    });
+
+    return {
+        event: updatedEvent,
+        newCurrentQuestion: nextQuestion,
+    };
+}
+
+export async function decrementOnDeck(userId: string, eventId: string, prisma: PrismaClient) {
+    const hasPermission = await isModerator(userId, eventId, prisma);
+    if (!hasPermission) throw new ProtectedError({ userMessage: errors.permissions });
+
+    const _currentQuestionPosition = await getCurrentQuestionPosition(eventId, prisma);
+    const currentQuestionPosition = parseInt(_currentQuestionPosition || '-1');
+    const queryResponse: EventQuestion[] = await prisma.$queryRawUnsafe(
+        `
+        SELECT * FROM "EventQuestion"
+        WHERE "eventId" = $1::uuid
+        AND "onDeckPosition"::BigInt < $2::BigInt
+        ORDER BY "onDeckPosition"::BigInt DESC LIMIT 1
+    `,
+        eventId,
+        currentQuestionPosition
+    );
+
+    const nextQuestion = queryResponse.length === 0 ? null : queryResponse[0];
+
+    if (!nextQuestion) throw new ProtectedError({ userMessage: 'Cannot increment question' });
+
+    const prevCurrentQuestion = await prisma.eventQuestion.findFirst({
+        where: {
+            eventId,
+            onDeckPosition: { equals: _currentQuestionPosition },
+        },
+    });
+
+    if (!prevCurrentQuestion) throw new ProtectedError({ userMessage: 'Could not find previous question.' });
+
+    const updatedEvent = await prisma.event.update({
+        where: { id: eventId },
+        data: { currentQuestion: nextQuestion.onDeckPosition || '' },
+        select: { currentQuestion: true, id: true },
+    });
+
+    return {
+        event: updatedEvent,
+        newCurrentQuestion: nextQuestion,
+        prevCurrentQuestion,
+    };
+}
+
 /**
  * UNIMPLEMENTED
  * currently, there's nothing to update, but in the future we may have more fine grained mod permissions
@@ -263,6 +347,194 @@ export async function deleteModerator(userId: string, prisma: PrismaClient, inpu
         where: { eventId_userId: { eventId, userId: modId } },
     });
     return prisma.user.findUnique({ where: { id: deletedModerator.userId } });
+}
+
+export async function addQuestionToTopicQueue(userId: string, prisma: PrismaClient, input: AddQuestionToTopicQueue) {
+    const { eventId, topic, questionId } = input;
+    // permission check
+    const hasPermission = await isModerator(userId, eventId, prisma);
+    if (!hasPermission) throw new ProtectedError({ userMessage: errors.permissions });
+
+    const currentTimeMs = new Date().getTime();
+    const currentTimeMsStr = currentTimeMs.toString();
+
+    const calculatedPosition = parseInt(currentTimeMsStr);
+
+    // Check if already in queue or on deck
+    if (topic === '' || topic === 'default') {
+        const question = await prisma.eventQuestion.findFirst({
+            where: { id: questionId, position: '-1', onDeckPosition: '-1' },
+        });
+        // if the question isn't found with the -1 position, then it's already in queue
+        if (!question) throw new ProtectedError({ userMessage: 'Question is already in queue or on deck.' });
+    } else {
+        const question = await prisma.eventQuestionTopic.findFirst({
+            where: { questionId: questionId, topic: { topic: topic } },
+        });
+        // if the question isn't found with the -1 position, then it's already in queue
+        if (!question) throw new ProtectedError({ userMessage: `Question is already in the topic queue ${topic}.` });
+    }
+
+    // check if id is already non-negative
+    const question = await prisma.eventQuestion.findFirst({ where: { id: questionId, position: '-1' } });
+    // if the question isn't found with the -1 position, then it's already in queue
+    if (!question) throw new ProtectedError({ userMessage: 'Question is already in queue.' });
+
+    if (topic === '' || topic === 'default') {
+        const reult = await prisma.eventQuestion.update({
+            where: { id: questionId },
+            data: {
+                position: calculatedPosition.toString(),
+            },
+        });
+        console.debug('Added to default queue', reult);
+        return reult;
+    }
+    // Get the topic if it exists
+    const topicResult = await prisma.eventTopic.findUnique({ where: { eventId_topic: { eventId, topic } } });
+    if (!topicResult)
+        throw new ProtectedError({
+            userMessage: 'Topic does not exist.',
+            internalMessage: `Topic ${topic} does not exist for event ${eventId}.`,
+        });
+    const result = await prisma.eventQuestionTopic.update({
+        where: { questionId_topicId: { questionId, topicId: topicResult.id } },
+        data: {
+            position: calculatedPosition.toString(),
+        },
+        select: { question: true },
+    });
+    return result.question;
+}
+
+export async function removeQuestionFromTopicQueue(
+    userId: string,
+    prisma: PrismaClient,
+    input: RemoveQuestionFromTopicQueue
+) {
+    const { eventId, questionId, topic } = input;
+    // permission check
+    const hasPermission = await isModerator(userId, eventId, prisma);
+    if (!hasPermission) throw new ProtectedError({ userMessage: errors.permissions });
+
+    const toBeRemoved = await prisma.eventQuestion.findUnique({
+        where: { id: questionId },
+    });
+    if (!toBeRemoved) throw new ProtectedError({ userMessage: 'Question cannot be found.' });
+
+    if (topic === '' || topic === 'default') {
+        // Set the position to -1 to remove it from the default queue
+        return prisma.eventQuestion.update({
+            where: { id: questionId },
+            data: {
+                position: '-1',
+            },
+        });
+    }
+    // Remove from topic queue
+    const eventTopic = await prisma.eventTopic.findUnique({ where: { eventId_topic: { eventId, topic } } });
+    if (!eventTopic)
+        throw new ProtectedError({
+            userMessage: 'Topic not found.',
+            internalMessage: `Topic ${topic} cannot be found on event ${eventId}.`,
+        });
+    const result = await prisma.eventQuestionTopic.update({
+        where: { questionId_topicId: { questionId, topicId: eventTopic.id } },
+        data: {
+            position: '-1',
+        },
+        select: { question: true },
+    });
+    return result.question;
+}
+
+export async function addQuestionToOnDeck(userId: string, prisma: PrismaClient, input: AddQuestionToOnDeck) {
+    // permission check
+    const hasPermission = await isModerator(userId, input.eventId, prisma);
+    if (!hasPermission) throw new ProtectedError({ userMessage: errors.permissions });
+
+    // check if already on deck
+    const question = await prisma.eventQuestion.findFirst({ where: { id: input.questionId, onDeckPosition: '-1' } });
+    if (!question) throw new ProtectedError({ userMessage: 'Question is already on deck.' });
+
+    // Update all topic positions to -1 and position to -1 (as no question should be in a queue and on deck at the same time)
+    return prisma.eventQuestion.update({
+        where: { id: input.questionId },
+        data: {
+            position: '-1',
+            onDeckPosition: input.newPosition,
+            topics: {
+                updateMany: {
+                    where: { questionId: input.questionId },
+                    data: { position: '-1' },
+                },
+            },
+        },
+    });
+}
+
+export async function removeQuestionFromOnDeck(userId: string, prisma: PrismaClient, input: RemoveQuestionFromOnDeck) {
+    const { eventId, questionId, topic, newPosition } = input;
+    // permission check
+    const hasPermission = await isModerator(userId, eventId, prisma);
+    if (!hasPermission) throw new ProtectedError({ userMessage: errors.permissions });
+
+    // Find current question
+    const event = await prisma.event.findUnique({
+        where: { id: input.eventId },
+        select: { currentQuestion: true },
+    });
+    if (!event)
+        throw new ProtectedError({
+            userMessage: ProtectedError.internalServerErrorMessage,
+            internalMessage: `Could not find event with id ${eventId}.`,
+        });
+
+    const toBeRemoved = await prisma.eventQuestion.findUnique({ where: { id: questionId } });
+    if (!toBeRemoved) throw new ProtectedError({ userMessage: 'Question cannot be found.' });
+    // Check if the question is in the question record
+    // All questions in the question record shoud have a position greater than or equal to the current question
+    if (event.currentQuestion >= toBeRemoved.onDeckPosition) {
+        throw new ProtectedError({
+            userMessage: 'Cannot remove question that has already been asked.',
+            internalMessage: `Cannot remove question that has already been asked. Current question position: ${event.currentQuestion} | Question being dequeud position: ${toBeRemoved.position}`,
+        });
+    }
+
+    if (topic === '' || topic === 'default') {
+        // Set the position to -1 to remove it from the queue
+        return prisma.eventQuestion.update({
+            where: { id: questionId },
+            data: {
+                onDeckPosition: '-1',
+                position: newPosition,
+            },
+        });
+    }
+    // Get topic id
+    const topicResult = await prisma.eventTopic.findUnique({ where: { eventId_topic: { eventId, topic } } });
+    if (!topicResult)
+        throw new ProtectedError({
+            userMessage: 'Topic not found.',
+            internalMessage: `Topic ${topic} cannot be found on event ${eventId}.`,
+        });
+
+    // Reset on deck position
+    await prisma.eventQuestion.update({
+        where: { id: questionId },
+        data: {
+            onDeckPosition: '-1',
+        },
+    });
+    // Set the position to new position in topic queue
+    const result = await prisma.eventQuestionTopic.update({
+        where: { questionId_topicId: { questionId, topicId: topicResult.id } },
+        data: {
+            position: newPosition,
+        },
+        select: { question: true },
+    });
+    return result.question;
 }
 
 export async function addQuestionToQueue(userId: string, prisma: PrismaClient, input: AddQuestionToQueue) {
@@ -330,4 +602,67 @@ export async function findUserIdByEmail(email: string, prisma: PrismaClient) {
         where: { email },
         select: { id: true },
     });
+}
+
+export async function updateOnDeckPosition(
+    userId: string,
+    prisma: PrismaClient,
+    input: { eventId: string; questionId: string; newPosition: string }
+) {
+    const { eventId, questionId, newPosition } = input;
+    // permission check
+    const hasPermission = await isModerator(userId, eventId, prisma);
+    if (!hasPermission) throw new ProtectedError({ userMessage: errors.permissions });
+
+    return prisma.eventQuestion.update({
+        where: { id: questionId },
+        data: {
+            onDeckPosition: newPosition,
+        },
+    });
+}
+
+export async function updateTopicQueuePosition(userId: string, prisma: PrismaClient, input: UpdateTopicQueuePosition) {
+    const { eventId, questionId, newPosition, topic } = input;
+    // permission check
+    const hasPermission = await isModerator(userId, eventId, prisma);
+    if (!hasPermission) throw new ProtectedError({ userMessage: errors.permissions });
+
+    // Check if the question is in the default queue and update the position if so
+    if (topic === '' || topic === 'default') {
+        return prisma.eventQuestion.update({
+            where: { id: questionId },
+            data: {
+                position: newPosition,
+            },
+        });
+    }
+
+    // Find topic id and update the topic queue position
+    const topicQueryResult = await prisma.eventTopic.findUnique({
+        where: { eventId_topic: { eventId, topic } },
+        select: { id: true },
+    });
+
+    if (!topicQueryResult)
+        throw new ProtectedError({
+            userMessage: 'Topic not found.',
+            internalMessage: `Topic ${topic} cannot be found on event ${eventId}.`,
+        });
+    const { id: topicId } = topicQueryResult;
+
+    const updateResult = await prisma.eventQuestionTopic.update({
+        where: { questionId_topicId: { questionId, topicId } },
+        data: {
+            position: newPosition,
+        },
+        select: { question: true },
+    });
+    return updateResult.question;
+}
+
+export function getTopicPosition(question: EventQuestion, topic: string) {
+    const topicPosition = question?.topics?.find((t) => t.topic === topic)?.position;
+    if (!topicPosition) return parseInt(question.position);
+    return parseInt(topicPosition);
 }

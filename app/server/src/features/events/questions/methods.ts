@@ -3,6 +3,7 @@ import { PrismaClient } from '@local/__generated__/prisma';
 import { errors } from '@local/features/utils';
 import { ProtectedError } from '@local/lib/ProtectedError';
 import type { CreateQuestion, AlterLike } from '@local/graphql-types';
+import axios, { AxiosResponse } from 'axios';
 
 /**
  * submit a question, in the future this may plug into an event broker like kafka or redis
@@ -17,12 +18,58 @@ export async function createQuestion(userId: string, prisma: PrismaClient, input
         select: { isMuted: true },
     });
 
-    if (isMutedResult?.isMuted) throw new ProtectedError({ userMessage: errors.muted, internalMessage: `User with id: ${userId} attempted to ask a question while muted.` });
+    if (isMutedResult?.isMuted)
+        throw new ProtectedError({
+            userMessage: errors.muted,
+            internalMessage: `User with id: ${userId} attempted to ask a question while muted.`,
+        });
 
     // it's okay to have both false, but both cannot be true
     if (isQuote === isFollowUp && isQuote === true) throw new ProtectedError({ userMessage: errors.invalidArgs });
 
-    return prisma.eventQuestion.create({
+    // Run through ben's algorithm
+    type ExpectedResponse = {
+        question_en: string;
+        question_es: string;
+        original_lang: string;
+        substantive: boolean;
+        offensive: boolean;
+        relevant: boolean;
+        topics: {
+            [key: string]: boolean;
+        };
+    };
+    let response: AxiosResponse<ExpectedResponse> | null = null;
+    try {
+        response = await axios.post(
+            process.env.MODERATION_URL,
+            {
+                stage: 'moderation',
+                question: question,
+                eventId: eventId,
+            },
+            {
+                headers: { 'Content-Type': 'application/json' },
+            }
+        );
+        if (!response) throw new Error('No response from moderation service');
+    } catch (error) {
+        throw new ProtectedError({
+            userMessage: 'Unable to process question, please try again.',
+            internalMessage: error instanceof Error ? error.message : `Error processing question: ${question}`,
+        });
+    }
+
+    const data = response.data;
+    // Get all the topis that are related to the question
+    const topics = Object.keys(data.topics).filter((key) => data.topics[key]);
+    // Get the topic ids (and ensure they are valid topics in the event)
+    const topicIds = await prisma.eventTopic.findMany({
+        where: { eventId, topic: { in: topics } },
+        select: { id: true },
+    });
+
+    const newQuestion = await prisma.eventQuestion.create({
         data: {
             eventId,
             question,
@@ -33,13 +80,19 @@ export async function createQuestion(userId: string, prisma: PrismaClient, input
             isVisible: true,
             isAsked: false,
             lang: 'EN', // TODO:
+            topics: {
+                createMany: { data: topicIds.map(({ id }) => ({ topicId: id })) },
+            },
+            substantive: data.substantive || false,
+            offensive: data.offensive || false,
+            relevant: data.relevant || false,
         },
         include: {
             refQuestion: true,
         },
     });
+    return { question: newQuestion, topics };
 }
-
 /**
  *  Remove a question from an event
  */
@@ -166,4 +219,25 @@ export async function isEnqueued(questionId: string, prisma: PrismaClient) {
             internalMessage: `Could not find a question with id ${questionId}.`,
         });
     return parseInt(queryResult.position) !== -1;
+}
+
+export async function findTopicsByQuestionId(questionId: string, prisma: PrismaClient) {
+    const queryResult = await prisma.eventQuestion.findUnique({
+        where: { id: questionId },
+        select: {
+            topics: {
+                select: {
+                    topic: {
+                        select: { topic: true, description: true, id: true, eventId: true },
+                    },
+                    position: true,
+                },
+            },
+        },
+    });
+    if (!queryResult) return [];
+    const topics = queryResult.topics.map(({ topic, position }) => {
+        return { id: topic.id, eventId: topic.eventId, topic: topic.topic, description: topic.description, position };
+    });
+    return topics || [];
 }

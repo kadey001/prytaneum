@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3d7b7533dc922c810e67270cbb55aba0>>
+ * @generated SignedSource<<de2bd47f03441f580c76f9cf859b4f77>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -27,7 +27,7 @@ export type QuestionQueueMutation$data = {
         } | null;
         readonly id: string;
         readonly position: string;
-        readonly question: string | null;
+        readonly question: string;
       };
     } | null;
     readonly isError: boolean;
@@ -45,7 +45,7 @@ export type QuestionQueueMutation$rawResponse = {
         } | null;
         readonly id: string;
         readonly position: string;
-        readonly question: string | null;
+        readonly question: string;
       };
     } | null;
     readonly isError: boolean;

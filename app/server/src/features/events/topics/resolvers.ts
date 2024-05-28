@@ -16,7 +16,7 @@ export const resolvers: Resolvers = {
             return runMutation(async () => {
                 const { eventId, material } = args;
                 const { id: globalEventId } = fromGlobalId(eventId);
-                return Topics.generateEventTopics(globalEventId, material);
+                return Topics.generateEventTopics(globalEventId, material, ctx.prisma);
             });
         },
         async regenerateEventTopics(parent, args, ctx, info) {

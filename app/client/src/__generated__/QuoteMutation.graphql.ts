@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<87485f9fdb485266460a2b87b9331250>>
+ * @generated SignedSource<<b9b3e5760b28f79358f02f77269b3f8c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,7 +33,28 @@ export type QuoteMutation$data = {
     readonly message: string;
   };
 };
+export type QuoteMutation$rawResponse = {
+  readonly createQuestion: {
+    readonly body: {
+      readonly cursor: string;
+      readonly node: {
+        readonly createdAt: Date | null;
+        readonly createdBy: {
+          readonly avatar: string | null;
+          readonly firstName: string | null;
+          readonly id: string;
+          readonly lastName: string | null;
+        } | null;
+        readonly id: string;
+        readonly question: string;
+      };
+    } | null;
+    readonly isError: boolean;
+    readonly message: string;
+  };
+};
 export type QuoteMutation = {
+  rawResponse: QuoteMutation$rawResponse;
   response: QuoteMutation$data;
   variables: QuoteMutation$variables;
 };
@@ -242,6 +263,6 @@ return {
 };
 })();
 
-(node as any).hash = "4b9e014581115a01e74de4243c0341a4";
+(node as any).hash = "781619fb78ad29525e0be028152823dd";
 
 export default node;

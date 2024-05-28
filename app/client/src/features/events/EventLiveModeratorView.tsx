@@ -7,23 +7,19 @@ import { Loader } from '@local/components/Loader';
 import { useRouter } from 'next/router';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
-import { EventVideo, EventContext } from '@local/features/events';
-import { EventDetailsCard } from './EventDetailsCard';
-import { SpeakerList } from './Speakers';
+import { EventContext } from '@local/features/events';
 import { useSnack } from '@local/core';
 import { useEventDetails } from './useEventDetails';
 import { usePingEvent } from './Participants/usePingEvent';
 
-import { ModeratorActions } from '@local/features/events/Moderation/ModeratorActions';
-import { PreloadedParticipantsList } from './Participants/ParticipantsList';
 import { QuestionQueue } from './Moderation/ManageQuestions';
 import { EventLiveModeratorViewQuery } from '@local/__generated__/EventLiveModeratorViewQuery.graphql';
 import { StyledColumnGrid } from '@local/components/StyledColumnGrid';
 import { StyledTabs } from '@local/components/StyledTabs';
 import { QuestionList } from './Questions';
-import { LiveFeedbackList } from './LiveFeedback';
 import { CurrentQuestionCard } from './Moderation/ManageQuestions/CurrentQuestionCard';
-import { BroadcastMessageList } from './BroadcastMessages/BroadcastMessageList';
+import { ActionsPanels } from './ModeratorView/ActionsPanels';
+import { EventTopicContext } from './ModeratorView/EventTopicContext';
 
 export const EVENT_LIVE_MODERATOR_VIEW_QUERY = graphql`
     query EventLiveModeratorViewQuery($eventId: ID!) {
@@ -63,14 +59,6 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
         fragmentRef: node,
     });
     const { id: eventId } = node;
-    type Tabs = 'Moderator' | 'Feedback' | 'Broadcast';
-    const [tab, setTab] = React.useState<Tabs>('Moderator');
-
-    const handleTabChange = (e: React.SyntheticEvent, newTab: Tabs) => {
-        e.preventDefault();
-        setTab(newTab);
-    };
-
     const { pausePingEvent, resumePingEvent } = usePingEvent(eventId);
 
     const pauseParentRefreshing = React.useCallback(() => {
@@ -92,115 +80,68 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
                 resumeParentRefreshing,
             }}
         >
-            <PanelGroup autoSaveId='mod-panels-persistence' direction='horizontal'>
-                <Panel defaultSize={33} minSize={21}>
-                    <PanelGroup autoSaveId='mod-panels-child-persistence' direction='vertical'>
-                        <Panel defaultSize={25} minSize={20}>
-                            <Grid
-                                sx={{
-                                    overflow: 'auto',
-                                    height: '100%',
+            <EventTopicContext.Provider value={{ topic: 'default' }}>
+                <PanelGroup autoSaveId='mod-panels-persistence' direction='horizontal'>
+                    <Panel defaultSize={33} minSize={21}>
+                        <ActionsPanels node={node} eventData={eventData} isLive={isLive} setIsLive={setIsLive} />
+                    </Panel>
+                    <PanelResizeHandle>
+                        <Grid container justifyContent='center' height='100%' width='0.5rem'>
+                            <Divider orientation='vertical' />
+                        </Grid>
+                    </PanelResizeHandle>
+                    <Panel defaultSize={33} minSize={20}>
+                        <Grid
+                            container
+                            direction='column'
+                            height='100%'
+                            flexGrow={1}
+                            justifyContent='center'
+                            alignContent='center'
+                        >
+                            <Grid item>
+                                <CurrentQuestionCard isViewerModerator={true} fragmentRef={node} />
+                            </Grid>
+                            <StyledTabs value='Queue'>
+                                <Tab label='Queue' value='Queue' />
+                            </StyledTabs>
+                            <StyledColumnGrid
+                                props={{
+                                    display: 'flex',
+                                    flexGrow: 1,
+                                    width: '98%',
                                 }}
                             >
-                                <EventVideo fragmentRef={node} />
-                                <EventDetailsCard eventData={eventData} />
-                                <SpeakerList fragmentRef={node} />
-                            </Grid>
-                        </Panel>
-                        <PanelResizeHandle>
-                            <Divider sx={{ width: '100%', height: '0.5rem', transform: 'translateY(-0.5rem)' }} />
-                        </PanelResizeHandle>
-                        <Panel defaultSize={50} minSize={20}>
-                            <Grid
-                                item
-                                container
-                                direction='column'
-                                flex={1}
-                                justifyContent='center'
-                                alignContent='center'
-                                height='100%'
-                            >
-                                <StyledTabs
-                                    value={tab}
-                                    props={{ onChange: handleTabChange, 'aria-label': 'moderator tabs' }}
-                                >
-                                    <Tab label='Moderator' value='Moderator' />
-                                    <Tab label='Feedback' value='Feedback' />
-                                    <Tab label='Broadcast' value='Broadcast' />
-                                </StyledTabs>
-                                <StyledColumnGrid props={{ width: '98%', display: 'flex', flexGrow: 1 }}>
-                                    {tab === 'Moderator' && (
-                                        <Grid item width='100%'>
-                                            <ModeratorActions isLive={isLive} setIsLive={setIsLive} eventId={eventId} />
-                                            <PreloadedParticipantsList
-                                                eventId={eventData.id}
-                                                isVisible={tab === 'Moderator'}
-                                            />
-                                        </Grid>
-                                    )}
-                                    <LiveFeedbackList fragmentRef={node} isVisible={tab === 'Feedback'} />
-                                    <BroadcastMessageList fragmentRef={node} isVisible={tab === 'Broadcast'} />
-                                </StyledColumnGrid>
-                            </Grid>
-                        </Panel>
-                    </PanelGroup>
-                </Panel>
-                <PanelResizeHandle>
-                    <Grid container justifyContent='center' height='100%' width='0.5rem'>
-                        <Divider orientation='vertical' />
-                    </Grid>
-                </PanelResizeHandle>
-                <Panel defaultSize={33} minSize={20}>
-                    <Grid
-                        container
-                        direction='column'
-                        height='100%'
-                        flexGrow={1}
-                        justifyContent='center'
-                        alignContent='center'
-                    >
-                        <Grid item>
-                            <CurrentQuestionCard isViewerModerator={true} fragmentRef={node} />
+                                <QuestionQueue fragmentRef={node} isVisible={true} />
+                            </StyledColumnGrid>
                         </Grid>
-                        <StyledTabs value='Queue'>
-                            <Tab label='Queue' value='Queue' />
-                        </StyledTabs>
-                        <StyledColumnGrid
-                            props={{
-                                display: 'flex',
-                                flexGrow: 1,
-                                width: '98%',
-                            }}
-                        >
-                            <QuestionQueue fragmentRef={node} isVisible={true} />
-                        </StyledColumnGrid>
-                    </Grid>
-                </Panel>
-                <PanelResizeHandle>
-                    <Grid container justifyContent='center' height='100%' width='0.5rem'>
-                        <Divider orientation='vertical' />
-                    </Grid>
-                </PanelResizeHandle>
-                <Panel defaultSize={33} minSize={20}>
-                    <Grid container direction='column' height='100%' flexGrow={1} alignContent='center'>
-                        <StyledTabs value='Questions'>
-                            <Tab label='Questions' value='Questions' />
-                        </StyledTabs>
-                        <StyledColumnGrid
-                            props={{
-                                id: 'scrollable-tab',
-                                display: 'flex',
-                                flexGrow: 1,
-                                width: '98%',
-                                padding: 0,
-                            }}
-                            scrollable={false}
-                        >
-                            <QuestionList fragmentRef={node} isVisible={true} />
-                        </StyledColumnGrid>
-                    </Grid>
-                </Panel>
-            </PanelGroup>
+                    </Panel>
+                    <PanelResizeHandle>
+                        <Grid container justifyContent='center' height='100%' width='0.5rem'>
+                            <Divider orientation='vertical' />
+                        </Grid>
+                    </PanelResizeHandle>
+                    <Panel defaultSize={33} minSize={20}>
+                        <Grid container direction='column' height='100%' flexGrow={1} alignContent='center'>
+                            <StyledTabs value='Questions'>
+                                <Tab label='Questions' value='Questions' />
+                            </StyledTabs>
+                            <StyledColumnGrid
+                                props={{
+                                    id: 'scrollable-tab',
+                                    display: 'flex',
+                                    flexGrow: 1,
+                                    width: '98%',
+                                    padding: 0,
+                                }}
+                                scrollable={false}
+                            >
+                                <QuestionList fragmentRef={node} isVisible={true} />
+                            </StyledColumnGrid>
+                        </Grid>
+                    </Panel>
+                </PanelGroup>
+            </EventTopicContext.Provider>
         </EventContext.Provider>
     );
 }

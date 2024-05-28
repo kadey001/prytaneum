@@ -13,7 +13,6 @@ import { useSnack } from '@local/features/core/useSnack';
 import { LiveFeedbackForm, TLiveFeedbackFormState } from './LiveFeedbackForm';
 
 interface Props {
-    className?: string;
     eventId: string;
 }
 
@@ -39,7 +38,7 @@ export const SUBMIT_LIVE_FEEDBACK_MUTATION = graphql`
     }
 `;
 
-export function SubmitLiveFeedback({ className, eventId }: Props) {
+export function SubmitLiveFeedback({ eventId }: Props) {
     const [isOpen, open, close] = useResponsiveDialog();
     const { user } = useUser();
     const [commit] = useMutation<SubmitLiveFeedbackMutation>(SUBMIT_LIVE_FEEDBACK_MUTATION);
@@ -56,16 +55,16 @@ export function SubmitLiveFeedback({ className, eventId }: Props) {
                     try {
                         if (payload.createFeedback.isError) throw new Error(payload.createFeedback.message);
                         close();
-                        displaySnack('Feedback submitted!');
+                        displaySnack('Feedback submitted!', { variant: 'success' });
                     } catch (err) {
                         if (err instanceof Error) displaySnack(err.message, { variant: 'error' });
-                        else displaySnack('Something went wrong!');
+                        else displaySnack('Something went wrong!', { variant: 'error' });
                     }
                 },
             });
         } catch (err) {
             if (err instanceof Error) displaySnack(err.message, { variant: 'error' });
-            else displaySnack('Something went wrong!');
+            else displaySnack('Something went wrong!', { variant: 'error' });
         }
     }
 
@@ -78,12 +77,16 @@ export function SubmitLiveFeedback({ className, eventId }: Props) {
             </ResponsiveDialog>
 
             <Button
-                className={className}
+                aria-label='Submit Live Feedback'
+                fullWidth
                 disabled={!user}
                 variant='contained'
                 color='primary'
                 onClick={open}
                 startIcon={user ? <QuestionAnswerIcon /> : <LockIcon />}
+                sx={{
+                    minWidth: '150px',
+                }}
             >
                 {user ? 'Submit Live Feedback' : 'Sign in to submit live feedback'}
             </Button>

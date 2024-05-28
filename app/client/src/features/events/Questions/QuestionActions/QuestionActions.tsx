@@ -8,7 +8,7 @@ import { Quote } from './Quote';
 import { QueueButton } from './QueueButton';
 import { DeleteButton } from './DeleteButton';
 
-const QUESTION_ACTIONS_FRAGMENT = graphql`
+export const QUESTION_ACTIONS_FRAGMENT = graphql`
     fragment QuestionActionsFragment on EventQuestion {
         id
         ...QuoteFragment

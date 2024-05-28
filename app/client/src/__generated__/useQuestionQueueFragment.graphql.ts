@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d39629cb1597b4d75597dc92b4cccca2>>
+ * @generated SignedSource<<f68b8d5383ddc85bd71245d1a6fce839>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,7 +24,7 @@ export type useQuestionQueueFragment$data = {
           } | null;
           readonly id: string;
           readonly position: string;
-          readonly question: string | null;
+          readonly question: string;
           readonly refQuestion: {
             readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
           } | null;
@@ -42,7 +42,7 @@ export type useQuestionQueueFragment$data = {
           } | null;
           readonly id: string;
           readonly position: string;
-          readonly question: string | null;
+          readonly question: string;
           readonly refQuestion: {
             readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
           } | null;

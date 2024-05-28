@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<38734a99d85e12719f9c43c8013aff2b>>
+ * @generated SignedSource<<e576597a9776a53a2b26580da59744d5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,7 +22,9 @@ export type useQuestionListFragment$data = {
           readonly firstName: string | null;
         } | null;
         readonly id: string;
-        readonly question: string | null;
+        readonly onDeckPosition: string;
+        readonly position: string;
+        readonly question: string;
         readonly refQuestion: {
           readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
         } | null;
@@ -139,6 +141,20 @@ return {
                 {
                   "alias": null,
                   "args": null,
+                  "kind": "ScalarField",
+                  "name": "position",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "onDeckPosition",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
                   "concreteType": "User",
                   "kind": "LinkedField",
                   "name": "createdBy",
@@ -249,6 +265,6 @@ return {
 };
 })();
 
-(node as any).hash = "04d5e0c47685ba15a2a54c9e5aafe145";
+(node as any).hash = "707a63d5b6dac19a297dfdf1a18bc460";
 
 export default node;

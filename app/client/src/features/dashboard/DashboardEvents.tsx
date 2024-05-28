@@ -42,7 +42,7 @@ export function DashboardEvents({ dashboardEvents }: DashboardEventsProps) {
     useRefresh({ refreshInterval: 5000 /* 5 seconds */, callback: () => setNow(new Date()) });
 
     const handleNav = (event: TDashboardEvent) => () => {
-        if (event.isViewerModerator) router.push(`/events/${event.id}/mod`);
+        if (event.isViewerModerator) router.push(`/events/${event.id}/new-mod`);
         else if (event.isActive) router.push(`/events/${event.id}/live`);
         else router.push(`/events/${event.id}/pre`);
     };

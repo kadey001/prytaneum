@@ -36,6 +36,7 @@ interface Props {
 // TODO Add ability to delete a topic
 export function TopicList({ queryRef, refresh }: Props) {
     const { eventTopics } = useTopicList({ queryRef });
+    const topicColor = React.useCallback((topic: string) => getHashedColor(topic), []);
 
     if (eventTopics.length === 0)
         return (
@@ -62,7 +63,7 @@ export function TopicList({ queryRef, refresh }: Props) {
                         <Tooltip key={index} title={topic.description} placement='bottom'>
                             <Chip
                                 label={topic.topic}
-                                sx={{ color: 'white', backgroundColor: getHashedColor(topic.topic), margin: '0.25rem' }}
+                                sx={{ color: 'white', backgroundColor: topicColor(topic.topic), margin: '0.25rem' }}
                             />
                         </Tooltip>
                     ))}
