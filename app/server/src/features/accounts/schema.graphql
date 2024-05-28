@@ -10,6 +10,8 @@ type User implements Node {
     isAdmin: Boolean
     canMakeOrgs: Boolean
     isOrganizer: Boolean
+    preferredLang: String
+
     """
     Avatar URL if null then no avatar is uploaded
     """
@@ -188,6 +190,8 @@ type Mutation {
     updateOrganizer(input: UpdateOrganizerForm!): UserMutationResponse!
     makeOrganizer(input: OrganizerForm!): UserMutationResponse!
     removeOrganizer(input: OrganizerForm!): UserMutationResponse!
+
+    updatePreferedLanguage(language: String!): UserMutationResponse!
 
     """
     The logout just returns the timestamp of the logout action

@@ -493,3 +493,12 @@ export async function updateOrganizer(viewerId: string, prisma: PrismaClient, in
     });
     return updatedUser;
 }
+
+export async function updatePreferedLanguage(viewerId: string, language: string, prisma: PrismaClient) {
+    // TODO: Validate language is a supported language
+    const updatedUser = await prisma.user.update({
+        where: { id: viewerId },
+        data: { preferredLang: language.toUpperCase() },
+    });
+    return updatedUser;
+}

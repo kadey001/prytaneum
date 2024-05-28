@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<762dc4efa7fb7f20d034b5b660bff306>>
+ * @generated SignedSource<<aec38883c68b5c79ca0ae9cc8c195585>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,6 +18,7 @@ export type useUserFragment$data = {
   readonly isAdmin: boolean | null;
   readonly isOrganizer: boolean | null;
   readonly lastName: string | null;
+  readonly preferredLang: string | null;
   readonly " $fragmentType": "useUserFragment";
 };
 export type useUserFragment$key = {
@@ -79,12 +80,19 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "isAdmin",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "preferredLang",
+      "storageKey": null
     }
   ],
   "type": "User",
   "abstractKey": null
 };
 
-(node as any).hash = "3867db5a02547bab9525888e5abdddba";
+(node as any).hash = "4562b40c4be3e0ec6034a9b59df447f6";
 
 export default node;

@@ -143,6 +143,7 @@ export type User = Node & {
     isAdmin?: Maybe<Scalars['Boolean']>;
     canMakeOrgs?: Maybe<Scalars['Boolean']>;
     isOrganizer?: Maybe<Scalars['Boolean']>;
+    preferredLang?: Maybe<Scalars['String']>;
     /** Avatar URL if null then no avatar is uploaded */
     avatar?: Maybe<Scalars['String']>;
     /** Organizations that this user belongs to */
@@ -327,6 +328,7 @@ export type Mutation = {
     updateOrganizer: UserMutationResponse;
     makeOrganizer: UserMutationResponse;
     removeOrganizer: UserMutationResponse;
+    updatePreferedLanguage: UserMutationResponse;
     /** The logout just returns the timestamp of the logout action */
     logout: Scalars['Date'];
     createBroadcastMessage: EventBroadcastMessageMutationResponse;
@@ -448,6 +450,10 @@ export type MutationmakeOrganizerArgs = {
 
 export type MutationremoveOrganizerArgs = {
     input: OrganizerForm;
+};
+
+export type MutationupdatePreferedLanguageArgs = {
+    language: Scalars['String'];
 };
 
 export type MutationcreateBroadcastMessageArgs = {
@@ -2369,6 +2375,7 @@ export type UserResolvers<
     isAdmin?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     canMakeOrgs?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     isOrganizer?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+    preferredLang?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     avatar?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     organizations?: Resolver<
         Maybe<ResolversTypes['OrganizationConnection']>,
@@ -2528,6 +2535,12 @@ export type MutationResolvers<
         ParentType,
         ContextType,
         RequireFields<MutationremoveOrganizerArgs, 'input'>
+    >;
+    updatePreferedLanguage?: Resolver<
+        ResolversTypes['UserMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationupdatePreferedLanguageArgs, 'language'>
     >;
     logout?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
     createBroadcastMessage?: Resolver<
@@ -4009,6 +4022,7 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         isAdmin?: LoaderResolver<Maybe<Scalars['Boolean']>, User, {}, TContext>;
         canMakeOrgs?: LoaderResolver<Maybe<Scalars['Boolean']>, User, {}, TContext>;
         isOrganizer?: LoaderResolver<Maybe<Scalars['Boolean']>, User, {}, TContext>;
+        preferredLang?: LoaderResolver<Maybe<Scalars['String']>, User, {}, TContext>;
         avatar?: LoaderResolver<Maybe<Scalars['String']>, User, {}, TContext>;
         organizations?: LoaderResolver<Maybe<OrganizationConnection>, User, UserorganizationsArgs, TContext>;
         events?: LoaderResolver<Maybe<EventConnection>, User, UsereventsArgs, TContext>;

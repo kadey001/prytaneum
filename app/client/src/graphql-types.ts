@@ -817,6 +817,7 @@ export type Mutation = {
   updateOrganization: OrganizationMutationResponse;
   updateOrganizer: UserMutationResponse;
   updatePassword: UserMutationResponse;
+  updatePreferedLanguage: UserMutationResponse;
   updateQuestionPosition: EventQuestionMutationResponse;
   updateSpeaker: EventSpeakerMutationResponse;
   updateTopic?: Maybe<TopicMutationResponse>;
@@ -1159,6 +1160,11 @@ export type MutationUpdateOrganizerArgs = {
 
 export type MutationUpdatePasswordArgs = {
   input: UpdatePasswordForm;
+};
+
+
+export type MutationUpdatePreferedLanguageArgs = {
+  language: Scalars['String'];
 };
 
 
@@ -1792,6 +1798,7 @@ export type User = Node & {
   moderatorOf?: Maybe<Scalars['Boolean']>;
   /** Organizations that this user belongs to */
   organizations?: Maybe<OrganizationConnection>;
+  preferredLang?: Maybe<Scalars['String']>;
   /** All the users */
   users?: Maybe<UserConnection>;
 };

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c7d9d8c72eeea5d94ae19b627c7b6aeb>>
+ * @generated SignedSource<<46d1e848eaa0c45ebce2cb3c3f8bf469>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -110,6 +110,13 @@ const node: ConcreteRequest = {
             "kind": "ScalarField",
             "name": "isAdmin",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "preferredLang",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -117,12 +124,12 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "cacheID": "d3f2a7dd37d12d5a2f21a606ef152f5a",
+    "cacheID": "aeb59eed82912260f4a87f63ec483906",
     "id": null,
     "metadata": {},
     "name": "UserSideNavQuery",
     "operationKind": "query",
-    "text": "query UserSideNavQuery {\n  me {\n    ...useUserFragment\n    id\n  }\n}\n\nfragment useUserFragment on User {\n  id\n  firstName\n  lastName\n  email\n  avatar\n  isOrganizer\n  isAdmin\n}\n"
+    "text": "query UserSideNavQuery {\n  me {\n    ...useUserFragment\n    id\n  }\n}\n\nfragment useUserFragment on User {\n  id\n  firstName\n  lastName\n  email\n  avatar\n  isOrganizer\n  isAdmin\n  preferredLang\n}\n"
   }
 };
 

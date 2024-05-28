@@ -17,6 +17,7 @@ import ArrowDropDown from '@mui/icons-material/ArrowDropDown';
 import ExitToApp from '@mui/icons-material/ExitToApp';
 import MoreVert from '@mui/icons-material/MoreVert';
 import Settings from '@mui/icons-material/Settings';
+import LanguageIcon from '@mui/icons-material/Language';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { Skeleton } from '@mui/material';
@@ -31,6 +32,7 @@ import useLogout from '@local/features/accounts/useLogout';
 import { USER_CONTEXT_QUERY } from '@local/features/accounts/UserContext';
 import { UserContextQuery } from '@local/__generated__/UserContextQuery.graphql';
 import { getHashedColor } from '@local/core/getHashedColor';
+import { ChooseLangaugeForm } from '@local/components/ChooseLanguageForm/ChooseLanguageForm';
 
 export function UserMenuLoader() {
     return (
@@ -80,7 +82,7 @@ function UserName() {
     );
 }
 
-type TButtons = 'login' | 'register' | null;
+type TButtons = 'login' | 'register' | 'language' | null;
 export function UserMenu({ queryRef }: UserMenuProps) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     // TODO remove unused query
@@ -243,6 +245,12 @@ export function UserMenu({ queryRef }: UserMenuProps) {
                             </ListItemIcon>
                             <ListItemText primary='Settings' />
                         </MenuItem>
+                        <MenuItem onClick={handleClick('language')}>
+                            <ListItemIcon>
+                                <LanguageIcon />
+                            </ListItemIcon>
+                            <ListItemText primary='Language' />
+                        </MenuItem>
                         <MenuItem onClick={logoutUser}>
                             <ListItemIcon>
                                 <ExitToApp />
@@ -250,6 +258,26 @@ export function UserMenu({ queryRef }: UserMenuProps) {
                             <ListItemText primary='Logout' />
                         </MenuItem>
                     </Menu>
+                    <ResponsiveDialog
+                        open={type === 'language'}
+                        onClose={close}
+                        sx={{
+                            '& .MuiDialog-container': {
+                                justifyContent: 'flex-end',
+                                alignItems: 'flex-start',
+                            },
+                        }}
+                    >
+                        <DialogContent>
+                            <ChooseLangaugeForm
+                                preferredLang={user?.preferredLang}
+                                onSuccess={() => {
+                                    close();
+                                    router.reload();
+                                }}
+                            />
+                        </DialogContent>
+                    </ResponsiveDialog>
                 </>
             )}
         </div>
