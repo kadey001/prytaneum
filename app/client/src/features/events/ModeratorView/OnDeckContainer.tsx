@@ -66,7 +66,7 @@ export function OnDeckContainer({ id, questions, questionRecord, connections }: 
                         }}
                     >
                         <Typography align='center' variant='body1' marginTop='1rem'>
-                            Drag and drop questions from the topic queue to here to start the On Deck Queue.
+                            Drag and drop questions from the question queue to here to start the On Deck Queue.
                         </Typography>
                     </Box>
                 </Grid>
