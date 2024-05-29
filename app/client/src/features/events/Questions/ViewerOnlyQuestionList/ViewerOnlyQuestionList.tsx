@@ -138,17 +138,12 @@ export function ViewerOnlyQuestionList({ fragmentRef, isVisible }: ViewerOnlyQue
                     <Grid item xs='auto'>
                         {user && (
                             <IconButton color={isSearchOpen ? 'primary' : 'default'} onClick={toggleSearch}>
-                                <SearchIcon />
+                                <SearchIcon fontSize='large' />
                             </IconButton>
                         )}
                     </Grid>
-                    <Grid item xs='auto'>
-                        <AskQuestion eventId={eventId} />
-                    </Grid>
-                    <Grid item xs='auto'>
-                        <div style={{ display: 'none' }} />
-                    </Grid>
                 </Grid>
+                <AskQuestion eventId={eventId} viewerOnly={true} />
                 <ListFilter
                     // filterMap={filterFuncs}
                     onFilterChange={handleFilterChange}
