@@ -22,7 +22,7 @@ function generateNewRedisClient(logger: FastifyBaseLogger) {
         for (let i = 0; i < 7; i++) {
             clusterNodes.push({
                 host: process.env[`REDIS_HOST_${i}`],
-                port: Number(process.env[`REDIS_PORT_${i}`]),
+                port: Number(process.env.REDIS_PORT),
             });
         }
         logger.info('Running on cluster mode with nodes: ', JSON.stringify(clusterNodes));
