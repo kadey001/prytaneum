@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0a213293a6768bb15011b298ccba9097>>
+ * @generated SignedSource<<028bd237e2a7a3020f9ab65a5bb3fcb9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,11 +19,6 @@ export type useOnDeckDequeuedSubscription$data = {
       readonly cursor: string;
       readonly node: {
         readonly id: string;
-        readonly onDeckPosition: string;
-        readonly position: string;
-        readonly topics: ReadonlyArray<{
-          readonly position: string;
-        }> | null;
       };
     };
   };
@@ -59,32 +54,6 @@ v3 = {
   "storageKey": null
 },
 v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "position",
-  "storageKey": null
-},
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "onDeckPosition",
-  "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "concreteType": "EventQuestionTopic",
-  "kind": "LinkedField",
-  "name": "topics",
-  "plural": true,
-  "selections": [
-    (v4/*: any*/)
-  ],
-  "storageKey": null
-},
-v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -125,14 +94,11 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v3/*: any*/),
-                  (v4/*: any*/),
-                  (v5/*: any*/),
-                  (v6/*: any*/)
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v7/*: any*/)
+              (v4/*: any*/)
             ],
             "storageKey": null
           }
@@ -192,14 +158,11 @@ return {
                         "variableName": "connections"
                       }
                     ]
-                  },
-                  (v4/*: any*/),
-                  (v5/*: any*/),
-                  (v6/*: any*/)
+                  }
                 ],
                 "storageKey": null
               },
-              (v7/*: any*/)
+              (v4/*: any*/)
             ],
             "storageKey": null
           }
@@ -209,16 +172,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8f603eb6bceaf36009ea0dd4ab2b0927",
+    "cacheID": "b5c1cf78b89e28fd02eb2441535a986c",
     "id": null,
     "metadata": {},
     "name": "useOnDeckDequeuedSubscription",
     "operationKind": "subscription",
-    "text": "subscription useOnDeckDequeuedSubscription(\n  $eventId: ID!\n) {\n  enqueuedRemoveQuestion(eventId: $eventId) {\n    edge {\n      node {\n        id\n        position\n        onDeckPosition\n        topics {\n          position\n        }\n      }\n      cursor\n    }\n  }\n}\n"
+    "text": "subscription useOnDeckDequeuedSubscription(\n  $eventId: ID!\n) {\n  enqueuedRemoveQuestion(eventId: $eventId) {\n    edge {\n      node {\n        id\n      }\n      cursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1173a6ee42438809ba8948c19386390f";
+(node as any).hash = "0eba2514c548e0288fdc741e5a490364";
 
 export default node;
