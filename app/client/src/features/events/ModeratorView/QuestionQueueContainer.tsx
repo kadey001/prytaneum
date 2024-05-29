@@ -32,7 +32,11 @@ export function QuestionQueueContainer({ id, questions, topic }: Props) {
                     color: '#B5B5B5',
                 }}
             >
-                <Typography variant='caption'>Drag and drop questions to re-order queue or add to on deck</Typography>
+                {questions.length > 0 && (
+                    <Typography variant='caption'>
+                        Drag and drop questions to re-order queue or add to on deck
+                    </Typography>
+                )}
             </Grid>
             <SortableContext id={id as string} items={questions} strategy={verticalListSortingStrategy}>
                 {questions.length > 0 &&
