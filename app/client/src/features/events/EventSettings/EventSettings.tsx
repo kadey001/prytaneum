@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { graphql, PreloadedQuery, usePreloadedQuery } from 'react-relay';
-import { Typography, Divider, useMediaQuery } from '@mui/material';
+import { Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { SettingsMenu } from '@local/components/SettingsMenu';
@@ -97,7 +97,6 @@ export function EventSettings({ queryRef }: Props) {
                 <Typography variant='h2' margin={theme.spacing(0, 0, 2, 0)}>
                     Event Settings
                 </Typography>
-                <Divider style={{ width: '85%' }} />
                 {data.node && (
                     <SettingsMenu
                         config={[
