@@ -1,5 +1,16 @@
 import * as React from 'react';
-import { Avatar, Button, DialogContent, Grid, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
+import {
+    Avatar,
+    Button,
+    Card,
+    CardHeader,
+    DialogContent,
+    Grid,
+    IconButton,
+    Stack,
+    Tooltip,
+    Typography,
+} from '@mui/material';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
@@ -74,43 +85,39 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
 
     return (
         <React.Fragment>
-            <Paper style={{ width: '100%', padding: '0.75rem' }}>
-                <Stack direction='row' alignItems='center' display='grid'>
-                    <Avatar sx={{ bgcolor: avatarColor }}>{authorName[0]}</Avatar>
-                    <Stack direction='row' alignItems='center' spacing={0.5}>
-                        {participant.moderatorOf ? (
-                            <Tooltip title='Verified Moderator' placement='top'>
-                                <VerifiedUserIcon
-                                    fontSize='small'
-                                    sx={{ color: (theme) => theme.palette.primary.main }}
-                                />
-                            </Tooltip>
-                        ) : null}
-                        <Typography variant='body1'>{participant.firstName + ' ' + participant.lastName}</Typography>
-                    </Stack>
-                    <Grid item gridColumn='5/6' justifySelf='center' width='50px'>
-                        {participant.moderatorOf ? (
-                            <Tooltip title='Cannot mute moderators' placement='top'>
-                                <IconButton>
-                                    <VolumeUpIcon color='info' />
-                                </IconButton>
-                            </Tooltip>
+            <Card style={{ width: '100%' }}>
+                <CardHeader
+                    avatar={<Avatar sx={{ bgcolor: avatarColor }}>{authorName[0]}</Avatar>}
+                    title={
+                        participant.moderatorOf ? (
+                            <Stack direction='row' alignItems='center'>
+                                <Tooltip title='Verified Moderator' placement='top'>
+                                    <VerifiedUserIcon
+                                        fontSize='small'
+                                        sx={{ color: (theme) => theme.palette.primary.main }}
+                                    />
+                                </Tooltip>
+                                {authorName}
+                            </Stack>
                         ) : (
-                            <IconButton onClick={open}>
-                                {participant.isMuted ? (
-                                    <Tooltip title='Unmute Participant' placement='top'>
-                                        <VolumeOffIcon color='error' />
-                                    </Tooltip>
-                                ) : (
-                                    <Tooltip title='Mute Participant' placement='top'>
-                                        <VolumeUpIcon color='success' />
-                                    </Tooltip>
-                                )}
-                            </IconButton>
-                        )}
-                    </Grid>
-                </Stack>
-            </Paper>
+                            authorName
+                        )
+                    }
+                    action={
+                        <IconButton onClick={open}>
+                            {participant.isMuted ? (
+                                <Tooltip title='Unmute Participant' placement='top'>
+                                    <VolumeOffIcon color='error' />
+                                </Tooltip>
+                            ) : (
+                                <Tooltip title='Mute Participant' placement='top'>
+                                    <VolumeUpIcon color='success' />
+                                </Tooltip>
+                            )}
+                        </IconButton>
+                    }
+                />
+            </Card>
             <ResponsiveDialog open={isOpen} onClose={close}>
                 <DialogContent>
                     <Typography variant='h6'>
