@@ -2,13 +2,19 @@
 name: Prytaneum Test end-to-end
 
 on:
-    pull_request:
+    push:
         branches:
             - staging
         paths:
             - 'app/client/**'
             - 'app/server/**'
             - 'app/e2e/**'
+    pull_request:
+        branches:
+            - staging
+        paths:
+            - 'app/e2e/**'
+    workflow_dispatch:
 
 jobs:
     e2e:
