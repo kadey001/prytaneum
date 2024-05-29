@@ -107,10 +107,6 @@ function QuestionCardSkeleton() {
 }
 
 export function QuestionListSkeleton({ xlUpBreakpoint }: { xlUpBreakpoint: boolean }) {
-    // const theme = useTheme();
-    // const xlUpBreakpoint = useMediaQuery(theme.breakpoints.up('xl'));
-    console.log('Brekapoint: ', xlUpBreakpoint);
-
     const count = xlUpBreakpoint ? 8 : 5;
 
     const cache = new CellMeasurerCache({

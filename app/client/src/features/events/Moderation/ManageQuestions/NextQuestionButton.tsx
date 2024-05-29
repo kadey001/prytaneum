@@ -27,9 +27,11 @@ export function NextQuestionButton(props: ButtonProps) {
 
     return (
         <Tooltip title='Next Question' placement='left'>
-            <IconButton {...props} onClick={handleClick} sx={{ color: (theme) => theme.palette.primary.main }}>
-                <ArrowForwardIcon />
-            </IconButton>
+            <div>
+                <IconButton {...props} onClick={handleClick} sx={{ color: (theme) => theme.palette.primary.main }}>
+                    <ArrowForwardIcon />
+                </IconButton>
+            </div>
         </Tooltip>
     );
 }

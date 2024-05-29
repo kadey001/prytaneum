@@ -61,10 +61,12 @@ export function OnDeckContainer({ id, questions, questionRecord, connections }: 
                             borderWidth: 3,
                             borderColor: (theme) => theme.palette.grey[500],
                             borderStyle: 'dashed',
+                            marginLeft: '0.5rem',
+                            marginTop: '0.5rem',
                         }}
                     >
                         <Typography align='center' variant='body1' marginTop='1rem'>
-                            Drag and drop questions from the topic queue to here to start the On Deck Queue.
+                            Drag and drop questions from the question queue to here to start the On Deck Queue.
                         </Typography>
                     </Box>
                 </Grid>

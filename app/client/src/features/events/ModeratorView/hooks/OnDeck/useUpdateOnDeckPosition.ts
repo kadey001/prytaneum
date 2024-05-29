@@ -90,8 +90,6 @@ export function useUpdateOnDeckPosition({ eventId }: Props) {
             // Handle if being moved to the middle of the list
             const nextQuestion = list[destIndex + 1];
             const prevQuestion = list[destIndex - 1];
-            // console.log('Next Question:', nextQuestion);
-            // console.log('Prev Question:', prevQuestion);
             const nextQuestionPosition = parseInt(nextQuestion.onDeckPosition);
             const prevQuestionPosition = parseInt(prevQuestion.onDeckPosition);
             const diff = Math.abs(nextQuestionPosition - prevQuestionPosition);

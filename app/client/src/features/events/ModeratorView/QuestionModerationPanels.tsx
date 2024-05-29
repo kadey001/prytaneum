@@ -16,8 +16,9 @@ import {
 import { Panel, PanelGroup } from 'react-resizable-panels';
 import { arrayMove } from '@dnd-kit/sortable';
 import { QuestionListContainer } from './QuestionListContainer';
-import { SelectChangeEvent, Stack, Tab, useMediaQuery } from '@mui/material';
+import { SelectChangeEvent, Stack, Tab, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import LinkIcon from '@mui/icons-material/Link';
 
 import { Node } from './EventLiveNewModeratorView';
 import { useOnDeck } from './hooks/OnDeck/useOnDeck';
@@ -354,7 +355,13 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                             </StyledColumnGrid>
                         </Stack>
                     </Panel>
-                    <VerticalPanelResizeHandle />
+                    <VerticalPanelResizeHandle
+                        alternateIcon={
+                            <Tooltip title='These lists are linked, changing the topic updates both the question list and queue!'>
+                                <LinkIcon sx={{ color: theme.palette.custom.darkCreamCan }} />
+                            </Tooltip>
+                        }
+                    />
                     <Panel defaultSize={33} minSize={25} maxSize={50}>
                         <Stack direction='column' alignItems='center' height='100%' width='100%'>
                             <StyledTabs value='Question Queue'>

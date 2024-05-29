@@ -38,7 +38,6 @@ export function LockTopics({ selectedTopics, setTopics, setSelectedTopics }: Pro
     }, [setTopics, setSelectedTopics]);
 
     const handleLockTopics = () => {
-        console.log('Locking topics: ', selectedTopics);
         lockTopics(selectedTopics, onSuccess);
         closeConfirmDialog();
     };

@@ -27,9 +27,11 @@ export function PreviousQuestionButton(props: ButtonProps) {
 
     return (
         <Tooltip title='Previous Question' placement='right' sx={{ color: (theme) => theme.palette.primary.main }}>
-            <IconButton {...props} onClick={handleClick}>
-                <ArrowBackIcon />
-            </IconButton>
+            <div>
+                <IconButton {...props} onClick={handleClick}>
+                    <ArrowBackIcon />
+                </IconButton>
+            </div>
         </Tooltip>
     );
 }

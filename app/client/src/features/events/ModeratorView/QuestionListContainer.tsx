@@ -70,7 +70,7 @@ export function QuestionListContainer({
     } = useQuestionsByTopic({ fragmentRef });
     const [isFrozen, setIsFrozen] = React.useState(false);
     const [frozenQuestions, setFrozenQuestions] = React.useState<typeof questions>(questions);
-    const QUESTIONS_BATCH_SIZE = 10;
+    const QUESTIONS_BATCH_SIZE = 25;
     const allConnections = React.useMemo(
         () => [...connections, ...questionsByTopicConnections],
         [connections, questionsByTopicConnections]
@@ -94,13 +94,6 @@ export function QuestionListContainer({
 
     React.useEffect(() => {
         refetch({ topic }, { fetchPolicy: 'store-and-network' });
-        // TODO: Find a better way to scroll to top when topic changes
-        const timeout = setTimeout(() => {
-            if (listRef.current) {
-                listRef.current.scrollToPosition(0);
-            }
-        }, 500);
-        return () => clearTimeout(timeout);
     }, [refetch, topic]);
 
     const toggleSearch = React.useCallback(() => setIsSearchOpen((prev) => !prev), [setIsSearchOpen]);
@@ -120,9 +113,16 @@ export function QuestionListContainer({
         setFrozenQuestions(questions);
     }
 
-    // Reset the frozen state when the topic changes
+    // Handle topic change
     React.useEffect(() => {
         if (isFrozen) setIsFrozen(false);
+        // TODO: Find a better way to scroll to top when topic changes
+        const timeout = setTimeout(() => {
+            if (listRef.current) {
+                listRef.current.scrollToPosition(0);
+            }
+        }, 50);
+        return () => clearTimeout(timeout);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [topic]);
 
@@ -269,7 +269,7 @@ export function QuestionListContainer({
                     loadMoreRows={loadMoreRows}
                     minimumBatchSize={QUESTIONS_BATCH_SIZE}
                     rowCount={listLength}
-                    threshold={5}
+                    threshold={15}
                 >
                     {({ onRowsRendered, registerChild }) => (
                         <AutoSizer>
@@ -286,7 +286,7 @@ export function QuestionListContainer({
                                     rowHeight={cache.rowHeight}
                                     rowRenderer={rowRenderer}
                                     onRowsRendered={onRowsRendered}
-                                    scrollToRow={1}
+                                    overscanRowCount={10}
                                 />
                             )}
                         </AutoSizer>

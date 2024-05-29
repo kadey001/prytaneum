@@ -64,7 +64,7 @@ export function EnqueueQuestionButton({ questionId }: QueueButtonProps) {
                 if (!eventRecord) return console.error('Event Record not found');
                 const connection = ConnectionHandler.getConnectionID(
                     eventRecord.getDataID(),
-                    'useQuestionsByTopicFragment_questions'
+                    'useQuestionsByTopicFragment_questionsByTopic'
                 );
                 // Need to do this workaround because the compiler in current version doesn't allow correctly naming the connection with _connection at the end.
                 const connectionId = connection + `(topic:"${topic}")`;
@@ -90,10 +90,10 @@ export function EnqueueQuestionButton({ questionId }: QueueButtonProps) {
         });
     };
     return (
-        <Tooltip title='Enqueue Question' placement='left'>
-            <IconButton onClick={handleClick}>
+        <IconButton onClick={handleClick}>
+            <Tooltip title='Enqueue Question' placement='bottom'>
                 <AddCircleIcon sx={{ color: (theme) => theme.palette.primary.main }} fontSize='medium' />
-            </IconButton>
-        </Tooltip>
+            </Tooltip>
+        </IconButton>
     );
 }

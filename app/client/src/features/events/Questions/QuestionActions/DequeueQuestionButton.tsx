@@ -67,7 +67,7 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
                 // Add edge back to the question list by topic
                 const questionsByTopicConnection = ConnectionHandler.getConnectionID(
                     eventRecord.getDataID(),
-                    'useQuestionsByTopicFragment_questions'
+                    'useQuestionsByTopicFragment_questionsByTopic'
                 );
                 const questionsByTopicConnectionId = questionsByTopicConnection + `(topic:"${topic}")`;
                 const questionsByTopicConnectionRecord = store.get(questionsByTopicConnectionId);
@@ -83,10 +83,10 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
         });
     };
     return (
-        <Tooltip title='Dequeue Question' placement='left'>
-            <IconButton onClick={handleClick}>
+        <IconButton onClick={handleClick}>
+            <Tooltip title='Dequeue Question' placement='bottom'>
                 <RemoveCircleIcon color='warning' fontSize='medium' />
-            </IconButton>
-        </Tooltip>
+            </Tooltip>
+        </IconButton>
     );
 }
