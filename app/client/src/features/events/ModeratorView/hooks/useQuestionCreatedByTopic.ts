@@ -66,7 +66,7 @@ export function useQuestionCreatedByTopic({ connections, topic }: { connections:
                 // Always pdate the default topic list
                 const questionsByTopicConnection = ConnectionHandler.getConnectionID(
                     eventRecord.getDataID(),
-                    'useQuestionsByTopicFragment_questions'
+                    'useQuestionsByTopicFragment_questionsByTopic'
                 );
                 const connectionId = questionsByTopicConnection + '(topic:"default")';
                 const connectionRecord = store.get(connectionId);
