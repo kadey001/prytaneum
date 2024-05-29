@@ -18,6 +18,7 @@ import { generateUUID } from '@local/core/utils';
 export interface AskQuestionProps {
     className?: string;
     eventId: string;
+    viewerOnly?: boolean;
 }
 
 export const ASK_QUESTION_MUTATION = graphql`
@@ -42,7 +43,7 @@ export const ASK_QUESTION_MUTATION = graphql`
     }
 `;
 
-function AskQuestion({ className, eventId }: AskQuestionProps) {
+function AskQuestion({ className, eventId, viewerOnly = false }: AskQuestionProps) {
     const [isOpen, open, close] = useResponsiveDialog();
     const [isLoading, setIsLoading] = React.useState(false);
     const { user } = useUser();
@@ -86,10 +87,21 @@ function AskQuestion({ className, eventId }: AskQuestionProps) {
                     const eventRecord = store.get(eventId);
                     if (!eventRecord) return console.error('Update failed: Event record not found!');
 
-                    const connectionId = ConnectionHandler.getConnectionID(
-                        eventRecord.getDataID(),
-                        'useQuestionListFragment_questions'
-                    );
+                    let connectionId = '';
+                    // If the viewerOnly flag is set, we want to update the viewerOnlyQuestionList instead
+                    if (viewerOnly) {
+                        connectionId =
+                            ConnectionHandler.getConnectionID(
+                                eventRecord.getDataID(),
+                                'useViewerOnlyQuestionListFragment_questions'
+                            ) + '(viewerOnly:true)';
+                    } else {
+                        connectionId = ConnectionHandler.getConnectionID(
+                            eventRecord.getDataID(),
+                            'useQuestionListFragment_questions'
+                        );
+                    }
+
                     // Need to do this workaround because the compiler in current version doesn't allow correctly naming the connection with _connection at the end.
                     const connectionRecord = store.get(connectionId);
                     if (!connectionRecord) return console.error('Update failed: Connection record not found!');
@@ -106,15 +118,26 @@ function AskQuestion({ className, eventId }: AskQuestionProps) {
                     ConnectionHandler.insertEdgeBefore(connectionRecord, newEdge);
                 },
                 optimisticUpdater: (store) => {
-                    console.log('Optimistic update');
                     // Get the record for the Feedback object
                     const eventRecord = store.get(eventId);
                     if (!eventRecord) return console.error('Optimistic update failed: Event record not found!');
-                    // Get the connection for the question list
-                    const connectionId = ConnectionHandler.getConnectionID(
-                        eventRecord.getDataID(),
-                        'useQuestionListFragment_questions'
-                    );
+
+                    let connectionId = '';
+                    // If the viewerOnly flag is set, we want to update the viewerOnlyQuestionList instead
+                    if (viewerOnly) {
+                        connectionId =
+                            ConnectionHandler.getConnectionID(
+                                eventRecord.getDataID(),
+                                'useViewerOnlyQuestionListFragment_questions'
+                            ) + '(viewerOnly:true)';
+                    } else {
+                        // Get the connection for the question list
+                        connectionId = ConnectionHandler.getConnectionID(
+                            eventRecord.getDataID(),
+                            'useQuestionListFragment_questions'
+                        );
+                    }
+
                     // Need to do this workaround because the compiler in current version doesn't allow correctly naming the connection with _connection at the end.
                     const connectionRecord = store.get(connectionId);
                     if (!connectionRecord)
