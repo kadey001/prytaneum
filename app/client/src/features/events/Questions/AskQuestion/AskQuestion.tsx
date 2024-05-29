@@ -106,7 +106,6 @@ function AskQuestion({ className, eventId }: AskQuestionProps) {
                     ConnectionHandler.insertEdgeBefore(connectionRecord, newEdge);
                 },
                 optimisticUpdater: (store) => {
-                    console.log('Optimistic update');
                     // Get the record for the Feedback object
                     const eventRecord = store.get(eventId);
                     if (!eventRecord) return console.error('Optimistic update failed: Event record not found!');

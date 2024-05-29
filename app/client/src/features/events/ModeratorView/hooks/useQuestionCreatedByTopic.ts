@@ -62,7 +62,6 @@ export function useQuestionCreatedByTopic({ connections, topic }: { connections:
                 const serverEdge = payload.getLinkedRecord('edge');
                 const topics = serverEdge.getLinkedRecord('node').getLinkedRecords('topics');
                 const topicNames = topics.map((_topic) => _topic.getValue('topic'));
-                console.log('topics', topicNames);
 
                 // Always pdate the default topic list
                 const questionsByTopicConnection = ConnectionHandler.getConnectionID(

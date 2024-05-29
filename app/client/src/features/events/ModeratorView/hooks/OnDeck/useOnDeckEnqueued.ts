@@ -172,11 +172,9 @@ export function useOnDeckEnqueued({ topics }: Props) {
 
             // In this case we should have at least one question above it to reference and calculate the new position
             const prevQuestion = list[movedQuestionIndex - 1];
-            console.log('prevQuestion:', prevQuestion);
             const prevQuestionPosition = parseInt(prevQuestion.onDeckPosition);
             if (prevQuestionPosition === -1) throw new Error('Invalid previous question position');
             const nextQuestion = list[movedQuestionIndex + 1];
-            console.log('nextQuestion:', nextQuestion);
             // If there is no next question then we should be at the end of the list
             if (!nextQuestion) {
                 // If there is no next question then the new position should be greater than the previous question
@@ -188,7 +186,6 @@ export function useOnDeckEnqueued({ topics }: Props) {
             // If there is a next question then the new position should be between the previous and next question
             // Since the numbers are so large (time in ms) then we can just find the difference and add half of it to the previous question
             const diff = Math.abs(nextQuestionPosition - prevQuestionPosition);
-            console.log('diff:', diff);
             if (diff <= 0) throw new Error('Invalid difference');
             const position = Math.round(prevQuestionPosition + diff / 2);
             // const position = Math.round((prevQuestionPosition + parseInt(nextQuestion.onDeckPosition)) / 2);
@@ -213,7 +210,6 @@ export function useOnDeckEnqueued({ topics }: Props) {
         (input: AddQuestionToOnDeckInput) => {
             const { list, movedQuestionIndex } = input;
             const newPosition = calculatePosition(list, movedQuestionIndex, input.currentQuestionPosition);
-            console.log('newPosition:', newPosition);
             if (newPosition <= -1) {
                 displaySnack('Invalid new position', { variant: 'error' });
             }
@@ -225,9 +221,6 @@ export function useOnDeckEnqueued({ topics }: Props) {
                         questionId: input.questionId,
                         newPosition: newPosition.toString(),
                     },
-                },
-                onCompleted: (response) => {
-                    console.log('onCompleted', response);
                 },
                 updater: (store) => {
                     // Remove the question from all topic queues and lists when added to On Deck

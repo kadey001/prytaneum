@@ -127,7 +127,6 @@ export function useUpdateTopicQueuePosition({ eventId, topic }: Props) {
                 currentQuestionPosition,
                 currentTopic
             );
-            console.log('New Position:', newPosition);
 
             commit({
                 variables: {
