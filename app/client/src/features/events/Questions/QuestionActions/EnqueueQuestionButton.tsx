@@ -90,10 +90,10 @@ export function EnqueueQuestionButton({ questionId }: QueueButtonProps) {
         });
     };
     return (
-        <Tooltip title='Enqueue Question' placement='left'>
-            <IconButton onClick={handleClick}>
+        <IconButton onClick={handleClick}>
+            <Tooltip title='Enqueue Question' placement='bottom'>
                 <AddCircleIcon sx={{ color: (theme) => theme.palette.primary.main }} fontSize='medium' />
-            </IconButton>
-        </Tooltip>
+            </Tooltip>
+        </IconButton>
     );
 }

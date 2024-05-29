@@ -83,10 +83,10 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
         });
     };
     return (
-        <Tooltip title='Dequeue Question' placement='left'>
-            <IconButton onClick={handleClick}>
+        <IconButton onClick={handleClick}>
+            <Tooltip title='Dequeue Question' placement='bottom'>
                 <RemoveCircleIcon color='warning' fontSize='medium' />
-            </IconButton>
-        </Tooltip>
+            </Tooltip>
+        </IconButton>
     );
 }
