@@ -19,9 +19,15 @@ export function QuestionQueueContainer({ id, questions, topic }: Props) {
         <Stack direction='column' maxHeight={0} width='100%'>
             {questions.length === 0 && (
                 <Grid container justifyContent='center' padding='1rem'>
-                    <Typography align='center' variant='h5' marginTop='1rem'>
-                        No Questions enqueued for topic: {topic} yet.
-                    </Typography>
+                    {topic === 'default' ? (
+                        <Typography align='center' variant='body1' marginTop='1rem'>
+                            No questions enqueued yet.
+                        </Typography>
+                    ) : (
+                        <Typography align='center' variant='body1' marginTop='1rem'>
+                            No Questions enqueued for topic: {'"' + topic + '"'} yet.
+                        </Typography>
+                    )}
                     <div ref={setNodeRef} />
                 </Grid>
             )}
