@@ -1,16 +1,14 @@
 import * as React from 'react';
-import { Grid, Divider, useMediaQuery } from '@mui/material';
+import { useMediaQuery, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import { ResponsiveDialog } from '@local/components/ResponsiveDialog';
-
 import { SettingsMenu } from '@local/components/SettingsMenu/SettingsMenu';
-import { useUser } from '@local/features/accounts';
 
 import { ModifyUserEmail, ModifyUserPassword, DeleteAccount } from './components';
+import { useUserFragment$data } from '@local/__generated__/useUserFragment.graphql';
 
 interface Props {
-    id?: string;
+    user: useUserFragment$data;
 }
 
 /**
@@ -23,61 +21,42 @@ interface Props {
  * @category Pages/Auth
  * @constructor UserSettings
  * @param Props
- * @param {string} id id of the container for testing if it exists or styling. Also just for general specification of the element
  */
-export default function UserSettings({ id }: Props) {
+export default function UserSettings({ user }: Props) {
     const theme = useTheme();
-    const lgUpBreakpoint = useMediaQuery(theme.breakpoints.up('lg'));
-    const [open, setOpen] = React.useState(false);
-    const [cont, setContent] = React.useState<JSX.Element | null>(null);
-    const { user } = useUser();
+    const xlBreakpointUp = useMediaQuery(theme.breakpoints.up('xl'));
+    const lgBreakpointUp = useMediaQuery(theme.breakpoints.up('lg'));
 
-    React.useEffect(() => {
-        if (cont !== null) setOpen(true);
-        if (cont === null) setOpen(false);
-    }, [cont]);
-
-    const sections = [
-        {
-            title: 'Account Settings',
-            description: 'View Account Settings',
-            component: !user ? (
-                <></>
-            ) : (
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <ModifyUserEmail user={user} />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Divider />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <ModifyUserPassword user={user} />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Divider />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <DeleteAccount user={user} />
-                    </Grid>
-                </Grid>
-            ),
-        },
-    ];
+    const getContainerStyles = React.useMemo(() => {
+        if (xlBreakpointUp) return { width: '80%', marginLeft: '300px' };
+        if (lgBreakpointUp) return { width: '80%', marginLeft: '250px' };
+        return { width: '100%' };
+    }, [xlBreakpointUp, lgBreakpointUp]);
 
     return (
-        <div
-            id={id}
-            style={{
-                width: lgUpBreakpoint ? '80%' : '100%',
-                height: '100%',
-                marginLeft: lgUpBreakpoint ? '250px' : '0px',
-            }}
-        >
-            <SettingsMenu config={sections} />
-            <ResponsiveDialog open={open} onClose={() => setContent(null)}>
-                {cont || <div />}
-            </ResponsiveDialog>
+        <div id='event-settings-container' style={getContainerStyles}>
+            <Typography variant='h2' margin={theme.spacing(0, 0, 2, 0)}>
+                Event Settings
+            </Typography>
+            <SettingsMenu
+                config={[
+                    {
+                        title: 'Email',
+                        description: 'Update your email',
+                        component: <ModifyUserEmail user={user} />,
+                    },
+                    {
+                        title: 'Password',
+                        description: 'Update your password',
+                        component: <ModifyUserPassword user={user} />,
+                    },
+                    {
+                        title: 'Delete Account',
+                        description: 'Delete your account',
+                        component: <DeleteAccount user={user} />,
+                    },
+                ]}
+            />
         </div>
     );
 }

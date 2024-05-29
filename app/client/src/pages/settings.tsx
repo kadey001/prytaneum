@@ -15,5 +15,5 @@ export default function Settings() {
 
     if (isLoading || !user) return <Loader />;
 
-    return <UserSettings />;
+    return <UserSettings user={user} />;
 }
