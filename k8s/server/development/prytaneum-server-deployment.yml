@@ -115,4 +115,4 @@ spec:
             volumes:
                 - name: 'service-account'
                   secret:
-                      secretName: 'gcp-storage-credentials'
+                      secretName: 'prytaneum-server-credentials'
