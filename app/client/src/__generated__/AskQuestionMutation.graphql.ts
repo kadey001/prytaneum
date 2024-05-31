@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<02ed2a8d4705d00e3ee02ea56eb9704c>>
+ * @generated SignedSource<<ff1599181705c07c1d3941d4728edc07>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type CreateQuestion = {
   eventId: string;
   isFollowUp?: boolean | null;
@@ -18,6 +19,7 @@ export type CreateQuestion = {
 };
 export type AskQuestionMutation$variables = {
   input: CreateQuestion;
+  lang: string;
 };
 export type AskQuestionMutation$data = {
   readonly createQuestion: {
@@ -32,6 +34,7 @@ export type AskQuestionMutation$data = {
         } | null;
         readonly id: string;
         readonly question: string;
+        readonly " $fragmentSpreads": FragmentRefs<"QuestionContentFragment">;
       };
     } | null;
     readonly isError: boolean;
@@ -50,7 +53,9 @@ export type AskQuestionMutation$rawResponse = {
           readonly lastName: string | null;
         } | null;
         readonly id: string;
+        readonly lang: string | null;
         readonly question: string;
+        readonly questionTranslated: string | null;
       };
     } | null;
     readonly isError: boolean;
@@ -69,105 +74,138 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "input"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "lang"
   }
 ],
-v1 = {
+v1 = [
+  {
+    "kind": "Variable",
+    "name": "input",
+    "variableName": "input"
+  }
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isError",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "message",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "cursor",
+  "storageKey": null
+},
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v2 = [
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "createdAt",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "question",
+  "storageKey": null
+},
+v8 = [
   {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "input",
-        "variableName": "input"
-      }
-    ],
-    "concreteType": "EventQuestionMutationResponse",
-    "kind": "LinkedField",
-    "name": "createQuestion",
-    "plural": false,
+    "kind": "Variable",
+    "name": "lang",
+    "variableName": "lang"
+  }
+],
+v9 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "User",
+  "kind": "LinkedField",
+  "name": "createdBy",
+  "plural": false,
+  "selections": [
+    (v5/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "lastName",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+};
+return {
+  "fragment": {
+    "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "AskQuestionMutation",
     "selections": [
       {
         "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "isError",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "message",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": "EventQuestionEdge",
+        "args": (v1/*: any*/),
+        "concreteType": "EventQuestionMutationResponse",
         "kind": "LinkedField",
-        "name": "body",
+        "name": "createQuestion",
         "plural": false,
         "selections": [
+          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "alias": null,
             "args": null,
-            "kind": "ScalarField",
-            "name": "cursor",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "EventQuestion",
+            "concreteType": "EventQuestionEdge",
             "kind": "LinkedField",
-            "name": "node",
+            "name": "body",
             "plural": false,
             "selections": [
-              (v1/*: any*/),
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "createdAt",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "question",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "User",
+                "concreteType": "EventQuestion",
                 "kind": "LinkedField",
-                "name": "createdBy",
+                "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
+                  (v5/*: any*/),
+                  (v6/*: any*/),
+                  (v7/*: any*/),
                   {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "firstName",
-                    "storageKey": null
+                    "args": (v8/*: any*/),
+                    "kind": "FragmentSpread",
+                    "name": "QuestionContentFragment"
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "lastName",
-                    "storageKey": null
-                  }
+                  (v9/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -178,16 +216,6 @@ v2 = [
         "storageKey": null
       }
     ],
-    "storageKey": null
-  }
-];
-return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "AskQuestionMutation",
-    "selections": (v2/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
@@ -196,19 +224,74 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "AskQuestionMutation",
-    "selections": (v2/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "EventQuestionMutationResponse",
+        "kind": "LinkedField",
+        "name": "createQuestion",
+        "plural": false,
+        "selections": [
+          (v2/*: any*/),
+          (v3/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "EventQuestionEdge",
+            "kind": "LinkedField",
+            "name": "body",
+            "plural": false,
+            "selections": [
+              (v4/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "EventQuestion",
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  (v5/*: any*/),
+                  (v6/*: any*/),
+                  (v7/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "lang",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": (v8/*: any*/),
+                    "kind": "ScalarField",
+                    "name": "questionTranslated",
+                    "storageKey": null
+                  },
+                  (v9/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "d00f5cead282251c8c50d706a2b7819c",
+    "cacheID": "4ae67cb4c2a302e340dc0773fabe6528",
     "id": null,
     "metadata": {},
     "name": "AskQuestionMutation",
     "operationKind": "mutation",
-    "text": "mutation AskQuestionMutation(\n  $input: CreateQuestion!\n) {\n  createQuestion(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        createdAt\n        question\n        createdBy {\n          id\n          firstName\n          lastName\n        }\n      }\n    }\n  }\n}\n"
+    "text": "mutation AskQuestionMutation(\n  $input: CreateQuestion!\n  $lang: String!\n) {\n  createQuestion(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        createdAt\n        question\n        ...QuestionContentFragment_3iqx2P\n        createdBy {\n          id\n          firstName\n          lastName\n        }\n      }\n    }\n  }\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n"
   }
 };
 })();
 
-(node as any).hash = "94c478947ace30e68191a156ba374d44";
+(node as any).hash = "46f30654f27ab2f7b553a85ab8c948e3";
 
 export default node;
