@@ -9,19 +9,17 @@ import { useAddTopic } from './hooks/useAddTopic';
 import type { Topic } from './types';
 import { EVENT_TOPIC_DESCRIPTION_MAX_LENGTH, EVENT_TOPIC_TOPIC_MAX_LENGTH } from '@local/utils/rules';
 
-interface Props {
-    setTopics: React.Dispatch<React.SetStateAction<Topic[]>>;
-}
+interface Props {}
 
 /**
  * AddTopic
  * @returns JSX.Element
  * @description Add a new topic to the event.
  */
-export function AddTopic({ setTopics }: Props) {
-    const { isReadingMaterialsUploaded } = React.useContext(TopicContext);
+export function AddTopic({}: Props) {
+    const { isReadingMaterialsUploaded, setTopics } = React.useContext(TopicContext);
     const { displaySnack } = useSnack();
-    const [newTopic, setNewTopic] = React.useState<Topic>({ topic: '', description: '' });
+    const [newTopic, setNewTopic] = React.useState<Topic>({ topic: '', description: '', locked: true });
     const [isOpen, openDialog, closeDialog] = useResponsiveDialog();
     const { addTopic } = useAddTopic();
 
@@ -35,6 +33,8 @@ export function AddTopic({ setTopics }: Props) {
             return;
         }
         const onSuccess = () => {
+            // All created topics are locked by default
+            newTopic.locked = true;
             setTopics((prev) => [...prev, newTopic]);
             closeDialog();
         };
@@ -73,6 +73,7 @@ export function AddTopic({ setTopics }: Props) {
                                 setNewTopic((prev) => ({
                                     topic: e.target.value,
                                     description: prev.description,
+                                    locked: prev.locked,
                                 }));
                             }}
                         />
