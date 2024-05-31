@@ -28,7 +28,6 @@ test.describe('register page', () => {
         await register.fillInEmail('johnDoe@test.com');
         await register.fillInPassword('Password1!');
         await register.fillInConfirmPassword('Password2!');
-        await register.submitRegisterForm();
         // assert
         await register.see(register.failedSnackMismatcedPasswords);
     });
@@ -42,7 +41,6 @@ test.describe('register page', () => {
         await register.fillInEmail('johnDoe@test.com');
         await register.fillInPassword('Password1');
         await register.fillInConfirmPassword('Password1');
-        await register.submitRegisterForm();
         // assert
         await register.see(register.failedSnackPasswordSpecialCharacter);
     });
@@ -56,7 +54,6 @@ test.describe('register page', () => {
         await register.fillInEmail('johnDoe@test.com');
         await register.fillInPassword('Password!');
         await register.fillInConfirmPassword('Password!');
-        await register.submitRegisterForm();
         // assert
         await register.see(register.failedSnackPasswordMissingNumber);
     });
@@ -70,7 +67,6 @@ test.describe('register page', () => {
         await register.fillInEmail('johnDoe@test.com');
         await register.fillInPassword('password1!');
         await register.fillInConfirmPassword('password1!');
-        await register.submitRegisterForm();
         // assert
         await register.see(register.failedSnackPasswordUpperCase);
     });
@@ -84,7 +80,6 @@ test.describe('register page', () => {
         await register.fillInEmail('johnDoe@test.com');
         await register.fillInPassword('PASSWORD1!');
         await register.fillInConfirmPassword('PASSWORD1!');
-        await register.submitRegisterForm();
         // assert
         await register.see(register.failedSnackPasswordLowerCase);
     });
@@ -98,7 +93,6 @@ test.describe('register page', () => {
         await register.fillInEmail('johnDoe@test.com');
         await register.fillInPassword('Pass1!');
         await register.fillInConfirmPassword('Pass1!');
-        await register.submitRegisterForm();
         // assert
         await register.see(register.failedSnackPasswordLength);
     });

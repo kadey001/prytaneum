@@ -131,12 +131,18 @@ export async function register(prisma: PrismaClient, userData: MinimalUser, text
     // This could technically be an attack vector. Say a user creates an account and is trying to see
     // if a particular email is already registered. We should throw the same type of protected error
     // that is used on the account creation page.
-    if (!!user)
+    if (!!user) {
+        sendEmail({
+            to: user.email,
+            subject: 'Email Registration Attempt',
+            template: 'register-attempt',
+        });
         throw new ProtectedError({
             userMessage: ProtectedError.accountCreationErrorMessage,
             // This is probably only useful for debugging purposes, but it's still fine to log this anyways.
             internalMessage: `A user with the email ${email} already exists.`,
         });
+    }
 
     // TODO remove once shadow user account setup prompt is implemented
     if (!textPassword)
@@ -300,12 +306,18 @@ export async function updateEmail(prisma: PrismaClient, input: UpdateEmailForm) 
     // This could technically be an attack vector. Say a user creates an account and is trying to see
     // if a particular email is already registered. We should throw the same type of protected error
     // that is used on the account creation page.
-    if (!!user)
+    if (!!user) {
+        sendEmail({
+            to: user.email,
+            subject: 'Email Change Attempt',
+            template: 'register-attempt',
+        });
         throw new ProtectedError({
             userMessage: ProtectedError.accountCreationErrorMessage,
             // This is probably only useful for debugging purposes, but it's still fine to log this anyways.
             internalMessage: `A user with the email ${newEmail} already exists.`,
         });
+    }
 
     // update user email
     const updatedUser = await prisma.user.update({

@@ -34,20 +34,12 @@ export class PlaywrightRegisterPage {
         this.confirmPasswordInput = page.getByLabel('Confirm Password *');
         this.loginLink = page.getByRole('link', { name: 'Already have an account?' });
         // Snacks
-        this.failedSnackMismatcedPasswords = page.getByText('Passwords must match.');
-        this.failedSnackPasswordSpecialCharacter = page.getByText(
-            'Password missing required complexity: special character.'
-        );
-        this.failedSnackPasswordMissingNumber = page.getByText(
-            'Password missing required complexity: number character.'
-        );
-        this.failedSnackPasswordUpperCase = page.getByText(
-            'Password missing required complexity: upper case character.'
-        );
-        this.failedSnackPasswordLowerCase = page.getByText(
-            'Password missing required complexity: lower case character.'
-        );
-        this.failedSnackPasswordLength = page.getByText('New passwords must be at least 8 characters.');
+        this.failedSnackMismatcedPasswords = page.getByText('Passwords must match');
+        this.failedSnackPasswordSpecialCharacter = page.getByText('Must contain at least one special character');
+        this.failedSnackPasswordMissingNumber = page.getByText('Must contain at least one number');
+        this.failedSnackPasswordUpperCase = page.getByText('Must contain at least one uppercase character');
+        this.failedSnackPasswordLowerCase = page.getByText('Must contain at least one lowercase character');
+        this.failedSnackPasswordLength = page.getByText('Password too short');
         this.failedSnackInternalError = page.getByText(
             'A link to activate your account has been emailed to the address provided.'
         );
