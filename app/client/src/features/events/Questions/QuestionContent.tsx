@@ -11,7 +11,6 @@ import {
     TypographyProps,
 } from '@mui/material';
 import TranslateIcon from '@mui/icons-material/Translate';
-import PublicIcon from '@mui/icons-material/Public';
 
 import type { QuestionContentFragment$key } from '@local/__generated__/QuestionContentFragment.graphql';
 import { useUser } from '@local/features/accounts';
@@ -33,57 +32,52 @@ export const QUESTION_CONTENT_FRAGMENT = graphql`
 export function QuestionContent({ fragmentRef, typographyProps = {}, measure, ...props }: QuestionContentProps) {
     const { user } = useUser();
     const questionContentData = useFragment(QUESTION_CONTENT_FRAGMENT, fragmentRef);
+    const [showOriginalLanguage, setShowOriginalLanguage] = React.useState(false);
+    const toggleShowTranslated = React.useCallback(() => {
+        setShowOriginalLanguage((prev) => !prev);
+    }, []);
 
-    const [showTranslated, setShowTranslated] = React.useState(false);
-
-    const toggleShowTranslated = () => setShowTranslated((prev) => !prev);
-
+    // Updates the size of the auto-sizer when the translation is toggled
     React.useEffect(() => {
         measure?.();
-    }, [measure, showTranslated]);
+    }, [measure, showOriginalLanguage]);
 
     const preferredLang = React.useMemo(() => user?.preferredLang ?? 'EN', [user?.preferredLang]);
-
-    const isTranslated = React.useMemo(
-        () => showTranslated && questionContentData.lang !== preferredLang,
-        [showTranslated, questionContentData.lang, preferredLang]
+    const isQuestionTranslated = React.useMemo(
+        () =>
+            questionContentData.lang !== preferredLang &&
+            questionContentData.questionTranslated !== questionContentData.question,
+        [questionContentData.lang, questionContentData.questionTranslated, questionContentData.question, preferredLang]
     );
-
-    const isLanguagesMatch = React.useMemo(
-        () => questionContentData.lang === preferredLang,
-        [questionContentData.lang, preferredLang]
-    );
-
-    if (!questionContentData) return null;
 
     function translationButton() {
-        // TODO: Fix so when participant asks question they get the translation button as well (if applicable)
         if (!questionContentData.questionTranslated) return null;
-        if (isLanguagesMatch) return null;
+        if (!isQuestionTranslated) return null;
         return (
             <IconButton onClick={toggleShowTranslated} sx={{ padding: 0 }}>
-                <PublicIcon fontSize='small' />
+                <Tooltip title='Translated Question'>
+                    <TranslateIcon fontSize='small' />
+                </Tooltip>
                 <Typography variant='caption' color='black'>
-                    {isTranslated ? 'Hide Translation' : 'View Translation'}
+                    {!showOriginalLanguage ? 'View Original' : 'Hide Original'}
                 </Typography>
             </IconButton>
         );
     }
 
+    if (!questionContentData) return null;
+
     return (
         <CardContent {...props} sx={{ margin: (theme) => theme.spacing(-2, 0, -1, 0) }}>
             <Typography variant='inherit' style={{ wordBreak: 'break-word' }} {...typographyProps}>
-                {questionContentData.question}
+                {questionContentData.questionTranslated}
             </Typography>
             {translationButton()}
-            {isTranslated ? (
+            {showOriginalLanguage ? (
                 <Paper elevation={2} sx={{ padding: '0.5rem' }}>
                     <Stack direction='row' alignItems='center'>
-                        <Tooltip title='Translation'>
-                            <TranslateIcon />
-                        </Tooltip>
                         <Typography variant='inherit' style={{ wordBreak: 'break-word' }} {...typographyProps}>
-                            : {questionContentData.questionTranslated}
+                            {questionContentData.question}
                         </Typography>
                     </Stack>
                 </Paper>
