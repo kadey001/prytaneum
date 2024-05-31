@@ -2,15 +2,8 @@ import React from 'react';
 import { useMutation, graphql } from 'react-relay';
 import { Button, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
 
-import { useSnack } from '@local/core';
+import { useSnack, TLanguages, SUPPORTED_LANGUAGES } from '@local/core';
 import { ChooseLanguageFormMutation } from '@local/__generated__/ChooseLanguageFormMutation.graphql';
-
-const SUPPORTED_LANGUAGES = [
-    { code: 'EN', text: 'English' },
-    { code: 'ES', text: 'Spanish' },
-] as const;
-
-type TLanguages = 'EN' | 'ES';
 
 export const CHOOSE_LANGUAGE_FORM_MUTATION = graphql`
     mutation ChooseLanguageFormMutation($language: String!) {
@@ -67,8 +60,16 @@ export function ChooseLangaugeForm({ preferredLang, onSuccess }: Props) {
                     label='Selected Language'
                     onChange={handleChange}
                 >
-                    {SUPPORTED_LANGUAGES.map(({ code, text }) => (
+                    {SUPPORTED_LANGUAGES.map(({ code, text, country }) => (
                         <MenuItem key={code} value={code}>
+                            <img
+                                loading='lazy'
+                                width='20'
+                                srcSet={`https://flagcdn.com/w40/${country.toLowerCase()}.png 2x`}
+                                src={`https://flagcdn.com/w20/${country.toLowerCase()}.png`}
+                                alt=''
+                                style={{ marginRight: '0.25rem' }}
+                            />{' '}
                             {text}
                         </MenuItem>
                     ))}
