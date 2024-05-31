@@ -6,7 +6,11 @@ import type { useQuestionListFragment$key } from '@local/__generated__/useQuesti
 export const USE_QUESTION_LIST_FRAGMENT = graphql`
     fragment useQuestionListFragment on Event
     @refetchable(queryName: "questionListPagination")
-    @argumentDefinitions(first: { type: "Int", defaultValue: 50 }, after: { type: "String", defaultValue: "" }) {
+    @argumentDefinitions(
+        first: { type: "Int", defaultValue: 50 }
+        after: { type: "String", defaultValue: "" }
+        userLang: { type: "String!" }
+    ) {
         id
         currentQuestion
         questions(first: $first, after: $after) @connection(key: "useQuestionListFragment_questions") {
@@ -22,11 +26,11 @@ export const USE_QUESTION_LIST_FRAGMENT = graphql`
                         firstName
                     }
                     refQuestion {
-                        ...QuestionQuoteFragment
+                        ...QuestionQuoteFragment @arguments(lang: $userLang)
                     }
-                    ...QuestionActionsFragment
+                    ...QuestionActionsFragment @arguments(lang: $userLang)
                     ...QuestionAuthorFragment
-                    ...QuestionContentFragment
+                    ...QuestionContentFragment @arguments(lang: $userLang)
                     ...QuestionStatsFragment
                 }
             }

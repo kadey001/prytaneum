@@ -6,10 +6,10 @@ import { QuestionAuthor } from './QuestionAuthor';
 import { QuestionContent } from './QuestionContent';
 
 export const QUESTION_QUOTE_FRAGMENT = graphql`
-    fragment QuestionQuoteFragment on EventQuestion {
+    fragment QuestionQuoteFragment on EventQuestion @argumentDefinitions(lang: { type: "String!" }) {
         id
         ...QuestionAuthorFragment
-        ...QuestionContentFragment
+        ...QuestionContentFragment @arguments(lang: $lang)
     }
 `;
 

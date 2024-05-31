@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d07879cdcbe40e01501a4eada6c36195>>
+ * @generated SignedSource<<152c2f2dcbdf6af2843d0f7f887c3574>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -87,6 +87,13 @@ v1 = {
 },
 v2 = [
   {
+    "kind": "Variable",
+    "name": "lang",
+    "variableName": "userLang"
+  }
+],
+v3 = [
+  {
     "alias": null,
     "args": null,
     "concreteType": "EventQuestionEdge",
@@ -162,7 +169,7 @@ v2 = [
             "storageKey": null
           },
           {
-            "args": null,
+            "args": (v2/*: any*/),
             "kind": "FragmentSpread",
             "name": "QuestionActionsFragment"
           },
@@ -177,7 +184,7 @@ v2 = [
             "name": "QuestionStatsFragment"
           },
           {
-            "args": null,
+            "args": (v2/*: any*/),
             "kind": "FragmentSpread",
             "name": "QuestionContentFragment"
           },
@@ -203,7 +210,7 @@ v2 = [
             "plural": false,
             "selections": [
               {
-                "args": null,
+                "args": (v2/*: any*/),
                 "kind": "FragmentSpread",
                 "name": "QuestionQuoteFragment"
               }
@@ -272,6 +279,11 @@ return {
       "defaultValue": 1000,
       "kind": "LocalArgument",
       "name": "first"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "userLang"
     }
   ],
   "kind": "Fragment",
@@ -322,7 +334,7 @@ return {
           "kind": "LinkedField",
           "name": "__useOnDeckFragment_questionRecord_connection",
           "plural": false,
-          "selections": (v2/*: any*/),
+          "selections": (v3/*: any*/),
           "storageKey": null
         },
         {
@@ -332,7 +344,7 @@ return {
           "kind": "LinkedField",
           "name": "__useOnDeckFragment_enqueuedQuestions_connection",
           "plural": false,
-          "selections": (v2/*: any*/),
+          "selections": (v3/*: any*/),
           "storageKey": null
         }
       ],
@@ -344,6 +356,6 @@ return {
 };
 })();
 
-(node as any).hash = "d8e6cf9c6a65147e2723e0cae47901b6";
+(node as any).hash = "05faa4f1e0365b1787427d22a43d0dea";
 
 export default node;

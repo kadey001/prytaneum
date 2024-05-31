@@ -9,3 +9,4 @@ export * from './useCache';
 export * from './useIsClient';
 export * from './theme';
 export * from './useWindowDimensions';
+export * from './language';

@@ -20,9 +20,10 @@ import { QuestionList } from './Questions';
 import { CurrentQuestionCard } from './Moderation/ManageQuestions/CurrentQuestionCard';
 import { ActionsPanels } from './ModeratorView/ActionsPanels';
 import { EventTopicContext } from './ModeratorView/EventTopicContext';
+import { useUser } from '../accounts';
 
 export const EVENT_LIVE_MODERATOR_VIEW_QUERY = graphql`
-    query EventLiveModeratorViewQuery($eventId: ID!) {
+    query EventLiveModeratorViewQuery($eventId: ID!, $lang: String!) {
         node(id: $eventId) {
             id
             ... on Event {
@@ -33,10 +34,10 @@ export const EVENT_LIVE_MODERATOR_VIEW_QUERY = graphql`
                 ...EventVideoFragment
                 ...useEventDetailsFragment
                 ...SpeakerListFragment
-                ...useQuestionListFragment
+                ...useQuestionListFragment @arguments(userLang: $lang)
                 ...useBroadcastMessageListFragment
-                ...useQuestionQueueFragment
-                ...QuestionCarouselFragment
+                ...useQuestionQueueFragment @arguments(userLang: $lang)
+                ...QuestionCarouselFragment @arguments(userLang: $lang)
                 ...useLiveFeedbackListFragment @arguments(eventId: $eventId)
             }
         }
@@ -173,13 +174,15 @@ export interface PreloadedEventLiveModratorViewProps {
 }
 
 export function PreloadedEventLiveModratorView({ eventId }: PreloadedEventLiveModratorViewProps) {
+    const { user, isLoading } = useUser();
     const [queryRef, loadEventQuery, disposeQuery] = useQueryLoader<EventLiveModeratorViewQuery>(
         EVENT_LIVE_MODERATOR_VIEW_QUERY
     );
 
     React.useEffect(() => {
-        if (!queryRef) loadEventQuery({ eventId });
-    }, [eventId, queryRef, loadEventQuery]);
+        if (isLoading) return;
+        if (!queryRef) loadEventQuery({ eventId, lang: user?.preferredLang || 'EN' });
+    }, [eventId, queryRef, loadEventQuery, isLoading, user?.preferredLang]);
 
     React.useEffect(() => {
         return () => disposeQuery();

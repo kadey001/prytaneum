@@ -17,9 +17,10 @@ import { EventLiveNewModeratorViewQuery } from '@local/__generated__/EventLiveNe
 import { ActionsPanels } from './ActionsPanels';
 import { QuestionModerationPanels } from './QuestionModerationPanels';
 import { VerticalPanelResizeHandle } from '@local/components/PanelHandle';
+import { useUser } from '@local/features/accounts';
 
 export const EVENT_LIVE_MODERATOR_VIEW_QUERY = graphql`
-    query EventLiveNewModeratorViewQuery($eventId: ID!) {
+    query EventLiveNewModeratorViewQuery($eventId: ID!, $userLang: String!) {
         node(id: $eventId) {
             id
             ... on Event {
@@ -36,13 +37,13 @@ export const EVENT_LIVE_MODERATOR_VIEW_QUERY = graphql`
                 ...useEventDetailsFragment
                 ...SpeakerListFragment
                 ...useBroadcastMessageListFragment
-                ...useQuestionQueueFragment
-                ...QuestionCarouselFragment
+                ...useQuestionQueueFragment @arguments(userLang: $userLang)
+                ...QuestionCarouselFragment @arguments(userLang: $userLang)
                 ...useLiveFeedbackListFragment @arguments(eventId: $eventId)
-                ...useQuestionsByTopicFragment
-                ...useQueueByTopicFragment
-                ...useOnDeckFragment
-                ...useQuestionModQueueFragment
+                ...useQuestionsByTopicFragment @arguments(userLang: $userLang)
+                ...useQueueByTopicFragment @arguments(userLang: $userLang)
+                ...useOnDeckFragment @arguments(userLang: $userLang)
+                ...useQuestionModQueueFragment @arguments(userLang: $userLang)
             }
         }
     }
@@ -135,19 +136,22 @@ export interface PreloadedEventLiveModratorViewProps {
 }
 
 export function PreloadedEventLiveNewModratorView({ eventId }: PreloadedEventLiveModratorViewProps) {
+    const { user, isLoading: isUserLoading } = useUser();
     const [queryRef, loadEventQuery, disposeQuery] = useQueryLoader<EventLiveNewModeratorViewQuery>(
         EVENT_LIVE_MODERATOR_VIEW_QUERY
     );
 
     const refresh = React.useCallback(() => {
         if (queryRef) {
-            loadEventQuery({ eventId });
+            loadEventQuery({ eventId, userLang: user?.preferredLang || 'EN' });
         }
-    }, [eventId, queryRef, loadEventQuery]);
+    }, [queryRef, loadEventQuery, eventId, user?.preferredLang]);
 
     React.useEffect(() => {
-        if (!queryRef) loadEventQuery({ eventId });
-    }, [eventId, queryRef, loadEventQuery]);
+        // Wait until user is loaded to load the event query
+        if (isUserLoading) return;
+        if (!queryRef) loadEventQuery({ eventId, userLang: user?.preferredLang || 'EN' });
+    }, [eventId, queryRef, loadEventQuery, user?.preferredLang, isUserLoading]);
 
     React.useEffect(() => {
         return () => disposeQuery();

@@ -157,5 +157,12 @@ export const resolvers: Resolvers = {
                 return toUserId(updatedUser);
             });
         },
+        async updatePreferedLanguage(parent, args, ctx, info) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new Error(errors.noLogin);
+                const updatedUser = await User.updatePreferedLanguage(ctx.viewer.id, args.language, ctx.prisma);
+                return toUserId(updatedUser);
+            });
+        },
     },
 };

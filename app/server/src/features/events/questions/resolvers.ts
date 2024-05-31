@@ -309,6 +309,17 @@ export const resolvers: Resolvers = {
         },
     },
     EventQuestion: {
+        async question(parent, args, ctx, info) {
+            const { id: questionId } = fromGlobalId(parent.id);
+            const question = await Question.getQuestionById(questionId, ctx.prisma);
+            return question;
+        },
+        async questionTranslated(parent, args, ctx, info) {
+            const { id: questionId } = fromGlobalId(parent.id);
+            const { lang } = args;
+            const { question } = await Question.getTranslatedQuestion(ctx.viewer.id, questionId, ctx.prisma, lang);
+            return question;
+        },
         async createdBy(parent, args, ctx, info) {
             const { id: questionId } = fromGlobalId(parent.id);
             const submitter = await Question.findSubmitterByQuestionId(questionId, ctx.prisma);

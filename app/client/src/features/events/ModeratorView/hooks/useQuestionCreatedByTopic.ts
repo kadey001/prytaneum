@@ -4,9 +4,15 @@ import { useSubscription, graphql } from 'react-relay';
 
 import type { useQuestionCreatedByTopicSubscription } from '@local/__generated__/useQuestionCreatedByTopicSubscription.graphql';
 import { useEvent } from '../../useEvent';
+import { useUser } from '@local/features/accounts';
 
 export const USE_QUESTION_CREATED_SUBSCRIPTION = graphql`
-    subscription useQuestionCreatedByTopicSubscription($eventId: ID!, $topic: String!, $connections: [ID!]!) {
+    subscription useQuestionCreatedByTopicSubscription(
+        $eventId: ID!
+        $topic: String!
+        $connections: [ID!]!
+        $lang: String!
+    ) {
         questionCreatedByTopic(eventId: $eventId, topic: $topic) {
             edge @prependEdge(connections: $connections) {
                 cursor
@@ -24,11 +30,11 @@ export const USE_QUESTION_CREATED_SUBSCRIPTION = graphql`
                         firstName
                     }
                     refQuestion {
-                        ...QuestionQuoteFragment
+                        ...QuestionQuoteFragment @arguments(lang: $lang)
                     }
-                    ...QuestionActionsFragment
+                    ...QuestionActionsFragment @arguments(lang: $lang)
                     ...QuestionAuthorFragment
-                    ...QuestionContentFragment
+                    ...QuestionContentFragment @arguments(lang: $lang)
                     ...QuestionStatsFragment
                 }
             }
@@ -40,6 +46,7 @@ export const USE_QUESTION_CREATED_SUBSCRIPTION = graphql`
 // Should only be added to the lists that are related to the question's topics & default
 export function useQuestionCreatedByTopic({ connections, topic }: { connections: string[]; topic: string }) {
     const { eventId } = useEvent();
+    const { user } = useUser();
 
     const createdConfig = useMemo<GraphQLSubscriptionConfig<useQuestionCreatedByTopicSubscription>>(
         () => ({
@@ -47,6 +54,7 @@ export function useQuestionCreatedByTopic({ connections, topic }: { connections:
                 eventId,
                 topic,
                 connections,
+                lang: user?.preferredLang ?? 'EN',
             },
             subscription: USE_QUESTION_CREATED_SUBSCRIPTION,
             // Need to use a custom updater because a single asked question can be added to multiple lists by topic

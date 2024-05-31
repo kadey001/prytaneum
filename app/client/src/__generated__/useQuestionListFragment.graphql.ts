@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e576597a9776a53a2b26580da59744d5>>
+ * @generated SignedSource<<a76c12210a3b7e557ab63870815e6711>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -49,7 +49,14 @@ v1 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-};
+},
+v2 = [
+  {
+    "kind": "Variable",
+    "name": "lang",
+    "variableName": "userLang"
+  }
+];
 return {
   "argumentDefinitions": [
     {
@@ -61,6 +68,11 @@ return {
       "defaultValue": 50,
       "kind": "LocalArgument",
       "name": "first"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "userLang"
     }
   ],
   "kind": "Fragment",
@@ -179,7 +191,7 @@ return {
                   "plural": false,
                   "selections": [
                     {
-                      "args": null,
+                      "args": (v2/*: any*/),
                       "kind": "FragmentSpread",
                       "name": "QuestionQuoteFragment"
                     }
@@ -187,7 +199,7 @@ return {
                   "storageKey": null
                 },
                 {
-                  "args": null,
+                  "args": (v2/*: any*/),
                   "kind": "FragmentSpread",
                   "name": "QuestionActionsFragment"
                 },
@@ -197,7 +209,7 @@ return {
                   "name": "QuestionAuthorFragment"
                 },
                 {
-                  "args": null,
+                  "args": (v2/*: any*/),
                   "kind": "FragmentSpread",
                   "name": "QuestionContentFragment"
                 },
@@ -265,6 +277,6 @@ return {
 };
 })();
 
-(node as any).hash = "707a63d5b6dac19a297dfdf1a18bc460";
+(node as any).hash = "5d122b700bba61047366c4322cc966f7";
 
 export default node;

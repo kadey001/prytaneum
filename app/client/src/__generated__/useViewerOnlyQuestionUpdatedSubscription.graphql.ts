@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<83d5f2971f33ddcbb4fbe5b8a38b18ea>>
+ * @generated SignedSource<<a27be8ab62fe778f973e1f77c9c99b9a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,7 @@ import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type useViewerOnlyQuestionUpdatedSubscription$variables = {
   eventId: string;
+  lang: string;
   viewerOnly?: boolean | null;
 };
 export type useViewerOnlyQuestionUpdatedSubscription$data = {
@@ -32,19 +33,22 @@ export type useViewerOnlyQuestionUpdatedSubscription = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "eventId"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "viewerOnly"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "eventId"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "lang"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "viewerOnly"
+},
+v3 = [
   {
     "kind": "Variable",
     "name": "eventId",
@@ -56,37 +60,48 @@ v1 = [
     "variableName": "viewerOnly"
   }
 ],
-v2 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "cursor",
   "storageKey": null
 },
-v3 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "position",
   "storageKey": null
-};
+},
+v7 = [
+  {
+    "kind": "Variable",
+    "name": "lang",
+    "variableName": "lang"
+  }
+];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "useViewerOnlyQuestionUpdatedSubscription",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": "EventQuestionEdgeContainer",
         "kind": "LinkedField",
         "name": "questionUpdated",
@@ -100,7 +115,7 @@ return {
             "name": "edge",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -109,15 +124,15 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v3/*: any*/),
-                  (v4/*: any*/),
+                  (v5/*: any*/),
+                  (v6/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "QuestionAuthorFragment"
                   },
                   {
-                    "args": null,
+                    "args": (v7/*: any*/),
                     "kind": "FragmentSpread",
                     "name": "QuestionContentFragment"
                   },
@@ -141,13 +156,17 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v2/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Operation",
     "name": "useViewerOnlyQuestionUpdatedSubscription",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": "EventQuestionEdgeContainer",
         "kind": "LinkedField",
         "name": "questionUpdated",
@@ -161,7 +180,7 @@ return {
             "name": "edge",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -170,8 +189,8 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v3/*: any*/),
-                  (v4/*: any*/),
+                  (v5/*: any*/),
+                  (v6/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -180,7 +199,7 @@ return {
                     "name": "createdBy",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -223,6 +242,20 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
+                    "name": "lang",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": (v7/*: any*/),
+                    "kind": "ScalarField",
+                    "name": "questionTranslated",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "likedByCount",
                     "storageKey": null
                   }
@@ -238,16 +271,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "37db3a0a4fba87f85cf30397d4d015ef",
+    "cacheID": "4c42bfb6ae162b09c9864689b011270e",
     "id": null,
     "metadata": {},
     "name": "useViewerOnlyQuestionUpdatedSubscription",
     "operationKind": "subscription",
-    "text": "subscription useViewerOnlyQuestionUpdatedSubscription(\n  $eventId: ID!\n  $viewerOnly: Boolean\n) {\n  questionUpdated(eventId: $eventId, viewerOnly: $viewerOnly) {\n    edge {\n      cursor\n      node {\n        id\n        position\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
+    "text": "subscription useViewerOnlyQuestionUpdatedSubscription(\n  $eventId: ID!\n  $viewerOnly: Boolean\n  $lang: String!\n) {\n  questionUpdated(eventId: $eventId, viewerOnly: $viewerOnly) {\n    edge {\n      cursor\n      node {\n        id\n        position\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_3iqx2P\n        ...QuestionStatsFragment\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ad550e7e0c40d44cbcda4e316dc928cc";
+(node as any).hash = "59419d88b290440fe91ea7e0cf154733";
 
 export default node;

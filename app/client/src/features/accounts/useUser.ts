@@ -12,6 +12,7 @@ export const USE_USER_FRAGMENT = graphql`
         avatar
         isOrganizer
         isAdmin
+        preferredLang
     }
 `;
 

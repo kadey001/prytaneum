@@ -460,6 +460,7 @@ type EventQuestion implements Node {
 
   """The actual content of the question"""
   question: String!
+  questionTranslated(lang: String!): String
   refQuestion: EventQuestion
   relevant: Boolean!
   substantive: Boolean!
@@ -733,6 +734,7 @@ type Mutation {
   updateOrganization(input: UpdateOrganization!): OrganizationMutationResponse!
   updateOrganizer(input: UpdateOrganizerForm!): UserMutationResponse!
   updatePassword(input: UpdatePasswordForm!): UserMutationResponse!
+  updatePreferedLanguage(language: String!): UserMutationResponse!
   updateQuestionPosition(input: UpdateQuestionPosition!): EventQuestionMutationResponse!
   updateSpeaker(input: UpdateSpeaker!): EventSpeakerMutationResponse!
   updateTopic(description: String!, eventId: String!, newTopic: String!, oldTopic: String!): TopicMutationResponse
@@ -852,6 +854,11 @@ type Query {
   """
   validateInvite(input: ValidateInvite!): ValidateInviteQueryResponse!
   validatePasswordResetToken(input: ValidatePasswordResetTokenForm!): ValidatePasswordResetTokenQueryResponse!
+}
+
+type QuestionBody {
+  originalLang: String!
+  question: String!
 }
 
 input RegistrationForm {
@@ -1103,6 +1110,7 @@ type User implements Node {
 
   """Organizations that this user belongs to"""
   organizations(after: String, first: Int): OrganizationConnection
+  preferredLang: String
 
   """All the users"""
   users(after: String, filter: UsersSearchFilters, first: Int): UserConnection

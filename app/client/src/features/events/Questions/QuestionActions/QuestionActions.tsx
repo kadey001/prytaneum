@@ -9,9 +9,9 @@ import { QueueButton } from './QueueButton';
 import { DeleteButton } from './DeleteButton';
 
 export const QUESTION_ACTIONS_FRAGMENT = graphql`
-    fragment QuestionActionsFragment on EventQuestion {
+    fragment QuestionActionsFragment on EventQuestion @argumentDefinitions(lang: { type: "String!" }) {
         id
-        ...QuoteFragment
+        ...QuoteFragment @arguments(lang: $lang)
         ...LikeFragment
         ...QueueButtonFragment
         ...DeleteButtonFragment

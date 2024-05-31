@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3cc09ab938ec69d449898682910f83ea>>
+ * @generated SignedSource<<0b2ba976f12e15195690605ed6cbf279>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -175,6 +175,13 @@ return {
                 "kind": "ScalarField",
                 "name": "isAdmin",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "preferredLang",
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -185,12 +192,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d4e81e7efb8401de5d3f1f73bfe19208",
+    "cacheID": "09f94284575c231631233ddae93d8ae2",
     "id": null,
     "metadata": {},
     "name": "RegisterFormMutation",
     "operationKind": "mutation",
-    "text": "mutation RegisterFormMutation(\n  $input: RegistrationForm!\n) {\n  register(input: $input) {\n    isError\n    message\n    body {\n      ...useUserFragment\n      id\n    }\n  }\n}\n\nfragment useUserFragment on User {\n  id\n  firstName\n  lastName\n  email\n  avatar\n  isOrganizer\n  isAdmin\n}\n"
+    "text": "mutation RegisterFormMutation(\n  $input: RegistrationForm!\n) {\n  register(input: $input) {\n    isError\n    message\n    body {\n      ...useUserFragment\n      id\n    }\n  }\n}\n\nfragment useUserFragment on User {\n  id\n  firstName\n  lastName\n  email\n  avatar\n  isOrganizer\n  isAdmin\n  preferredLang\n}\n"
   }
 };
 })();

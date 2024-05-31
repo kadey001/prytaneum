@@ -4,7 +4,11 @@ import type { useQuestionQueueFragment$key } from '@local/__generated__/useQuest
 
 export const USE_QUESTION_QUEUE_FRAGMENT = graphql`
     fragment useQuestionQueueFragment on Event
-    @argumentDefinitions(first: { type: "Int", defaultValue: 1000 }, after: { type: "String", defaultValue: "" }) {
+    @argumentDefinitions(
+        first: { type: "Int", defaultValue: 1000 }
+        after: { type: "String", defaultValue: "" }
+        userLang: { type: "String!" }
+    ) {
         id
         currentQuestion
         questionQueue {
@@ -20,10 +24,10 @@ export const USE_QUESTION_QUEUE_FRAGMENT = graphql`
                         }
                         ...QuestionAuthorFragment
                         ...QuestionStatsFragment
-                        ...QuestionContentFragment
+                        ...QuestionContentFragment @arguments(lang: $userLang)
                         position
                         refQuestion {
-                            ...QuestionQuoteFragment
+                            ...QuestionQuoteFragment @arguments(lang: $userLang)
                         }
                     }
                 }
@@ -39,13 +43,13 @@ export const USE_QUESTION_QUEUE_FRAGMENT = graphql`
                         createdBy {
                             firstName
                         }
-                        ...QuestionActionsFragment
+                        ...QuestionActionsFragment @arguments(lang: $userLang)
                         ...QuestionAuthorFragment
                         ...QuestionStatsFragment
-                        ...QuestionContentFragment
+                        ...QuestionContentFragment @arguments(lang: $userLang)
                         position
                         refQuestion {
-                            ...QuestionQuoteFragment
+                            ...QuestionQuoteFragment @arguments(lang: $userLang)
                         }
                     }
                 }
@@ -56,5 +60,8 @@ export const USE_QUESTION_QUEUE_FRAGMENT = graphql`
 
 export function useQuestionQueue({ fragmentRef }: { fragmentRef: useQuestionQueueFragment$key }) {
     const { questionQueue } = useFragment(USE_QUESTION_QUEUE_FRAGMENT, fragmentRef);
-    return { questionQueue, connections: questionQueue?.enqueuedQuestions?.__id ? [questionQueue.enqueuedQuestions.__id] : [] };
+    return {
+        questionQueue,
+        connections: questionQueue?.enqueuedQuestions?.__id ? [questionQueue.enqueuedQuestions.__id] : [],
+    };
 }

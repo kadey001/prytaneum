@@ -12,10 +12,6 @@ export const USE_QUESTION_DELETED_SUBSCRIPTION = graphql`
                 cursor
                 node {
                     id @deleteEdge(connections: $connections)
-                    position
-                    ...QuestionAuthorFragment
-                    ...QuestionContentFragment
-                    ...QuestionStatsFragment
                 }
             }
         }

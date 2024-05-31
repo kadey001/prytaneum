@@ -142,9 +142,10 @@ export function QuestionListContainer({
 
     // TODO: Clear the cache when the window or panel is resized
     const cache = new CellMeasurerCache({
-        defaultHeight: 185,
-        minHeight: 128,
+        defaultHeight: 160,
+        minHeight: 124,
         fixedWidth: true,
+        fixedHeight: false,
     });
 
     interface RowRendererProps {
@@ -160,7 +161,7 @@ export function QuestionListContainer({
 
         return (
             <CellMeasurer cache={cache} key={key} parent={parent} rowIndex={rowIndex}>
-                {({ registerChild }) => (
+                {({ registerChild, measure }) => (
                     // 'style' attribute required to position cell (within parent List)
                     <div
                         ref={registerChild as any}
@@ -173,7 +174,7 @@ export function QuestionListContainer({
                             paddingBottom: '.25rem',
                         }}
                     >
-                        <EventQuestion question={question} connections={allConnections} />
+                        <EventQuestion question={question} connections={allConnections} measure={measure} />
                     </div>
                 )}
             </CellMeasurer>

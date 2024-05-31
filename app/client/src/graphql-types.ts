@@ -540,10 +540,16 @@ export type EventQuestion = Node & {
   position: Scalars['String'];
   /** The actual content of the question */
   question: Scalars['String'];
+  questionTranslated?: Maybe<Scalars['String']>;
   refQuestion?: Maybe<EventQuestion>;
   relevant: Scalars['Boolean'];
   substantive: Scalars['Boolean'];
   topics?: Maybe<Array<EventQuestionTopic>>;
+};
+
+
+export type EventQuestionQuestionTranslatedArgs = {
+  lang: Scalars['String'];
 };
 
 export type EventQuestionConnection = {
@@ -817,6 +823,7 @@ export type Mutation = {
   updateOrganization: OrganizationMutationResponse;
   updateOrganizer: UserMutationResponse;
   updatePassword: UserMutationResponse;
+  updatePreferedLanguage: UserMutationResponse;
   updateQuestionPosition: EventQuestionMutationResponse;
   updateSpeaker: EventSpeakerMutationResponse;
   updateTopic?: Maybe<TopicMutationResponse>;
@@ -1162,6 +1169,11 @@ export type MutationUpdatePasswordArgs = {
 };
 
 
+export type MutationUpdatePreferedLanguageArgs = {
+  language: Scalars['String'];
+};
+
+
 export type MutationUpdateQuestionPositionArgs = {
   input: UpdateQuestionPosition;
 };
@@ -1379,6 +1391,12 @@ export type QueryValidateInviteArgs = {
 
 export type QueryValidatePasswordResetTokenArgs = {
   input: ValidatePasswordResetTokenForm;
+};
+
+export type QuestionBody = {
+  __typename?: 'QuestionBody';
+  originalLang: Scalars['String'];
+  question: Scalars['String'];
 };
 
 export type RegistrationForm = {
@@ -1792,6 +1810,7 @@ export type User = Node & {
   moderatorOf?: Maybe<Scalars['Boolean']>;
   /** Organizations that this user belongs to */
   organizations?: Maybe<OrganizationConnection>;
+  preferredLang?: Maybe<Scalars['String']>;
   /** All the users */
   users?: Maybe<UserConnection>;
 };

@@ -11,9 +11,16 @@ interface Props {
     connections: string[];
     queueEnabled?: boolean;
     heldQuestion?: boolean;
+    measure?: () => void;
 }
 
-export const SortableQuestion = ({ question, connections, queueEnabled = true, heldQuestion = false }: Props) => {
+export const SortableQuestion = ({
+    question,
+    connections,
+    queueEnabled = true,
+    heldQuestion = false,
+    measure,
+}: Props) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: question.id });
     const style = { transition, transform: CSS.Transform.toString(transform) };
 
@@ -30,6 +37,7 @@ export const SortableQuestion = ({ question, connections, queueEnabled = true, h
                 deleteEnabled={false}
                 queueEnabled={queueEnabled}
                 heldQuestion={heldQuestion}
+                measure={measure}
             />
         </div>
     );

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<00e8a7f55423c82259e6a2fe1c1b91c4>>
+ * @generated SignedSource<<7c4d616cb898cd7485d26524352fe74d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import { FragmentRefs } from "relay-runtime";
 export type useViewerOnlyQuestionCreatedSubscription$variables = {
   connections: ReadonlyArray<string>;
   eventId: string;
+  lang: string;
   viewerOnly?: boolean | null;
 };
 export type useViewerOnlyQuestionCreatedSubscription$data = {
@@ -50,9 +51,14 @@ v1 = {
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "lang"
+},
+v3 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "viewerOnly"
 },
-v3 = [
+v4 = [
   {
     "kind": "Variable",
     "name": "eventId",
@@ -64,35 +70,42 @@ v3 = [
     "variableName": "viewerOnly"
   }
 ],
-v4 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "cursor",
   "storageKey": null
 },
-v5 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v6 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "position",
   "storageKey": null
 },
-v7 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "isVisible",
   "storageKey": null
 },
-v8 = {
+v9 = [
+  {
+    "kind": "Variable",
+    "name": "lang",
+    "variableName": "lang"
+  }
+],
+v10 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -100,7 +113,7 @@ v8 = {
   "name": "createdBy",
   "plural": false,
   "selections": [
-    (v5/*: any*/),
+    (v6/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -125,18 +138,32 @@ v8 = {
   ],
   "storageKey": null
 },
-v9 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "createdAt",
   "storageKey": null
 },
-v10 = {
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "question",
+  "storageKey": null
+},
+v13 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lang",
+  "storageKey": null
+},
+v14 = {
+  "alias": null,
+  "args": (v9/*: any*/),
+  "kind": "ScalarField",
+  "name": "questionTranslated",
   "storageKey": null
 };
 return {
@@ -144,7 +171,8 @@ return {
     "argumentDefinitions": [
       (v0/*: any*/),
       (v1/*: any*/),
-      (v2/*: any*/)
+      (v2/*: any*/),
+      (v3/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -152,7 +180,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": "EventQuestionEdgeContainer",
         "kind": "LinkedField",
         "name": "questionCreated",
@@ -166,7 +194,7 @@ return {
             "name": "edge",
             "plural": false,
             "selections": [
-              (v4/*: any*/),
+              (v5/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -175,16 +203,16 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v5/*: any*/),
                   (v6/*: any*/),
                   (v7/*: any*/),
+                  (v8/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "QuestionAuthorFragment"
                   },
                   {
-                    "args": null,
+                    "args": (v9/*: any*/),
                     "kind": "FragmentSpread",
                     "name": "QuestionContentFragment"
                   },
@@ -202,7 +230,7 @@ return {
                     "plural": false,
                     "selections": [
                       {
-                        "args": null,
+                        "args": (v9/*: any*/),
                         "kind": "FragmentSpread",
                         "name": "QuestionQuoteFragment"
                       }
@@ -227,6 +255,7 @@ return {
     "argumentDefinitions": [
       (v1/*: any*/),
       (v0/*: any*/),
+      (v3/*: any*/),
       (v2/*: any*/)
     ],
     "kind": "Operation",
@@ -234,7 +263,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": "EventQuestionEdgeContainer",
         "kind": "LinkedField",
         "name": "questionCreated",
@@ -248,7 +277,7 @@ return {
             "name": "edge",
             "plural": false,
             "selections": [
-              (v4/*: any*/),
+              (v5/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -257,12 +286,14 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v5/*: any*/),
                   (v6/*: any*/),
                   (v7/*: any*/),
                   (v8/*: any*/),
-                  (v9/*: any*/),
                   (v10/*: any*/),
+                  (v11/*: any*/),
+                  (v12/*: any*/),
+                  (v13/*: any*/),
+                  (v14/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -278,10 +309,12 @@ return {
                     "name": "refQuestion",
                     "plural": false,
                     "selections": [
-                      (v5/*: any*/),
-                      (v8/*: any*/),
-                      (v9/*: any*/),
-                      (v10/*: any*/)
+                      (v6/*: any*/),
+                      (v10/*: any*/),
+                      (v11/*: any*/),
+                      (v12/*: any*/),
+                      (v13/*: any*/),
+                      (v14/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -313,16 +346,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b60cae58a74a0d0953c71508d78c269e",
+    "cacheID": "b60e6414897400c090f11de23836aa63",
     "id": null,
     "metadata": {},
     "name": "useViewerOnlyQuestionCreatedSubscription",
     "operationKind": "subscription",
-    "text": "subscription useViewerOnlyQuestionCreatedSubscription(\n  $eventId: ID!\n  $viewerOnly: Boolean\n) {\n  questionCreated(eventId: $eventId, viewerOnly: $viewerOnly) {\n    edge {\n      cursor\n      node {\n        id\n        position\n        isVisible\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n        refQuestion {\n          ...QuestionQuoteFragment\n          id\n        }\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionQuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
+    "text": "subscription useViewerOnlyQuestionCreatedSubscription(\n  $eventId: ID!\n  $viewerOnly: Boolean\n  $lang: String!\n) {\n  questionCreated(eventId: $eventId, viewerOnly: $viewerOnly) {\n    edge {\n      cursor\n      node {\n        id\n        position\n        isVisible\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_3iqx2P\n        ...QuestionStatsFragment\n        refQuestion {\n          ...QuestionQuoteFragment_3iqx2P\n          id\n        }\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n\nfragment QuestionQuoteFragment_3iqx2P on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_3iqx2P\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
   }
 };
 })();
 
-(node as any).hash = "813e5e9b2d27f7749c4888ca986d08c7";
+(node as any).hash = "4a2a889f3c1f2e2e850403d4427ca5ef";
 
 export default node;

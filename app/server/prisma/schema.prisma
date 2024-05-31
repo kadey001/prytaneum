@@ -203,6 +203,7 @@ model EventQuestion {
     
     topics EventQuestionTopic[]
     likes EventQuestionLike[]
+    translations EventQuestionTranslations?
 }
 
 model EventBroadcastMessage {
@@ -297,4 +298,11 @@ model EventQuestionTopic {
     position String @db.VarChar(14) @default("-1")
 
     @@id([questionId, topicId])
+}
+
+model EventQuestionTranslations {
+    id String @id @default(uuid()) @db.Uuid
+    questionId String @unique @db.Uuid
+    question EventQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+    questionTranslations Json @db.Json // { lang: question } example: { "ES": "¿Cómo estás?", "EN": "How are you?"} 
 }

@@ -7,6 +7,13 @@ import { getOrCreateServer } from '@local/core/server';
 import { ProtectedError } from '@local/lib/ProtectedError';
 import type { Redis, Cluster } from 'ioredis';
 import { DEFAULT_LOCK_TIMEOUT } from '@local/lib/rules';
+import {
+    EventQuestion,
+    EventQuestionTopic,
+    EventQuestionTranslations,
+    Prisma,
+    PrismaClient,
+} from '@local/__generated__/prisma';
 
 /**
  * Resolver type used for making resolvers
@@ -164,4 +171,43 @@ export async function releaseRedisLock(redis: Redis | Cluster, key: string) {
     server.log.debug(`Releasing Lock: ${key}...`);
     const result = await redis.del(key);
     server.log.debug(result ? `Lock: ${key} released` : `Lock: ${key} failed to release`);
+}
+
+/**
+ * @description Get the user's preferred language from the database
+ * @param userId
+ * @param prisma
+ * @returns string containing the user's preferred language
+ * @default 'EN'
+ */
+export async function getPreferredLang(userId: string | null, prisma: PrismaClient) {
+    // TODO: ability to choose language without being logged in, maybe using local storage that is passed along
+    if (!userId) return 'EN'; // default to english if no user is logged in
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { preferredLang: true },
+    });
+    return user?.preferredLang || 'EN';
+}
+
+export type TEventQuestionWithTranslations = (EventQuestion & {
+    topics?: EventQuestionTopic[];
+    translations: EventQuestionTranslations | null;
+})[];
+
+type TQuestionTranslationProps = {
+    questions: TEventQuestionWithTranslations;
+    preferredLang: string;
+};
+
+// Get the question translation based on the user's preferred language
+export function getQuestionTranslation({ questions, preferredLang }: TQuestionTranslationProps) {
+    const result = questions.map((question) => {
+        const translationsObject = question.translations?.questionTranslations as Prisma.JsonObject | undefined;
+        if (!translationsObject) return question;
+        const translation = translationsObject[preferredLang];
+        if (!translation) return question;
+        return { ...question, question: translation as string, translations: null };
+    });
+    return result;
 }

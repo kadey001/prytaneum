@@ -101,7 +101,7 @@ export function QuestionList({
 
         return (
             <CellMeasurer cache={cache} key={key} parent={parent} rowIndex={rowIndex}>
-                {({ registerChild }) => (
+                {({ registerChild, measure }) => (
                     // 'style' attribute required to position cell (within parent List)
                     <div ref={registerChild as any} style={{ ...style, width: '100%', padding: '.5rem' }}>
                         <Card
@@ -115,7 +115,7 @@ export function QuestionList({
                         >
                             <QuestionAuthor fragmentRef={question} />
                             {question?.refQuestion && <QuestionQuote fragmentRef={question.refQuestion} />}
-                            <QuestionContent fragmentRef={question} />
+                            <QuestionContent fragmentRef={question} measure={measure} />
                             <Grid container alignItems='center' justifyContent='space-between'>
                                 {isModerator && <QuestionStats fragmentRef={question} />}
                                 <QuestionActions

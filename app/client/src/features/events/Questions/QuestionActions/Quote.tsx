@@ -14,6 +14,7 @@ import * as ga from '@local/utils/ga/index';
 import { isURL } from '@local/utils';
 import { QUESTIONS_MAX_LENGTH } from '@local/utils/rules';
 import { useSnack } from '@local/core';
+import { useUser } from '@local/features/accounts';
 
 interface QuoteProps {
     className?: string;
@@ -21,7 +22,7 @@ interface QuoteProps {
 }
 
 const QUOTE_MUTATION = graphql`
-    mutation QuoteMutation($input: CreateQuestion!) @raw_response_type {
+    mutation QuoteMutation($input: CreateQuestion!, $lang: String!) @raw_response_type {
         createQuestion(input: $input) {
             isError
             message
@@ -30,7 +31,7 @@ const QUOTE_MUTATION = graphql`
                 node {
                     id
                     ...QuestionAuthorFragment
-                    ...QuestionContentFragment
+                    ...QuestionContentFragment @arguments(lang: $lang)
                 }
             }
         }
@@ -38,10 +39,10 @@ const QUOTE_MUTATION = graphql`
 `;
 
 export const QUOTE_FRAGMENT = graphql`
-    fragment QuoteFragment on EventQuestion {
+    fragment QuoteFragment on EventQuestion @argumentDefinitions(lang: { type: "String!" }) {
         id
         ...QuestionAuthorFragment
-        ...QuestionContentFragment
+        ...QuestionContentFragment @arguments(lang: $lang)
     }
 `;
 
@@ -49,7 +50,7 @@ export function Quote({ className, fragmentRef }: QuoteProps) {
     const [isOpen, open, close] = useResponsiveDialog(false);
     const [isLoading, setIsLoading] = React.useState(false);
     const { eventId } = useEvent();
-    // const { user } = useUser();
+    const { user } = useUser();
     const { displaySnack } = useSnack();
     const [commit] = useMutation<QuoteMutation>(QUOTE_MUTATION);
     const data = useFragment(QUOTE_FRAGMENT, fragmentRef);
@@ -72,6 +73,7 @@ export function Quote({ className, fragmentRef }: QuoteProps) {
                         isQuote: true,
                         refQuestion: data.id,
                     },
+                    lang: user?.preferredLang || 'EN',
                 },
                 onCompleted(payload) {
                     try {

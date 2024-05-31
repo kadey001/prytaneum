@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<68dbf41db80d9293f9e5ad9e70b6222c>>
+ * @generated SignedSource<<f11ee07f3042cf7bbf04f213891d0665>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,11 +22,23 @@ export type EventSidebarFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"EventSidebarFragment">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = [
+  {
+    "kind": "Variable",
+    "name": "userLang",
+    "variableName": "lang"
+  }
+];
+return {
   "argumentDefinitions": [
     {
       "kind": "RootArgument",
       "name": "eventId"
+    },
+    {
+      "kind": "RootArgument",
+      "name": "lang"
     }
   ],
   "kind": "Fragment",
@@ -60,7 +72,7 @@ const node: ReaderFragment = {
       "name": "SpeakerListFragment"
     },
     {
-      "args": null,
+      "args": (v0/*: any*/),
       "kind": "FragmentSpread",
       "name": "useQuestionListFragment"
     },
@@ -70,12 +82,12 @@ const node: ReaderFragment = {
       "name": "useBroadcastMessageListFragment"
     },
     {
-      "args": null,
+      "args": (v0/*: any*/),
       "kind": "FragmentSpread",
       "name": "useQuestionQueueFragment"
     },
     {
-      "args": null,
+      "args": (v0/*: any*/),
       "kind": "FragmentSpread",
       "name": "QuestionCarouselFragment"
     },
@@ -91,7 +103,7 @@ const node: ReaderFragment = {
       "name": "useLiveFeedbackListFragment"
     },
     {
-      "args": null,
+      "args": (v0/*: any*/),
       "kind": "FragmentSpread",
       "name": "useOnDeckFragment"
     }
@@ -99,7 +111,8 @@ const node: ReaderFragment = {
   "type": "Event",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "5e70c1cc306e4bed93d72f7475668776";
+(node as any).hash = "b2ff2e162e8420e223f8f5587682a4b5";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0b2d00678818b32ee77f0ad782e95274>>
+ * @generated SignedSource<<718a9a7734133de6ddb8ed13bc7ed58f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,7 @@ import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type useQuestionUpdatedSubscription$variables = {
   eventId: string;
+  lang: string;
 };
 export type useQuestionUpdatedSubscription$data = {
   readonly questionUpdated: {
@@ -41,6 +42,11 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "eventId"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "lang"
   }
 ],
 v1 = [
@@ -96,7 +102,14 @@ v6 = {
     (v4/*: any*/)
   ],
   "storageKey": null
-};
+},
+v7 = [
+  {
+    "kind": "Variable",
+    "name": "lang",
+    "variableName": "lang"
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -139,7 +152,7 @@ return {
                     "name": "QuestionAuthorFragment"
                   },
                   {
-                    "args": null,
+                    "args": (v7/*: any*/),
                     "kind": "FragmentSpread",
                     "name": "QuestionContentFragment"
                   },
@@ -247,6 +260,20 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
+                    "name": "lang",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": (v7/*: any*/),
+                    "kind": "ScalarField",
+                    "name": "questionTranslated",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "likedByCount",
                     "storageKey": null
                   }
@@ -262,16 +289,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9ca151ac03fdbfb3985d307c1a0bf64e",
+    "cacheID": "bc931d4e3b54f680134ec4a26fbded6b",
     "id": null,
     "metadata": {},
     "name": "useQuestionUpdatedSubscription",
     "operationKind": "subscription",
-    "text": "subscription useQuestionUpdatedSubscription(\n  $eventId: ID!\n) {\n  questionUpdated(eventId: $eventId) {\n    edge {\n      cursor\n      node {\n        id\n        position\n        onDeckPosition\n        topics {\n          topic\n          position\n        }\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
+    "text": "subscription useQuestionUpdatedSubscription(\n  $eventId: ID!\n  $lang: String!\n) {\n  questionUpdated(eventId: $eventId) {\n    edge {\n      cursor\n      node {\n        id\n        position\n        onDeckPosition\n        topics {\n          topic\n          position\n        }\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_3iqx2P\n        ...QuestionStatsFragment\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ac2bba603d3edea9bfc9dcdd101905e7";
+(node as any).hash = "a92b68120d03e1cf43a0826b22c65228";
 
 export default node;

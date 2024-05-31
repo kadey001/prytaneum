@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b9b3e5760b28f79358f02f77269b3f8c>>
+ * @generated SignedSource<<12498abb51f509b81c5ca3aba95667c3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,7 @@ export type CreateQuestion = {
 };
 export type QuoteMutation$variables = {
   input: CreateQuestion;
+  lang: string;
 };
 export type QuoteMutation$data = {
   readonly createQuestion: {
@@ -46,7 +47,9 @@ export type QuoteMutation$rawResponse = {
           readonly lastName: string | null;
         } | null;
         readonly id: string;
+        readonly lang: string | null;
         readonly question: string;
+        readonly questionTranslated: string | null;
       };
     } | null;
     readonly isError: boolean;
@@ -65,6 +68,11 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "input"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "lang"
   }
 ],
 v1 = [
@@ -101,7 +109,14 @@ v5 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-};
+},
+v6 = [
+  {
+    "kind": "Variable",
+    "name": "lang",
+    "variableName": "lang"
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -143,7 +158,7 @@ return {
                     "name": "QuestionAuthorFragment"
                   },
                   {
-                    "args": null,
+                    "args": (v6/*: any*/),
                     "kind": "FragmentSpread",
                     "name": "QuestionContentFragment"
                   }
@@ -240,6 +255,20 @@ return {
                     "kind": "ScalarField",
                     "name": "question",
                     "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "lang",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": (v6/*: any*/),
+                    "kind": "ScalarField",
+                    "name": "questionTranslated",
+                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -253,16 +282,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4cfe4be57b7208a5f78ed7cd4819995b",
+    "cacheID": "0d831dba6117856ecf9e49977b64c1cb",
     "id": null,
     "metadata": {},
     "name": "QuoteMutation",
     "operationKind": "mutation",
-    "text": "mutation QuoteMutation(\n  $input: CreateQuestion!\n) {\n  createQuestion(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n"
+    "text": "mutation QuoteMutation(\n  $input: CreateQuestion!\n  $lang: String!\n) {\n  createQuestion(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_3iqx2P\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n"
   }
 };
 })();
 
-(node as any).hash = "781619fb78ad29525e0be028152823dd";
+(node as any).hash = "c2571487148d1391ce7d10497f1d993c";
 
 export default node;

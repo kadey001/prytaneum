@@ -7,7 +7,11 @@ import { Question } from '../../types';
 
 export const USE_ON_DECK_FRAGMENT = graphql`
     fragment useOnDeckFragment on Event
-    @argumentDefinitions(first: { type: "Int", defaultValue: 1000 }, after: { type: "String", defaultValue: "" }) {
+    @argumentDefinitions(
+        first: { type: "Int", defaultValue: 1000 }
+        after: { type: "String", defaultValue: "" }
+        userLang: { type: "String!" }
+    ) {
         id
         currentQuestion
         questionQueue {
@@ -26,15 +30,15 @@ export const USE_ON_DECK_FRAGMENT = graphql`
                         createdBy {
                             firstName
                         }
-                        ...QuestionActionsFragment
+                        ...QuestionActionsFragment @arguments(lang: $userLang)
                         ...QuestionAuthorFragment
                         ...QuestionStatsFragment
-                        ...QuestionContentFragment
+                        ...QuestionContentFragment @arguments(lang: $userLang)
                         ...QuestionTopicsFragment
                         position
                         onDeckPosition
                         refQuestion {
-                            ...QuestionQuoteFragment
+                            ...QuestionQuoteFragment @arguments(lang: $userLang)
                         }
                     }
                 }
@@ -54,15 +58,15 @@ export const USE_ON_DECK_FRAGMENT = graphql`
                         createdBy {
                             firstName
                         }
-                        ...QuestionActionsFragment
+                        ...QuestionActionsFragment @arguments(lang: $userLang)
                         ...QuestionAuthorFragment
                         ...QuestionStatsFragment
-                        ...QuestionContentFragment
+                        ...QuestionContentFragment @arguments(lang: $userLang)
                         ...QuestionTopicsFragment
                         position
                         onDeckPosition
                         refQuestion {
-                            ...QuestionQuoteFragment
+                            ...QuestionQuoteFragment @arguments(lang: $userLang)
                         }
                     }
                 }

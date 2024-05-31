@@ -30,6 +30,8 @@ type EventQuestion implements Node {
     offensive: Boolean!
     relevant: Boolean!
 
+    questionTranslated(lang: String!): String
+
     """
     The users who have liked this question
     """
@@ -50,6 +52,11 @@ type EventQuestion implements Node {
     """
     isMyQuestion: Boolean
     topics: [EventQuestionTopic!]
+}
+
+type QuestionBody {
+    question: String!
+    originalLang: String!
 }
 
 """

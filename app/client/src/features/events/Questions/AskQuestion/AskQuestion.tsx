@@ -22,7 +22,7 @@ export interface AskQuestionProps {
 }
 
 export const ASK_QUESTION_MUTATION = graphql`
-    mutation AskQuestionMutation($input: CreateQuestion!) @raw_response_type {
+    mutation AskQuestionMutation($input: CreateQuestion!, $lang: String!) @raw_response_type {
         createQuestion(input: $input) {
             isError
             message
@@ -32,6 +32,7 @@ export const ASK_QUESTION_MUTATION = graphql`
                     id
                     createdAt
                     question
+                    ...QuestionContentFragment @arguments(lang: $lang)
                     createdBy {
                         id
                         firstName
@@ -59,7 +60,10 @@ function AskQuestion({ className, eventId, viewerOnly = false }: AskQuestionProp
             if (isURL(form.question)) throw new Error('no links are allowed!');
             setIsLoading(true);
             commit({
-                variables: { input: { ...form, eventId, isFollowUp: false, isQuote: false } },
+                variables: {
+                    input: { ...form, eventId, isFollowUp: false, isQuote: false },
+                    lang: user?.preferredLang || 'EN',
+                },
                 onCompleted(payload) {
                     try {
                         if (payload.createQuestion.isError) throw new Error(payload.createQuestion.message);
@@ -150,6 +154,8 @@ function AskQuestion({ className, eventId, viewerOnly = false }: AskQuestionProp
                     if (!userRecord) return console.error('Optimistic update failed: User record not found!');
                     // Set the values for the new question (doesn't display values otherwise even though they are in the optimistic response for some reason)
                     newQuestionRecord.setValue(form.question, 'question');
+                    newQuestionRecord.setValue(user?.preferredLang || 'EN', 'lang');
+                    newQuestionRecord.setValue('', 'questionTranslated');
                     newQuestionRecord.setValue(new Date().toISOString(), 'createdAt');
                     newQuestionRecord.setLinkedRecord(userRecord, 'createdBy');
 
@@ -176,6 +182,8 @@ function AskQuestion({ className, eventId, viewerOnly = false }: AskQuestionProp
                                 id: generatedId,
                                 createdAt: null,
                                 question: form.question,
+                                lang: user?.preferredLang || 'EN',
+                                questionTranslated: '',
                                 createdBy: {
                                     id: user?.id || '',
                                     firstName: user?.firstName || '',

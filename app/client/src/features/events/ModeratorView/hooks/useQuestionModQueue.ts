@@ -9,7 +9,11 @@ import { Question } from '../types';
 export const USE_QUESTION_QUEUE = graphql`
     fragment useQuestionModQueueFragment on Event
     @refetchable(queryName: "questionModQueuePagination")
-    @argumentDefinitions(first: { type: "Int", defaultValue: 1000 }, after: { type: "String", defaultValue: "" }) {
+    @argumentDefinitions(
+        first: { type: "Int", defaultValue: 1000 }
+        after: { type: "String", defaultValue: "" }
+        userLang: { type: "String!" }
+    ) {
         id
         currentQuestion
         questionModQueue(first: $first, after: $after)
@@ -20,6 +24,8 @@ export const USE_QUESTION_QUEUE = graphql`
                 node {
                     id
                     question
+                    lang
+                    questionTranslated(lang: $userLang)
                     position
                     onDeckPosition
                     topics {
@@ -31,11 +37,11 @@ export const USE_QUESTION_QUEUE = graphql`
                         firstName
                     }
                     refQuestion {
-                        ...QuestionQuoteFragment
+                        ...QuestionQuoteFragment @arguments(lang: $userLang)
                     }
-                    ...QuestionActionsFragment
+                    ...QuestionActionsFragment @arguments(lang: $userLang)
                     ...QuestionAuthorFragment
-                    ...QuestionContentFragment
+                    ...QuestionContentFragment @arguments(lang: $userLang)
                     ...QuestionStatsFragment
                     ...QuestionTopicsFragment
                 }
