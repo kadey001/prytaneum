@@ -40,7 +40,6 @@ export const USE_QUESTIONS_BY_TOPIC = graphql`
                     ...QuestionActionsFragment @arguments(lang: $userLang)
                     ...QuestionAuthorFragment
                     ...QuestionContentFragment @arguments(lang: $userLang)
-                    # ...TranslatedQuestionContentFragment @arguments(lang: $lang)
                     ...QuestionStatsFragment
                     ...QuestionTopicsFragment
                 }

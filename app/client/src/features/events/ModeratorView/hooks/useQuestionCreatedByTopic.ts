@@ -36,7 +36,6 @@ export const USE_QUESTION_CREATED_SUBSCRIPTION = graphql`
                     ...QuestionAuthorFragment
                     ...QuestionContentFragment @arguments(lang: $lang)
                     ...QuestionStatsFragment
-                    # ...TranslatedQuestionContentFragment @arguments(lang: $lang)
                 }
             }
         }

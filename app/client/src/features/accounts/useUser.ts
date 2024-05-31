@@ -22,7 +22,6 @@ export function useUser() {
     if (userFragment === undefined || isLoading === undefined || setUser === undefined || setIsLoading === undefined)
         throw new Error('useUser() must be used within a UserContextProvider');
     const user = useFragment(USE_USER_FRAGMENT, userFragment);
-    // console.log('user', user);
 
     return { user, setUser, isLoading, setIsLoading } as const;
 }

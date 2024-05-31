@@ -316,7 +316,6 @@ export async function getTranslatedQuestion(
         where: { id: questionId },
         include: { translations: true },
     });
-    // console.log('Translated Question Result: ', result);
     if (!result) throw new ProtectedError({ userMessage: 'Question not found' });
 
     let translatedQuestion = { question: result.question, originalLang: result.lang };
@@ -327,6 +326,5 @@ export async function getTranslatedQuestion(
     if (!translation) return translatedQuestion;
 
     translatedQuestion.question = translation;
-    // console.log('Translated Question: ', translatedQuestion);
     return translatedQuestion;
 }
