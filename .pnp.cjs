@@ -550,6 +550,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@fastify/rate-limit", "npm:6.0.1"],\
             ["@google-cloud/pubsub", "npm:2.19.4"],\
             ["@google-cloud/storage", "npm:7.11.0"],\
+            ["@google-cloud/translate", "npm:8.3.0"],\
             ["@graphql-tools/load-files", "virtual:8677a47b7766945d002e7a51965f47027cfed0d45596695b49bd7d6174f0430951262648e27ddf1d0f801daddcf4db4a425e2c90e59f9252c5e3357dc0e5bbe8#npm:6.6.1"],\
             ["@graphql-tools/merge", "virtual:697dd1b795c74ae3433ef5c77c4ad2120b112e31cbb7d7076bf3a9eb4dacf0668a8ae19167b2e7820fdd62fe389013fd0d227d07e10c38013bdfe9c91c085c61#npm:8.3.12"],\
             ["@graphql-tools/schema", "virtual:3fa21a9270efed5105be4f1fe38856a4586b5b4d1acba5bbcc66824653524b41414c0fe5ff0423ec749710117aa3141c92195ae3ddbd3497e109c52c64911507#npm:9.0.10"],\
@@ -5863,6 +5864,24 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@google-cloud/common", [\
+        ["npm:5.0.2", {\
+          "packageLocation": "./.yarn/cache/@google-cloud-common-npm-5.0.2-753276b688-13c3af9583.zip/node_modules/@google-cloud/common/",\
+          "packageDependencies": [\
+            ["@google-cloud/common", "npm:5.0.2"],\
+            ["@google-cloud/projectify", "npm:4.0.0"],\
+            ["@google-cloud/promisify", "npm:4.0.0"],\
+            ["arrify", "npm:2.0.1"],\
+            ["duplexify", "npm:4.1.3"],\
+            ["extend", "npm:3.0.2"],\
+            ["google-auth-library", "npm:9.0.0"],\
+            ["html-entities", "npm:2.5.2"],\
+            ["retry-request", "npm:7.0.2"],\
+            ["teeny-request", "npm:9.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@google-cloud/paginator", [\
         ["npm:3.0.7", {\
           "packageLocation": "./.yarn/cache/@google-cloud-paginator-npm-3.0.7-b5e7c7f423-bdecce8a89.zip/node_modules/@google-cloud/paginator/",\
@@ -6006,6 +6025,21 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["retry-request", "npm:7.0.2"],\
             ["teeny-request", "npm:9.0.0"],\
             ["uuid", "npm:8.3.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@google-cloud/translate", [\
+        ["npm:8.3.0", {\
+          "packageLocation": "./.yarn/cache/@google-cloud-translate-npm-8.3.0-dec58b270d-d8174ddb67.zip/node_modules/@google-cloud/translate/",\
+          "packageDependencies": [\
+            ["@google-cloud/translate", "npm:8.3.0"],\
+            ["@google-cloud/common", "npm:5.0.2"],\
+            ["@google-cloud/promisify", "npm:4.0.0"],\
+            ["arrify", "npm:2.0.1"],\
+            ["extend", "npm:3.0.2"],\
+            ["google-gax", "npm:4.3.5"],\
+            ["is-html", "npm:2.0.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7134,6 +7168,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@grpc/grpc-js", [\
+        ["npm:1.10.8", {\
+          "packageLocation": "./.yarn/cache/@grpc-grpc-js-npm-1.10.8-0bc536bc3c-498d144016.zip/node_modules/@grpc/grpc-js/",\
+          "packageDependencies": [\
+            ["@grpc/grpc-js", "npm:1.10.8"],\
+            ["@grpc/proto-loader", "npm:0.7.13"],\
+            ["@js-sdsl/ordered-map", "npm:4.4.2"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
         ["npm:1.6.7", {\
           "packageLocation": "./.yarn/cache/@grpc-grpc-js-npm-1.6.7-2e10ef0dbb-2668b08c2e.zip/node_modules/@grpc/grpc-js/",\
           "packageDependencies": [\
@@ -7154,6 +7197,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["long", "npm:4.0.0"],\
             ["protobufjs", "npm:6.11.2"],\
             ["yargs", "npm:16.2.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:0.7.13", {\
+          "packageLocation": "./.yarn/cache/@grpc-proto-loader-npm-0.7.13-be5b6af1c1-399c1b8a46.zip/node_modules/@grpc/proto-loader/",\
+          "packageDependencies": [\
+            ["@grpc/proto-loader", "npm:0.7.13"],\
+            ["lodash.camelcase", "npm:4.3.0"],\
+            ["long", "npm:5.2.3"],\
+            ["protobufjs", "npm:7.3.0"],\
+            ["yargs", "npm:17.7.2"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7618,6 +7672,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@jridgewell/trace-mapping", "npm:0.3.9"],\
             ["@jridgewell/resolve-uri", "npm:3.0.5"],\
             ["@jridgewell/sourcemap-codec", "npm:1.4.11"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@js-sdsl/ordered-map", [\
+        ["npm:4.4.2", {\
+          "packageLocation": "./.yarn/cache/@js-sdsl-ordered-map-npm-4.4.2-158f6c6b74-a927ae4ff8.zip/node_modules/@js-sdsl/ordered-map/",\
+          "packageDependencies": [\
+            ["@js-sdsl/ordered-map", "npm:4.4.2"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -17161,6 +17224,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["wrap-ansi", "npm:7.0.0"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:8.0.1", {\
+          "packageLocation": "./.yarn/cache/cliui-npm-8.0.1-3b029092cf-79648b3b00.zip/node_modules/cliui/",\
+          "packageDependencies": [\
+            ["cliui", "npm:8.0.1"],\
+            ["string-width", "npm:4.2.3"],\
+            ["strip-ansi", "npm:6.0.1"],\
+            ["wrap-ansi", "npm:7.0.0"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["clone", [\
@@ -23586,6 +23659,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "HARD"\
         }],\
+        ["npm:9.10.0", {\
+          "packageLocation": "./.yarn/cache/google-auth-library-npm-9.10.0-58be44cab5-238ef40fba.zip/node_modules/google-auth-library/",\
+          "packageDependencies": [\
+            ["google-auth-library", "npm:9.10.0"],\
+            ["base64-js", "npm:1.5.1"],\
+            ["ecdsa-sig-formatter", "npm:1.0.11"],\
+            ["gaxios", "npm:6.5.0"],\
+            ["gcp-metadata", "npm:6.1.0"],\
+            ["gtoken", "npm:7.0.1"],\
+            ["jws", "npm:4.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
         ["npm:9.9.0", {\
           "packageLocation": "./.yarn/cache/google-auth-library-npm-9.9.0-61bdfe26f7-78f48d4453.zip/node_modules/google-auth-library/",\
           "packageDependencies": [\
@@ -23618,6 +23704,25 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["proto3-json-serializer", "npm:0.1.8"],\
             ["protobufjs", "npm:6.11.2"],\
             ["retry-request", "npm:4.2.2"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:4.3.5", {\
+          "packageLocation": "./.yarn/cache/google-gax-npm-4.3.5-70cb7e8a59-dec9d1523e.zip/node_modules/google-gax/",\
+          "packageDependencies": [\
+            ["google-gax", "npm:4.3.5"],\
+            ["@grpc/grpc-js", "npm:1.10.8"],\
+            ["@grpc/proto-loader", "npm:0.7.13"],\
+            ["@types/long", "npm:4.0.1"],\
+            ["abort-controller", "npm:3.0.0"],\
+            ["duplexify", "npm:4.1.2"],\
+            ["google-auth-library", "npm:9.10.0"],\
+            ["node-fetch", "virtual:d0d6e04294851631e829691bf962100669ffb63310a1d4836f9bffb2e2c84e5003a248c8afd68f7beed46025c5a17675ae289481a1ef07a4d5b4f15a7b8ac853#npm:2.6.7"],\
+            ["object-hash", "npm:3.0.0"],\
+            ["proto3-json-serializer", "npm:2.0.2"],\
+            ["protobufjs", "npm:7.3.0"],\
+            ["retry-request", "npm:7.0.2"],\
+            ["uuid", "npm:9.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -24452,6 +24557,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/html-tags-npm-3.2.0-cdd16b1446-a0c9e96ac2.zip/node_modules/html-tags/",\
           "packageDependencies": [\
             ["html-tags", "npm:3.2.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:3.3.1", {\
+          "packageLocation": "./.yarn/cache/html-tags-npm-3.3.1-c8f411791b-b4ef1d5a76.zip/node_modules/html-tags/",\
+          "packageDependencies": [\
+            ["html-tags", "npm:3.3.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -25598,6 +25710,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/is-hexadecimal-npm-1.0.4-b4091da09e-a452e04758.zip/node_modules/is-hexadecimal/",\
           "packageDependencies": [\
             ["is-hexadecimal", "npm:1.0.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["is-html", [\
+        ["npm:2.0.0", {\
+          "packageLocation": "./.yarn/cache/is-html-npm-2.0.0-59dc4b04d3-0cc233e385.zip/node_modules/is-html/",\
+          "packageDependencies": [\
+            ["is-html", "npm:2.0.0"],\
+            ["html-tags", "npm:3.3.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -27941,6 +28063,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/long-npm-4.0.0-ecd96a31ed-16afbe8f74.zip/node_modules/long/",\
           "packageDependencies": [\
             ["long", "npm:4.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:5.2.3", {\
+          "packageLocation": "./.yarn/cache/long-npm-5.2.3-61dddb7586-885ede7c3d.zip/node_modules/long/",\
+          "packageDependencies": [\
+            ["long", "npm:5.2.3"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -32594,6 +32723,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["protobufjs", "npm:6.11.2"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:2.0.2", {\
+          "packageLocation": "./.yarn/cache/proto3-json-serializer-npm-2.0.2-294a3146b1-21b8aa65be.zip/node_modules/proto3-json-serializer/",\
+          "packageDependencies": [\
+            ["proto3-json-serializer", "npm:2.0.2"],\
+            ["protobufjs", "npm:7.3.0"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["protobufjs", [\
@@ -32614,6 +32751,25 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/long", "npm:4.0.1"],\
             ["@types/node", "npm:18.11.10"],\
             ["long", "npm:4.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:7.3.0", {\
+          "packageLocation": "./.yarn/unplugged/protobufjs-npm-7.3.0-2b79127d28/node_modules/protobufjs/",\
+          "packageDependencies": [\
+            ["protobufjs", "npm:7.3.0"],\
+            ["@protobufjs/aspromise", "npm:1.1.2"],\
+            ["@protobufjs/base64", "npm:1.1.2"],\
+            ["@protobufjs/codegen", "npm:2.0.4"],\
+            ["@protobufjs/eventemitter", "npm:1.1.0"],\
+            ["@protobufjs/fetch", "npm:1.1.0"],\
+            ["@protobufjs/float", "npm:1.0.2"],\
+            ["@protobufjs/inquire", "npm:1.1.0"],\
+            ["@protobufjs/path", "npm:1.1.2"],\
+            ["@protobufjs/pool", "npm:1.1.0"],\
+            ["@protobufjs/utf8", "npm:1.1.0"],\
+            ["@types/node", "npm:18.11.10"],\
+            ["long", "npm:5.2.3"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -40211,6 +40367,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["yargs-parser", "npm:21.0.1"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:17.7.2", {\
+          "packageLocation": "./.yarn/cache/yargs-npm-17.7.2-80b62638e1-73b572e863.zip/node_modules/yargs/",\
+          "packageDependencies": [\
+            ["yargs", "npm:17.7.2"],\
+            ["cliui", "npm:8.0.1"],\
+            ["escalade", "npm:3.1.1"],\
+            ["get-caller-file", "npm:2.0.5"],\
+            ["require-directory", "npm:2.1.1"],\
+            ["string-width", "npm:4.2.3"],\
+            ["y18n", "npm:5.0.8"],\
+            ["yargs-parser", "npm:21.1.1"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["yargs-parser", [\
@@ -40234,6 +40404,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/yargs-parser-npm-21.0.1-b778fd3462-c3ea2ed12c.zip/node_modules/yargs-parser/",\
           "packageDependencies": [\
             ["yargs-parser", "npm:21.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:21.1.1", {\
+          "packageLocation": "./.yarn/cache/yargs-parser-npm-21.1.1-8fdc003314-ed2d96a616.zip/node_modules/yargs-parser/",\
+          "packageDependencies": [\
+            ["yargs-parser", "npm:21.1.1"]\
           ],\
           "linkType": "HARD"\
         }]\
