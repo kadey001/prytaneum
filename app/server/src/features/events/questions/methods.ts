@@ -1,17 +1,12 @@
 import { fromGlobalId } from 'graphql-relay';
-import { PrismaClient } from '@local/__generated__/prisma';
-import { errors } from '@local/features/utils';
+import { Prisma, PrismaClient } from '@local/__generated__/prisma';
+import { errors, getPreferredLang } from '@local/features/utils';
 import { ProtectedError } from '@local/lib/ProtectedError';
 import type { CreateQuestion, AlterLike } from '@local/graphql-types';
 import axios, { AxiosResponse } from 'axios';
+import { detectLanguage, translateText } from '@local/core/utils';
 
-/**
- * submit a question, in the future this may plug into an event broker like kafka or redis
- */
-export async function createQuestion(userId: string, prisma: PrismaClient, input: CreateQuestion) {
-    const { question, refQuestion: globalRefId, isFollowUp, isQuote, eventId } = input;
-    const refQuestionId = globalRefId ? fromGlobalId(globalRefId).id : null;
-
+async function createQuestionGuardCheck(userId: string, eventId: string, prisma: PrismaClient) {
     // Verify that user is not muted from asking questions
     const isMutedResult = await prisma.eventParticipant.findUnique({
         where: { eventId_userId: { eventId, userId } },
@@ -23,11 +18,21 @@ export async function createQuestion(userId: string, prisma: PrismaClient, input
             userMessage: errors.muted,
             internalMessage: `User with id: ${userId} attempted to ask a question while muted.`,
         });
+}
 
-    // it's okay to have both false, but both cannot be true
-    if (isQuote === isFollowUp && isQuote === true) throw new ProtectedError({ userMessage: errors.invalidArgs });
+type TQuestionProcessingResult = {
+    originalLanguage: string;
+    questionTranslations: Prisma.JsonObject;
+    topics: string[];
+    substantive: boolean;
+    offensive: boolean;
+    relevant: boolean;
+};
 
-    // Run through ben's algorithm
+// Run through ben's algorithm, should still work if the api call fails
+async function processQuestion(input: CreateQuestion): Promise<TQuestionProcessingResult> {
+    const { question, eventId } = input;
+
     type ExpectedResponse = {
         question_en: string;
         question_es: string;
@@ -54,15 +59,63 @@ export async function createQuestion(userId: string, prisma: PrismaClient, input
         );
         if (!response) throw new Error('No response from moderation service');
     } catch (error) {
-        throw new ProtectedError({
-            userMessage: 'Unable to process question, please try again.',
-            internalMessage: error instanceof Error ? error.message : `Error processing question: ${question}`,
-        });
+        console.error(error);
+    }
+
+    // If the api call fails, we will translate and create the question without any moderation data
+    if (!response || !response.data) {
+        const originalLanguage = await detectLanguage(question);
+        const questionTranslations = { EN: '', ES: '' } as Prisma.JsonObject;
+        if (originalLanguage === 'es') {
+            questionTranslations.ES = question;
+            questionTranslations.EN = await translateText(question, 'en');
+        } else {
+            questionTranslations.EN = question;
+            questionTranslations.ES = await translateText(question, 'es');
+        }
+        console.log('GCloud Translation: ', questionTranslations);
+        return {
+            originalLanguage,
+            questionTranslations,
+            topics: [],
+            substantive: false,
+            offensive: false,
+            relevant: false,
+        };
     }
 
     const data = response.data;
     // Get all the topis that are related to the question
     const topics = Object.keys(data.topics).filter((key) => data.topics[key]);
+
+    const questionTranslations = { EN: data.question_en, ES: data.question_es } as Prisma.JsonObject;
+
+    return {
+        originalLanguage: data.original_lang,
+        questionTranslations,
+        topics,
+        substantive: data.substantive,
+        offensive: data.offensive,
+        relevant: data.relevant,
+    };
+}
+
+/**
+ * submit a question, in the future this may plug into an event broker like kafka or redis
+ */
+export async function createQuestion(userId: string, prisma: PrismaClient, input: CreateQuestion) {
+    const { question, refQuestion: globalRefId, isFollowUp, isQuote, eventId } = input;
+    const refQuestionId = globalRefId ? fromGlobalId(globalRefId).id : null;
+
+    await createQuestionGuardCheck(userId, eventId, prisma);
+
+    // it's okay to have both false, but both cannot be true
+    if (isQuote === isFollowUp && isQuote === true) throw new ProtectedError({ userMessage: errors.invalidArgs });
+
+    const { originalLanguage, questionTranslations, topics, substantive, offensive, relevant } = await processQuestion(
+        input
+    );
+
     // Get the topic ids (and ensure they are valid topics in the event)
     const topicIds = await prisma.eventTopic.findMany({
         where: { eventId, topic: { in: topics } },
@@ -79,13 +132,18 @@ export async function createQuestion(userId: string, prisma: PrismaClient, input
             createdById: userId,
             isVisible: true,
             isAsked: false,
-            lang: 'EN', // TODO:
+            lang: originalLanguage.toUpperCase() || 'EN',
             topics: {
                 createMany: { data: topicIds.map(({ id }) => ({ topicId: id })) },
             },
-            substantive: data.substantive || false,
-            offensive: data.offensive || false,
-            relevant: data.relevant || false,
+            substantive: substantive || false,
+            offensive: offensive || false,
+            relevant: relevant || false,
+            translations: {
+                create: {
+                    questionTranslations,
+                },
+            },
         },
         include: {
             refQuestion: true,
@@ -240,4 +298,35 @@ export async function findTopicsByQuestionId(questionId: string, prisma: PrismaC
         return { id: topic.id, eventId: topic.eventId, topic: topic.topic, description: topic.description, position };
     });
     return topics || [];
+}
+
+export async function getQuestionById(questionId: string, prisma: PrismaClient) {
+    const result = await prisma.eventQuestion.findUnique({ where: { id: questionId }, select: { question: true } });
+    return result?.question ?? 'No question found';
+}
+
+export async function getTranslatedQuestion(
+    viewerId: string | null,
+    questionId: string,
+    prisma: PrismaClient,
+    lang?: string
+): Promise<{ question: string; originalLang: string }> {
+    const preferredLang = lang ?? (await getPreferredLang(viewerId, prisma));
+    const result = await prisma.eventQuestion.findUnique({
+        where: { id: questionId },
+        include: { translations: true },
+    });
+    // console.log('Translated Question Result: ', result);
+    if (!result) throw new ProtectedError({ userMessage: 'Question not found' });
+
+    let translatedQuestion = { question: result.question, originalLang: result.lang };
+    const translationsObject = result.translations?.questionTranslations as Prisma.JsonObject | undefined;
+    if (!translationsObject) return translatedQuestion;
+
+    const translation = translationsObject[preferredLang.toUpperCase()] as string | undefined;
+    if (!translation) return translatedQuestion;
+
+    translatedQuestion.question = translation;
+    // console.log('Translated Question: ', translatedQuestion);
+    return translatedQuestion;
 }

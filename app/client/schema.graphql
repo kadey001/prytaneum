@@ -460,6 +460,7 @@ type EventQuestion implements Node {
 
   """The actual content of the question"""
   question: String!
+  questionTranslated(lang: String!): String
   refQuestion: EventQuestion
   relevant: Boolean!
   substantive: Boolean!
@@ -853,6 +854,11 @@ type Query {
   """
   validateInvite(input: ValidateInvite!): ValidateInviteQueryResponse!
   validatePasswordResetToken(input: ValidatePasswordResetTokenForm!): ValidatePasswordResetTokenQueryResponse!
+}
+
+type QuestionBody {
+  originalLang: String!
+  question: String!
 }
 
 input RegistrationForm {

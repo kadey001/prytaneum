@@ -540,10 +540,16 @@ export type EventQuestion = Node & {
   position: Scalars['String'];
   /** The actual content of the question */
   question: Scalars['String'];
+  questionTranslated?: Maybe<Scalars['String']>;
   refQuestion?: Maybe<EventQuestion>;
   relevant: Scalars['Boolean'];
   substantive: Scalars['Boolean'];
   topics?: Maybe<Array<EventQuestionTopic>>;
+};
+
+
+export type EventQuestionQuestionTranslatedArgs = {
+  lang: Scalars['String'];
 };
 
 export type EventQuestionConnection = {
@@ -1385,6 +1391,12 @@ export type QueryValidateInviteArgs = {
 
 export type QueryValidatePasswordResetTokenArgs = {
   input: ValidatePasswordResetTokenForm;
+};
+
+export type QuestionBody = {
+  __typename?: 'QuestionBody';
+  originalLang: Scalars['String'];
+  question: Scalars['String'];
 };
 
 export type RegistrationForm = {

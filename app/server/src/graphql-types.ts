@@ -1525,6 +1525,7 @@ export type EventQuestion = Node & {
     substantive: Scalars['Boolean'];
     offensive: Scalars['Boolean'];
     relevant: Scalars['Boolean'];
+    questionTranslated?: Maybe<Scalars['String']>;
     /** The users who have liked this question */
     likedBy?: Maybe<UserConnection>;
     /** Find the count of the likes only */
@@ -1534,6 +1535,16 @@ export type EventQuestion = Node & {
     /** If the question is owned by the current viewer */
     isMyQuestion?: Maybe<Scalars['Boolean']>;
     topics?: Maybe<Array<EventQuestionTopic>>;
+};
+
+export type EventQuestionquestionTranslatedArgs = {
+    lang: Scalars['String'];
+};
+
+export type QuestionBody = {
+    __typename?: 'QuestionBody';
+    question: Scalars['String'];
+    originalLang: Scalars['String'];
 };
 
 /** EventQuestionQueue is the entire queue of the event */
@@ -1994,6 +2005,7 @@ export type ResolversTypes = {
     ParticipantPingEventMutationResponse: ResolverTypeWrapper<ParticipantPingEventMutationResponse>;
     MuteParticipantMutationResponse: ResolverTypeWrapper<MuteParticipantMutationResponse>;
     EventQuestion: ResolverTypeWrapper<EventQuestion>;
+    QuestionBody: ResolverTypeWrapper<QuestionBody>;
     EventQuestionQueue: ResolverTypeWrapper<EventQuestionQueue>;
     EventQuestionEdge: ResolverTypeWrapper<EventQuestionEdge>;
     EventQuestionConnection: ResolverTypeWrapper<EventQuestionConnection>;
@@ -2168,6 +2180,7 @@ export type ResolversParentTypes = {
     ParticipantPingEventMutationResponse: ParticipantPingEventMutationResponse;
     MuteParticipantMutationResponse: MuteParticipantMutationResponse;
     EventQuestion: EventQuestion;
+    QuestionBody: QuestionBody;
     EventQuestionQueue: EventQuestionQueue;
     EventQuestionEdge: EventQuestionEdge;
     EventQuestionConnection: EventQuestionConnection;
@@ -3638,11 +3651,26 @@ export type EventQuestionResolvers<
     substantive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     offensive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     relevant?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    questionTranslated?: Resolver<
+        Maybe<ResolversTypes['String']>,
+        ParentType,
+        ContextType,
+        RequireFields<EventQuestionquestionTranslatedArgs, 'lang'>
+    >;
     likedBy?: Resolver<Maybe<ResolversTypes['UserConnection']>, ParentType, ContextType>;
     likedByCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
     isLikedByViewer?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     isMyQuestion?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     topics?: Resolver<Maybe<Array<ResolversTypes['EventQuestionTopic']>>, ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type QuestionBodyResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['QuestionBody'] = ResolversParentTypes['QuestionBody']
+> = {
+    question?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    originalLang?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -3957,6 +3985,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
     ParticipantPingEventMutationResponse?: ParticipantPingEventMutationResponseResolvers<ContextType>;
     MuteParticipantMutationResponse?: MuteParticipantMutationResponseResolvers<ContextType>;
     EventQuestion?: EventQuestionResolvers<ContextType>;
+    QuestionBody?: QuestionBodyResolvers<ContextType>;
     EventQuestionQueue?: EventQuestionQueueResolvers<ContextType>;
     EventQuestionEdge?: EventQuestionEdgeResolvers<ContextType>;
     EventQuestionConnection?: EventQuestionConnectionResolvers<ContextType>;
@@ -4396,11 +4425,22 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         substantive?: LoaderResolver<Scalars['Boolean'], EventQuestion, {}, TContext>;
         offensive?: LoaderResolver<Scalars['Boolean'], EventQuestion, {}, TContext>;
         relevant?: LoaderResolver<Scalars['Boolean'], EventQuestion, {}, TContext>;
+        questionTranslated?: LoaderResolver<
+            Maybe<Scalars['String']>,
+            EventQuestion,
+            EventQuestionquestionTranslatedArgs,
+            TContext
+        >;
         likedBy?: LoaderResolver<Maybe<UserConnection>, EventQuestion, {}, TContext>;
         likedByCount?: LoaderResolver<Maybe<Scalars['Int']>, EventQuestion, {}, TContext>;
         isLikedByViewer?: LoaderResolver<Maybe<Scalars['Boolean']>, EventQuestion, {}, TContext>;
         isMyQuestion?: LoaderResolver<Maybe<Scalars['Boolean']>, EventQuestion, {}, TContext>;
         topics?: LoaderResolver<Maybe<Array<EventQuestionTopic>>, EventQuestion, {}, TContext>;
+    };
+
+    QuestionBody?: {
+        question?: LoaderResolver<Scalars['String'], QuestionBody, {}, TContext>;
+        originalLang?: LoaderResolver<Scalars['String'], QuestionBody, {}, TContext>;
     };
 
     EventQuestionQueue?: {
