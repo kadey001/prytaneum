@@ -10,6 +10,7 @@ export const USE_VIEWER_ONLY_QUESTION_LIST_FRAGMENT = graphql`
         first: { type: "Int", defaultValue: 50 }
         after: { type: "String", defaultValue: "" }
         viewerOnly: { type: "Boolean", defaultValue: true }
+        userLang: { type: "String!" }
     ) {
         id
         currentQuestion
@@ -25,11 +26,11 @@ export const USE_VIEWER_ONLY_QUESTION_LIST_FRAGMENT = graphql`
                         firstName
                     }
                     refQuestion {
-                        ...QuestionQuoteFragment
+                        ...QuestionQuoteFragment @arguments(lang: $userLang)
                     }
-                    ...QuestionActionsFragment
+                    ...QuestionActionsFragment @arguments(lang: $userLang)
                     ...QuestionAuthorFragment
-                    ...QuestionContentFragment
+                    ...QuestionContentFragment @arguments(lang: $userLang)
                     ...QuestionStatsFragment
                 }
             }

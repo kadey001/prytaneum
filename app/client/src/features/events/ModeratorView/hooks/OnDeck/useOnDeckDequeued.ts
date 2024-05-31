@@ -60,6 +60,7 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
                 connections,
             },
             subscription: USE_ON_DECK_DEQUEUED,
+            cacheConfig: { force: true, poll: 1000 },
         }),
         [eventId, connections]
     );

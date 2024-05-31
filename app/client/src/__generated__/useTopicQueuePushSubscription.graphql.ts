@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8bf8165d13d59384e598fb14a32e7486>>
+ * @generated SignedSource<<25e8e73a82a6c0e8b77e9b0982f0f37e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import { FragmentRefs } from "relay-runtime";
 export type useTopicQueuePushSubscription$variables = {
   connections: ReadonlyArray<string>;
   eventId: string;
+  lang: string;
   topic: string;
 };
 export type useTopicQueuePushSubscription$data = {
@@ -51,9 +52,14 @@ v1 = {
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "lang"
+},
+v3 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "topic"
 },
-v3 = [
+v4 = [
   {
     "kind": "Variable",
     "name": "eventId",
@@ -65,21 +71,28 @@ v3 = [
     "variableName": "topic"
   }
 ],
-v4 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v5 = {
+v6 = [
+  {
+    "kind": "Variable",
+    "name": "lang",
+    "variableName": "lang"
+  }
+],
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "position",
   "storageKey": null
 },
-v6 = {
+v8 = {
   "alias": null,
   "args": null,
   "concreteType": "EventQuestionTopic",
@@ -94,18 +107,18 @@ v6 = {
       "name": "topic",
       "storageKey": null
     },
-    (v5/*: any*/)
+    (v7/*: any*/)
   ],
   "storageKey": null
 },
-v7 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "onDeckPosition",
   "storageKey": null
 },
-v8 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -117,7 +130,8 @@ return {
     "argumentDefinitions": [
       (v0/*: any*/),
       (v1/*: any*/),
-      (v2/*: any*/)
+      (v2/*: any*/),
+      (v3/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -125,7 +139,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": "EventQuestionEdgeContainer",
         "kind": "LinkedField",
         "name": "topicQueuePush",
@@ -147,7 +161,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/),
+                  (v5/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
@@ -159,17 +173,17 @@ return {
                     "name": "QuestionStatsFragment"
                   },
                   {
-                    "args": null,
+                    "args": (v6/*: any*/),
                     "kind": "FragmentSpread",
                     "name": "QuestionContentFragment"
                   },
-                  (v6/*: any*/),
-                  (v5/*: any*/),
-                  (v7/*: any*/)
+                  (v8/*: any*/),
+                  (v7/*: any*/),
+                  (v9/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v8/*: any*/)
+              (v10/*: any*/)
             ],
             "storageKey": null
           }
@@ -184,15 +198,16 @@ return {
   "operation": {
     "argumentDefinitions": [
       (v1/*: any*/),
-      (v2/*: any*/),
-      (v0/*: any*/)
+      (v3/*: any*/),
+      (v0/*: any*/),
+      (v2/*: any*/)
     ],
     "kind": "Operation",
     "name": "useTopicQueuePushSubscription",
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": "EventQuestionEdgeContainer",
         "kind": "LinkedField",
         "name": "topicQueuePush",
@@ -214,7 +229,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/),
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -223,7 +238,7 @@ return {
                     "name": "createdBy",
                     "plural": false,
                     "selections": [
-                      (v4/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -269,13 +284,27 @@ return {
                     "name": "question",
                     "storageKey": null
                   },
-                  (v6/*: any*/),
-                  (v5/*: any*/),
-                  (v7/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "lang",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": (v6/*: any*/),
+                    "kind": "ScalarField",
+                    "name": "questionTranslated",
+                    "storageKey": null
+                  },
+                  (v8/*: any*/),
+                  (v7/*: any*/),
+                  (v9/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v8/*: any*/)
+              (v10/*: any*/)
             ],
             "storageKey": null
           },
@@ -301,16 +330,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2224397defb8263ea4cc134f7a759d3b",
+    "cacheID": "db399d0bf779768caf827d4005c207ce",
     "id": null,
     "metadata": {},
     "name": "useTopicQueuePushSubscription",
     "operationKind": "subscription",
-    "text": "subscription useTopicQueuePushSubscription(\n  $eventId: String!\n  $topic: String!\n) {\n  topicQueuePush(eventId: $eventId, topic: $topic) {\n    edge {\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment\n        topics {\n          topic\n          position\n        }\n        position\n        onDeckPosition\n      }\n      cursor\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
+    "text": "subscription useTopicQueuePushSubscription(\n  $eventId: String!\n  $topic: String!\n  $lang: String!\n) {\n  topicQueuePush(eventId: $eventId, topic: $topic) {\n    edge {\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment_3iqx2P\n        topics {\n          topic\n          position\n        }\n        position\n        onDeckPosition\n      }\n      cursor\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
   }
 };
 })();
 
-(node as any).hash = "22d7fde34c6a02043cc9e696dca752a7";
+(node as any).hash = "6ab65ee74a50d4699f7577717823f961";
 
 export default node;

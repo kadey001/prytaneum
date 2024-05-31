@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<61b1b36a3af8b45e746858ccb535f678>>
+ * @generated SignedSource<<b224cc6ab2fe8b6183784d094b52d7b3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,7 +21,13 @@ export type QuestionActionsFragment$key = {
 };
 
 const node: ReaderFragment = {
-  "argumentDefinitions": [],
+  "argumentDefinitions": [
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "lang"
+    }
+  ],
   "kind": "Fragment",
   "metadata": null,
   "name": "QuestionActionsFragment",
@@ -34,7 +40,13 @@ const node: ReaderFragment = {
       "storageKey": null
     },
     {
-      "args": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "lang",
+          "variableName": "lang"
+        }
+      ],
       "kind": "FragmentSpread",
       "name": "QuoteFragment"
     },
@@ -58,6 +70,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "2f2059e2937c61a6e289313523508f77";
+(node as any).hash = "1c039e30b4d26c9d3579297f1e37a074";
 
 export default node;

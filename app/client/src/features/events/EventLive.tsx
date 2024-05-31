@@ -24,7 +24,7 @@ import { useHashedColor } from '@local/core/getHashedColor';
 import { EventTopicContext } from './ModeratorView/EventTopicContext';
 
 export const EVENT_LIVE_QUERY = graphql`
-    query EventLiveQuery($eventId: ID!) {
+    query EventLiveQuery($eventId: ID!, $lang: String!) {
         node(id: $eventId) {
             id
             ... on Event {
@@ -34,7 +34,7 @@ export const EVENT_LIVE_QUERY = graphql`
                 ...EventVideoFragment
                 ...useEventDetailsFragment
                 ...SpeakerListFragment
-                ...useOnDeckFragment
+                ...useOnDeckFragment @arguments(userLang: $lang)
             }
         }
     }
@@ -268,12 +268,14 @@ export interface PreloadedEventLiveProps {
 }
 
 export function PreloadedEventLive({ eventId, token }: PreloadedEventLiveProps) {
+    const { user, isLoading } = useUser();
     const [eventLiveQueryRef, loadEventQuery, disposeQuery] = useQueryLoader<EventLiveQuery>(EVENT_LIVE_QUERY);
     const [validateInviteQueryRef, loadInviteQuery] = useQueryLoader<ValidateInviteQuery>(VALIDATE_INVITE_QUERY);
 
     React.useEffect(() => {
-        if (!eventLiveQueryRef) loadEventQuery({ eventId });
-    }, [eventId, eventLiveQueryRef, loadEventQuery]);
+        if (isLoading) return;
+        if (!eventLiveQueryRef) loadEventQuery({ eventId, lang: user?.preferredLang || 'EN' });
+    }, [eventId, eventLiveQueryRef, isLoading, loadEventQuery, user?.preferredLang]);
 
     React.useEffect(() => {
         if (!token && !validateInviteQueryRef) loadInviteQuery({ token: '', eventId });

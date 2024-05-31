@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f68b8d5383ddc85bd71245d1a6fce839>>
+ * @generated SignedSource<<4f70f22e22b8af7f024dc6691281458e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -108,19 +108,26 @@ v5 = {
   "kind": "FragmentSpread",
   "name": "QuestionStatsFragment"
 },
-v6 = {
-  "args": null,
+v6 = [
+  {
+    "kind": "Variable",
+    "name": "lang",
+    "variableName": "userLang"
+  }
+],
+v7 = {
+  "args": (v6/*: any*/),
   "kind": "FragmentSpread",
   "name": "QuestionContentFragment"
 },
-v7 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "position",
   "storageKey": null
 },
-v8 = {
+v9 = {
   "alias": null,
   "args": null,
   "concreteType": "EventQuestion",
@@ -129,21 +136,21 @@ v8 = {
   "plural": false,
   "selections": [
     {
-      "args": null,
+      "args": (v6/*: any*/),
       "kind": "FragmentSpread",
       "name": "QuestionQuoteFragment"
     }
   ],
   "storageKey": null
 },
-v9 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v10 = {
+v11 = {
   "alias": null,
   "args": null,
   "concreteType": "PageInfo",
@@ -168,7 +175,7 @@ v10 = {
   ],
   "storageKey": null
 },
-v11 = {
+v12 = {
   "kind": "ClientExtension",
   "selections": [
     {
@@ -191,6 +198,11 @@ return {
       "defaultValue": 1000,
       "kind": "LocalArgument",
       "name": "first"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "userLang"
     }
   ],
   "kind": "Fragment",
@@ -264,18 +276,18 @@ return {
                     (v3/*: any*/),
                     (v4/*: any*/),
                     (v5/*: any*/),
-                    (v6/*: any*/),
                     (v7/*: any*/),
                     (v8/*: any*/),
-                    (v9/*: any*/)
+                    (v9/*: any*/),
+                    (v10/*: any*/)
                   ],
                   "storageKey": null
                 }
               ],
               "storageKey": null
             },
-            (v10/*: any*/),
-            (v11/*: any*/)
+            (v11/*: any*/),
+            (v12/*: any*/)
           ],
           "storageKey": null
         },
@@ -308,24 +320,24 @@ return {
                     (v2/*: any*/),
                     (v3/*: any*/),
                     {
-                      "args": null,
+                      "args": (v6/*: any*/),
                       "kind": "FragmentSpread",
                       "name": "QuestionActionsFragment"
                     },
                     (v4/*: any*/),
                     (v5/*: any*/),
-                    (v6/*: any*/),
                     (v7/*: any*/),
                     (v8/*: any*/),
-                    (v9/*: any*/)
+                    (v9/*: any*/),
+                    (v10/*: any*/)
                   ],
                   "storageKey": null
                 }
               ],
               "storageKey": null
             },
-            (v10/*: any*/),
-            (v11/*: any*/)
+            (v11/*: any*/),
+            (v12/*: any*/)
           ],
           "storageKey": null
         }
@@ -338,6 +350,6 @@ return {
 };
 })();
 
-(node as any).hash = "83041d7b8a3882356dbe791565b11e26";
+(node as any).hash = "2da2c609f2a0c8026baf048ee648b0f6";
 
 export default node;

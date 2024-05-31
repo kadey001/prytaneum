@@ -11,6 +11,7 @@ export const USE_QUEUE_BY_TOPIC = graphql`
         first: { type: "Int", defaultValue: 500 }
         after: { type: "String", defaultValue: "" }
         topic: { type: "String", defaultValue: "default" }
+        userLang: { type: "String!" }
     ) {
         id
         currentQuestion
@@ -32,11 +33,11 @@ export const USE_QUEUE_BY_TOPIC = graphql`
                         firstName
                     }
                     refQuestion {
-                        ...QuestionQuoteFragment
+                        ...QuestionQuoteFragment @arguments(lang: $userLang)
                     }
-                    ...QuestionActionsFragment
+                    ...QuestionActionsFragment @arguments(lang: $userLang)
                     ...QuestionAuthorFragment
-                    ...QuestionContentFragment
+                    ...QuestionContentFragment @arguments(lang: $userLang)
                     ...QuestionStatsFragment
                     ...QuestionTopicsFragment
                 }

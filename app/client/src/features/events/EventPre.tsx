@@ -21,13 +21,14 @@ import { ViewerOnlyQuestionList } from './Questions/ViewerOnlyQuestionList/Viewe
 import { StyledTabs } from '@local/components/StyledTabs';
 import { StyledColumnGrid } from '@local/components/StyledColumnGrid';
 import { EventIssueGuideViewer } from './EventIssueGuide/EventIssueGuideViewer';
+import { useUser } from '../accounts';
 
 const EVENT_PRE_QUERY = graphql`
-    query EventPreQuery($eventId: ID!) {
+    query EventPreQuery($eventId: ID!, $lang: String!) {
         node(id: $eventId) {
             id
             ... on Event {
-                ...useViewerOnlyQuestionListFragment
+                ...useViewerOnlyQuestionListFragment @arguments(userLang: $lang)
                 ...useLiveFeedbackListFragment @arguments(eventId: $eventId)
                 ...useEventDetailsFragment
                 ...SpeakerListFragment
@@ -226,11 +227,18 @@ export interface PreloadedEventPreProps {
 }
 
 export function PreloadedEventPre({ eventId }: PreloadedEventPreProps) {
-    const [eventLiveQueryRef, loadEventQuery] = useQueryLoader<EventPreQuery>(EVENT_PRE_QUERY);
+    const { user, isLoading } = useUser();
+    const [eventLiveQueryRef, loadEventQuery, disposeQuery] = useQueryLoader<EventPreQuery>(EVENT_PRE_QUERY);
 
     React.useEffect(() => {
-        loadEventQuery({ eventId });
-    }, [eventId, loadEventQuery]);
+        if (isLoading) return;
+        loadEventQuery({ eventId, lang: user?.preferredLang || 'EN' });
+    }, [eventId, loadEventQuery, isLoading, user?.preferredLang]);
+
+    React.useEffect(() => {
+        return () => disposeQuery();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     if (!eventLiveQueryRef) return <Loader />;
     return (

@@ -12,7 +12,11 @@ import { QuestionQuote } from '../QuestionQuote';
 
 const QUESTION_CAROUSEL_FRAGMENT = graphql`
     fragment QuestionCarouselFragment on Event
-    @argumentDefinitions(first: { type: Int, defaultValue: 1000 }, after: { type: String, defaultValue: "" }) {
+    @argumentDefinitions(
+        first: { type: Int, defaultValue: 1000 }
+        after: { type: String, defaultValue: "" }
+        userLang: { type: "String!" }
+    ) {
         id
         currentQuestion
         questionQueue {
@@ -23,9 +27,9 @@ const QUESTION_CAROUSEL_FRAGMENT = graphql`
                     node {
                         position
                         ...QuestionAuthorFragment
-                        ...QuestionContentFragment
+                        ...QuestionContentFragment @arguments(lang: $userLang)
                         refQuestion {
-                            ...QuestionQuoteFragment
+                            ...QuestionQuoteFragment @arguments(lang: $userLang)
                         }
                     }
                 }

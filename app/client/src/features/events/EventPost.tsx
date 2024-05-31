@@ -18,13 +18,14 @@ import { VideoModal } from './Videos/VideoModal';
 import PostEventFeedback from './PostEventFeedback/PostEventFeedback';
 import { StyledTabs } from '@local/components/StyledTabs';
 import { StyledColumnGrid } from '@local/components/StyledColumnGrid';
+import { useUser } from '../accounts';
 
 const EVENT_POST_QUERY = graphql`
-    query EventPostQuery($eventId: ID!) {
+    query EventPostQuery($eventId: ID!, $lang: String!) {
         node(id: $eventId) {
             id
             ... on Event {
-                ...useQuestionListFragment
+                ...useQuestionListFragment @arguments(userLang: $lang)
                 ...useLiveFeedbackListFragment @arguments(eventId: $eventId)
                 ...useEventDetailsFragment
                 ...SpeakerListFragment
@@ -199,15 +200,21 @@ export interface PreloadedEventPostProps {
 }
 
 export function PreloadedEventPost({ eventId }: PreloadedEventPostProps) {
+    const { user, isLoading } = useUser();
     const [queryRef, loadQuery, disposeQuery] = useQueryLoader<EventPostQuery>(EVENT_POST_QUERY);
 
     React.useEffect(() => {
-        loadQuery({ eventId });
+        if (isLoading) return;
+        if (!queryRef) loadQuery({ eventId, lang: user?.preferredLang || 'EN' });
+    }, [eventId, queryRef, loadQuery, isLoading, user?.preferredLang]);
+
+    React.useEffect(() => {
         return () => disposeQuery();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!queryRef) return <Loader />;
+
     return (
         <ConditionalRender client>
             <React.Suspense fallback={<EventPostContainer queryRef={queryRef} />}>

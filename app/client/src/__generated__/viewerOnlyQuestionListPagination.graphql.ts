@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a8c09f491655c88dfc6cd5ed828aeb06>>
+ * @generated SignedSource<<65ca506b09082fd795ae1d8a87456a84>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,6 +14,7 @@ export type viewerOnlyQuestionListPagination$variables = {
   after?: string | null;
   first?: number | null;
   id: string;
+  userLang: string;
   viewerOnly?: boolean | null;
 };
 export type viewerOnlyQuestionListPagination$data = {
@@ -43,84 +44,112 @@ v2 = {
   "name": "id"
 },
 v3 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "userLang"
+},
+v4 = {
   "defaultValue": true,
   "kind": "LocalArgument",
   "name": "viewerOnly"
 },
-v4 = [
+v5 = [
   {
     "kind": "Variable",
     "name": "id",
     "variableName": "id"
   }
 ],
-v5 = [
-  {
-    "kind": "Variable",
-    "name": "after",
-    "variableName": "after"
-  },
-  {
-    "kind": "Variable",
-    "name": "first",
-    "variableName": "first"
-  },
-  {
-    "kind": "Variable",
-    "name": "viewerOnly",
-    "variableName": "viewerOnly"
-  }
-],
 v6 = {
+  "kind": "Variable",
+  "name": "after",
+  "variableName": "after"
+},
+v7 = {
+  "kind": "Variable",
+  "name": "first",
+  "variableName": "first"
+},
+v8 = {
+  "kind": "Variable",
+  "name": "viewerOnly",
+  "variableName": "viewerOnly"
+},
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v7 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v8 = {
+v11 = [
+  (v6/*: any*/),
+  (v7/*: any*/),
+  (v8/*: any*/)
+],
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "question",
   "storageKey": null
 },
-v9 = {
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "firstName",
   "storageKey": null
 },
-v10 = {
+v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "lastName",
   "storageKey": null
 },
-v11 = {
+v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "avatar",
   "storageKey": null
 },
-v12 = {
+v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "createdAt",
   "storageKey": null
 },
-v13 = {
+v17 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lang",
+  "storageKey": null
+},
+v18 = {
+  "alias": null,
+  "args": [
+    {
+      "kind": "Variable",
+      "name": "lang",
+      "variableName": "userLang"
+    }
+  ],
+  "kind": "ScalarField",
+  "name": "questionTranslated",
+  "storageKey": null
+},
+v19 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -133,7 +162,8 @@ return {
       (v0/*: any*/),
       (v1/*: any*/),
       (v2/*: any*/),
-      (v3/*: any*/)
+      (v3/*: any*/),
+      (v4/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -141,14 +171,23 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
           {
-            "args": (v5/*: any*/),
+            "args": [
+              (v6/*: any*/),
+              (v7/*: any*/),
+              {
+                "kind": "Variable",
+                "name": "userLang",
+                "variableName": "userLang"
+              },
+              (v8/*: any*/)
+            ],
             "kind": "FragmentSpread",
             "name": "useViewerOnlyQuestionListFragment"
           }
@@ -165,6 +204,7 @@ return {
       (v0/*: any*/),
       (v1/*: any*/),
       (v3/*: any*/),
+      (v4/*: any*/),
       (v2/*: any*/)
     ],
     "kind": "Operation",
@@ -172,14 +212,14 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v6/*: any*/),
-          (v7/*: any*/),
+          (v9/*: any*/),
+          (v10/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -192,7 +232,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v5/*: any*/),
+                "args": (v11/*: any*/),
                 "concreteType": "EventQuestionConnection",
                 "kind": "LinkedField",
                 "name": "questions",
@@ -221,8 +261,8 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v7/*: any*/),
-                          (v8/*: any*/),
+                          (v10/*: any*/),
+                          (v12/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -231,10 +271,10 @@ return {
                             "name": "createdBy",
                             "plural": false,
                             "selections": [
-                              (v9/*: any*/),
-                              (v7/*: any*/),
+                              (v13/*: any*/),
                               (v10/*: any*/),
-                              (v11/*: any*/)
+                              (v14/*: any*/),
+                              (v15/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -246,7 +286,7 @@ return {
                             "name": "refQuestion",
                             "plural": false,
                             "selections": [
-                              (v7/*: any*/),
+                              (v10/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -255,19 +295,23 @@ return {
                                 "name": "createdBy",
                                 "plural": false,
                                 "selections": [
-                                  (v7/*: any*/),
-                                  (v9/*: any*/),
                                   (v10/*: any*/),
-                                  (v11/*: any*/)
+                                  (v13/*: any*/),
+                                  (v14/*: any*/),
+                                  (v15/*: any*/)
                                 ],
                                 "storageKey": null
                               },
+                              (v16/*: any*/),
                               (v12/*: any*/),
-                              (v8/*: any*/)
+                              (v17/*: any*/),
+                              (v18/*: any*/)
                             ],
                             "storageKey": null
                           },
-                          (v12/*: any*/),
+                          (v16/*: any*/),
+                          (v17/*: any*/),
+                          (v18/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -275,7 +319,7 @@ return {
                             "name": "isLikedByViewer",
                             "storageKey": null
                           },
-                          (v13/*: any*/),
+                          (v19/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -291,7 +335,7 @@ return {
                                 "name": "topic",
                                 "storageKey": null
                               },
-                              (v13/*: any*/)
+                              (v19/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -302,7 +346,7 @@ return {
                             "name": "likedByCount",
                             "storageKey": null
                           },
-                          (v6/*: any*/)
+                          (v9/*: any*/)
                         ],
                         "storageKey": null
                       }
@@ -351,7 +395,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v5/*: any*/),
+                "args": (v11/*: any*/),
                 "filters": [
                   "viewerOnly"
                 ],
@@ -370,16 +414,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ffcc048e23cc652e6413d7067ff1b6ab",
+    "cacheID": "02d78ae353f14fe92d6a4def8548f3be",
     "id": null,
     "metadata": {},
     "name": "viewerOnlyQuestionListPagination",
     "operationKind": "query",
-    "text": "query viewerOnlyQuestionListPagination(\n  $after: String = \"\"\n  $first: Int = 50\n  $viewerOnly: Boolean = true\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useViewerOnlyQuestionListFragment_3MCBfr\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment on EventQuestion {\n  id\n  ...QuoteFragment\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionQuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment\n}\n\nfragment useViewerOnlyQuestionListFragment_3MCBfr on Event {\n  id\n  currentQuestion\n  questions(first: $first, after: $after, viewerOnly: $viewerOnly) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment\n          id\n        }\n        ...QuestionActionsFragment\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query viewerOnlyQuestionListPagination(\n  $after: String = \"\"\n  $first: Int = 50\n  $userLang: String!\n  $viewerOnly: Boolean = true\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useViewerOnlyQuestionListFragment_4G9nlt\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_43mCLt on EventQuestion {\n  id\n  ...QuoteFragment_43mCLt\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_43mCLt on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $userLang)\n}\n\nfragment QuestionQuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment useViewerOnlyQuestionListFragment_4G9nlt on Event {\n  id\n  currentQuestion\n  questions(first: $first, after: $after, viewerOnly: $viewerOnly) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment_43mCLt\n          id\n        }\n        ...QuestionActionsFragment_43mCLt\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_43mCLt\n        ...QuestionStatsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ea84e45d2a4280cb35c50555b9aa2f21";
+(node as any).hash = "6d07821ec4de04590c146f04d6f2b5c7";
 
 export default node;

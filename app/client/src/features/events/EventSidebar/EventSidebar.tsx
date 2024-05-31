@@ -29,12 +29,12 @@ export const EVENT_SIDEBAR_FRAGMENT = graphql`
         isQuestionFeedVisible
         isViewerModerator
         ...SpeakerListFragment
-        ...useQuestionListFragment
+        ...useQuestionListFragment @arguments(userLang: $lang)
         ...useBroadcastMessageListFragment
-        ...useQuestionQueueFragment
-        ...QuestionCarouselFragment
+        ...useQuestionQueueFragment @arguments(userLang: $lang)
+        ...QuestionCarouselFragment @arguments(userLang: $lang)
         ...useLiveFeedbackListFragment @arguments(eventId: $eventId)
-        ...useOnDeckFragment
+        ...useOnDeckFragment @arguments(userLang: $lang)
     }
 `;
 

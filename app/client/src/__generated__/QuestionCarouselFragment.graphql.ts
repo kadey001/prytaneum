@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e52185f2f187594e6f287584b44258d2>>
+ * @generated SignedSource<<e9ae33e5b58ddb9270ac19b668ef7cae>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -35,7 +35,15 @@ export type QuestionCarouselFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"QuestionCarouselFragment">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = [
+  {
+    "kind": "Variable",
+    "name": "lang",
+    "variableName": "userLang"
+  }
+];
+return {
   "argumentDefinitions": [
     {
       "defaultValue": "",
@@ -46,6 +54,11 @@ const node: ReaderFragment = {
       "defaultValue": 1000,
       "kind": "LocalArgument",
       "name": "first"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "userLang"
     }
   ],
   "kind": "Fragment",
@@ -130,7 +143,7 @@ const node: ReaderFragment = {
                       "name": "QuestionAuthorFragment"
                     },
                     {
-                      "args": null,
+                      "args": (v0/*: any*/),
                       "kind": "FragmentSpread",
                       "name": "QuestionContentFragment"
                     },
@@ -143,7 +156,7 @@ const node: ReaderFragment = {
                       "plural": false,
                       "selections": [
                         {
-                          "args": null,
+                          "args": (v0/*: any*/),
                           "kind": "FragmentSpread",
                           "name": "QuestionQuoteFragment"
                         }
@@ -210,7 +223,8 @@ const node: ReaderFragment = {
   "type": "Event",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "3ac4d55a5cb8ef2d660ab91ca40b5391";
+(node as any).hash = "5ce12c281d042c0ed87b82082f253d7a";
 
 export default node;

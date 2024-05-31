@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<74439076a584b9761bb14a22038f46bc>>
+ * @generated SignedSource<<f9c78dacf99aa3d1fb2a2c47c756f7d8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,6 @@
 // @ts-nocheck
 
 import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
 export type useViewerOnlyQuestionDeletedSubscription$variables = {
   connections: ReadonlyArray<string>;
   eventId: string;
@@ -21,8 +20,6 @@ export type useViewerOnlyQuestionDeletedSubscription$data = {
       readonly cursor: string;
       readonly node: {
         readonly id: string;
-        readonly position: string;
-        readonly " $fragmentSpreads": FragmentRefs<"QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment">;
       };
     };
   };
@@ -73,13 +70,6 @@ v5 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "position",
-  "storageKey": null
 };
 return {
   "fragment": {
@@ -117,23 +107,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v5/*: any*/),
-                  (v6/*: any*/),
-                  {
-                    "args": null,
-                    "kind": "FragmentSpread",
-                    "name": "QuestionAuthorFragment"
-                  },
-                  {
-                    "args": null,
-                    "kind": "FragmentSpread",
-                    "name": "QuestionContentFragment"
-                  },
-                  {
-                    "args": null,
-                    "kind": "FragmentSpread",
-                    "name": "QuestionStatsFragment"
-                  }
+                  (v5/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -198,62 +172,6 @@ return {
                         "variableName": "connections"
                       }
                     ]
-                  },
-                  (v6/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "User",
-                    "kind": "LinkedField",
-                    "name": "createdBy",
-                    "plural": false,
-                    "selections": [
-                      (v5/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "firstName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "lastName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "avatar",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "question",
-                    "storageKey": null
-                  },
-                  (v5/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "likedByCount",
-                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -267,16 +185,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "52bf8a414b3488d115541e42bb6deac3",
+    "cacheID": "f0a5e614ae69e637fc9ccb58e3d7bec0",
     "id": null,
     "metadata": {},
     "name": "useViewerOnlyQuestionDeletedSubscription",
     "operationKind": "subscription",
-    "text": "subscription useViewerOnlyQuestionDeletedSubscription(\n  $eventId: ID!\n  $viewerOnly: Boolean\n) {\n  questionDeleted(eventId: $eventId, viewerOnly: $viewerOnly) {\n    edge {\n      cursor\n      node {\n        id\n        position\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment\n        ...QuestionStatsFragment\n      }\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment on EventQuestion {\n  question\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
+    "text": "subscription useViewerOnlyQuestionDeletedSubscription(\n  $eventId: ID!\n  $viewerOnly: Boolean\n) {\n  questionDeleted(eventId: $eventId, viewerOnly: $viewerOnly) {\n    edge {\n      cursor\n      node {\n        id\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ed65e2d8e9eff0596b409052ac988d2e";
+(node as any).hash = "d44df68d5d5e7d753266c64e9bf1c32d";
 
 export default node;

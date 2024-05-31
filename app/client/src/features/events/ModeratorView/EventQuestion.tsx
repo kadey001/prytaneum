@@ -19,6 +19,7 @@ interface Props {
     deleteEnabled?: boolean;
     queueEnabled?: boolean;
     heldQuestion?: boolean;
+    measure?: () => void;
 }
 
 /**
@@ -29,6 +30,7 @@ export default function EventQuestion({
     deleteEnabled = true,
     queueEnabled = true,
     heldQuestion = false,
+    measure,
 }: Props) {
     const theme = useTheme();
     const lgDownBreakpoint = useMediaQuery(theme.breakpoints.down('xl'));
@@ -87,7 +89,7 @@ export default function EventQuestion({
                 </Stack>
             </Stack>
             {question?.refQuestion && <QuestionQuote fragmentRef={question.refQuestion} />}
-            <QuestionContent fragmentRef={question} />
+            <QuestionContent fragmentRef={question} measure={measure} />
             <QuestionTopics fragmentRef={question} />
         </Card>
     );

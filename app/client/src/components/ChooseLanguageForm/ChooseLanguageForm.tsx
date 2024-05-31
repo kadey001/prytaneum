@@ -1,9 +1,14 @@
 import React from 'react';
-import { Button, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { useMutation, graphql } from 'react-relay';
+import { Button, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
 
 import { useSnack } from '@local/core';
 import { ChooseLanguageFormMutation } from '@local/__generated__/ChooseLanguageFormMutation.graphql';
+
+const SUPPORTED_LANGUAGES = [
+    { code: 'EN', text: 'English' },
+    { code: 'ES', text: 'Spanish' },
+] as const;
 
 type TLanguages = 'EN' | 'ES';
 
@@ -27,17 +32,19 @@ interface Props {
 
 export function ChooseLangaugeForm({ preferredLang, onSuccess }: Props) {
     const { displaySnack } = useSnack();
-    const [language, setLanguage] = React.useState<TLanguages>(preferredLang ? (preferredLang as TLanguages) : 'EN');
+    const [selectedLanguage, setSelectedLanguage] = React.useState<TLanguages>(
+        preferredLang ? (preferredLang as TLanguages) : 'EN'
+    );
     const [commit, isLoading] = useMutation<ChooseLanguageFormMutation>(CHOOSE_LANGUAGE_FORM_MUTATION);
 
     const handleChange = (event: any) => {
-        setLanguage(event.target.value as TLanguages);
+        setSelectedLanguage(event.target.value as TLanguages);
     };
 
     const handleSubmit = () => {
         commit({
             variables: {
-                language,
+                language: selectedLanguage,
             },
             onCompleted: (response) => {
                 const { message, isError } = response.updatePreferedLanguage;
@@ -56,12 +63,15 @@ export function ChooseLangaugeForm({ preferredLang, onSuccess }: Props) {
                 <Select
                     labelId='language-select-label'
                     id='language-select'
-                    value={language}
-                    label='Language'
+                    value={selectedLanguage}
+                    label='Selected Language'
                     onChange={handleChange}
                 >
-                    <MenuItem value='EN'>English</MenuItem>
-                    <MenuItem value='ES'>Spanish</MenuItem>
+                    {SUPPORTED_LANGUAGES.map(({ code, text }) => (
+                        <MenuItem key={code} value={code}>
+                            {text}
+                        </MenuItem>
+                    ))}
                 </Select>
             </FormControl>
             <Button variant='contained' disabled={isLoading} onClick={handleSubmit}>
