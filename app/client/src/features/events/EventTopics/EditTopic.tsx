@@ -29,6 +29,11 @@ export function EditTopic({ topic: oldTopic }: Props) {
     const [topic, setTopic] = React.useState<Topic>(oldTopic);
     const { updateTopic } = useUpdateTopic();
 
+    const handleOpenEditDialog = () => {
+        setTopic(oldTopic);
+        openEditDialog();
+    };
+
     const handleCloseEditDialog = () => {
         closeEditDialog();
     };
@@ -42,6 +47,7 @@ export function EditTopic({ topic: oldTopic }: Props) {
                 if (index === -1) return prev;
                 const newTopics = [...prev];
                 newTopics[index] = newTopic;
+                newTopics[index].locked = oldTopic.locked;
                 return newTopics;
             });
             closeEditDialog();
@@ -129,7 +135,7 @@ export function EditTopic({ topic: oldTopic }: Props) {
                 </DialogActions>
             </Dialog>
             <Tooltip title='Edit Topic'>
-                <IconButton onClick={openEditDialog}>
+                <IconButton onClick={handleOpenEditDialog}>
                     <EditIcon />
                 </IconButton>
             </Tooltip>
