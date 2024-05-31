@@ -35,13 +35,9 @@ export function DeleteTopic({ topic }: Props) {
         else onSuccess();
     };
 
-    const handleCloseDeleteDialog = () => {
-        closeDialog();
-    };
-
     return (
         <React.Fragment>
-            <Dialog open={isOpen} onClose={handleCloseDeleteDialog} maxWidth='sm' fullWidth>
+            <Dialog open={isOpen} onClose={closeDialog} maxWidth='sm' fullWidth>
                 <DialogTitle>Delete Topic</DialogTitle>
                 <DialogContent>
                     <Typography variant='body1'>
@@ -51,7 +47,7 @@ export function DeleteTopic({ topic }: Props) {
                 <DialogActions>
                     <Stack direction='row' spacing={2}>
                         <Stack direction='row' spacing={2}>
-                            <Button onClick={handleCloseDeleteDialog} color='inherit'>
+                            <Button onClick={closeDialog} color='inherit'>
                                 Cancel
                             </Button>
                             <Button onClick={handleDeleteTopic} variant='contained' color='error'>
