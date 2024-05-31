@@ -84,6 +84,10 @@ export function UploadReadingMaterials({ onSuccess, setTopics }: Props) {
         return '';
     }, [readingMaterials]);
 
+    React.useEffect(() => {
+        return setReadingMaterials('');
+    }, []);
+
     // Add description for this step
     return (
         <React.Fragment>

@@ -16,6 +16,7 @@ import { FinalizeTopics } from './FinalizeTopics';
 import { useResponsiveDialog } from '@local/components';
 import { useFinalizeTopics } from './hooks/useFinalizeTopics';
 import { PreloadedTopicList } from './TopicList';
+import { useSnack } from '@local/core';
 
 type TTopicContext = {
     topics: Topic[];
@@ -35,6 +36,7 @@ interface Props {}
 
 export function EventTopicSettings({}: Props) {
     const router = useRouter();
+    const { displaySnack } = useSnack();
     const [activeStep, setActiveStep] = React.useState(0);
     const [isReadingMaterialsUploaded, setIsReadingMaterialsUploaded] = React.useState(false);
     const [topics, setTopics] = React.useState<Topic[]>([]);
@@ -53,6 +55,7 @@ export function EventTopicSettings({}: Props) {
         if (activeStep === steps.length - 1) {
             const onSuccess = () => {
                 close();
+                displaySnack('Topics have been successfully generated.', { variant: 'success' });
                 router.reload();
             };
             finalizeTopics(topics, onSuccess);
@@ -126,7 +129,7 @@ export function EventTopicSettings({}: Props) {
                 )}
                 {activeStep === 1 && (
                     <Grid container justifyContent='center' padding='2rem'>
-                        <EditTopics topics={topics} setTopics={setTopics} />
+                        <EditTopics />
                     </Grid>
                 )}
                 {activeStep === 2 && (
