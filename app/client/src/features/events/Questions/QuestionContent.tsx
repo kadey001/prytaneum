@@ -5,6 +5,7 @@ import {
     CardContentProps,
     IconButton,
     Paper,
+    Skeleton,
     Stack,
     Tooltip,
     Typography,
@@ -70,7 +71,7 @@ export function QuestionContent({ fragmentRef, typographyProps = {}, measure, ..
     return (
         <CardContent {...props} sx={{ margin: (theme) => theme.spacing(-2, 0, -1, 0) }}>
             <Typography variant='inherit' style={{ wordBreak: 'break-word' }} {...typographyProps}>
-                {questionContentData.questionTranslated}
+                {questionContentData.questionTranslated || questionContentData.question || <Skeleton />}
             </Typography>
             {translationButton()}
             {showOriginalLanguage ? (

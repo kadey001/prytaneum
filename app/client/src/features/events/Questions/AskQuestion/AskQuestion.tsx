@@ -155,7 +155,7 @@ function AskQuestion({ className, eventId, viewerOnly = false }: AskQuestionProp
                     // Set the values for the new question (doesn't display values otherwise even though they are in the optimistic response for some reason)
                     newQuestionRecord.setValue(form.question, 'question');
                     newQuestionRecord.setValue(user?.preferredLang || 'EN', 'lang');
-                    newQuestionRecord.setValue('', 'questionTranslated');
+                    newQuestionRecord.setValue(form.question, 'questionTranslated');
                     newQuestionRecord.setValue(new Date().toISOString(), 'createdAt');
                     newQuestionRecord.setLinkedRecord(userRecord, 'createdBy');
 
@@ -183,7 +183,7 @@ function AskQuestion({ className, eventId, viewerOnly = false }: AskQuestionProp
                                 createdAt: null,
                                 question: form.question,
                                 lang: user?.preferredLang || 'EN',
-                                questionTranslated: '',
+                                questionTranslated: form.question,
                                 createdBy: {
                                     id: user?.id || '',
                                     firstName: user?.firstName || '',
