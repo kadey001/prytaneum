@@ -22,18 +22,31 @@ interface Props {
 }
 
 export function DeleteTopic({ topic }: Props) {
-    const { setTopics, isReadingMaterialsUploaded } = React.useContext(TopicContext);
+    const { topics, setTopics, isReadingMaterialsUploaded } = React.useContext(TopicContext);
     const [isOpen, openDialog, closeDialog] = useResponsiveDialog();
     const { deleteTopic } = useDeleteTopic();
 
-    const handleDeleteTopic = () => {
+    const topicToDelete = React.useMemo(() => topic.topic, [topic]);
+
+    const filterOutTopic = React.useCallback(() => {
+        // Filter out the topic being deleted
+        console.log('Topics before deletion:', topics);
+        const filteredTopics = topics.filter((_topic) => _topic.topic !== topicToDelete);
+        console.log('Topics after deletion:', filteredTopics);
+        setTopics(filteredTopics);
+    }, [topics, setTopics, topicToDelete]);
+
+    const handleDeleteTopic = React.useCallback(() => {
         const onSuccess = () => {
-            setTopics((prev) => prev.filter((_topic) => _topic.topic !== topic.topic));
+            filterOutTopic();
             closeDialog();
         };
         if (isReadingMaterialsUploaded) deleteTopic(topic, onSuccess);
-        else onSuccess();
-    };
+        else {
+            console.log('Topic only deleted locally');
+            onSuccess();
+        }
+    }, [isReadingMaterialsUploaded, deleteTopic, topic, filterOutTopic, closeDialog]);
 
     return (
         <React.Fragment>

@@ -18,12 +18,13 @@ export function LockTopic({ topic }: Props) {
     const { unlockTopic } = useUnlockTopic();
     const [isLoading, setIsLoading] = React.useState(false);
 
+    const isTopicLocked = React.useMemo(() => Boolean(topic.locked), [topic.locked]);
+
     const handleToggleLock = () => {
         if (isLoading) return;
         setIsLoading(true);
-        const isCurrentlyLocked = Boolean(topic.locked);
         const onSuccess = () => {
-            const newTopic = { ...topic, locked: !isCurrentlyLocked };
+            const newTopic = { ...topic, locked: !isTopicLocked };
             setTopics((prev) => {
                 const index = prev.findIndex((_topic) => _topic.topic === topic.topic);
                 if (index === -1) return prev;
@@ -34,14 +35,14 @@ export function LockTopic({ topic }: Props) {
             setIsLoading(false);
         };
         const onFailure = () => setIsLoading(false);
-        if (isCurrentlyLocked) unlockTopic(topic, onSuccess, onFailure);
+        if (isTopicLocked) unlockTopic(topic, onSuccess, onFailure);
         else lockTopic(topic, onSuccess, onFailure);
     };
 
     return (
-        <Tooltip title={topic.locked ? 'Topic Locked' : 'Topic Unlocked'}>
+        <Tooltip title={isTopicLocked ? 'Topic Locked' : 'Topic Unlocked'}>
             <IconButton onClick={handleToggleLock}>
-                {topic.locked ? <LockIcon color='success' /> : <LockOpenIcon />}
+                {isTopicLocked ? <LockIcon color='success' /> : <LockOpenIcon />}
             </IconButton>
         </Tooltip>
     );

@@ -20,11 +20,13 @@ export function RegenerateTopics() {
     const handleRegenerateTopics = () => {
         setIsLoading(true);
         const onSuccess = (newTopics: Topic[]) => {
-            const filteredNewTopics = [...newTopics].filter((topic) => {
+            console.log('Topics before regeneration:', topics);
+            const filteredNewTopics = newTopics.filter((topic) => {
                 const isAlreadyLockedTopic = topics.some((_topic) => _topic.topic === topic.topic && _topic.locked);
                 return !isAlreadyLockedTopic;
             });
-            const updatedTopicList = [...topics].filter((topic) => topic.locked).concat(filteredNewTopics);
+            const updatedTopicList = topics.filter((topic) => topic.locked).concat(filteredNewTopics);
+            console.log('Topics after regeneration:', updatedTopicList);
             setTopics(updatedTopicList);
             setIsLoading(false);
         };

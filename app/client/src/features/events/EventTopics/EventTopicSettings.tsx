@@ -86,8 +86,15 @@ export function EventTopicSettings({}: Props) {
         return false;
     }, [activeStep, topics.length]);
 
+    const memoizedTopics = React.useMemo(() => topics, [topics]);
+
+    React.useEffect(() => {
+        console.log('Topics:', topics);
+        console.log('memoizedTopics:', memoizedTopics);
+    }, [topics, memoizedTopics]);
+
     return (
-        <TopicContext.Provider value={{ topics, setTopics, isReadingMaterialsUploaded }}>
+        <TopicContext.Provider value={{ topics: memoizedTopics, setTopics, isReadingMaterialsUploaded }}>
             <PreloadedTopicList />
             <Dialog open={isOpen} onClose={handleCloseDialog} maxWidth='lg' fullWidth>
                 <Grid container justifyContent='end'>

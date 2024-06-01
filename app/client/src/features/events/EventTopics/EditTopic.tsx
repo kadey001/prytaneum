@@ -24,7 +24,7 @@ interface Props {
 }
 
 export function EditTopic({ topic: oldTopic }: Props) {
-    const { setTopics, isReadingMaterialsUploaded } = React.useContext(TopicContext);
+    const { topics, setTopics, isReadingMaterialsUploaded } = React.useContext(TopicContext);
     const [isEditDialogOpen, openEditDialog, closeEditDialog] = useResponsiveDialog();
     const [topic, setTopic] = React.useState<Topic>(oldTopic);
     const { updateTopic } = useUpdateTopic();
@@ -39,20 +39,23 @@ export function EditTopic({ topic: oldTopic }: Props) {
     };
 
     const handleUpdateTopic = () => {
-        const newTopic = topic;
+        const updatedTopic = topic;
+        console.log('Old Topic:', oldTopic);
+        console.log('Updated Topic:', updatedTopic);
 
         const onSuccess = () => {
-            setTopics((prev) => {
-                const index = prev.findIndex((_topic) => _topic.topic === oldTopic.topic);
-                if (index === -1) return prev;
-                const newTopics = [...prev];
-                newTopics[index] = newTopic;
-                newTopics[index].locked = oldTopic.locked;
-                return newTopics;
-            });
+            setTopics(
+                topics.map((_topic) => {
+                    if (_topic.topic === oldTopic.topic) {
+                        updatedTopic.locked = _topic.locked;
+                        return updatedTopic;
+                    }
+                    return _topic;
+                })
+            );
             closeEditDialog();
         };
-        if (isReadingMaterialsUploaded) updateTopic(oldTopic, newTopic, onSuccess);
+        if (isReadingMaterialsUploaded) updateTopic(oldTopic, updatedTopic, onSuccess);
         else onSuccess();
     };
 
