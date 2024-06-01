@@ -146,12 +146,12 @@ def HandleUserInput():
         elif(stage == 'interactive'):
             # At this point, the extracted topics and list of locked topics should already be available in Redis
             # If lockedTopics does not exist, create a new empty list for it
-            lockedTopics = r.get('moderation_lockedTopics_{}'.format(eventId), ex=secInAWeek)
+            lockedTopics = r.get('moderation_lockedTopics_{}'.format(eventId))
             if(lockedTopics):
                 lockedTopics = json.loads(lockedTopics)
             else:
                 lockedTopics = []
-                r.set('moderation_lockedTopics_{}'.format(eventId), json.dumps(lockedTopics))
+                r.set('moderation_lockedTopics_{}'.format(eventId), json.dumps(lockedTopics), ex=secInAWeek)
             
             # If the list of topics does not exist then we have an error and need to rerun stage 1
             topics = r.get('moderation_topics_{}'.format(eventId))
