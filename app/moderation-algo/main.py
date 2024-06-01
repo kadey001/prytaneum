@@ -127,6 +127,7 @@ def HandleUserInput():
             # Save them for later use, expiring in a week
             r.set('moderation_issue_{}'.format(eventId), issue, ex=secInAWeek)
             r.set('moderation_topics_{}'.format(eventId), json.dumps(topics), ex=secInAWeek)
+            r.set('moderation_lockedTopics_{}'.format(eventId), json.dumps([]), ex=secInAWeek)
             r.set('moderation_reading_materials_{}'.format(eventId), reading_materials, ex=secInAWeek)
 
             # Issue a warning if no topics were returned
@@ -145,7 +146,7 @@ def HandleUserInput():
         elif(stage == 'interactive'):
             # At this point, the extracted topics and list of locked topics should already be available in Redis
             # If lockedTopics does not exist, create a new empty list for it
-            lockedTopics = r.get('moderation_lockedTopics_{}'.format(eventId))
+            lockedTopics = r.get('moderation_lockedTopics_{}'.format(eventId), ex=secInAWeek)
             if(lockedTopics):
                 lockedTopics = json.loads(lockedTopics)
             else:
@@ -234,13 +235,8 @@ def HandleUserInput():
                     LogEventConsole('Unable to regenerate due to reading materials not existing in stored data.', 'ERROR')
                     return jsonify({'ERROR': 'Unable to regenerate due to reading materials not existing in stored data.'}), 400 # HTTP bad request
                 if(type(reading_materials) == bytes):
-                    LogEventConsole('Reading materials detected as bytes type in regeneration action. Decoding to string.', 'DEBUG') # DELETE THIS
                     reading_materials = reading_materials.decode()
-                try:
-                    LogEventConsole('Attempting to regenerate topics from reading materials...', 'DEBUG') # DELETE THIS
-                    topics, lockedTopics, error = Regenerate(topics, lockedTopics, reading_materials)
-                except Exception as e:
-                    LogEventConsole('Received an error trying to regenerate reading materials. Exception details: {}'.format(str(e)), 'DEBUG') # DELETE THIS
+                topics, lockedTopics, error = Regenerate(topics, lockedTopics, reading_materials)
 
                 # Issue a warning if no topics were returned
                 if(len(topics) == 0):
