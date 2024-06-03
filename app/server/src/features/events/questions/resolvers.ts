@@ -20,7 +20,7 @@ export const resolvers: Resolvers = {
             return runMutation(async () => {
                 if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
                 const { id: eventId } = fromGlobalId(args.input.eventId);
-                const { question, topics } = await Question.createQuestion(ctx.viewer.id, ctx.prisma, {
+                const { question, topics } = await Question.createQuestion(ctx.viewer.id, ctx.prisma, ctx.redis, {
                     ...args.input,
                     eventId,
                 });

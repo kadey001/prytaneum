@@ -1,9 +1,11 @@
 import { fromGlobalId } from 'graphql-relay';
+import axios, { AxiosResponse } from 'axios';
+import type { Redis, Cluster } from 'ioredis';
 import { Prisma, PrismaClient } from '@local/__generated__/prisma';
+
 import { errors, getPreferredLang } from '@local/features/utils';
 import { ProtectedError } from '@local/lib/ProtectedError';
 import type { CreateQuestion, AlterLike } from '@local/graphql-types';
-import axios, { AxiosResponse } from 'axios';
 import { detectLanguage, translateText } from '@local/core/utils';
 
 async function createQuestionGuardCheck(userId: string, eventId: string, prisma: PrismaClient) {
@@ -30,8 +32,57 @@ type TQuestionProcessingResult = {
 };
 
 // Run through ben's algorithm, should still work if the api call fails
-async function processQuestion(input: CreateQuestion): Promise<TQuestionProcessingResult> {
+// TODO: Improve this so that if topics were never set up for an event only one check is needed.
+// TODO: This would also allow for us to do an api call only for toxicity and avoid trying to run topic classification.
+async function processQuestion(
+    input: CreateQuestion,
+    redis: Redis | Cluster,
+    prisma: PrismaClient
+): Promise<TQuestionProcessingResult> {
     const { question, eventId } = input;
+
+    // Check cache for event topics data
+    // If not found, check database and set cache, otherwise continue as normal
+    // Should still work even if no topics/issue are set in cache or database (since topic settup is not required).
+    try {
+        const REDIS_EXPIRATION_TIME = 60 * 60 * 24; // 24 hours in seconds
+
+        // Only checking for topics even though issue is also required for processing
+        // Since they have the same expiration, if one is missing the other is likely missing as well and vice versa
+        const topics = await redis.get(`moderation_topics_${eventId}`);
+
+        if (!topics) {
+            console.info('No cached data for event topics, attempting to set from database');
+            const result = await prisma.event.findUnique({
+                where: { id: eventId },
+                select: { topics: true, issue: true },
+            });
+            if (!result) throw new Error('No event found');
+
+            // If no issue or topics are set, we will not set anything in the cache
+            if (result.issue === '' && result.topics.length === 0) console.info('No topics or issue set for event');
+            else {
+                await redis.set(`moderation_issue_${eventId}`, result.issue, 'EX', REDIS_EXPIRATION_TIME);
+
+                let formattedTopicsDict: { [key: string]: string } = {};
+                result.topics.forEach((_topic) => {
+                    formattedTopicsDict[_topic.topic] = _topic.description;
+                });
+                await redis.set(
+                    `moderation_topics_${eventId}`,
+                    JSON.stringify(formattedTopicsDict),
+                    'EX',
+                    REDIS_EXPIRATION_TIME
+                );
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        throw new ProtectedError({
+            userMessage: ProtectedError.internalServerErrorMessage,
+            internalMessage: 'An error occurred while attempting to retrieve event topics from the cache or database.',
+        });
+    }
 
     type ExpectedResponse = {
         question_en: string;
@@ -73,7 +124,6 @@ async function processQuestion(input: CreateQuestion): Promise<TQuestionProcessi
             questionTranslations.EN = question;
             questionTranslations.ES = await translateText(question, 'es');
         }
-        console.log('GCloud Translation: ', questionTranslations);
         return {
             originalLanguage,
             questionTranslations,
@@ -103,7 +153,12 @@ async function processQuestion(input: CreateQuestion): Promise<TQuestionProcessi
 /**
  * submit a question, in the future this may plug into an event broker like kafka or redis
  */
-export async function createQuestion(userId: string, prisma: PrismaClient, input: CreateQuestion) {
+export async function createQuestion(
+    userId: string,
+    prisma: PrismaClient,
+    redis: Redis | Cluster,
+    input: CreateQuestion
+) {
     const { question, refQuestion: globalRefId, isFollowUp, isQuote, eventId } = input;
     const refQuestionId = globalRefId ? fromGlobalId(globalRefId).id : null;
 
@@ -112,8 +167,12 @@ export async function createQuestion(userId: string, prisma: PrismaClient, input
     // it's okay to have both false, but both cannot be true
     if (isQuote === isFollowUp && isQuote === true) throw new ProtectedError({ userMessage: errors.invalidArgs });
 
+    // Check if event topcs in cache
+
     const { originalLanguage, questionTranslations, topics, substantive, offensive, relevant } = await processQuestion(
-        input
+        input,
+        redis,
+        prisma
     );
 
     // Get the topic ids (and ensure they are valid topics in the event)
