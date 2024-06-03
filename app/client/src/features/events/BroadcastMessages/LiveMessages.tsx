@@ -11,9 +11,10 @@ import { BroadcastMessageAuthor } from './BroadcastMessageAuthor';
 import { BroadcastMessageContent } from './BroadcastMessageContent';
 import { LiveMessagesQuery } from '@local/__generated__/LiveMessagesQuery.graphql';
 import { useEnvironment } from '@local/core';
+import { useUser } from '@local/features/accounts';
 
 export const LIVE_MESSAGES_QUERY = graphql`
-    query LiveMessagesQuery($eventId: ID!) {
+    query LiveMessagesQuery($eventId: ID!, $lang: String!) {
         eventBroadcastMessages(eventId: $eventId) {
             id
             broadcastMessage
@@ -22,7 +23,7 @@ export const LIVE_MESSAGES_QUERY = graphql`
                 firstName
             }
             ...BroadcastMessageAuthorFragment
-            ...BroadcastMessageContentFragment
+            ...BroadcastMessageContentFragment @arguments(lang: $lang)
         }
     }
 `;
@@ -105,6 +106,7 @@ function LiveMessageList({ queryRef }: LiveMessageListProps) {
 }
 
 export function PreloadedLiveMessages() {
+    const { user, isLoading } = useUser();
     const [queryRef, loadQuery, disposeQuery] = useQueryLoader<LiveMessagesQuery>(LIVE_MESSAGES_QUERY);
     const [isRefreshing, setIsRefreshing] = React.useState(false);
     const { env } = useEnvironment();
@@ -112,25 +114,26 @@ export function PreloadedLiveMessages() {
     const REFRESH_INTERVAL = 15000; // 15 seconds
 
     const refresh = React.useCallback(() => {
-        if (isRefreshing) return;
+        if (isRefreshing || isLoading) return;
         setIsRefreshing(true);
         fetchQuery(env, LIVE_MESSAGES_QUERY, { eventId }).subscribe({
             complete: () => {
                 setIsRefreshing(false);
-                loadQuery({ eventId }, { fetchPolicy: 'store-or-network' });
+                loadQuery({ eventId, lang: user?.preferredLang || 'EN' }, { fetchPolicy: 'store-and-network' });
             },
             error: () => {
                 setIsRefreshing(false);
             },
         });
-    }, [env, isRefreshing, loadQuery, eventId]);
+    }, [isRefreshing, isLoading, env, eventId, loadQuery, user?.preferredLang]);
 
     // Fetches up to date data on initial load and sets up polling
     React.useEffect(() => {
-        if (!queryRef) loadQuery({ eventId }, { fetchPolicy: 'network-only' });
+        if (isLoading) return;
+        if (!queryRef) loadQuery({ eventId, lang: user?.preferredLang || 'EN' }, { fetchPolicy: 'network-only' });
         const interval = setInterval(refresh, REFRESH_INTERVAL);
         return () => clearInterval(interval);
-    }, [eventId, loadQuery, queryRef, refresh]);
+    }, [eventId, isLoading, loadQuery, queryRef, refresh, user?.preferredLang]);
 
     React.useEffect(() => {
         return () => disposeQuery();
