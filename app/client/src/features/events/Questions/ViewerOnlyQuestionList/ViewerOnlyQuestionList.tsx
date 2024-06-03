@@ -129,10 +129,10 @@ export function ViewerOnlyQuestionList({ fragmentRef, isVisible }: ViewerOnlyQue
     return (
         <Stack direction='column' alignItems='stretch' width='100%' padding={1} paddingRight={0}>
             <Paper sx={{ padding: '1rem', marginX: '8px', marginBottom: '0.5rem' }}>
-                <Grid
-                    container
+                <Stack
                     direction='row'
                     justifyContent='space-between'
+                    alignItems='center'
                     marginBottom={isSearchOpen ? '.5rem' : '0rem'}
                 >
                     <Grid item xs='auto'>
@@ -142,8 +142,8 @@ export function ViewerOnlyQuestionList({ fragmentRef, isVisible }: ViewerOnlyQue
                             </IconButton>
                         )}
                     </Grid>
-                </Grid>
-                <AskQuestion eventId={eventId} viewerOnly={true} />
+                    <AskQuestion eventId={eventId} viewerOnly={true} />
+                </Stack>
                 <ListFilter
                     // filterMap={filterFuncs}
                     onFilterChange={handleFilterChange}
