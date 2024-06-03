@@ -1,8 +1,8 @@
 import { detectLanguage, translateText } from '@local/core/utils';
 import { getPreferredLang } from '@local/features/utils';
 import { CreateBroadcastMessage } from '@local/graphql-types';
+import { ProtectedError } from '@local/lib/ProtectedError';
 import { Prisma, PrismaClient } from '@local/__generated__/prisma';
-import { ProtectedError } from '../../../../../cc2c/src/core/utils';
 
 /**
  * submit a broadcast message
