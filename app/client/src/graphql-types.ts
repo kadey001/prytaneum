@@ -337,6 +337,12 @@ export type EventBroadcastMessage = Node & {
   /** The users who have liked this broadcast message */
   likedBy?: Maybe<UserConnection>;
   position?: Maybe<Scalars['Int']>;
+  translatedBroadcastMessage?: Maybe<Scalars['String']>;
+};
+
+
+export type EventBroadcastMessageTranslatedBroadcastMessageArgs = {
+  lang: Scalars['String'];
 };
 
 export type EventBroadcastMessageEdge = {
