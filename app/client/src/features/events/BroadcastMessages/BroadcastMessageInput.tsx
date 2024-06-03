@@ -99,7 +99,15 @@ export function BroadcastMessageInput() {
                 </DialogContent>
             </ResponsiveDialog>
 
-            <Button variant='contained' color='primary' onClick={handleOpen}>
+            <Button
+                variant='contained'
+                fullWidth
+                color='primary'
+                onClick={handleOpen}
+                sx={{
+                    minWidth: '150px',
+                }}
+            >
                 Broadcast Message
             </Button>
         </React.Fragment>
