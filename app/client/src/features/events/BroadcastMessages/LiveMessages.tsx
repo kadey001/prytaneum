@@ -116,7 +116,7 @@ export function PreloadedLiveMessages() {
     const refresh = React.useCallback(() => {
         if (isRefreshing || isLoading) return;
         setIsRefreshing(true);
-        fetchQuery(env, LIVE_MESSAGES_QUERY, { eventId }).subscribe({
+        fetchQuery(env, LIVE_MESSAGES_QUERY, { eventId, lang: user?.preferredLang || 'EN' }).subscribe({
             complete: () => {
                 setIsRefreshing(false);
                 loadQuery({ eventId, lang: user?.preferredLang || 'EN' }, { fetchPolicy: 'store-and-network' });
