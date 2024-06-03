@@ -40,8 +40,6 @@ export function EditTopic({ topic: oldTopic }: Props) {
 
     const handleUpdateTopic = () => {
         const updatedTopic = topic;
-        console.log('Old Topic:', oldTopic);
-        console.log('Updated Topic:', updatedTopic);
 
         const onSuccess = () => {
             setTopics(

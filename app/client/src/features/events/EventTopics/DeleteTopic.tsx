@@ -30,9 +30,7 @@ export function DeleteTopic({ topic }: Props) {
 
     const filterOutTopic = React.useCallback(() => {
         // Filter out the topic being deleted
-        console.log('Topics before deletion:', topics);
         const filteredTopics = topics.filter((_topic) => _topic.topic !== topicToDelete);
-        console.log('Topics after deletion:', filteredTopics);
         setTopics(filteredTopics);
     }, [topics, setTopics, topicToDelete]);
 
@@ -42,10 +40,7 @@ export function DeleteTopic({ topic }: Props) {
             closeDialog();
         };
         if (isReadingMaterialsUploaded) deleteTopic(topic, onSuccess);
-        else {
-            console.log('Topic only deleted locally');
-            onSuccess();
-        }
+        else onSuccess();
     }, [isReadingMaterialsUploaded, deleteTopic, topic, filterOutTopic, closeDialog]);
 
     return (
