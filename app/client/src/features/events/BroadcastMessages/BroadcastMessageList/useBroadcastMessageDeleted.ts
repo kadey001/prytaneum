@@ -12,15 +12,6 @@ export const USE_BROADCAST_MESSAGE_DELETED_SUBSCRIPTION = graphql`
                 cursor
                 node {
                     id @deleteEdge(connections: $connections)
-                    broadcastMessage
-                    position
-                    isVisible
-                    createdBy {
-                        firstName
-                    }
-                    ...BroadcastMessageActionsFragment
-                    ...BroadcastMessageAuthorFragment
-                    ...BroadcastMessageContentFragment
                 }
             }
         }
