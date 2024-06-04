@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<48f9be4eca4687ea39589c4ea4ce0c27>>
+ * @generated SignedSource<<969e56b345b0f8a5b7731460eca46a5c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,6 +22,8 @@ export type useViewerOnlyQuestionListFragment$data = {
           readonly firstName: string | null;
         } | null;
         readonly id: string;
+        readonly onDeckPosition: string;
+        readonly position: string;
         readonly question: string;
         readonly refQuestion: {
           readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
@@ -162,6 +164,20 @@ return {
                 {
                   "alias": null,
                   "args": null,
+                  "kind": "ScalarField",
+                  "name": "position",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "onDeckPosition",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
                   "concreteType": "User",
                   "kind": "LinkedField",
                   "name": "createdBy",
@@ -272,6 +288,6 @@ return {
 };
 })();
 
-(node as any).hash = "6d07821ec4de04590c146f04d6f2b5c7";
+(node as any).hash = "bb719a23723319fa4a0a34877a8df404";
 
 export default node;

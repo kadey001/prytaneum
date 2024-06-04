@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<65ca506b09082fd795ae1d8a87456a84>>
+ * @generated SignedSource<<b0411fb15ada2178165f4a9437ffe714>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -105,38 +105,45 @@ v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "firstName",
+  "name": "position",
   "storageKey": null
 },
 v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "lastName",
+  "name": "firstName",
   "storageKey": null
 },
 v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "avatar",
+  "name": "lastName",
   "storageKey": null
 },
 v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "createdAt",
+  "name": "avatar",
   "storageKey": null
 },
 v17 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "lang",
+  "name": "createdAt",
   "storageKey": null
 },
 v18 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lang",
+  "storageKey": null
+},
+v19 = {
   "alias": null,
   "args": [
     {
@@ -147,13 +154,6 @@ v18 = {
   ],
   "kind": "ScalarField",
   "name": "questionTranslated",
-  "storageKey": null
-},
-v19 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "position",
   "storageKey": null
 };
 return {
@@ -263,6 +263,14 @@ return {
                         "selections": [
                           (v10/*: any*/),
                           (v12/*: any*/),
+                          (v13/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "onDeckPosition",
+                            "storageKey": null
+                          },
                           {
                             "alias": null,
                             "args": null,
@@ -271,10 +279,10 @@ return {
                             "name": "createdBy",
                             "plural": false,
                             "selections": [
-                              (v13/*: any*/),
-                              (v10/*: any*/),
                               (v14/*: any*/),
-                              (v15/*: any*/)
+                              (v10/*: any*/),
+                              (v15/*: any*/),
+                              (v16/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -296,22 +304,22 @@ return {
                                 "plural": false,
                                 "selections": [
                                   (v10/*: any*/),
-                                  (v13/*: any*/),
                                   (v14/*: any*/),
-                                  (v15/*: any*/)
+                                  (v15/*: any*/),
+                                  (v16/*: any*/)
                                 ],
                                 "storageKey": null
                               },
-                              (v16/*: any*/),
-                              (v12/*: any*/),
                               (v17/*: any*/),
-                              (v18/*: any*/)
+                              (v12/*: any*/),
+                              (v18/*: any*/),
+                              (v19/*: any*/)
                             ],
                             "storageKey": null
                           },
-                          (v16/*: any*/),
                           (v17/*: any*/),
                           (v18/*: any*/),
+                          (v19/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -319,7 +327,6 @@ return {
                             "name": "isLikedByViewer",
                             "storageKey": null
                           },
-                          (v19/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -335,7 +342,7 @@ return {
                                 "name": "topic",
                                 "storageKey": null
                               },
-                              (v19/*: any*/)
+                              (v13/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -414,16 +421,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "02d78ae353f14fe92d6a4def8548f3be",
+    "cacheID": "c311d8a622aa76b7682bafeec4e182bc",
     "id": null,
     "metadata": {},
     "name": "viewerOnlyQuestionListPagination",
     "operationKind": "query",
-    "text": "query viewerOnlyQuestionListPagination(\n  $after: String = \"\"\n  $first: Int = 50\n  $userLang: String!\n  $viewerOnly: Boolean = true\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useViewerOnlyQuestionListFragment_4G9nlt\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_43mCLt on EventQuestion {\n  id\n  ...QuoteFragment_43mCLt\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_43mCLt on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $userLang)\n}\n\nfragment QuestionQuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment useViewerOnlyQuestionListFragment_4G9nlt on Event {\n  id\n  currentQuestion\n  questions(first: $first, after: $after, viewerOnly: $viewerOnly) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment_43mCLt\n          id\n        }\n        ...QuestionActionsFragment_43mCLt\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_43mCLt\n        ...QuestionStatsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query viewerOnlyQuestionListPagination(\n  $after: String = \"\"\n  $first: Int = 50\n  $userLang: String!\n  $viewerOnly: Boolean = true\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useViewerOnlyQuestionListFragment_4G9nlt\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_43mCLt on EventQuestion {\n  id\n  ...QuoteFragment_43mCLt\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_43mCLt on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $userLang)\n}\n\nfragment QuestionQuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment useViewerOnlyQuestionListFragment_4G9nlt on Event {\n  id\n  currentQuestion\n  questions(first: $first, after: $after, viewerOnly: $viewerOnly) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        position\n        onDeckPosition\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment_43mCLt\n          id\n        }\n        ...QuestionActionsFragment_43mCLt\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_43mCLt\n        ...QuestionStatsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6d07821ec4de04590c146f04d6f2b5c7";
+(node as any).hash = "bb719a23723319fa4a0a34877a8df404";
 
 export default node;

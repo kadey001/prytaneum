@@ -183,7 +183,9 @@ export function QuestionList({
                                         </Tooltip>
                                     </IconButton>
                                 </Grid>
-                                {!isModerator && askQuestionEnabled && <AskQuestion eventId={eventId} />}
+                                {!isModerator && askQuestionEnabled && (
+                                    <AskQuestion eventId={eventId} connections={connections} />
+                                )}
                             </Stack>
                         )}
                         <ListFilter
