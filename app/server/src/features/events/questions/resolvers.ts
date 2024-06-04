@@ -109,11 +109,8 @@ export const resolvers: Resolvers = {
                 (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
                     const { id: questionId } = fromGlobalId(payload.questionCreated.edge.node.id);
-                    if (args.viewerOnly === true) {
-                        // Only update if the author is the viewer
-                        const { authorId } = payload;
-                        if (authorId !== ctx.viewer.id) return false;
-                    }
+                    // Updated in mutation for viewer so no need to update via subscription
+                    if (payload.authorId === ctx.viewer.id) return false;
                     return Question.doesEventMatch(eventId, questionId, ctx.prisma);
                 }
             ),
