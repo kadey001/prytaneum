@@ -34,6 +34,7 @@ import { USER_CONTEXT_QUERY } from '@local/features/accounts/UserContext';
 import { UserContextQuery } from '@local/__generated__/UserContextQuery.graphql';
 import { getHashedColor } from '@local/core/getHashedColor';
 import { ChooseLangaugeDialog } from '@local/components/ChangeLanguage';
+import { EventInfoPopperStage, EventLanguageInfoPopper, useEventInfoPopper } from '@local/components/EventInfoPoppers';
 
 export function UserMenuLoader() {
     return (
@@ -86,6 +87,7 @@ function UserName() {
 type TButtons = 'login' | 'register' | 'language' | null;
 export function UserMenu({ queryRef }: UserMenuProps) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+    const languageButtonRef = React.useRef<HTMLButtonElement | null>(null);
     // TODO remove unused query
     const data = usePreloadedQuery<UserContextQuery>(USER_CONTEXT_QUERY, queryRef);
     const { user, setUser, setIsLoading } = useUser();
@@ -158,6 +160,8 @@ export function UserMenu({ queryRef }: UserMenuProps) {
         );
     }, [isSmUp, theme, isOpen]);
 
+    const [currentPopper] = useEventInfoPopper();
+    const [countryImgLoaded, setCountryImgLoaded] = React.useState(false);
     const langCountry = React.useMemo(() => {
         const preferredLang = user?.preferredLang || 'EN';
         const country = SUPPORTED_LANGUAGES.find((lang) => lang.code === preferredLang)?.country;
@@ -223,7 +227,8 @@ export function UserMenu({ queryRef }: UserMenuProps) {
             {isSignedIn && (
                 <>
                     <Tooltip title='Change Language' placement='bottom'>
-                        <IconButton onClick={handleClick('language')}>
+                        <IconButton onClick={handleClick('language')} ref={languageButtonRef}>
+                            {!countryImgLoaded && <LanguageIcon />}
                             <img
                                 loading='lazy'
                                 width='35 px'
@@ -231,10 +236,17 @@ export function UserMenu({ queryRef }: UserMenuProps) {
                                 srcSet={`https://flagcdn.com/w80/${langCountry}.png 2x`}
                                 src={`https://flagcdn.com/w40/${langCountry}.png`}
                                 alt={`${langCountry} flag`}
-                                style={{ marginRight: '0.25rem', borderRadius: '50%' }}
+                                style={{
+                                    marginRight: '0.25rem',
+                                    borderRadius: '50%',
+                                    zIndex:
+                                        currentPopper === EventInfoPopperStage.Language ? theme.zIndex.drawer + 2 : 0,
+                                }}
+                                onLoad={() => setCountryImgLoaded(true)}
                             />
                         </IconButton>
                     </Tooltip>
+                    <EventLanguageInfoPopper languageButtonRef={languageButtonRef} />
                     {menuButton}
                     <Menu
                         anchorEl={anchorEl}

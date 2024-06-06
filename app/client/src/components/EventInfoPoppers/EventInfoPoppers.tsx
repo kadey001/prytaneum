@@ -8,6 +8,13 @@ import { useEventInfoPopper } from './useEventInfoPoppers';
 
 const POPPER_BG_COLOR = '#2962ff'; // blue
 
+export enum EventInfoPopperStage {
+    VideoPlayer = 0,
+    Questions = 1,
+    Feedback = 2,
+    Language = 3,
+}
+
 interface EventVideoInfoPopperProps {
     videoContainerRef: React.MutableRefObject<HTMLDivElement | null>;
 }
@@ -17,16 +24,17 @@ export function EventVideoInfoPopper({ videoContainerRef }: EventVideoInfoPopper
     const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
     const isPopperOpen = Boolean(anchorEl);
     const popperId = isPopperOpen ? 'video-player-info-popper' : undefined;
+    const popperStageViewedKey = `eventInfoPopperViewedStage${EventInfoPopperStage.VideoPlayer}`;
 
     const handleClose = () => {
         setAnchorEl(null);
-        localStorage.setItem('eventInfoPopperViewedStage1', 'true');
+        localStorage.setItem(popperStageViewedKey, 'true');
         handleNextPopper();
     };
 
     React.useEffect(() => {
         const timeout = setTimeout(() => {
-            const viewedPopperStage = localStorage.getItem('eventInfoPopperViewedStage1');
+            const viewedPopperStage = localStorage.getItem(popperStageViewedKey);
             if (viewedPopperStage === 'true') return handleNextPopper();
             setAnchorEl(videoContainerRef.current);
         }, 500);
@@ -34,7 +42,7 @@ export function EventVideoInfoPopper({ videoContainerRef }: EventVideoInfoPopper
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (currentPopper !== 0) return null;
+    if (currentPopper !== EventInfoPopperStage.VideoPlayer) return null;
 
     return (
         <React.Fragment>
@@ -83,16 +91,17 @@ export function EventQuestionInfoPopper({ questionContainerRef }: EventQuestionI
     const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
     const isPopperOpen = Boolean(anchorEl);
     const popperId = isPopperOpen ? 'question-info-popper' : undefined;
+    const popperStageViewedKey = `eventInfoPopperViewedStage${EventInfoPopperStage.Questions}`;
 
     const handleClose = () => {
         setAnchorEl(null);
-        localStorage.setItem('eventInfoPopperViewedStage2', 'true');
+        localStorage.setItem(popperStageViewedKey, 'true');
         handleNextPopper();
     };
 
     React.useEffect(() => {
         const timeout = setTimeout(() => {
-            const viewedPopperStage = localStorage.getItem('eventInfoPopperViewedStage2');
+            const viewedPopperStage = localStorage.getItem(popperStageViewedKey);
             if (viewedPopperStage === 'true') return handleNextPopper();
             setAnchorEl(questionContainerRef.current);
         }, 500);
@@ -100,11 +109,7 @@ export function EventQuestionInfoPopper({ questionContainerRef }: EventQuestionI
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    React.useEffect(() => {
-        console.log('Current Popper:', currentPopper);
-    }, [currentPopper]);
-
-    if (currentPopper !== 1) return null;
+    if (currentPopper !== EventInfoPopperStage.Questions) return null;
 
     return (
         <React.Fragment>
@@ -146,16 +151,17 @@ export function EventFeedbackInfoPopper({ feedbackContainerRef }: EventFeedbackI
     const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
     const isPopperOpen = Boolean(anchorEl);
     const popperId = isPopperOpen ? 'question-info-popper' : undefined;
+    const popperStageViewedKey = `eventInfoPopperViewedStage${EventInfoPopperStage.Feedback}`;
 
     const handleClose = () => {
         setAnchorEl(null);
-        localStorage.setItem('eventInfoPopperViewedStage3', 'true');
+        localStorage.setItem(popperStageViewedKey, 'true');
         handleNextPopper();
     };
 
     React.useEffect(() => {
         const timeout = setTimeout(() => {
-            const viewedPopperStage = localStorage.getItem('eventInfoPopperViewedStage3');
+            const viewedPopperStage = localStorage.getItem(popperStageViewedKey);
             if (viewedPopperStage === 'true') return handleNextPopper();
             setAnchorEl(feedbackContainerRef.current);
         }, 500);
@@ -163,11 +169,7 @@ export function EventFeedbackInfoPopper({ feedbackContainerRef }: EventFeedbackI
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    React.useEffect(() => {
-        console.log('Current Popper:', currentPopper);
-    }, [currentPopper]);
-
-    if (currentPopper !== 2) return null;
+    if (currentPopper !== EventInfoPopperStage.Feedback) return null;
 
     return (
         <React.Fragment>
@@ -200,8 +202,61 @@ export function EventFeedbackInfoPopper({ feedbackContainerRef }: EventFeedbackI
     );
 }
 
-interface EventLanguageInfoPopperProps {}
+interface EventLanguageInfoPopperProps {
+    languageButtonRef: React.MutableRefObject<HTMLButtonElement | null>;
+}
 
-export function EventLanguageInfoPopper({}: EventLanguageInfoPopperProps) {
-    return null;
+export function EventLanguageInfoPopper({ languageButtonRef }: EventLanguageInfoPopperProps) {
+    const [currentPopper, handleNextPopper] = useEventInfoPopper();
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+    const isPopperOpen = Boolean(anchorEl);
+    const popperId = isPopperOpen ? 'question-info-popper' : undefined;
+    const popperStageViewedKey = `eventInfoPopperViewedStage${EventInfoPopperStage.Language}`;
+
+    const handleClose = () => {
+        setAnchorEl(null);
+        localStorage.setItem(popperStageViewedKey, 'true');
+        handleNextPopper();
+    };
+
+    React.useEffect(() => {
+        const timeout = setTimeout(() => {
+            const viewedPopperStage = localStorage.getItem(popperStageViewedKey);
+            if (viewedPopperStage === 'true') return handleNextPopper();
+            setAnchorEl(languageButtonRef.current);
+        }, 500);
+        return () => clearTimeout(timeout);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    if (currentPopper !== EventInfoPopperStage.Language) return null;
+
+    return (
+        <React.Fragment>
+            <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isPopperOpen} onClick={handleClose} />
+            <Popper
+                sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                id={popperId}
+                open={isPopperOpen}
+                anchorEl={anchorEl}
+                placement='bottom-end'
+            >
+                <Paper sx={{ padding: '1rem', backgroundColor: POPPER_BG_COLOR, alignItems: 'center' }}>
+                    <Stack direction='row' alignItems='center' spacing={1}>
+                        <Tooltip title='Question Info' placement='bottom-start'>
+                            <InfoIcon sx={{ color: 'white' }} />
+                        </Tooltip>
+                        <Typography fontWeight='bold' color='white' width='25rem'>
+                            You can update your preferred language here!
+                        </Typography>
+                        <Tooltip title='Dismiss' placement='bottom-start'>
+                            <IconButton onClick={handleClose}>
+                                <CloseIcon sx={{ color: 'white' }} />
+                            </IconButton>
+                        </Tooltip>
+                    </Stack>
+                </Paper>
+            </Popper>
+        </React.Fragment>
+    );
 }

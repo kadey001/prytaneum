@@ -107,7 +107,7 @@ export function ChooseLangaugeDialog({ preferredLang, onSuccess, isOpen, close }
                                         width='20'
                                         srcSet={`https://flagcdn.com/w40/${country.toLowerCase()}.png 2x`}
                                         src={`https://flagcdn.com/w20/${country.toLowerCase()}.png`}
-                                        alt=''
+                                        alt={`Flag of ${country}`}
                                         style={{ marginRight: '0.25rem' }}
                                     />{' '}
                                     {text}

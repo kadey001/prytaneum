@@ -3,7 +3,7 @@ import { Typography, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import ReactPlayer, { ReactPlayerProps } from 'react-player';
 
-import { EventVideoInfoPopper, useEventInfoPopper } from '../EventInfoPoppers';
+import { EventInfoPopperStage, EventVideoInfoPopper, useEventInfoPopper } from '../EventInfoPoppers';
 
 export type VideoPlayerProps = ReactPlayerProps;
 
@@ -35,7 +35,7 @@ export function VideoPlayer({ url, rest }: ReactPlayerProps) {
                     right: 0,
                     bottom: 0,
                     left: 0,
-                    zIndex: currentPopper === 0 ? theme.zIndex.drawer + 2 : 0,
+                    zIndex: currentPopper === EventInfoPopperStage.VideoPlayer ? theme.zIndex.drawer + 2 : 0,
                 }}
                 ref={videoContainerRef}
             >

@@ -11,7 +11,7 @@ import { isURL } from '@local/utils/index';
 import { FEEDBACK_MAX_LENGTH } from '@local/utils/rules';
 import { useSnack } from '@local/features/core/useSnack';
 import { LiveFeedbackForm, TLiveFeedbackFormState } from './LiveFeedbackForm';
-import { useEventInfoPopper } from '@local/components/EventInfoPoppers';
+import { EventInfoPopperStage, useEventInfoPopper } from '@local/components/EventInfoPoppers';
 
 interface Props {
     eventId: string;
@@ -89,7 +89,7 @@ export function SubmitLiveFeedback({ eventId }: Props) {
                 startIcon={user ? <QuestionAnswerIcon /> : <LockIcon />}
                 sx={{
                     minWidth: '150px',
-                    zIndex: (theme) => (currentPopper === 2 ? theme.zIndex.drawer + 2 : 0),
+                    zIndex: (theme) => (currentPopper === EventInfoPopperStage.Feedback ? theme.zIndex.drawer + 2 : 0),
                 }}
             >
                 {user ? 'Submit Live Feedback' : 'Sign in to submit live feedback'}

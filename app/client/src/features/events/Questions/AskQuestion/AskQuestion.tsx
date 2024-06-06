@@ -14,7 +14,7 @@ import { isURL } from '@local/utils';
 import { QUESTIONS_MAX_LENGTH } from '@local/utils/rules';
 import { QuestionForm, TQuestionFormState } from '../QuestionForm';
 import { generateUUID } from '@local/core/utils';
-import { useEventInfoPopper } from '@local/components/EventInfoPoppers';
+import { EventInfoPopperStage, useEventInfoPopper } from '@local/components/EventInfoPoppers';
 
 export interface AskQuestionProps {
     className?: string;
@@ -152,7 +152,7 @@ function AskQuestion({ className, eventId, connections }: AskQuestionProps) {
                 startIcon={user ? <QuestionAnswerIcon /> : <LockIcon />}
                 sx={{
                     minWidth: '150px',
-                    zIndex: (theme) => (currentPopper === 1 ? theme.zIndex.drawer + 1 : 0),
+                    zIndex: (theme) => (currentPopper === EventInfoPopperStage.Questions ? theme.zIndex.drawer + 1 : 0),
                 }}
             >
                 {user ? 'Ask My Question' : 'Sign in to ask a question'}

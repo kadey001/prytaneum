@@ -19,6 +19,7 @@ import { SubmitLiveFeedbackPromptResponse } from '../LiveFeedbackPrompts/LiveFee
 import { useResponsiveDialog } from '@local/components/ResponsiveDialog';
 import {
     EventFeedbackInfoPopper,
+    EventInfoPopperStage,
     EventQuestionInfoPopper,
     useEventInfoPopper,
 } from '@local/components/EventInfoPoppers';
@@ -153,7 +154,7 @@ export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
                         value={0}
                         ref={questionTabRef}
                         sx={{
-                            zIndex: currentPopper === 1 ? theme.zIndex.drawer + 2 : 0,
+                            zIndex: currentPopper === EventInfoPopperStage.Questions ? theme.zIndex.drawer + 2 : 0,
                             'aria-controls': 'question-tabpanel-0',
                         }}
                     />
@@ -163,7 +164,7 @@ export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
                         value={1}
                         ref={feedbackTabRef}
                         sx={{
-                            zIndex: currentPopper === 2 ? theme.zIndex.drawer + 2 : 0,
+                            zIndex: currentPopper === EventInfoPopperStage.Feedback ? theme.zIndex.drawer + 2 : 0,
                             'aria-controls': 'feedback-tabpanel-1',
                         }}
                     />
