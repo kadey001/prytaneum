@@ -22,6 +22,7 @@ import { useEventDetails } from './useEventDetails';
 import { usePingEvent } from './Participants/usePingEvent';
 import { useHashedColor } from '@local/core/getHashedColor';
 import { EventTopicContext } from './ModeratorView/EventTopicContext';
+import { EventInfoPopperProvider } from '@local/components/EventInfoPoppers';
 
 export const EVENT_LIVE_QUERY = graphql`
     query EventLiveQuery($eventId: ID!, $lang: String!) {
@@ -289,10 +290,12 @@ export function PreloadedEventLive({ eventId, token }: PreloadedEventLiveProps) 
 
     if (!eventLiveQueryRef || !validateInviteQueryRef) return <Loader />;
     return (
-        <EventLiveContainer
-            eventLiveQueryRef={eventLiveQueryRef}
-            validateInviteQueryRef={validateInviteQueryRef}
-            tokenProvided={!!token}
-        />
+        <EventInfoPopperProvider>
+            <EventLiveContainer
+                eventLiveQueryRef={eventLiveQueryRef}
+                validateInviteQueryRef={validateInviteQueryRef}
+                tokenProvided={!!token}
+            />
+        </EventInfoPopperProvider>
     );
 }
