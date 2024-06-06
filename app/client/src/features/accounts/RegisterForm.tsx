@@ -104,7 +104,7 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
         <Grid data-test-id='register-form' container justifyContent='center'>
             <Grid container item xs={12} direction='column' alignItems='center'>
                 <Typography component='h1' variant='h6'>
-                    Register
+                    Create New Account
                 </Typography>
             </Grid>
             <Form onSubmit={handleSubmit}>
@@ -223,7 +223,7 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
                             color='secondary'
                             disabled={!isAllInputsValid || values.firstName === ''}
                         >
-                            Register
+                            Create Account
                         </Button>
                     </LoadingButton>
                     {secondaryActions && <>{secondaryActions}</>}

@@ -210,7 +210,7 @@ export function UserMenu({ queryRef }: UserMenuProps) {
                         variant='contained'
                         onClick={handleClick('register')}
                     >
-                        Register
+                        Create Account
                     </Button>
                     <ResponsiveDialog open={type === 'register'} onClose={close}>
                         <DialogContent>
