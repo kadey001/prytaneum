@@ -50,6 +50,7 @@ export function EventPre({ fragmentRef }: EventPreProps) {
     const router = useRouter();
     const mdDownBreakpoint = useMediaQuery(theme.breakpoints.down('md'));
     const [tab, setTab] = React.useState<'Questions' | 'Feedback'>('Questions');
+    const { user } = useUser();
     const { eventData } = useEventDetails({ fragmentRef });
     const { id: eventId, isActive, isViewerModerator } = eventData;
     // used to create the countdown component
@@ -78,134 +79,133 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                 resumeParentRefreshing: () => {},
             }}
         >
-            <Paper sx={{ width: '100%', height: '100%', padding: '1rem' }}>
-                <Grid container spacing={2} columns={16} height='100%'>
-                    {/* Column 1 */}
-                    <Grid
-                        item
-                        container
-                        xs={mdDownBreakpoint ? 16 : 6}
-                        direction='column'
-                        justifyContent='space-around'
-                        marginLeft={mdDownBreakpoint ? '0' : '3rem'}
-                    >
-                        <Grid item container className='Upcoming Event Text'>
-                            <Typography variant='h4'>Upcoming Event</Typography>
-                            <Grid item paddingTop='1rem'>
-                                <Typography variant='h5'>
-                                    This event will start on{' '}
-                                    {new Date(date).toLocaleDateString('en-US', {
-                                        day: '2-digit',
-                                        month: '2-digit',
-                                        year: 'numeric',
-                                    })}{' '}
-                                    at{' '}
-                                    {new Date(date).toLocaleTimeString('en-US', {
-                                        timeZoneName: 'short',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                    })}
-                                    , thank you for joining! You can submit questions and feedback before the event
-                                    starts to the right.
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                        <Grid item className='Event Details'>
-                            <Typography variant='h4'>Event Details</Typography>
-                            <Paper
-                                sx={{
-                                    width: '100%',
-                                    height: '200px',
-                                    maxHeight: '200px',
-                                    overflowY: 'auto',
-                                }}
-                            >
-                                <Grid container height='100%' justifyContent='center' alignItems='center'>
-                                    <Grid item>
-                                        <EventDetailsCard eventData={eventData} />
-                                        <Divider style={{ background: 'black' }} />
-                                        <SpeakerList fragmentRef={fragmentRef} />
-                                        {/* TODO: add Organizers List */}
-                                    </Grid>
-                                </Grid>
-                            </Paper>
-                        </Grid>
-                        <Grid item className='Live Messages'>
-                            <Typography variant='h4'>Live Messages</Typography>
-                            <PreloadedLiveMessages />
-                        </Grid>
-                        <Grid item className='Resources'>
-                            <Typography variant='h4'>Resources</Typography>
-                            <Grid container justifyContent='space-around' width='100%' marginTop='1rem'>
-                                <Grid item>
-                                    <EventIssueGuideViewer url={eventData.issueGuideUrl} title={eventData.title} />
-                                </Grid>
-                                <Grid item>
-                                    <Link href='/guides/participant'>
-                                        <Button variant='contained'>
-                                            <PersonIcon sx={{ marginRight: '0.5rem' }} />
-                                            Participant Guide
-                                        </Button>
-                                    </Link>
-                                </Grid>
-                            </Grid>
+            <Grid container spacing={2} columns={16} height='100%'>
+                {/* Column 1 */}
+                <Grid
+                    item
+                    container
+                    xs={mdDownBreakpoint ? 16 : 6}
+                    direction='column'
+                    justifyContent='space-around'
+                    marginLeft={mdDownBreakpoint ? '0' : '3rem'}
+                >
+                    <Grid item container className='Upcoming Event Text'>
+                        <Typography variant='h4'>Upcoming Event</Typography>
+                        <Grid item paddingTop='1rem'>
+                            <Typography variant='h5'>
+                                This event will start on{' '}
+                                {new Date(date).toLocaleDateString('en-US', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                })}{' '}
+                                at{' '}
+                                {new Date(date).toLocaleTimeString('en-US', {
+                                    timeZoneName: 'short',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                })}
+                                , thank you for joining!{' '}
+                                {!user
+                                    ? ' Please create an account (using the top right button) or log in to participate.'
+                                    : 'Please feel free to ask questions or provide feedback before the event starts.'}
+                            </Typography>
                         </Grid>
                     </Grid>
-                    {/* Column 2 */}
-                    <Grid
-                        item
-                        container
-                        xs={mdDownBreakpoint ? 16 : 5}
-                        direction='column'
-                        wrap='nowrap'
-                        marginLeft={lgDownBreakpoint ? 0 : 2}
-                    >
-                        <Grid
-                            item
-                            container
-                            className='Pre-Event-Prytaneum-Logo'
-                            justifyContent='center'
-                            marginTop='2rem'
-                            marginBottom='2rem'
+                    <Grid item className='Event Details'>
+                        <Typography variant='h4'>Event Details</Typography>
+                        <Paper
+                            sx={{
+                                width: '100%',
+                                height: '250px',
+                                overflowY: 'auto',
+                            }}
                         >
-                            <img width='60%' src='/static/prytaneum_logo2.svg' alt='Prytaneum Logo' />
-                        </Grid>
-                        <Grid item container className='Countdown' justifyContent='center' alignContent='center'>
-                            <Paper
-                                style={{
-                                    marginBottom: '2rem',
-                                    paddingLeft: '25px',
-                                    paddingRight: '25px',
-                                    minWidth: '300px',
-                                }}
-                            >
-                                <CountdownWrapper date={date} />
-                            </Paper>
-                        </Grid>
-                        <Grid item container direction='column' width='100%' display='flex' flexGrow={1}>
-                            <StyledTabs value={tab} props={{ onChange: handleChange, 'aria-label': 'tabs' }}>
-                                <Tab label='Questions' value='Questions' />
-                                <Tab label='Feedback' value='Feedback' />
-                                {eventData.isViewerModerator === true && <Tab label='Broadcast' value='Broadcast' />}
-                            </StyledTabs>
-                            <StyledColumnGrid
-                                props={{
-                                    id: 'scrollable-tab',
-                                    minHeight: '600px',
-                                    maxHeight: '100%',
-                                    display: 'flex',
-                                    flexGrow: 1,
-                                    padding: 0,
-                                }}
-                                scrollable={false}
-                            >
-                                <ViewerOnlyQuestionList fragmentRef={fragmentRef} isVisible={tab === 'Questions'} />
-                                <LiveFeedbackList fragmentRef={fragmentRef} isVisible={tab === 'Feedback'} />
-                            </StyledColumnGrid>
+                            <Grid container height='100%' justifyContent='center' alignItems='center'>
+                                <Grid item>
+                                    <EventDetailsCard eventData={eventData} />
+                                    <Divider style={{ background: 'black' }} />
+                                    <SpeakerList fragmentRef={fragmentRef} />
+                                    {/* TODO: add Organizers List */}
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                    <Grid item className='Event Updates'>
+                        <Typography variant='h4'>Event Updates</Typography>
+                        <PreloadedLiveMessages />
+                    </Grid>
+                    <Grid item className='Resources'>
+                        <Typography variant='h4'>Resources</Typography>
+                        <Grid container justifyContent='space-around' width='100%' marginTop='1rem'>
+                            <Grid item>
+                                <EventIssueGuideViewer url={eventData.issueGuideUrl} title={eventData.title} />
+                            </Grid>
+                            <Grid item>
+                                <Link href='/guides/participant'>
+                                    <Button variant='contained'>
+                                        <PersonIcon sx={{ marginRight: '0.5rem' }} />
+                                        Participant Guide
+                                    </Button>
+                                </Link>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Paper>
+                {/* Column 2 */}
+                <Grid
+                    item
+                    container
+                    xs={mdDownBreakpoint ? 16 : 5}
+                    direction='column'
+                    wrap='nowrap'
+                    marginLeft={lgDownBreakpoint ? 0 : 2}
+                >
+                    <Grid
+                        item
+                        container
+                        className='Pre-Event-Prytaneum-Logo'
+                        justifyContent='center'
+                        marginTop='2rem'
+                        marginBottom='2rem'
+                    >
+                        <img width='60%' src='/static/prytaneum_logo2.svg' alt='Prytaneum Logo' />
+                    </Grid>
+                    <Grid item container className='Countdown' justifyContent='center' alignContent='center'>
+                        <Paper
+                            style={{
+                                marginBottom: '2rem',
+                                paddingLeft: '25px',
+                                paddingRight: '25px',
+                                minWidth: '300px',
+                            }}
+                        >
+                            <CountdownWrapper date={date} />
+                        </Paper>
+                    </Grid>
+                    <Grid item container direction='column' width='100%' display='flex' flexGrow={1}>
+                        <StyledTabs value={tab} props={{ onChange: handleChange, 'aria-label': 'tabs' }}>
+                            <Tab label='Questions' value='Questions' />
+                            <Tab label='Feedback' value='Feedback' />
+                            {eventData.isViewerModerator === true && <Tab label='Broadcast' value='Broadcast' />}
+                        </StyledTabs>
+                        <StyledColumnGrid
+                            props={{
+                                id: 'scrollable-tab',
+                                minHeight: '600px',
+                                maxHeight: '100%',
+                                display: 'flex',
+                                flexGrow: 1,
+                                padding: 0,
+                            }}
+                            scrollable={false}
+                        >
+                            <ViewerOnlyQuestionList fragmentRef={fragmentRef} isVisible={tab === 'Questions'} />
+                            <LiveFeedbackList fragmentRef={fragmentRef} isVisible={tab === 'Feedback'} />
+                        </StyledColumnGrid>
+                    </Grid>
+                </Grid>
+            </Grid>
         </EventContext.Provider>
     );
 }

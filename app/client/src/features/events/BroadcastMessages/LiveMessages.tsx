@@ -61,7 +61,7 @@ function MessageList({ broadcastMessages: immutableBroadcastMessages }: MessageL
 
     return (
         <Paper>
-            <Grid item container height='180px' sx={{ overflowY: 'scroll' }}>
+            <Grid item container height='300px' sx={{ overflowY: 'scroll' }}>
                 <Grid alignContent='center' justifyContent='center' container>
                     <Grid item width='90%'>
                         <List disablePadding>
@@ -84,7 +84,7 @@ function MessageList({ broadcastMessages: immutableBroadcastMessages }: MessageL
                             ))}
                             {broadcastMessages.length === 0 && (
                                 <Typography align='center' variant='h5'>
-                                    No broadcasted messages to display
+                                    No update messages to display
                                 </Typography>
                             )}
                         </List>
