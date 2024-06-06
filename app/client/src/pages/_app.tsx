@@ -17,6 +17,7 @@ import { GlobalStyles } from '@mui/material';
 import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
+import { EventInfoPopperProvider } from '@local/components/EventInfoPoppers';
 
 export const pdfJsOptions = {
     cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
@@ -93,7 +94,9 @@ export default function App({ Component, pageProps }: AppProps & { pageProps: an
                         {inputGlobalStyles}
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <SnackContext maxSnack={3}>
-                                <UserProvider userInfo={pageProps.userInfo}>{children}</UserProvider>
+                                <UserProvider userInfo={pageProps.userInfo}>
+                                    <EventInfoPopperProvider>{children}</EventInfoPopperProvider>
+                                </UserProvider>
                             </SnackContext>
                         </LocalizationProvider>
                     </ThemeProvider>
