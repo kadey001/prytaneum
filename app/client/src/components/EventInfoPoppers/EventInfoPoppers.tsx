@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import { useEventInfoPopper } from './useEventInfoPoppers';
 
-const popperColor = '#2962ff'; // blue
+const POPPER_BG_COLOR = '#2962ff'; // blue
 
 interface EventVideoInfoPopperProps {
     videoContainerRef: React.MutableRefObject<HTMLDivElement | null>;
@@ -49,7 +49,7 @@ export function EventVideoInfoPopper({ videoContainerRef }: EventVideoInfoPopper
                 <Paper
                     sx={{
                         padding: '1rem',
-                        backgroundColor: popperColor,
+                        backgroundColor: POPPER_BG_COLOR,
                         alignItems: 'center',
                     }}
                 >
@@ -116,7 +116,7 @@ export function EventQuestionInfoPopper({ questionContainerRef }: EventQuestionI
                 anchorEl={anchorEl}
                 placement='left-end'
             >
-                <Paper sx={{ padding: '1rem', backgroundColor: popperColor, alignItems: 'center' }}>
+                <Paper sx={{ padding: '1rem', backgroundColor: POPPER_BG_COLOR, alignItems: 'center' }}>
                     <Stack direction='row' alignItems='center' spacing={1}>
                         <Tooltip title='Question Info' placement='bottom-start'>
                             <InfoIcon sx={{ color: 'white' }} />
@@ -179,7 +179,7 @@ export function EventFeedbackInfoPopper({ feedbackContainerRef }: EventFeedbackI
                 anchorEl={anchorEl}
                 placement='left-end'
             >
-                <Paper sx={{ padding: '1rem', backgroundColor: popperColor, alignItems: 'center' }}>
+                <Paper sx={{ padding: '1rem', backgroundColor: POPPER_BG_COLOR, alignItems: 'center' }}>
                     <Stack direction='row' alignItems='center' spacing={1}>
                         <Tooltip title='Question Info' placement='bottom-start'>
                             <InfoIcon sx={{ color: 'white' }} />
