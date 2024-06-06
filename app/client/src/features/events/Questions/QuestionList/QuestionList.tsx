@@ -120,8 +120,8 @@ export function QuestionList({
                                 {isModerator && <QuestionStats fragmentRef={question} />}
                                 <QuestionActions
                                     style={!isModerator ? { width: '100%' } : { width: '100%', maxWidth: '10rem' }}
-                                    likeEnabled={!isModerator && Boolean(user)}
-                                    quoteEnabled={!isModerator && Boolean(user)}
+                                    likeEnabled={!isModerator && Boolean(user) && askQuestionEnabled}
+                                    quoteEnabled={!isModerator && Boolean(user) && askQuestionEnabled}
                                     queueEnabled={isModerator && Boolean(user)}
                                     deleteEnabled={isModerator && Boolean(user)}
                                     connections={connections}
