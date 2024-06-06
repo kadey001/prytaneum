@@ -1,12 +1,14 @@
-import { useState, useCallback, createContext, useEffect } from 'react';
+import { useState, createContext, useEffect } from 'react';
 
 type TEventInfoPopperContext = {
     currentPopper: number;
     handleNextPopper: () => void;
+    resetPopper: () => void;
 };
 export const EventInfoPopperContext = createContext<TEventInfoPopperContext>({
     currentPopper: 0,
     handleNextPopper: () => {},
+    resetPopper: () => {},
 });
 
 type EventInfoPopperProviderProps = {
@@ -15,16 +17,17 @@ type EventInfoPopperProviderProps = {
 export function EventInfoPopperProvider({ children }: EventInfoPopperProviderProps) {
     const [currentPopper, setCurrentPopper] = useState<number>(0);
 
-    const handleNextPopper = useCallback(() => {
-        setCurrentPopper((prev) => prev + 1);
-    }, []);
+    const handleNextPopper = () => setCurrentPopper((prev) => prev + 1);
 
+    const resetPopper = () => setCurrentPopper(0);
+
+    // Ensure popper is default to 0 when component mounts
     useEffect(() => {
-        setCurrentPopper(0);
+        resetPopper();
     }, []);
 
     return (
-        <EventInfoPopperContext.Provider value={{ currentPopper, handleNextPopper }}>
+        <EventInfoPopperContext.Provider value={{ currentPopper, handleNextPopper, resetPopper }}>
             {children}
         </EventInfoPopperContext.Provider>
     );
