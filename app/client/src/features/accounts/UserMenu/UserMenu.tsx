@@ -12,7 +12,7 @@ import {
     IconButton,
     Button,
     DialogContent,
-    Slide,
+    Tooltip,
 } from '@mui/material';
 import ArrowDropDown from '@mui/icons-material/ArrowDropDown';
 import ExitToApp from '@mui/icons-material/ExitToApp';
@@ -25,7 +25,7 @@ import { Skeleton } from '@mui/material';
 import { usePreloadedQuery, PreloadedQuery } from 'react-relay';
 
 import { ResponsiveDialog } from '@local/components/ResponsiveDialog';
-import { useIsClient } from '@local/core';
+import { SUPPORTED_LANGUAGES, useIsClient } from '@local/core';
 import { useUser } from '@local/features/accounts/useUser';
 import { LoginForm } from '@local/features/accounts/LoginForm';
 import { RegisterForm } from '@local/features/accounts/RegisterForm';
@@ -33,17 +33,7 @@ import useLogout from '@local/features/accounts/useLogout';
 import { USER_CONTEXT_QUERY } from '@local/features/accounts/UserContext';
 import { UserContextQuery } from '@local/__generated__/UserContextQuery.graphql';
 import { getHashedColor } from '@local/core/getHashedColor';
-import { ChooseLangaugeForm } from '@local/components/ChooseLanguageForm/ChooseLanguageForm';
-import { TransitionProps } from '@mui/material/transitions';
-
-const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-        children: React.ReactElement<any, any>;
-    },
-    ref: React.Ref<unknown>
-) {
-    return <Slide direction='down' ref={ref} {...props} />;
-});
+import { ChooseLangaugeDialog } from '@local/components/ChangeLanguage';
 
 export function UserMenuLoader() {
     return (
@@ -168,6 +158,12 @@ export function UserMenu({ queryRef }: UserMenuProps) {
         );
     }, [isSmUp, theme, isOpen]);
 
+    const langCountry = React.useMemo(() => {
+        const preferredLang = user?.preferredLang || 'EN';
+        const country = SUPPORTED_LANGUAGES.find((lang) => lang.code === preferredLang)?.country;
+        return country || 'us';
+    }, [user?.preferredLang]);
+
     return (
         <div>
             {!isSignedIn && (
@@ -226,6 +222,19 @@ export function UserMenu({ queryRef }: UserMenuProps) {
             )}
             {isSignedIn && (
                 <>
+                    <Tooltip title='Change Language' placement='bottom'>
+                        <IconButton onClick={handleClick('language')}>
+                            <img
+                                loading='lazy'
+                                width='35 px'
+                                height='35 px'
+                                srcSet={`https://flagcdn.com/w80/${langCountry}.png 2x`}
+                                src={`https://flagcdn.com/w40/${langCountry}.png`}
+                                alt={`${langCountry} flag`}
+                                style={{ marginRight: '0.25rem', borderRadius: '50%' }}
+                            />
+                        </IconButton>
+                    </Tooltip>
                     {menuButton}
                     <Menu
                         anchorEl={anchorEl}
@@ -269,7 +278,13 @@ export function UserMenu({ queryRef }: UserMenuProps) {
                             <ListItemText primary='Logout' />
                         </MenuItem>
                     </Menu>
-                    <ResponsiveDialog
+                    <ChooseLangaugeDialog
+                        preferredLang={user?.preferredLang}
+                        onSuccess={() => router.reload()}
+                        isOpen={type === 'language'}
+                        close={close}
+                    />
+                    {/* <ResponsiveDialog
                         open={type === 'language'}
                         onClose={close}
                         TransitionComponent={Transition}
@@ -291,7 +306,7 @@ export function UserMenu({ queryRef }: UserMenuProps) {
                                 }}
                             />
                         </DialogContent>
-                    </ResponsiveDialog>
+                    </ResponsiveDialog> */}
                 </>
             )}
         </div>
