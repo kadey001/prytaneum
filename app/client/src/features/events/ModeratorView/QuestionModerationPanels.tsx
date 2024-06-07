@@ -29,7 +29,8 @@ interface QuestionModerationPanelsProps {
 export function QuestionModerationPanels({ node, topics }: QuestionModerationPanelsProps) {
     const theme = useTheme();
     const xlUpBreakpoint = useMediaQuery(theme.breakpoints.up('xl'));
-    const [topic, setTopic] = useState<string>('default');
+    const selectedTopicFromSession = sessionStorage.getItem(`${node.id}-topic`);
+    const [topic, setTopic] = useState<string>(selectedTopicFromSession ?? 'default');
     const {
         activeId,
         handleDragStart,
@@ -43,9 +44,10 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
         sensors,
     } = useDndLists({ node, topic, topics });
 
-    function handleChange(event: SelectChangeEvent<typeof topic>) {
+    function handleChangeTopic(event: SelectChangeEvent<string>) {
         event.preventDefault();
-        setTopic(event.target.value as string);
+        setTopic(event.target.value);
+        sessionStorage.setItem(`${node.id}-topic`, event.target.value);
     }
 
     if (!topics) return <Loader />;
@@ -92,7 +94,7 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
                                         fragmentRef={node}
                                         isVisible={true}
                                         topic={topic}
-                                        handleTopicChange={handleChange}
+                                        handleTopicChange={handleChangeTopic}
                                         connections={connections}
                                         topics={topics}
                                     />
