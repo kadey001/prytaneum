@@ -12,6 +12,7 @@ import { FEEDBACK_MAX_LENGTH } from '@local/utils/rules';
 import { useSnack } from '@local/features/core/useSnack';
 import { LiveFeedbackForm, TLiveFeedbackFormState } from './LiveFeedbackForm';
 import { EventInfoPopperStage, useEventInfoPopper } from '@local/components/EventInfoPoppers';
+import { useEvent } from '../useEvent';
 
 interface Props {
     eventId: string;
@@ -42,6 +43,7 @@ export const SUBMIT_LIVE_FEEDBACK_MUTATION = graphql`
 export function SubmitLiveFeedback({ eventId }: Props) {
     const [isOpen, open, close] = useResponsiveDialog();
     const { user } = useUser();
+    const { isModerator } = useEvent();
     const [commit] = useMutation<SubmitLiveFeedbackMutation>(SUBMIT_LIVE_FEEDBACK_MUTATION);
     const { displaySnack } = useSnack();
 
@@ -71,6 +73,12 @@ export function SubmitLiveFeedback({ eventId }: Props) {
         }
     }
 
+    const buttonText = React.useMemo(() => {
+        if (!user) return 'Sign in to submit live feedback';
+        if (isModerator) return 'Send Message';
+        return 'Submit Live Feedback';
+    }, [user, isModerator]);
+
     return (
         <>
             <ResponsiveDialog open={isOpen} onClose={close}>
@@ -92,7 +100,7 @@ export function SubmitLiveFeedback({ eventId }: Props) {
                     zIndex: (theme) => (currentPopper === EventInfoPopperStage.Feedback ? theme.zIndex.drawer + 2 : 0),
                 }}
             >
-                {user ? 'Submit Live Feedback' : 'Sign in to submit live feedback'}
+                {buttonText}
             </Button>
         </>
     );

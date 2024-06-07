@@ -112,6 +112,9 @@ export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListPro
                         </IconButton>
                     </Grid>
                     <Grid item xs='auto'>
+                        <SubmitLiveFeedback eventId={eventId} />
+                    </Grid>
+                    <Grid item xs='auto'>
                         <SubmitLiveFeedbackPrompt eventId={eventId} />
                     </Grid>
                     <Grid item xs='auto'>
