@@ -4,6 +4,8 @@ import { graphql } from 'relay-runtime';
 
 import type { useUpdateOnDeckPositionMutation } from '@local/__generated__/useUpdateOnDeckPositionMutation.graphql';
 import { Question } from '../../types';
+import { calculateUpdateOnDeckPosition } from './utils';
+import { useSnack } from '@local/core';
 
 export const USE_UPDATE_ON_DECK_POSITION = graphql`
     mutation useUpdateOnDeckPositionMutation($input: UpdateOnDeckPosition!) {
@@ -51,56 +53,11 @@ interface Props {
 }
 
 export function useUpdateOnDeckPosition({ eventId }: Props) {
+    const { displaySnack } = useSnack();
     const [commit] = useMutation<useUpdateOnDeckPositionMutation>(USE_UPDATE_ON_DECK_POSITION);
 
-    // NOTE: At this point the list is already updated on client
-    // So the destIndex is the list should give us the moved question (but pos is not updated yet)
-    // Can use this index to find relative question's positions
-    const calculatePosition = React.useCallback(
-        (
-            list: Question[],
-            // sourceIndex: number, // Source index is where the question is coming from
-            destIndex: number, // Destination index is where the question is going to
-            currentQuestionPosition: number // The current question's position (new pos never smaller than this)
-        ) => {
-            // Since we are re-ordering, we can assume there are at least 2 questions to work with.
-            // First handle if being moved to the top of the list
-            if (destIndex === 0) {
-                // Should be a question after this, but need to check if a current question exists first
-                const nextQuestion = list[1];
-                const nextQuestionPosition = parseInt(nextQuestion.onDeckPosition);
-                if (currentQuestionPosition === -1) {
-                    return nextQuestionPosition - 1000;
-                } else {
-                    // Can use both positions to calculate new position in between
-                    const diff = Math.abs(nextQuestionPosition - currentQuestionPosition);
-                    const halfDiff = Math.round(diff / 2);
-                    return currentQuestionPosition + halfDiff;
-                }
-            }
-
-            // Handle if being moved to the bottom of the list
-            if (destIndex === list.length - 1) {
-                // Should be a question before this, can use that to calculate new position
-                const prevQuestion = list[list.length - 2];
-                const prevQuestionPosition = parseInt(prevQuestion.onDeckPosition);
-                return prevQuestionPosition + 1000;
-            }
-
-            // Handle if being moved to the middle of the list
-            const nextQuestion = list[destIndex + 1];
-            const prevQuestion = list[destIndex - 1];
-            const nextQuestionPosition = parseInt(nextQuestion.onDeckPosition);
-            const prevQuestionPosition = parseInt(prevQuestion.onDeckPosition);
-            const diff = Math.abs(nextQuestionPosition - prevQuestionPosition);
-            const halfDiff = Math.round(diff / 2);
-            return prevQuestionPosition + halfDiff;
-        },
-        []
-    );
-
     type UpdateOnDeckPositionInput = {
-        questionId: string;
+        question: Question;
         list: Question[];
         sourceIdx: number;
         destinationIdx: number; // the index where the question is being moved to
@@ -109,22 +66,45 @@ export function useUpdateOnDeckPosition({ eventId }: Props) {
 
     const updateOnDeckPosition = React.useCallback(
         (input: UpdateOnDeckPositionInput) => {
-            const { list, sourceIdx, destinationIdx, currentQuestionPosition } = input;
+            const { question, list, sourceIdx, destinationIdx, currentQuestionPosition } = input;
             // No need to update if the source and destination are the same
             if (sourceIdx === destinationIdx) return;
-            const newPosition = calculatePosition(list, destinationIdx, currentQuestionPosition);
+            const newPosition = calculateUpdateOnDeckPosition(list, destinationIdx, currentQuestionPosition);
 
             commit({
                 variables: {
                     input: {
                         eventId,
-                        questionId: input.questionId,
+                        questionId: question.id.toString(),
                         newPosition: newPosition.toString(),
+                    },
+                },
+                onCompleted: (response) => {
+                    if (response.updateOnDeckPosition.isError) {
+                        return displaySnack(response.updateOnDeckPosition.message, { variant: 'error' });
+                    }
+                },
+                onError: (error) => {
+                    displaySnack(error.message, { variant: 'error' });
+                },
+                optimisticResponse: {
+                    updateOnDeckPosition: {
+                        isError: false,
+                        message: '',
+                        body: {
+                            cursor: question.cursor,
+                            node: {
+                                id: question.id.toString(),
+                                position: '-1',
+                                onDeckPosition: newPosition.toString(),
+                                topics: question.topics,
+                            },
+                        },
                     },
                 },
             });
         },
-        [calculatePosition, commit, eventId]
+        [commit, displaySnack, eventId]
     );
 
     return {

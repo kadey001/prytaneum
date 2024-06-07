@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<152c2f2dcbdf6af2843d0f7f887c3574>>
+ * @generated SignedSource<<ddee1096fa1cdc83d238486524e40d2d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,10 +19,17 @@ export type useOnDeckFragment$data = {
       readonly edges: ReadonlyArray<{
         readonly cursor: string;
         readonly node: {
+          readonly createdAt: Date | null;
           readonly createdBy: {
+            readonly avatar: string | null;
             readonly firstName: string | null;
+            readonly id: string;
+            readonly lastName: string | null;
           } | null;
           readonly id: string;
+          readonly isLikedByViewer: boolean | null;
+          readonly lang: string | null;
+          readonly likedByCount: number | null;
           readonly onDeckPosition: string;
           readonly position: string;
           readonly question: string;
@@ -43,10 +50,17 @@ export type useOnDeckFragment$data = {
       readonly edges: ReadonlyArray<{
         readonly cursor: string;
         readonly node: {
+          readonly createdAt: Date | null;
           readonly createdBy: {
+            readonly avatar: string | null;
             readonly firstName: string | null;
+            readonly id: string;
+            readonly lastName: string | null;
           } | null;
           readonly id: string;
+          readonly isLikedByViewer: boolean | null;
+          readonly lang: string | null;
+          readonly likedByCount: number | null;
           readonly onDeckPosition: string;
           readonly position: string;
           readonly question: string;
@@ -127,6 +141,21 @@ v3 = [
           {
             "alias": null,
             "args": null,
+            "kind": "ScalarField",
+            "name": "lang",
+            "storageKey": null
+          },
+          (v1/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "onDeckPosition",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
             "concreteType": "EventQuestionTopic",
             "kind": "LinkedField",
             "name": "topics",
@@ -158,14 +187,50 @@ v3 = [
             "name": "createdBy",
             "plural": false,
             "selections": [
+              (v0/*: any*/),
               {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
                 "name": "firstName",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "lastName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatar",
+                "storageKey": null
               }
             ],
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "createdAt",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "likedByCount",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "isLikedByViewer",
             "storageKey": null
           },
           {
@@ -192,14 +257,6 @@ v3 = [
             "args": null,
             "kind": "FragmentSpread",
             "name": "QuestionTopicsFragment"
-          },
-          (v1/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "onDeckPosition",
-            "storageKey": null
           },
           {
             "alias": null,
@@ -356,6 +413,6 @@ return {
 };
 })();
 
-(node as any).hash = "05faa4f1e0365b1787427d22a43d0dea";
+(node as any).hash = "53c50f0a4bded3ab63dea19e5469038f";
 
 export default node;

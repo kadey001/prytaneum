@@ -25,7 +25,6 @@ export const USE_QUESTION_QUEUE = graphql`
                     id
                     question
                     lang
-                    questionTranslated(lang: $userLang)
                     position
                     onDeckPosition
                     topics {
@@ -34,16 +33,22 @@ export const USE_QUESTION_QUEUE = graphql`
                         position
                     }
                     createdBy {
+                        id
                         firstName
+                        lastName
+                        avatar
                     }
+                    createdAt
+                    likedByCount
+                    isLikedByViewer
+                    ...QuestionActionsFragment @arguments(lang: $userLang)
+                    ...QuestionAuthorFragment
+                    ...QuestionStatsFragment
+                    ...QuestionContentFragment @arguments(lang: $userLang)
+                    ...QuestionTopicsFragment
                     refQuestion {
                         ...QuestionQuoteFragment @arguments(lang: $userLang)
                     }
-                    ...QuestionActionsFragment @arguments(lang: $userLang)
-                    ...QuestionAuthorFragment
-                    ...QuestionContentFragment @arguments(lang: $userLang)
-                    ...QuestionStatsFragment
-                    ...QuestionTopicsFragment
                 }
             }
             pageInfo {

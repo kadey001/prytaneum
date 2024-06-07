@@ -380,6 +380,7 @@ export const resolvers: Resolvers = {
                         topic: 'enqueuedPushQuestion',
                         payload: {
                             enqueuedPushQuestion: { edge },
+                            viewerId: ctx.viewer.id,
                         },
                     });
                     ctx.pubsub.publish({
@@ -387,6 +388,7 @@ export const resolvers: Resolvers = {
                         payload: {
                             topicQueueRemove: { edge },
                             eventId: updatedQuestion.eventId,
+                            viewerId: ctx.viewer.id,
                         },
                     });
                     return edge;
@@ -432,13 +434,14 @@ export const resolvers: Resolvers = {
                     });
                     const questionWithGlobalId = toQuestionId(updatedQuestion);
                     const edge = {
-                        cursor: updatedQuestion.onDeckPosition ?? updatedQuestion.createdAt.getTime().toString(),
+                        cursor: updatedQuestion.createdAt.getTime().toString(),
                         node: questionWithGlobalId,
                     };
                     ctx.pubsub.publish({
                         topic: 'enqueuedRemoveQuestion',
                         payload: {
                             enqueuedRemoveQuestion: { edge },
+                            viewerId: ctx.viewer.id,
                         },
                     });
                     ctx.pubsub.publish({
@@ -446,6 +449,7 @@ export const resolvers: Resolvers = {
                         payload: {
                             topicQueuePush: { edge },
                             eventId: updatedQuestion.eventId,
+                            viewerId: ctx.viewer.id,
                         },
                     });
                     return edge;

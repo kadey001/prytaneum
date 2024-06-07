@@ -22,21 +22,28 @@ export const USE_ON_DECK_FRAGMENT = graphql`
                     node {
                         id
                         question
+                        lang
+                        position
+                        onDeckPosition
                         topics {
                             topic
                             description
                             position
                         }
                         createdBy {
+                            id
                             firstName
+                            lastName
+                            avatar
                         }
+                        createdAt
+                        likedByCount
+                        isLikedByViewer
                         ...QuestionActionsFragment @arguments(lang: $userLang)
                         ...QuestionAuthorFragment
                         ...QuestionStatsFragment
                         ...QuestionContentFragment @arguments(lang: $userLang)
                         ...QuestionTopicsFragment
-                        position
-                        onDeckPosition
                         refQuestion {
                             ...QuestionQuoteFragment @arguments(lang: $userLang)
                         }
@@ -50,21 +57,28 @@ export const USE_ON_DECK_FRAGMENT = graphql`
                     node {
                         id
                         question
+                        lang
+                        position
+                        onDeckPosition
                         topics {
                             topic
                             description
                             position
                         }
                         createdBy {
+                            id
                             firstName
+                            lastName
+                            avatar
                         }
+                        createdAt
+                        likedByCount
+                        isLikedByViewer
                         ...QuestionActionsFragment @arguments(lang: $userLang)
                         ...QuestionAuthorFragment
                         ...QuestionStatsFragment
                         ...QuestionContentFragment @arguments(lang: $userLang)
                         ...QuestionTopicsFragment
-                        position
-                        onDeckPosition
                         refQuestion {
                             ...QuestionQuoteFragment @arguments(lang: $userLang)
                         }

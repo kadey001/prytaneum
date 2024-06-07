@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<31a15cfabe301298fa05f7b72b5dce2b>>
+ * @generated SignedSource<<172c2cfc22bf5df3d242b1ea23338e0b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,10 +18,17 @@ export type useQuestionsByTopicFragment$data = {
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
       readonly node: {
+        readonly createdAt: Date | null;
         readonly createdBy: {
+          readonly avatar: string | null;
           readonly firstName: string | null;
+          readonly id: string;
+          readonly lastName: string | null;
         } | null;
         readonly id: string;
+        readonly isLikedByViewer: boolean | null;
+        readonly lang: string | null;
+        readonly likedByCount: number | null;
         readonly onDeckPosition: string;
         readonly position: string;
         readonly question: string;
@@ -177,6 +184,13 @@ return {
                   "name": "question",
                   "storageKey": null
                 },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "lang",
+                  "storageKey": null
+                },
                 (v2/*: any*/),
                 {
                   "alias": null,
@@ -219,15 +233,76 @@ return {
                   "name": "createdBy",
                   "plural": false,
                   "selections": [
+                    (v1/*: any*/),
                     {
                       "alias": null,
                       "args": null,
                       "kind": "ScalarField",
                       "name": "firstName",
                       "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "lastName",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "avatar",
+                      "storageKey": null
                     }
                   ],
                   "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "createdAt",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "likedByCount",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "isLikedByViewer",
+                  "storageKey": null
+                },
+                {
+                  "args": (v3/*: any*/),
+                  "kind": "FragmentSpread",
+                  "name": "QuestionActionsFragment"
+                },
+                {
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "QuestionAuthorFragment"
+                },
+                {
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "QuestionStatsFragment"
+                },
+                {
+                  "args": (v3/*: any*/),
+                  "kind": "FragmentSpread",
+                  "name": "QuestionContentFragment"
+                },
+                {
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "QuestionTopicsFragment"
                 },
                 {
                   "alias": null,
@@ -244,31 +319,6 @@ return {
                     }
                   ],
                   "storageKey": null
-                },
-                {
-                  "args": (v3/*: any*/),
-                  "kind": "FragmentSpread",
-                  "name": "QuestionActionsFragment"
-                },
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "QuestionAuthorFragment"
-                },
-                {
-                  "args": (v3/*: any*/),
-                  "kind": "FragmentSpread",
-                  "name": "QuestionContentFragment"
-                },
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "QuestionStatsFragment"
-                },
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "QuestionTopicsFragment"
                 },
                 {
                   "alias": null,
@@ -336,6 +386,6 @@ return {
 };
 })();
 
-(node as any).hash = "606573286498a3cd5236ea4e88e6e4a1";
+(node as any).hash = "1f7404b24a78e8c73345ff3bb738be95";
 
 export default node;

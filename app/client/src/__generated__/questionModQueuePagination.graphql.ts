@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b9491e35dea623a119f9154f02ada36e>>
+ * @generated SignedSource<<06d54ad134e9889c03c432c7b7c2d733>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -98,6 +98,53 @@ v11 = {
 },
 v12 = {
   "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "position",
+  "storageKey": null
+},
+v13 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "User",
+  "kind": "LinkedField",
+  "name": "createdBy",
+  "plural": false,
+  "selections": [
+    (v8/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "lastName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "avatar",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v14 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "createdAt",
+  "storageKey": null
+},
+v15 = {
+  "alias": null,
   "args": [
     {
       "kind": "Variable",
@@ -107,41 +154,6 @@ v12 = {
   ],
   "kind": "ScalarField",
   "name": "questionTranslated",
-  "storageKey": null
-},
-v13 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "position",
-  "storageKey": null
-},
-v14 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "firstName",
-  "storageKey": null
-},
-v15 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "lastName",
-  "storageKey": null
-},
-v16 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "avatar",
-  "storageKey": null
-},
-v17 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "createdAt",
   "storageKey": null
 };
 return {
@@ -250,7 +262,6 @@ return {
                           (v10/*: any*/),
                           (v11/*: any*/),
                           (v12/*: any*/),
-                          (v13/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -280,25 +291,27 @@ return {
                                 "name": "description",
                                 "storageKey": null
                               },
-                              (v13/*: any*/)
+                              (v12/*: any*/)
                             ],
+                            "storageKey": null
+                          },
+                          (v13/*: any*/),
+                          (v14/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "likedByCount",
                             "storageKey": null
                           },
                           {
                             "alias": null,
                             "args": null,
-                            "concreteType": "User",
-                            "kind": "LinkedField",
-                            "name": "createdBy",
-                            "plural": false,
-                            "selections": [
-                              (v14/*: any*/),
-                              (v8/*: any*/),
-                              (v15/*: any*/),
-                              (v16/*: any*/)
-                            ],
+                            "kind": "ScalarField",
+                            "name": "isLikedByViewer",
                             "storageKey": null
                           },
+                          (v15/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -308,41 +321,12 @@ return {
                             "plural": false,
                             "selections": [
                               (v8/*: any*/),
-                              {
-                                "alias": null,
-                                "args": null,
-                                "concreteType": "User",
-                                "kind": "LinkedField",
-                                "name": "createdBy",
-                                "plural": false,
-                                "selections": [
-                                  (v8/*: any*/),
-                                  (v14/*: any*/),
-                                  (v15/*: any*/),
-                                  (v16/*: any*/)
-                                ],
-                                "storageKey": null
-                              },
-                              (v17/*: any*/),
+                              (v13/*: any*/),
+                              (v14/*: any*/),
                               (v10/*: any*/),
                               (v11/*: any*/),
-                              (v12/*: any*/)
+                              (v15/*: any*/)
                             ],
-                            "storageKey": null
-                          },
-                          (v17/*: any*/),
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "isLikedByViewer",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "likedByCount",
                             "storageKey": null
                           },
                           (v7/*: any*/)
@@ -418,16 +402,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e530dfadd8566683af75ab53ead4ea84",
+    "cacheID": "2cd76f856d16d021f6ab9c2dba68db50",
     "id": null,
     "metadata": {},
     "name": "questionModQueuePagination",
     "operationKind": "query",
-    "text": "query questionModQueuePagination(\n  $after: String = \"\"\n  $first: Int = 1000\n  $userLang: String!\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useQuestionModQueueFragment_38VXrw\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_43mCLt on EventQuestion {\n  id\n  ...QuoteFragment_43mCLt\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_43mCLt on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $userLang)\n}\n\nfragment QuestionQuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QuestionTopicsFragment on EventQuestion {\n  topics {\n    topic\n    description\n    position\n  }\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment useQuestionModQueueFragment_38VXrw on Event {\n  id\n  currentQuestion\n  questionModQueue(first: $first, after: $after) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        lang\n        questionTranslated(lang: $userLang)\n        position\n        onDeckPosition\n        topics {\n          topic\n          description\n          position\n        }\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment_43mCLt\n          id\n        }\n        ...QuestionActionsFragment_43mCLt\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_43mCLt\n        ...QuestionStatsFragment\n        ...QuestionTopicsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query questionModQueuePagination(\n  $after: String = \"\"\n  $first: Int = 1000\n  $userLang: String!\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useQuestionModQueueFragment_38VXrw\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_43mCLt on EventQuestion {\n  id\n  ...QuoteFragment_43mCLt\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_43mCLt on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $userLang)\n}\n\nfragment QuestionQuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QuestionTopicsFragment on EventQuestion {\n  topics {\n    topic\n    description\n    position\n  }\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment useQuestionModQueueFragment_38VXrw on Event {\n  id\n  currentQuestion\n  questionModQueue(first: $first, after: $after) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        lang\n        position\n        onDeckPosition\n        topics {\n          topic\n          description\n          position\n        }\n        createdBy {\n          id\n          firstName\n          lastName\n          avatar\n        }\n        createdAt\n        likedByCount\n        isLikedByViewer\n        ...QuestionActionsFragment_43mCLt\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment_43mCLt\n        ...QuestionTopicsFragment\n        refQuestion {\n          ...QuestionQuoteFragment_43mCLt\n          id\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "dc78902d30d95ad2f6781e6b1a41ad7b";
+(node as any).hash = "129f5816b12ff309c616d367f3d8ab40";
 
 export default node;

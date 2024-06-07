@@ -8,9 +8,10 @@ import { Question, Topic } from '../../types';
 import { useSnack } from '@local/core';
 import { calculateOnDeckEnqueuePosition, onDeckEnqueuedMutationUpdater } from './utils';
 import { useOnDeckEnqueuedMutation } from '@local/__generated__/useOnDeckEnqueuedMutation.graphql';
+import { useUser } from '@local/features/accounts';
 
 export const USE_ON_DECK_ENQUEUED_MUTATION = graphql`
-    mutation useOnDeckEnqueuedMutation($input: AddQuestionToOnDeck!) {
+    mutation useOnDeckEnqueuedMutation($input: AddQuestionToOnDeck!, $lang: String!) {
         addQuestionToOnDeck(input: $input) {
             isError
             message
@@ -18,8 +19,17 @@ export const USE_ON_DECK_ENQUEUED_MUTATION = graphql`
                 cursor
                 node {
                     id
+                    question
                     position
                     onDeckPosition
+                    refQuestion {
+                        ...QuestionQuoteFragment @arguments(lang: $lang)
+                    }
+                    ...QuestionActionsFragment @arguments(lang: $lang)
+                    ...QuestionAuthorFragment
+                    ...QuestionContentFragment @arguments(lang: $lang)
+                    ...QuestionStatsFragment
+                    ...QuestionTopicsFragment
                 }
             }
         }
@@ -28,16 +38,17 @@ export const USE_ON_DECK_ENQUEUED_MUTATION = graphql`
 
 interface Props {
     connections: string[];
+    topic: string;
     topics: readonly Topic[];
 }
 
-export function useOnDeckEnqueued({ topics }: Props) {
+export function useOnDeckEnqueued({ connections, topics }: Props) {
     const { eventId } = useEvent();
+    const { user } = useUser();
     const { displaySnack } = useSnack();
 
     type AddQuestionToOnDeckInput = {
-        questionId: string;
-        eventId: string;
+        question: Question;
         list: Question[];
         movedQuestionIndex: number; // Index of where the question was moved to in the on deck list
         cursor: string;
@@ -47,7 +58,7 @@ export function useOnDeckEnqueued({ topics }: Props) {
     const [commit] = useMutation<useOnDeckEnqueuedMutation>(USE_ON_DECK_ENQUEUED_MUTATION);
     const addQuestionToOnDeck = React.useCallback(
         (input: AddQuestionToOnDeckInput) => {
-            const { list, movedQuestionIndex, currentQuestionPosition } = input;
+            const { question, list, movedQuestionIndex, currentQuestionPosition } = input;
             const newPosition = calculateOnDeckEnqueuePosition({ list, movedQuestionIndex, currentQuestionPosition });
             if (newPosition <= -1) {
                 displaySnack('Invalid new position', { variant: 'error' });
@@ -57,9 +68,10 @@ export function useOnDeckEnqueued({ topics }: Props) {
                 variables: {
                     input: {
                         eventId,
-                        questionId: input.questionId,
+                        questionId: question.id.toString(),
                         newPosition: newPosition.toString(),
                     },
+                    lang: user?.preferredLang ?? 'EN',
                 },
                 onCompleted: (response) => {
                     if (response.addQuestionToOnDeck.isError) {
@@ -70,28 +82,59 @@ export function useOnDeckEnqueued({ topics }: Props) {
                     displaySnack(error.message, { variant: 'error' });
                 },
                 updater: (store) => {
-                    onDeckEnqueuedMutationUpdater({ store, eventId, questionId: input.questionId, topics });
+                    onDeckEnqueuedMutationUpdater({
+                        store,
+                        connections,
+                        eventId,
+                        questionId: input.question.id.toString(),
+                        topics,
+                    });
+                },
+                optimisticUpdater: (store) => {
+                    onDeckEnqueuedMutationUpdater({
+                        store,
+                        connections,
+                        eventId,
+                        questionId: question.id.toString(),
+                        topics,
+                    });
                 },
                 optimisticResponse: {
                     addQuestionToOnDeck: {
                         isError: false,
                         message: '',
                         body: {
-                            cursor: input.cursor,
+                            cursor: question.cursor,
                             node: {
-                                id: input.questionId,
+                                id: question.id,
+                                question: question.question,
+                                lang: question.lang,
+                                questionTranslated: question.question,
                                 position: '-1',
                                 onDeckPosition: newPosition.toString(),
+                                topics: question.topics?.map((_topic) => {
+                                    return {
+                                        ..._topic,
+                                        position: '-1',
+                                    };
+                                }),
+                                createdBy: {
+                                    id: question.createdBy?.id ?? '',
+                                    firstName: question.createdBy?.firstName ?? '',
+                                    lastName: question.createdBy?.lastName ?? '',
+                                    avatar: question.createdBy?.avatar ?? '',
+                                },
+                                createdAt: question.createdAt,
+                                refQuestion: question.refQuestion,
+                                likedByCount: question.likedByCount,
+                                isLikedByViewer: question.isLikedByViewer,
                             },
                         },
                     },
                 },
-                optimisticUpdater: (store) => {
-                    onDeckEnqueuedMutationUpdater({ store, eventId, questionId: input.questionId, topics });
-                },
             });
         },
-        [commit, displaySnack, eventId, topics]
+        [commit, connections, displaySnack, eventId, topics, user?.preferredLang]
     );
 
     return { addQuestionToOnDeck };
