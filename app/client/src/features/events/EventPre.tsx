@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { graphql, PreloadedQuery, usePreloadedQuery, useQueryLoader } from 'react-relay';
-import { Button, Divider, Grid, Paper, Tab, Typography, useMediaQuery } from '@mui/material';
+import { Badge, Button, Divider, Grid, Paper, Tab, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 
@@ -53,6 +53,7 @@ export function EventPre({ fragmentRef }: EventPreProps) {
     const { user } = useUser();
     const { eventData } = useEventDetails({ fragmentRef });
     const { id: eventId, isActive, isViewerModerator } = eventData;
+    const [numOfFeedbackMsgs, setNumOfFeedbackMsgs] = React.useState<number>(0);
     // used to create the countdown component
     const date = eventData.startDateTime as Date;
 
@@ -186,7 +187,22 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                     <Grid item container direction='column' width='100%' display='flex' flexGrow={1}>
                         <StyledTabs value={tab} props={{ onChange: handleChange, 'aria-label': 'tabs' }}>
                             <Tab label='Questions' value='Questions' />
-                            <Tab label='Feedback' value='Feedback' />
+                            <Tab
+                                label={
+                                    <React.Fragment>
+                                        Feedback
+                                        <Badge
+                                            badgeContent={numOfFeedbackMsgs}
+                                            color='error'
+                                            sx={{ transform: 'translate(40px, -23px)' }}
+                                        />
+                                    </React.Fragment>
+                                }
+                                value='Feedback'
+                                sx={{
+                                    overflow: 'visible', // This is needed to show the badge
+                                }}
+                            />
                             {eventData.isViewerModerator === true && <Tab label='Broadcast' value='Broadcast' />}
                         </StyledTabs>
                         <StyledColumnGrid
@@ -201,7 +217,11 @@ export function EventPre({ fragmentRef }: EventPreProps) {
                             scrollable={false}
                         >
                             <ViewerOnlyQuestionList fragmentRef={fragmentRef} isVisible={tab === 'Questions'} />
-                            <LiveFeedbackList fragmentRef={fragmentRef} isVisible={tab === 'Feedback'} />
+                            <LiveFeedbackList
+                                fragmentRef={fragmentRef}
+                                isVisible={tab === 'Feedback'}
+                                setNumOfFeedbackMsgs={setNumOfFeedbackMsgs}
+                            />
                         </StyledColumnGrid>
                     </Grid>
                 </Grid>

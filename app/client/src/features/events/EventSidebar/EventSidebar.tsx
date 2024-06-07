@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
-import { Grid, Tab, Skeleton, useMediaQuery, Typography } from '@mui/material';
+import { Grid, Tab, Skeleton, useMediaQuery, Typography, Badge } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { graphql, useFragment } from 'react-relay';
 
@@ -96,6 +96,28 @@ export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
         }
     }, [currentPopper]);
 
+    const [numOfFeedbackMsgs, setNumOfFeedbackMsgs] = React.useState<number>(0);
+    const feedbackTabLabel = React.useMemo(() => {
+        if (smDownBreakpoint) {
+            return (
+                <React.Fragment>
+                    <Typography variant='caption'>Feedback</Typography>
+                    <Badge
+                        badgeContent={numOfFeedbackMsgs}
+                        color='error'
+                        sx={{ transform: 'translate(35px, -23px)' }}
+                    />
+                </React.Fragment>
+            );
+        }
+        return (
+            <React.Fragment>
+                Feedback
+                <Badge badgeContent={numOfFeedbackMsgs} color='error' sx={{ transform: 'translate(40px, -23px)' }} />
+            </React.Fragment>
+        );
+    }, [numOfFeedbackMsgs, smDownBreakpoint]);
+
     return (
         <Grid
             container
@@ -160,12 +182,13 @@ export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
                     />
                     <Tab
                         id='feedback-tab'
-                        label={smDownBreakpoint ? <Typography variant='caption'>Feedback</Typography> : 'Feedback'}
+                        label={feedbackTabLabel}
                         value={1}
                         ref={feedbackTabRef}
                         sx={{
                             zIndex: currentPopper === EventInfoPopperStage.Feedback ? theme.zIndex.drawer + 2 : 0,
                             'aria-controls': 'feedback-tabpanel-1',
+                            overflow: 'visible', // Prevents badge from being cut off
                         }}
                     />
                 </StyledTabs>
@@ -182,7 +205,11 @@ export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
                     scrollable={false}
                 >
                     <QuestionList fragmentRef={data} isVisible={selectedTab === 0} searchOnly={false} />
-                    <LiveFeedbackList fragmentRef={data} isVisible={selectedTab === 1} />
+                    <LiveFeedbackList
+                        fragmentRef={data}
+                        isVisible={selectedTab === 1}
+                        setNumOfFeedbackMsgs={setNumOfFeedbackMsgs}
+                    />
                 </StyledColumnGrid>
             </Grid>
         </Grid>

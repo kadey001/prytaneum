@@ -21,14 +21,27 @@ import { SubmitLiveFeedback } from './SubmitLiveFeedback';
 interface LiveFeedbackListProps {
     fragmentRef: useLiveFeedbackListFragment$key;
     isVisible: boolean;
+    setNumOfFeedbackMsgs?: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListProps) {
+export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs }: LiveFeedbackListProps) {
     const { user } = useUser();
     const [displayLiveFeedback, setDisplayLiveFeedback] = React.useState(false);
     const [isSearchOpen, setIsSearchOpen] = React.useState(false);
     const { liveFeedback } = useLiveFeedbackList({ fragmentRef });
     const { isModerator, eventId } = useEvent();
+    // const [prevMsgLength, setPrevMsgLength] = React.useState<number>(0);
+    const numOfMessages = React.useMemo(() => liveFeedback.length, [liveFeedback]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const prevMsgLength = React.useMemo(() => numOfMessages, [isVisible]);
+
+    React.useEffect(() => {
+        if (!setNumOfFeedbackMsgs) return;
+        if (isVisible) setNumOfFeedbackMsgs(0);
+        else {
+            setNumOfFeedbackMsgs(numOfMessages - prevMsgLength);
+        }
+    }, [isVisible, numOfMessages, prevMsgLength, setNumOfFeedbackMsgs]);
 
     const toggleSearch = React.useCallback(() => setIsSearchOpen((prev) => !prev), [setIsSearchOpen]);
 
