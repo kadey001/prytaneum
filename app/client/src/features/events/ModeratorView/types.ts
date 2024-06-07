@@ -22,7 +22,7 @@ export type Question = {
         readonly lastName: string | null;
         readonly avatar: string | null;
     } | null;
-    createdAt: string | null;
+    createdAt: string | Date | null;
     likedByCount: number | null;
     isLikedByViewer: boolean | null;
     refQuestion: {
