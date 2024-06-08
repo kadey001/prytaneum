@@ -7,6 +7,7 @@ import type { EnqueueQuestionButtonMutation } from '@local/__generated__/Enqueue
 import { useEvent } from '@local/features/events';
 import { useSnack } from '@local/core';
 import { useTopic } from '../../ModeratorView/useTopic';
+import { useUser } from '@local/features/accounts';
 
 export interface QueueButtonProps {
     questionId: string;
@@ -20,7 +21,7 @@ export const ENQUEUE_BUTTON_FRAGMENT = graphql`
 `;
 
 export const ENQUEUE_BUTTON_MUTATION = graphql`
-    mutation EnqueueQuestionButtonMutation($input: AddQuestionToTopicQueue!) {
+    mutation EnqueueQuestionButtonMutation($input: AddQuestionToTopicQueue!, $lang: String!) {
         addQuestionToTopicQueue(input: $input) {
             isError
             message
@@ -28,7 +29,32 @@ export const ENQUEUE_BUTTON_MUTATION = graphql`
                 cursor
                 node {
                     id
+                    question
+                    lang
                     position
+                    onDeckPosition
+                    topics {
+                        topic
+                        description
+                        position
+                    }
+                    createdBy {
+                        id
+                        firstName
+                        lastName
+                        avatar
+                    }
+                    createdAt
+                    likedByCount
+                    isLikedByViewer
+                    ...QuestionActionsFragment @arguments(lang: $lang)
+                    ...QuestionAuthorFragment
+                    ...QuestionStatsFragment
+                    ...QuestionContentFragment @arguments(lang: $lang)
+                    ...QuestionTopicsFragment
+                    refQuestion {
+                        ...QuestionQuoteFragment @arguments(lang: $lang)
+                    }
                 }
             }
         }
@@ -41,10 +67,11 @@ export const ENQUEUE_BUTTON_MUTATION = graphql`
 export function EnqueueQuestionButton({ questionId }: QueueButtonProps) {
     const [commit] = useMutation<EnqueueQuestionButtonMutation>(ENQUEUE_BUTTON_MUTATION);
     const { eventId } = useEvent();
+    const { user } = useUser();
     const { topic } = useTopic();
     const { displaySnack } = useSnack();
 
-    const handleClick = () => {
+    const handleClick = React.useCallback(() => {
         commit({
             variables: {
                 input: {
@@ -52,6 +79,7 @@ export function EnqueueQuestionButton({ questionId }: QueueButtonProps) {
                     eventId,
                     topic,
                 },
+                lang: user?.preferredLang ?? 'EN',
             },
             onCompleted: ({ addQuestionToTopicQueue }) => {
                 if (addQuestionToTopicQueue.isError) {
@@ -73,9 +101,6 @@ export function EnqueueQuestionButton({ questionId }: QueueButtonProps) {
                 ConnectionHandler.deleteNode(connectionRecord, questionId);
 
                 // Add the question to the topic queue
-                // But first ensure the question isn't already in the queue
-                const question = store.get(questionId);
-                if (question) return console.error('Update failed: Question already in queue!');
                 const queueConnection = ConnectionHandler.getConnection(
                     eventRecord,
                     'useQuestionModQueueFragment_questionModQueue'
@@ -88,7 +113,7 @@ export function EnqueueQuestionButton({ questionId }: QueueButtonProps) {
                 ConnectionHandler.insertEdgeAfter(queueConnection, serverEdge);
             },
         });
-    };
+    }, [commit, displaySnack, eventId, questionId, topic, user]);
     return (
         <IconButton onClick={handleClick}>
             <Tooltip title='Enqueue Question' placement='bottom'>

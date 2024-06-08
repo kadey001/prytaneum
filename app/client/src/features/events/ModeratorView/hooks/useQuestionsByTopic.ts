@@ -92,7 +92,8 @@ export function useQuestionsByTopic({ fragmentRef }: Props) {
             });
             return isInCurrentTopic && !_isQueued;
         });
-        return filteredQuestions.map(({ node, cursor }) => {
+        const sortedQuestions = filteredQuestions.sort((a, b) => (a.cursor > b.cursor ? -1 : 1));
+        return sortedQuestions.map(({ node, cursor }) => {
             return { ...node, cursor };
         });
     }, [_questions?.edges, topic]);

@@ -288,9 +288,15 @@ export const resolvers: Resolvers = {
             ),
         },
         questionEnqueued: {
-            subscribe: withFilter<{ questionEnqueued: EventQuestionEdgeContainer; eventId: string; topic: string }>(
+            subscribe: withFilter<{
+                questionEnqueued: EventQuestionEdgeContainer;
+                eventId: string;
+                topic: string;
+                viewerId: string;
+            }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionEnqueued'),
                 (payload, args, ctx) => {
+                    if (ctx.viewer.id === payload.viewerId) return false;
                     const { id: eventId } = fromGlobalId(args.eventId);
                     if (eventId === payload.eventId) {
                         return payload.topic === args.topic;
@@ -308,6 +314,7 @@ export const resolvers: Resolvers = {
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionDequeued'),
                 (payload, args, ctx) => {
+                    if (ctx.viewer.id === payload.viewerId) return false;
                     const { id: eventId } = fromGlobalId(args.eventId);
                     const { id: questionId } = fromGlobalId(payload.questionDequeued.edge.node.id);
                     if (eventId === payload.eventId) {
