@@ -74,10 +74,14 @@ export function useBroadcastMessageList({ fragmentRef }: useBroadcastMessageList
         setIsRefreshing(false);
     }, [data.broadcastMessages?.pageInfo?.endCursor, isRefreshing, refetch, user?.preferredLang]);
 
+    const connections = React.useMemo(() => {
+        return broadcastMessages?.__id ? [broadcastMessages.__id] : [];
+    }, [broadcastMessages?.__id]);
+
     return {
         broadcastMessages: broadcastMessageList,
         eventId,
-        connections: broadcastMessages?.__id ? [broadcastMessages.__id] : [],
+        connections,
         currentBroadcastMessage,
         loadNext,
         loadPrevious,

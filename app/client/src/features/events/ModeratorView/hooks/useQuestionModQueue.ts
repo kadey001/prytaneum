@@ -103,7 +103,7 @@ export function useQuestionModQueue({ fragmentRef, topic: currentTopic }: Props)
 
     const connections = React.useMemo(() => {
         return _questions?.__id ? [_questions.__id] : [];
-    }, [_questions]);
+    }, [_questions?.__id]);
 
     const pageInfo = React.useMemo(() => {
         return _questions?.pageInfo;

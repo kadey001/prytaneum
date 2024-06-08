@@ -116,12 +116,24 @@ export function useOnDeck({ fragmentRef }: { fragmentRef: useOnDeckFragment$key 
         return parseInt(currentQuestion);
     }, [currentQuestion]);
 
+    const recordConnection = React.useMemo(() => {
+        return questionQueue?.questionRecord?.__id ?? '';
+    }, [questionQueue?.questionRecord?.__id]);
+
+    const queueConnection = React.useMemo(() => {
+        return questionQueue?.enqueuedQuestions?.__id ?? '';
+    }, [questionQueue?.enqueuedQuestions?.__id]);
+
+    const connections = React.useMemo(() => {
+        return [recordConnection, queueConnection];
+    }, [recordConnection, queueConnection]);
+
     return {
         enqueuedQuestions,
         questionRecord,
-        connections: questionQueue?.enqueuedQuestions?.__id ? [questionQueue.enqueuedQuestions.__id] : [],
-        recordConnection: questionQueue?.questionRecord?.__id ?? '',
-        queueConnection: questionQueue?.enqueuedQuestions?.__id ?? '',
+        connections,
+        recordConnection,
+        queueConnection,
         currentQuestionPosition,
     };
 }

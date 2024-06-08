@@ -104,7 +104,7 @@ export function useQuestionsByTopic({ fragmentRef }: Props) {
 
     const connections = React.useMemo(() => {
         return _questions?.__id ? [_questions.__id] : [];
-    }, [_questions]);
+    }, [_questions?.__id]);
 
     return {
         questions,
