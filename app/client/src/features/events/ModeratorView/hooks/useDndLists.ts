@@ -22,6 +22,7 @@ import { useOnDeckDequeued } from './OnDeck/useOnDeckDequeued';
 import { useUpdateOnDeckPosition } from './OnDeck/useUpdateOnDeckPosition';
 import { useUpdateTopicQueuePosition } from './TopicQueue/useUpdateTopicQueuePosition';
 import { Question, Topic } from '../types';
+import { useDebounce } from '@local/core/useDebounce';
 
 type ItemsType = {
     topicQueue: Question[];
@@ -300,12 +301,15 @@ export function useDndLists({ node, topic, topics }: Props) {
     });
     const sensors = useSensors(pointerSensor, mouseSensor, useSensor(KeyboardSensor));
 
+    // -- Debounce drag over -- Prevents the drag over event from firing too frequently causing a runtime error
+    const debouncedDragOver = useDebounce(handleDragOver, 250);
+
     return {
         items,
         activeId,
         handleDragStart,
         handleDragEnd,
-        handleDragOver,
+        handleDragOver: debouncedDragOver,
         heldQuestion,
         onDeckQuestions,
         topicQueueQuestions,
