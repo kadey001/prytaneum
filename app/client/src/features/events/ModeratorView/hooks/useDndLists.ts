@@ -44,6 +44,7 @@ export function useDndLists({ node, topic, topics }: Props) {
         enqueuedQuestions,
         questionRecord,
         connections: onDeckConnections,
+        queueConnection,
         currentQuestionPosition,
     } = useOnDeck({ fragmentRef: node });
 
@@ -52,7 +53,7 @@ export function useDndLists({ node, topic, topics }: Props) {
     useTopicQueueRemove({ eventId, topic, connections: queueConnections });
 
     const { updateTopicQueuePosition } = useUpdateTopicQueuePosition({ eventId, topic });
-    const { addQuestionToOnDeck } = useOnDeckEnqueued({ connections: onDeckConnections, topics, topic });
+    const { addQuestionToOnDeck } = useOnDeckEnqueued({ connections: [queueConnection], topics, topic });
     const { removeFromOnDeck } = useOnDeckDequeued({ connections: onDeckConnections, topics, topic });
     const { updateOnDeckPosition } = useUpdateOnDeckPosition({ eventId });
 
