@@ -52,7 +52,7 @@ export function useDndLists({ node, topic, topics }: Props) {
     useTopicQueueRemove({ eventId, topic, connections: queueConnections });
 
     const { updateTopicQueuePosition } = useUpdateTopicQueuePosition({ eventId, topic });
-    const { addQuestionToOnDeck } = useOnDeckEnqueued({ connections: onDeckConnections, topics });
+    const { addQuestionToOnDeck } = useOnDeckEnqueued({ connections: onDeckConnections, topics, topic });
     const { removeFromOnDeck } = useOnDeckDequeued({ connections: onDeckConnections, topics, topic });
     const { updateOnDeckPosition } = useUpdateOnDeckPosition({ eventId });
 
@@ -82,6 +82,8 @@ export function useDndLists({ node, topic, topics }: Props) {
     }, [enqueuedQuestions]);
 
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+    // Store the previous items to revert back if moving between lists fails
+    const [previousItems, setPreviousItems] = useState<ItemsType>(items);
 
     const allSortableQuestions = React.useMemo(() => {
         return [...queue, ...enqueuedQuestions];
@@ -113,8 +115,9 @@ export function useDndLists({ node, topic, topics }: Props) {
             }
             setPreviousContainer(activeContainer);
             setActiveId(id);
+            setPreviousItems(items);
         },
-        [findContainer, displaySnack]
+        [findContainer, items, displaySnack]
     );
 
     const handleDragOver = React.useCallback(
@@ -189,7 +192,7 @@ export function useDndLists({ node, topic, topics }: Props) {
                     const onDeck = items.onDeck;
                     const updatedOnDeck = arrayMove(onDeck, activeIndex, overIndex);
                     updateOnDeckPosition({
-                        questionId: activeQuestion.id.toString(),
+                        question: activeQuestion,
                         list: updatedOnDeck,
                         sourceIdx: activeIndex,
                         destinationIdx: overIndex,
@@ -201,7 +204,7 @@ export function useDndLists({ node, topic, topics }: Props) {
                     const topicQueue = items.topicQueue;
                     const updatedTopicQueue = arrayMove(topicQueue, activeIndex, overIndex);
                     updateTopicQueuePosition({
-                        questionId: activeQuestion.id.toString(),
+                        question: activeQuestion,
                         list: updatedTopicQueue,
                         sourceIdx: activeIndex,
                         destinationIdx: overIndex,
@@ -219,8 +222,7 @@ export function useDndLists({ node, topic, topics }: Props) {
                 const onDeck = items.onDeck;
                 const updatedOnDeck = arrayMove(onDeck, activeIndex, overIndex);
                 addQuestionToOnDeck({
-                    eventId,
-                    questionId: activeQuestion.id.toString(),
+                    question: activeQuestion,
                     list: updatedOnDeck,
                     movedQuestionIndex: overIndex,
                     cursor: activeQuestion.cursor,
@@ -235,11 +237,14 @@ export function useDndLists({ node, topic, topics }: Props) {
                 // This consistancy is key to always properly calculating the new position
                 const topicQueue = items.topicQueue;
                 const updatedTopicQueue = arrayMove(topicQueue, activeIndex, overIndex);
+                const revertChange = () => {
+                    setItems(previousItems);
+                };
                 removeFromOnDeck({
-                    eventId,
+                    question: activeQuestion,
                     list: updatedTopicQueue,
-                    questionId: activeQuestion.id.toString(),
                     movedQuestionIndex: overIndex,
+                    revertChange,
                 });
             }
 
@@ -256,8 +261,8 @@ export function useDndLists({ node, topic, topics }: Props) {
             updateTopicQueuePosition,
             topic,
             addQuestionToOnDeck,
-            eventId,
             removeFromOnDeck,
+            previousItems,
         ]
     );
 

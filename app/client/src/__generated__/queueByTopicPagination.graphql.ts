@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<487ccccd9898a5bafa211d76e3157578>>
+ * @generated SignedSource<<34c689867b787aefb0317eb49a5545a7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -105,45 +105,57 @@ v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "position",
+  "name": "lang",
   "storageKey": null
 },
 v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "firstName",
+  "name": "position",
   "storageKey": null
 },
 v15 = {
   "alias": null,
   "args": null,
-  "kind": "ScalarField",
-  "name": "lastName",
+  "concreteType": "User",
+  "kind": "LinkedField",
+  "name": "createdBy",
+  "plural": false,
+  "selections": [
+    (v10/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "lastName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "avatar",
+      "storageKey": null
+    }
+  ],
   "storageKey": null
 },
 v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "avatar",
-  "storageKey": null
-},
-v17 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "createdAt",
   "storageKey": null
 },
-v18 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "lang",
-  "storageKey": null
-},
-v19 = {
+v17 = {
   "alias": null,
   "args": [
     {
@@ -264,6 +276,7 @@ return {
                           (v10/*: any*/),
                           (v12/*: any*/),
                           (v13/*: any*/),
+                          (v14/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -293,25 +306,27 @@ return {
                                 "name": "description",
                                 "storageKey": null
                               },
-                              (v13/*: any*/)
+                              (v14/*: any*/)
                             ],
+                            "storageKey": null
+                          },
+                          (v15/*: any*/),
+                          (v16/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "likedByCount",
                             "storageKey": null
                           },
                           {
                             "alias": null,
                             "args": null,
-                            "concreteType": "User",
-                            "kind": "LinkedField",
-                            "name": "createdBy",
-                            "plural": false,
-                            "selections": [
-                              (v14/*: any*/),
-                              (v10/*: any*/),
-                              (v15/*: any*/),
-                              (v16/*: any*/)
-                            ],
+                            "kind": "ScalarField",
+                            "name": "isLikedByViewer",
                             "storageKey": null
                           },
+                          (v17/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -321,43 +336,12 @@ return {
                             "plural": false,
                             "selections": [
                               (v10/*: any*/),
-                              {
-                                "alias": null,
-                                "args": null,
-                                "concreteType": "User",
-                                "kind": "LinkedField",
-                                "name": "createdBy",
-                                "plural": false,
-                                "selections": [
-                                  (v10/*: any*/),
-                                  (v14/*: any*/),
-                                  (v15/*: any*/),
-                                  (v16/*: any*/)
-                                ],
-                                "storageKey": null
-                              },
-                              (v17/*: any*/),
+                              (v15/*: any*/),
+                              (v16/*: any*/),
                               (v12/*: any*/),
-                              (v18/*: any*/),
-                              (v19/*: any*/)
+                              (v13/*: any*/),
+                              (v17/*: any*/)
                             ],
-                            "storageKey": null
-                          },
-                          (v17/*: any*/),
-                          (v18/*: any*/),
-                          (v19/*: any*/),
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "isLikedByViewer",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "likedByCount",
                             "storageKey": null
                           },
                           (v9/*: any*/)
@@ -435,16 +419,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e04b9e0bb75b0692de86079a09d47024",
+    "cacheID": "71e8da140890704bbee11ad0bc598a2f",
     "id": null,
     "metadata": {},
     "name": "queueByTopicPagination",
     "operationKind": "query",
-    "text": "query queueByTopicPagination(\n  $after: String = \"\"\n  $first: Int = 500\n  $topic: String = \"default\"\n  $userLang: String!\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useQueueByTopicFragment_3N4e11\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_43mCLt on EventQuestion {\n  id\n  ...QuoteFragment_43mCLt\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_43mCLt on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $userLang)\n}\n\nfragment QuestionQuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QuestionTopicsFragment on EventQuestion {\n  topics {\n    topic\n    description\n    position\n  }\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment useQueueByTopicFragment_3N4e11 on Event {\n  id\n  currentQuestion\n  topicQueue(first: $first, after: $after, topic: $topic) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        position\n        onDeckPosition\n        topics {\n          topic\n          description\n          position\n        }\n        createdBy {\n          firstName\n          id\n        }\n        refQuestion {\n          ...QuestionQuoteFragment_43mCLt\n          id\n        }\n        ...QuestionActionsFragment_43mCLt\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_43mCLt\n        ...QuestionStatsFragment\n        ...QuestionTopicsFragment\n        __typename\n      }\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query queueByTopicPagination(\n  $after: String = \"\"\n  $first: Int = 500\n  $topic: String = \"default\"\n  $userLang: String!\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useQueueByTopicFragment_3N4e11\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_43mCLt on EventQuestion {\n  id\n  ...QuoteFragment_43mCLt\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_43mCLt on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $userLang)\n}\n\nfragment QuestionQuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QuestionTopicsFragment on EventQuestion {\n  topics {\n    topic\n    description\n    position\n  }\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment useQueueByTopicFragment_3N4e11 on Event {\n  id\n  currentQuestion\n  topicQueue(first: $first, after: $after, topic: $topic) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        lang\n        position\n        onDeckPosition\n        topics {\n          topic\n          description\n          position\n        }\n        createdBy {\n          id\n          firstName\n          lastName\n          avatar\n        }\n        createdAt\n        likedByCount\n        isLikedByViewer\n        ...QuestionActionsFragment_43mCLt\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment_43mCLt\n        ...QuestionTopicsFragment\n        refQuestion {\n          ...QuestionQuoteFragment_43mCLt\n          id\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "88b8b2cb718e50c8c725e21202b51e72";
+(node as any).hash = "d523e453fec281625923960d8a638825";
 
 export default node;

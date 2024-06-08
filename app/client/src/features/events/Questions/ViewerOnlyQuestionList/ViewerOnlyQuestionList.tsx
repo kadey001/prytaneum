@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Grid, Card, Typography, Stack, Paper, IconButton } from '@mui/material';
+import { Grid, Card, Typography, Stack, Paper, IconButton, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
+import InfoIcon from '@mui/icons-material/Info';
 import { AutoSizer, List, CellMeasurer, CellMeasurerCache, InfiniteLoader } from 'react-virtualized';
 import type { IndexRange } from 'react-virtualized';
 import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
@@ -143,6 +144,9 @@ export function ViewerOnlyQuestionList({ fragmentRef, isVisible }: ViewerOnlyQue
                         )}
                     </Grid>
                     <AskQuestion eventId={eventId} connections={connections} />
+                    <Tooltip title='Submit questions related to the event that everyone can see. Note: Any technical questions or feedback should be submitted under the feedback tab.'>
+                        <InfoIcon sx={{ color: 'primary.main' }} />
+                    </Tooltip>
                 </Stack>
                 <ListFilter
                     // filterMap={filterFuncs}

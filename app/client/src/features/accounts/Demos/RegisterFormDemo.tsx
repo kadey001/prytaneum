@@ -28,7 +28,7 @@ export function RegisterFormDemo() {
         <Grid container justifyContent='center'>
             <Grid container item xs={12} direction='column' alignItems='center'>
                 <Typography component='h1' variant='h6'>
-                    Register
+                    Create New Account
                 </Typography>
             </Grid>
             <Form onSubmit={() => {}}>
@@ -132,7 +132,7 @@ export function RegisterFormDemo() {
                 >
                     <LoadingButton loading={false}>
                         <Button fullWidth variant='contained' color='secondary'>
-                            Register
+                            Create Account
                         </Button>
                     </LoadingButton>
                 </Grid>

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Card, CardContent, Grid, Typography, CardActions, Paper, IconButton, Stack, Tooltip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import InfoIcon from '@mui/icons-material/Info';
 import { AutoSizer, List as VirtualizedList, CellMeasurer, CellMeasurerCache } from 'react-virtualized';
 import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 
@@ -20,14 +21,27 @@ import { SubmitLiveFeedback } from './SubmitLiveFeedback';
 interface LiveFeedbackListProps {
     fragmentRef: useLiveFeedbackListFragment$key;
     isVisible: boolean;
+    setNumOfFeedbackMsgs?: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListProps) {
+export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs }: LiveFeedbackListProps) {
     const { user } = useUser();
     const [displayLiveFeedback, setDisplayLiveFeedback] = React.useState(false);
     const [isSearchOpen, setIsSearchOpen] = React.useState(false);
     const { liveFeedback } = useLiveFeedbackList({ fragmentRef });
     const { isModerator, eventId } = useEvent();
+    // const [prevMsgLength, setPrevMsgLength] = React.useState<number>(0);
+    const numOfMessages = React.useMemo(() => liveFeedback.length, [liveFeedback]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const prevMsgLength = React.useMemo(() => numOfMessages, [isVisible]);
+
+    React.useEffect(() => {
+        if (!setNumOfFeedbackMsgs) return;
+        if (isVisible) setNumOfFeedbackMsgs(0);
+        else {
+            setNumOfFeedbackMsgs(numOfMessages - prevMsgLength);
+        }
+    }, [isVisible, numOfMessages, prevMsgLength, setNumOfFeedbackMsgs]);
 
     const toggleSearch = React.useCallback(() => setIsSearchOpen((prev) => !prev), [setIsSearchOpen]);
 
@@ -111,6 +125,9 @@ export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListPro
                         </IconButton>
                     </Grid>
                     <Grid item xs='auto'>
+                        <SubmitLiveFeedback eventId={eventId} />
+                    </Grid>
+                    <Grid item xs='auto'>
                         <SubmitLiveFeedbackPrompt eventId={eventId} />
                     </Grid>
                     <Grid item xs='auto'>
@@ -122,26 +139,31 @@ export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListPro
             return (
                 <Stack
                     direction='row'
-                    justifyContent='center'
+                    justifyContent='space-between'
                     alignItems='center'
                     marginBottom={isSearchOpen ? '.5rem' : '0rem'}
                 >
                     <Grid item xs='auto'>
-                        <IconButton
-                            color={isSearchOpen ? 'primary' : 'default'}
-                            aria-label='search-icon-button'
-                            onClick={toggleSearch}
-                        >
-                            <Tooltip title='Search Bar' placement='top'>
-                                <SearchIcon fontSize='large' />
-                            </Tooltip>
-                        </IconButton>
+                        {user && (
+                            <IconButton
+                                color={isSearchOpen ? 'primary' : 'default'}
+                                aria-label='search-icon-button'
+                                onClick={toggleSearch}
+                            >
+                                <Tooltip title='Search Bar' placement='top'>
+                                    <SearchIcon fontSize='large' />
+                                </Tooltip>
+                            </IconButton>
+                        )}
                     </Grid>
                     <SubmitLiveFeedback eventId={eventId} />
+                    <Tooltip title='Submit any feedback or questions directly to the event moderators.'>
+                        <InfoIcon sx={{ color: 'primary.main' }} />
+                    </Tooltip>
                 </Stack>
             );
         }
-    }, [eventId, isModerator, isSearchOpen, toggleSearch]);
+    }, [eventId, isModerator, isSearchOpen, toggleSearch, user]);
 
     React.useEffect(() => {
         if (!user) setDisplayLiveFeedback(false);
@@ -162,6 +184,11 @@ export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListPro
                     displayNumResults={Boolean(user)} // only display for users logged in
                 />
             </Paper>
+            {displayLiveFeedback && filteredList.length === 0 && (
+                <Typography align='center' variant='h5' marginTop='1rem'>
+                    No feedback to display
+                </Typography>
+            )}
             {displayLiveFeedback ? (
                 <div style={{ width: '100%', height: '100%' }}>
                     <AutoSizer>
@@ -178,7 +205,7 @@ export function LiveFeedbackList({ fragmentRef, isVisible }: LiveFeedbackListPro
                     </AutoSizer>
                 </div>
             ) : (
-                <Typography align='center' sx={{ paddingTop: (theme) => theme.spacing(2) }}>
+                <Typography align='center' variant='h5' marginTop='1rem'>
                     Sign in to submit Live Feedback
                 </Typography>
             )}

@@ -7,7 +7,7 @@ import type { TabsProps } from '@mui/material';
 interface StyledTabsProps {
     children: React.ReactNode;
     props?: TabsProps;
-    value: string;
+    value: any;
 }
 
 export const StyledTabs = ({ children, props, value }: StyledTabsProps) => {

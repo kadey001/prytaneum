@@ -39,7 +39,7 @@ export function useUpdateTopicQueuePosition({ eventId, topic }: Props) {
     const [commit] = useMutation<useUpdateTopicQueuePositionMutation>(USE_UPDATE_ON_DECK_POSITION);
 
     type UpdateTopicQueuePositionInput = {
-        questionId: string;
+        question: Question;
         list: Question[];
         sourceIdx: number;
         destinationIdx: number; // the index where the question is being moved to
@@ -49,7 +49,7 @@ export function useUpdateTopicQueuePosition({ eventId, topic }: Props) {
 
     const updateTopicQueuePosition = React.useCallback(
         (input: UpdateTopicQueuePositionInput) => {
-            const { list, sourceIdx, destinationIdx, currentQuestionPosition, currentTopic } = input;
+            const { question, list, sourceIdx, destinationIdx, currentQuestionPosition, currentTopic } = input;
             // No need to update if the source and destination are the same
             if (sourceIdx === destinationIdx) return;
             const newPosition = calculateUpdatedTopicQueuePosition({
@@ -63,7 +63,7 @@ export function useUpdateTopicQueuePosition({ eventId, topic }: Props) {
                 variables: {
                     input: {
                         eventId,
-                        questionId: input.questionId,
+                        questionId: question.id.toString(),
                         topic,
                         newPosition: newPosition.toString(),
                     },
@@ -75,6 +75,24 @@ export function useUpdateTopicQueuePosition({ eventId, topic }: Props) {
                 },
                 onError: (error) => {
                     displaySnack(error.message, { variant: 'error' });
+                },
+                optimisticResponse: {
+                    updateTopicQueuePosition: {
+                        isError: false,
+                        message: '',
+                        body: {
+                            cursor: question.cursor,
+                            node: {
+                                id: question.id.toString(),
+                                position: newPosition.toString(),
+                                onDeckPosition: '-1',
+                                topics:
+                                    topic !== 'default'
+                                        ? [{ topic, description: '', position: newPosition.toString() }]
+                                        : null,
+                            },
+                        },
+                    },
                 },
             });
         },

@@ -92,7 +92,7 @@ export function useQuestionCreatedByTopic({ connections, topic }: { connections:
                 });
             },
         }),
-        [eventId, topic, connections]
+        [eventId, topic, connections, user?.preferredLang]
     );
 
     useSubscription<useQuestionCreatedByTopicSubscription>(createdConfig);

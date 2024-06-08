@@ -56,8 +56,7 @@ export const calculateOnDeckDequeuePosition = ({
     const nextQuestionPosition = !nextQuestionTopic
         ? parseInt(nextQuestion.position)
         : parseInt(nextQuestionTopic.position);
-    // const previousQuestionPosition = !previousQuestionTopic ? parseInt(prevQuestion.position) : parseInt(previousQuestionTopic.position);
-    const position = Math.round(prevQuestionPosition + nextQuestionPosition) / 2;
+    const position = Math.round((prevQuestionPosition + nextQuestionPosition) / 2);
     if (position < -1) throw new Error('Invalid position');
     return position;
 };
@@ -101,7 +100,6 @@ export const calculateOnDeckEnqueuePosition = ({
     if (movedQuestionIndex === 0) {
         // If the index is 0 then the new position should be less than the next question in the list
         const nextQuestion = list[movedQuestionIndex + 1];
-        // console.log('nextQuestion:', nextQuestion);
         if (nextQuestion.onDeckPosition === '-1') throw new Error('Invalid next question position');
         const nextQuestionPosition = parseInt(nextQuestion.onDeckPosition);
         // NOTE: race condition, since we're using time for ordering, then adding 1000 ms (1s) will mean that the order
@@ -129,13 +127,13 @@ export const calculateOnDeckEnqueuePosition = ({
     const diff = Math.abs(nextQuestionPosition - prevQuestionPosition);
     if (diff <= 0) throw new Error('Invalid difference');
     const position = Math.round(prevQuestionPosition + diff / 2);
-    // const position = Math.round((prevQuestionPosition + parseInt(nextQuestion.onDeckPosition)) / 2);
     if (position < -1) throw new Error('Invalid position');
     return position;
 };
 
 export interface OnDeckEnqueuedMutationUpdaterProps {
     store: RecordSourceSelectorProxy<{}>;
+    connections: string[];
     eventId: string;
     questionId: string;
     topics: readonly Topic[];
@@ -143,6 +141,7 @@ export interface OnDeckEnqueuedMutationUpdaterProps {
 
 export const onDeckEnqueuedMutationUpdater = ({
     store,
+    connections,
     eventId,
     questionId,
     topics,
@@ -158,6 +157,15 @@ export const onDeckEnqueuedMutationUpdater = ({
     const modQueueConnectionRecord = store.get(modQueueConnection);
     if (!modQueueConnectionRecord) return console.error('Mod Queue Connection record not found');
     ConnectionHandler.deleteNode(modQueueConnectionRecord, questionId);
+
+    // Add to onDeck
+    const onDeckConnection = store.get(connections[0]);
+    if (!onDeckConnection) return console.error('Update failed: On Deck connection not found!');
+    const payload = store.getRootField('addQuestionToOnDeck');
+    if (!payload) return console.error('Update failed: No payload found!');
+    const questionEdge = payload.getLinkedRecord('body');
+    if (!questionEdge) return console.error('Update failed: Question not found!');
+    ConnectionHandler.insertEdgeAfter(onDeckConnection, questionEdge);
 
     // Start with default, then remove the question from all question lists
     const defaultConnection = ConnectionHandler.getConnectionID(
@@ -181,4 +189,47 @@ export const onDeckEnqueuedMutationUpdater = ({
         if (!connectionRecord) return console.error(`Connection record ${connectionId} not found`);
         ConnectionHandler.deleteNode(connectionRecord, questionId);
     });
+};
+
+// NOTE: At this point the list is already updated on client
+// So the destIndex is the list should give us the moved question (but pos is not updated yet)
+// Can use this index to find relative question's positions
+
+export const calculateUpdateOnDeckPosition = (
+    list: Question[],
+    destIndex: number, // Destination index is where the question is going to
+    currentQuestionPosition: number // The current question's position (new pos never smaller than this)
+) => {
+    // Since we are re-ordering, we can assume there are at least 2 questions to work with.
+    // First handle if being moved to the top of the list
+    if (destIndex === 0) {
+        // Should be a question after this, but need to check if a current question exists first
+        const nextQuestion = list[1];
+        const nextQuestionPosition = parseInt(nextQuestion.onDeckPosition);
+        if (currentQuestionPosition === -1) {
+            return nextQuestionPosition - 1000;
+        } else {
+            // Can use both positions to calculate new position in between
+            const diff = Math.abs(nextQuestionPosition - currentQuestionPosition);
+            const halfDiff = Math.round(diff / 2);
+            return currentQuestionPosition + halfDiff;
+        }
+    }
+
+    // Handle if being moved to the bottom of the list
+    if (destIndex === list.length - 1) {
+        // Should be a question before this, can use that to calculate new position
+        const prevQuestion = list[list.length - 2];
+        const prevQuestionPosition = parseInt(prevQuestion.onDeckPosition);
+        return prevQuestionPosition + 1000;
+    }
+
+    // Handle if being moved to the middle of the list
+    const nextQuestion = list[destIndex + 1];
+    const prevQuestion = list[destIndex - 1];
+    const nextQuestionPosition = parseInt(nextQuestion.onDeckPosition);
+    const prevQuestionPosition = parseInt(prevQuestion.onDeckPosition);
+    const diff = Math.abs(nextQuestionPosition - prevQuestionPosition);
+    const halfDiff = Math.round(diff / 2);
+    return prevQuestionPosition + halfDiff;
 };

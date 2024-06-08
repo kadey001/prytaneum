@@ -1,27 +1,28 @@
 /* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
-import { Grid, Tab, Skeleton, Button, useMediaQuery, Typography } from '@mui/material';
+import { Grid, Tab, Skeleton, useMediaQuery, Typography, Badge } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { graphql, useFragment } from 'react-relay';
 
 import { EventSidebarFragment$key } from '@local/__generated__/EventSidebarFragment.graphql';
 import { QuestionList } from '@local/features/events/Questions/QuestionList';
-import { QuestionQueue } from '@local/features/events/Moderation/ManageQuestions';
 import { LiveFeedbackList } from '@local/features/events/LiveFeedback/LiveFeedbackList';
-import { BroadcastMessageList } from '@local/features/events/BroadcastMessages/BroadcastMessageList';
 import { QuestionCarousel } from '../Questions/QuestionCarousel';
-import { CurrentQuestionCard } from '../Moderation/ManageQuestions/CurrentQuestionCard';
 import { useLiveFeedbackPrompt } from '../LiveFeedbackPrompts';
 import {
     useLiveFeedbackPromptResultsShared,
     ViewLiveFeedbackPromptResults,
 } from '../LiveFeedbackPrompts/LiveFeedbackPromptResults';
-import { PreloadedParticipantsList } from '../Participants/ParticipantsList';
 import { StyledTabs } from '@local/components/StyledTabs';
 import { StyledColumnGrid } from '@local/components/StyledColumnGrid';
-import { ModeratorActions } from '../Moderation/ModeratorActions';
 import { SubmitLiveFeedbackPromptResponse } from '../LiveFeedbackPrompts/LiveFeedbackPromptResponse';
 import { useResponsiveDialog } from '@local/components/ResponsiveDialog';
+import {
+    EventFeedbackInfoPopper,
+    EventInfoPopperStage,
+    EventQuestionInfoPopper,
+    useEventInfoPopper,
+} from '@local/components/EventInfoPoppers';
 
 export const EVENT_SIDEBAR_FRAGMENT = graphql`
     fragment EventSidebarFragment on Event {
@@ -38,10 +39,6 @@ export const EVENT_SIDEBAR_FRAGMENT = graphql`
     }
 `;
 
-// TODO: Add sidebar top section for moderator tools
-type sidebarTopTabs = 'Moderator';
-type SidebarBottomTabs = 'Queue' | 'Questions' | 'Feedback' | 'Broadcast' | 'Participants';
-
 export function EventSidebarLoader() {
     return <Skeleton variant='rectangular' height={500} width={200} />;
 }
@@ -51,14 +48,13 @@ export interface EventSidebarProps {
     isLive: boolean;
     setIsLive: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive }: EventSidebarProps) => {
+export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
     const theme = useTheme();
     const mdUpBreakpoint = useMediaQuery(theme.breakpoints.up('md'));
     const smDownBreakpoint = useMediaQuery(theme.breakpoints.down('sm'));
     const data = useFragment(EVENT_SIDEBAR_FRAGMENT, fragmentRef);
-    const [topTab, setTopTab] = React.useState<sidebarTopTabs>('Moderator');
-    const [bottomTab, setBottomTab] = React.useState<SidebarBottomTabs>('Questions');
-    const [topSectionVisible, setTopSectionVisible] = React.useState(true);
+    const sessionStorageTab = sessionStorage.getItem('eventSidebarSelectedTab');
+    const [selectedTab, setSelectedTab] = React.useState<number>(sessionStorageTab ? Number(sessionStorageTab) : 0);
     const [isFeedbackPromptResponseOpen, openFeedbackPromptResponse, closeFeedbackPromptResponse] =
         useResponsiveDialog();
     const [isFeedbackPromptResultsOpen, openFeedbackPromptResults, closeFeedbackPromptResults] = useResponsiveDialog();
@@ -70,19 +66,57 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
         openFeedbackPromptResults,
     });
 
-    const toggleTopSectionVisibility = React.useCallback(() => {
-        setTopSectionVisible((prev) => !prev);
-    }, []);
-
-    const handleTopChange = (e: React.SyntheticEvent, newTab: sidebarTopTabs) => {
-        e.preventDefault();
-        setTopTab(newTab);
+    const handleTabChange = (e: React.SyntheticEvent, newTab: number) => {
+        setSelectedTab(newTab);
+        sessionStorage.setItem('eventSidebarSelectedTab', newTab.toString());
     };
 
-    const handleBottomChange = (e: React.SyntheticEvent, newTab: SidebarBottomTabs) => {
-        e.preventDefault();
-        setBottomTab(newTab);
-    };
+    // Event Info Poppers
+    const [currentPopper] = useEventInfoPopper();
+    const questionTabRef = React.useRef<HTMLDivElement | null>(null);
+    const feedbackTabRef = React.useRef<HTMLDivElement | null>(null);
+
+    React.useEffect(() => {
+        switch (currentPopper) {
+            case 1:
+                const viewedEventPopperQuestionStage = localStorage.getItem('eventInfoPopperViewedStage2');
+                if (viewedEventPopperQuestionStage === 'true') break;
+                setSelectedTab(0);
+                break;
+            case 2:
+                // Check if user has viewed the feedback popper already to avoid unnecessary tab switching
+                const viewedEventPopperFeedbackStage = localStorage.getItem('eventInfoPopperViewedStage3');
+                if (viewedEventPopperFeedbackStage === 'true') break;
+                setSelectedTab(1);
+                break;
+            default:
+                const previousTab = sessionStorage.getItem('eventSidebarSelectedTab');
+                setSelectedTab(previousTab ? Number(previousTab) : 0);
+                break;
+        }
+    }, [currentPopper]);
+
+    const [numOfFeedbackMsgs, setNumOfFeedbackMsgs] = React.useState<number>(0);
+    const feedbackTabLabel = React.useMemo(() => {
+        if (smDownBreakpoint) {
+            return (
+                <React.Fragment>
+                    <Typography variant='caption'>Feedback</Typography>
+                    <Badge
+                        badgeContent={numOfFeedbackMsgs}
+                        color='error'
+                        sx={{ transform: 'translate(35px, -23px)' }}
+                    />
+                </React.Fragment>
+            );
+        }
+        return (
+            <React.Fragment>
+                Feedback
+                <Badge badgeContent={numOfFeedbackMsgs} color='error' sx={{ transform: 'translate(40px, -23px)' }} />
+            </React.Fragment>
+        );
+    }, [numOfFeedbackMsgs, smDownBreakpoint]);
 
     return (
         <Grid
@@ -117,31 +151,8 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
                 close={closeFeedbackPromptResults}
             />
             <Grid item>
-                {!isViewerModerator && <QuestionCarousel fragmentRef={data} />}
-                {isViewerModerator && (
-                    <CurrentQuestionCard isViewerModerator={Boolean(isViewerModerator)} fragmentRef={data} />
-                )}
+                <QuestionCarousel fragmentRef={data} />
             </Grid>
-            {isViewerModerator && (
-                <Grid item container justifyContent='center'>
-                    <Button onClick={toggleTopSectionVisibility}>
-                        {topSectionVisible ? 'Hide Moderator Tools' : 'Show Moderator Tools'}
-                    </Button>
-                </Grid>
-            )}
-            {isViewerModerator && topSectionVisible && (
-                <Grid item container justifyContent='start'>
-                    <StyledTabs value={topTab} props={{ onChange: handleTopChange, 'aria-label': 'top tabs' }}>
-                        <Tab label='Moderator' value='Moderator' />
-                    </StyledTabs>
-                    <StyledColumnGrid props={{ height: '250px' }}>
-                        <Grid item justifyContent='center' width='100%'>
-                            <ModeratorActions isLive={isLive} setIsLive={setIsLive} eventId={eventId} />
-                            <PreloadedParticipantsList eventId={data.id} />
-                        </Grid>
-                    </StyledColumnGrid>
-                </Grid>
-            )}
             <Grid
                 item
                 container
@@ -152,37 +163,37 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
                 width='100%'
             >
                 <StyledTabs
-                    value={bottomTab}
+                    value={selectedTab}
                     props={{
-                        onChange: handleBottomChange,
+                        onChange: handleTabChange,
                         'aria-label': 'bottom tabs',
                         centered: true,
                     }}
                 >
-                    {isViewerModerator && (
-                        <Tab
-                            style={{ height: 0 }}
-                            label={smDownBreakpoint ? <Typography variant='caption'>Queue</Typography> : 'Queue'}
-                            value='Queue'
-                        />
-                    )}
                     <Tab
+                        id='question-tab'
                         label={smDownBreakpoint ? <Typography variant='caption'>Questions</Typography> : 'Questions'}
-                        value='Questions'
+                        value={0}
+                        ref={questionTabRef}
+                        sx={{
+                            zIndex: currentPopper === EventInfoPopperStage.Questions ? theme.zIndex.drawer + 2 : 0,
+                            'aria-controls': 'question-tabpanel-0',
+                        }}
                     />
                     <Tab
-                        label={smDownBreakpoint ? <Typography variant='caption'>Feedback</Typography> : 'Feedback'}
-                        value='Feedback'
+                        id='feedback-tab'
+                        label={feedbackTabLabel}
+                        value={1}
+                        ref={feedbackTabRef}
+                        sx={{
+                            zIndex: currentPopper === EventInfoPopperStage.Feedback ? theme.zIndex.drawer + 2 : 0,
+                            'aria-controls': 'feedback-tabpanel-1',
+                            overflow: 'visible', // Prevents badge from being cut off
+                        }}
                     />
-                    {isViewerModerator && (
-                        <Tab
-                            label={
-                                smDownBreakpoint ? <Typography variant='caption'>Broadcast</Typography> : 'Broadcast'
-                            }
-                            value='Broadcast'
-                        />
-                    )}
                 </StyledTabs>
+                <EventQuestionInfoPopper questionContainerRef={questionTabRef} />
+                <EventFeedbackInfoPopper feedbackContainerRef={feedbackTabRef} />
                 <StyledColumnGrid
                     props={{
                         id: 'scrollable-tab',
@@ -193,14 +204,12 @@ export const EventSidebar = ({ fragmentRef, isViewerModerator, isLive, setIsLive
                     }}
                     scrollable={false}
                 >
-                    {isViewerModerator === true && (
-                        <QuestionQueue fragmentRef={data} isVisible={bottomTab === 'Queue'} />
-                    )}
-                    <QuestionList fragmentRef={data} isVisible={bottomTab === 'Questions'} searchOnly={false} />
-                    <LiveFeedbackList fragmentRef={data} isVisible={bottomTab === 'Feedback'} />
-                    {isViewerModerator === true && (
-                        <BroadcastMessageList fragmentRef={data} isVisible={bottomTab === 'Broadcast'} />
-                    )}
+                    <QuestionList fragmentRef={data} isVisible={selectedTab === 0} searchOnly={false} />
+                    <LiveFeedbackList
+                        fragmentRef={data}
+                        isVisible={selectedTab === 1}
+                        setNumOfFeedbackMsgs={setNumOfFeedbackMsgs}
+                    />
                 </StyledColumnGrid>
             </Grid>
         </Grid>

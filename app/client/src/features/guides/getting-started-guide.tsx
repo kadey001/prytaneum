@@ -88,7 +88,7 @@ export default function GettingStartedGuide() {
                 </Typography>
                 <Typography variant='body1' fontSize='large'>
                     If you don&#39;t have an account yet, register by clicking on the register button. Enter your
-                    information into the menu and finalize by clicking <b>Register</b>.
+                    information into the menu and finalize by clicking <b>Create Account</b>.
                 </Typography>
             </Grid>
             <Grid item xs={12} display='flex' flexDirection='column' alignItems='center' gap='0.5rem'>

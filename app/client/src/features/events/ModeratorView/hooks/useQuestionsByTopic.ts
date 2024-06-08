@@ -24,6 +24,7 @@ export const USE_QUESTIONS_BY_TOPIC = graphql`
                 node {
                     id
                     question
+                    lang
                     position
                     onDeckPosition
                     topics {
@@ -32,16 +33,22 @@ export const USE_QUESTIONS_BY_TOPIC = graphql`
                         position
                     }
                     createdBy {
+                        id
                         firstName
+                        lastName
+                        avatar
                     }
+                    createdAt
+                    likedByCount
+                    isLikedByViewer
+                    ...QuestionActionsFragment @arguments(lang: $userLang)
+                    ...QuestionAuthorFragment
+                    ...QuestionStatsFragment
+                    ...QuestionContentFragment @arguments(lang: $userLang)
+                    ...QuestionTopicsFragment
                     refQuestion {
                         ...QuestionQuoteFragment @arguments(lang: $userLang)
                     }
-                    ...QuestionActionsFragment @arguments(lang: $userLang)
-                    ...QuestionAuthorFragment
-                    ...QuestionContentFragment @arguments(lang: $userLang)
-                    ...QuestionStatsFragment
-                    ...QuestionTopicsFragment
                 }
             }
             pageInfo {
@@ -85,7 +92,8 @@ export function useQuestionsByTopic({ fragmentRef }: Props) {
             });
             return isInCurrentTopic && !_isQueued;
         });
-        return filteredQuestions.map(({ node, cursor }) => {
+        const sortedQuestions = filteredQuestions.sort((a, b) => (a.cursor > b.cursor ? -1 : 1));
+        return sortedQuestions.map(({ node, cursor }) => {
             return { ...node, cursor };
         });
     }, [_questions?.edges, topic]);
@@ -96,7 +104,7 @@ export function useQuestionsByTopic({ fragmentRef }: Props) {
 
     const connections = React.useMemo(() => {
         return _questions?.__id ? [_questions.__id] : [];
-    }, [_questions]);
+    }, [_questions?.__id]);
 
     return {
         questions,

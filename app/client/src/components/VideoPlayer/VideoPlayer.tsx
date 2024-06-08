@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { Typography, Grid } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import ReactPlayer, { ReactPlayerProps } from 'react-player';
+
+import { EventInfoPopperStage, EventVideoInfoPopper, useEventInfoPopper } from '../EventInfoPoppers';
 
 export type VideoPlayerProps = ReactPlayerProps;
 
@@ -12,6 +15,10 @@ export type VideoPlayerProps = ReactPlayerProps;
  *  @param {any} ReactPlayerProps.rest rest of props to pass to ReactPlayer
  */
 export function VideoPlayer({ url, rest }: ReactPlayerProps) {
+    const theme = useTheme();
+    const [currentPopper] = useEventInfoPopper();
+    const videoContainerRef = React.useRef<HTMLDivElement | null>(null);
+
     return (
         <div
             style={{
@@ -20,19 +27,31 @@ export function VideoPlayer({ url, rest }: ReactPlayerProps) {
                 paddingTop: '56.25%', // 16:9 Aspect Ratio (divide 9 by 16 = 0.5625)
             }}
         >
-            <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}>
+            <EventVideoInfoPopper videoContainerRef={videoContainerRef} />
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                    zIndex: currentPopper === EventInfoPopperStage.VideoPlayer ? theme.zIndex.drawer + 2 : 0,
+                }}
+                ref={videoContainerRef}
+            >
                 {url !== '' ? (
-                    <ReactPlayer
-                        url={url}
-                        playing={process.env.NODE_ENV === 'production'}
-                        muted
-                        width='100%'
-                        height='100%'
-                        playsinline
-                        controls
-                        // eslint-disable-next-line react/jsx-props-no-spreading
-                        {...rest}
-                    />
+                    <React.Fragment>
+                        <ReactPlayer
+                            url={url}
+                            playing={process.env.NODE_ENV === 'production'}
+                            muted
+                            width='100%'
+                            height='100%'
+                            playsinline
+                            controls
+                            {...rest}
+                        />
+                    </React.Fragment>
                 ) : (
                     <Grid
                         container

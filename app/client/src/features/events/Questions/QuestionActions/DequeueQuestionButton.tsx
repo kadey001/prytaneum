@@ -7,12 +7,13 @@ import type { DequeueQuestionButtonMutation } from '@local/__generated__/Dequeue
 import { useEvent } from '@local/features/events';
 import { useSnack } from '@local/core';
 import { useTopic } from '../../ModeratorView/useTopic';
+import { useUser } from '@local/features/accounts';
 
 export interface QueueButtonProps {
     questionId: string;
 }
 export const DEQUEUE_BUTTON_MUTATION = graphql`
-    mutation DequeueQuestionButtonMutation($input: RemoveQuestionFromTopicQueue!) {
+    mutation DequeueQuestionButtonMutation($input: RemoveQuestionFromTopicQueue!, $lang: String!) {
         removeQuestionFromTopicQueue(input: $input) {
             isError
             message
@@ -20,9 +21,31 @@ export const DEQUEUE_BUTTON_MUTATION = graphql`
                 cursor
                 node {
                     id
+                    question
+                    lang
                     position
+                    onDeckPosition
                     topics {
+                        topic
+                        description
                         position
+                    }
+                    createdBy {
+                        id
+                        firstName
+                        lastName
+                        avatar
+                    }
+                    createdAt
+                    likedByCount
+                    isLikedByViewer
+                    ...QuestionActionsFragment @arguments(lang: $lang)
+                    ...QuestionAuthorFragment
+                    ...QuestionStatsFragment
+                    ...QuestionContentFragment @arguments(lang: $lang)
+                    ...QuestionTopicsFragment
+                    refQuestion {
+                        ...QuestionQuoteFragment @arguments(lang: $lang)
                     }
                 }
             }
@@ -37,9 +60,10 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
     // const data = useFragment(QUESTION_CAROUSEL_FRAGMENT, fragmentRef);
     const [commit] = useMutation<DequeueQuestionButtonMutation>(DEQUEUE_BUTTON_MUTATION);
     const { eventId } = useEvent();
+    const { user } = useUser();
     const { topic } = useTopic();
     const { displaySnack } = useSnack();
-    const handleClick = () => {
+    const handleClick = React.useCallback(() => {
         commit({
             variables: {
                 input: {
@@ -47,6 +71,7 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
                     eventId,
                     topic,
                 },
+                lang: user?.preferredLang ?? 'EN',
             },
             onCompleted: ({ removeQuestionFromTopicQueue }) => {
                 if (removeQuestionFromTopicQueue.isError) {
@@ -81,7 +106,7 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
                 ConnectionHandler.insertEdgeAfter(questionsByTopicConnectionRecord, serverEdge);
             },
         });
-    };
+    }, [commit, displaySnack, eventId, questionId, topic, user]);
     return (
         <IconButton onClick={handleClick}>
             <Tooltip title='Dequeue Question' placement='bottom'>

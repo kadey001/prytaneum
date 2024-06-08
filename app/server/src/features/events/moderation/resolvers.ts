@@ -228,6 +228,7 @@ export const resolvers: Resolvers = {
                         topicQueuePush: { edge },
                         eventId: updatedQuestion.eventId,
                         topic: args.input.topic,
+                        viewerId: ctx.viewer.id,
                     },
                 });
                 ctx.pubsub.publish({
@@ -236,6 +237,7 @@ export const resolvers: Resolvers = {
                         questionEnqueued: { edge },
                         eventId: updatedQuestion.eventId,
                         topic: args.input.topic,
+                        viewerId: ctx.viewer.id,
                     },
                 });
                 return edge;
@@ -256,20 +258,24 @@ export const resolvers: Resolvers = {
                     cursor: updatedQuestion.createdAt.getTime().toString(),
                     node: questionWithGlobalId,
                 };
+                // Remove the question from the topic queue
                 ctx.pubsub.publish({
                     topic: 'topicQueueRemove',
                     payload: {
                         topicQueueRemove: { edge },
                         eventId: updatedQuestion.eventId,
                         topic: args.input.topic,
+                        viewerId: ctx.viewer.id,
                     },
                 });
+                // Add the question back to the question list
                 ctx.pubsub.publish({
                     topic: 'questionDequeued',
                     payload: {
                         questionDequeued: { edge },
                         eventId: updatedQuestion.eventId,
                         topic: args.input.topic,
+                        viewerId: ctx.viewer.id,
                     },
                 });
                 return edge;
@@ -380,6 +386,7 @@ export const resolvers: Resolvers = {
                         topic: 'enqueuedPushQuestion',
                         payload: {
                             enqueuedPushQuestion: { edge },
+                            viewerId: ctx.viewer.id,
                         },
                     });
                     ctx.pubsub.publish({
@@ -387,6 +394,7 @@ export const resolvers: Resolvers = {
                         payload: {
                             topicQueueRemove: { edge },
                             eventId: updatedQuestion.eventId,
+                            viewerId: ctx.viewer.id,
                         },
                     });
                     return edge;
@@ -432,13 +440,14 @@ export const resolvers: Resolvers = {
                     });
                     const questionWithGlobalId = toQuestionId(updatedQuestion);
                     const edge = {
-                        cursor: updatedQuestion.onDeckPosition ?? updatedQuestion.createdAt.getTime().toString(),
+                        cursor: updatedQuestion.createdAt.getTime().toString(),
                         node: questionWithGlobalId,
                     };
                     ctx.pubsub.publish({
                         topic: 'enqueuedRemoveQuestion',
                         payload: {
                             enqueuedRemoveQuestion: { edge },
+                            viewerId: ctx.viewer.id,
                         },
                     });
                     ctx.pubsub.publish({
@@ -446,6 +455,7 @@ export const resolvers: Resolvers = {
                         payload: {
                             topicQueuePush: { edge },
                             eventId: updatedQuestion.eventId,
+                            viewerId: ctx.viewer.id,
                         },
                     });
                     return edge;

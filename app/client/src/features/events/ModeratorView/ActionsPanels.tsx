@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import * as React from 'react';
-import { Grid, Tab, Tooltip } from '@mui/material';
+import { Badge, Grid, Stack, Tab, Tooltip } from '@mui/material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import HandymanIcon from '@mui/icons-material/Handyman';
 import PodcastsIcon from '@mui/icons-material/Podcasts';
@@ -31,6 +31,7 @@ interface ActionsPanelProps {
 export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPanelProps) {
     type Tabs = 'Moderator' | 'Feedback' | 'Broadcast' | 'Participants';
     const [tab, setTab] = React.useState<Tabs>('Moderator');
+    const [numOfFeedbackMsgs, setNumOfFeedbackMsgs] = React.useState<number>(0);
 
     const handleTabChange = (e: React.SyntheticEvent, newTab: Tabs) => {
         e.preventDefault();
@@ -39,7 +40,7 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
 
     return (
         <PanelGroup autoSaveId='mod-panels-child-persistence' direction='vertical'>
-            <Panel defaultSize={25} minSize={10}>
+            <Panel defaultSize={25} minSize={20}>
                 <Grid
                     sx={{
                         overflow: 'auto',
@@ -52,16 +53,8 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
                 </Grid>
             </Panel>
             <HorizontalResizeHandle />
-            <Panel defaultSize={50} minSize={20}>
-                <Grid
-                    item
-                    container
-                    direction='column'
-                    flex={1}
-                    justifyContent='center'
-                    alignContent='center'
-                    height='100%'
-                >
+            <Panel defaultSize={50} minSize={25}>
+                <Stack direction='column' justifyContent='center' alignContent='center' height='100%'>
                     <StyledTabs value={tab} props={{ onChange: handleTabChange, 'aria-label': 'moderator tabs' }}>
                         <Tab
                             label={
@@ -171,7 +164,14 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
                                         },
                                     }}
                                 >
-                                    <FeedbackIcon />
+                                    <React.Fragment>
+                                        <FeedbackIcon />
+                                        <Badge
+                                            badgeContent={numOfFeedbackMsgs}
+                                            color='error'
+                                            sx={{ transform: 'translate(25px, -23px)' }}
+                                        />
+                                    </React.Fragment>
                                 </Tooltip>
                             }
                             value='Feedback'
@@ -181,6 +181,7 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
                                 dislay: 'flex',
                                 flex: 1,
                                 padding: '0.5rem',
+                                overflow: 'visible', // This is needed to show the badge
                             }}
                         />
                     </StyledTabs>
@@ -193,9 +194,13 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
                             <ModeratorActions isLive={isLive} setIsLive={setIsLive} eventId={eventData.id} />
                         )}
                         <BroadcastMessageList fragmentRef={node} isVisible={tab === 'Broadcast'} />
-                        <LiveFeedbackList fragmentRef={node} isVisible={tab === 'Feedback'} />
+                        <LiveFeedbackList
+                            fragmentRef={node}
+                            isVisible={tab === 'Feedback'}
+                            setNumOfFeedbackMsgs={setNumOfFeedbackMsgs}
+                        />
                     </StyledColumnGrid>
-                </Grid>
+                </Stack>
             </Panel>
         </PanelGroup>
     );
