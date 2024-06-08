@@ -12,6 +12,7 @@ import {
     Select,
     MenuItem,
     SelectChangeEvent,
+    List,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
@@ -264,36 +265,60 @@ export function QuestionListContainer({
                     </Stack>
                 </Typography>
             )}
-            <div style={{ width: '100%', height: '100%' }}>
-                <InfiniteLoader
-                    isRowLoaded={isRowLoaded}
-                    loadMoreRows={loadMoreRows}
-                    minimumBatchSize={QUESTIONS_BATCH_SIZE}
-                    rowCount={listLength}
-                    threshold={15}
-                >
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ width, height }) => (
-                                <VirtualizedList
-                                    ref={(list) => {
-                                        registerChild(list);
-                                        registerListRef(list);
-                                    }}
-                                    height={height}
-                                    width={width}
-                                    rowCount={listLength}
-                                    deferredMeasurementCache={cache}
-                                    rowHeight={cache.rowHeight}
-                                    rowRenderer={rowRenderer}
-                                    onRowsRendered={onRowsRendered}
-                                    overscanRowCount={10}
-                                />
-                            )}
-                        </AutoSizer>
-                    )}
-                </InfiniteLoader>
-            </div>
+            {filteredList.length < 30 ? (
+                <div style={{ width: '100%', height: '100%' }}>
+                    <AutoSizer>
+                        {({ width, height }) => (
+                            <List sx={{ height, width, overflowY: 'scroll' }}>
+                                {filteredList.map((question) => (
+                                    <div
+                                        key={question.id}
+                                        style={{
+                                            paddingRight: '.5rem',
+                                            paddingLeft: '.5rem',
+                                            paddingTop: '.25rem',
+                                            paddingBottom: '.25rem',
+                                        }}
+                                    >
+                                        <EventQuestion question={question} connections={allConnections} />
+                                    </div>
+                                ))}
+                            </List>
+                        )}
+                    </AutoSizer>
+                </div>
+            ) : (
+                <div style={{ width: '100%', height: '100%' }}>
+                    <InfiniteLoader
+                        isRowLoaded={isRowLoaded}
+                        loadMoreRows={loadMoreRows}
+                        minimumBatchSize={QUESTIONS_BATCH_SIZE}
+                        rowCount={listLength}
+                        threshold={15}
+                    >
+                        {({ onRowsRendered, registerChild }) => (
+                            <AutoSizer>
+                                {({ width, height }) => (
+                                    <VirtualizedList
+                                        ref={(list) => {
+                                            registerChild(list);
+                                            registerListRef(list);
+                                        }}
+                                        height={height}
+                                        width={width}
+                                        rowCount={listLength}
+                                        deferredMeasurementCache={cache}
+                                        rowHeight={cache.rowHeight}
+                                        rowRenderer={rowRenderer}
+                                        onRowsRendered={onRowsRendered}
+                                        overscanRowCount={10}
+                                    />
+                                )}
+                            </AutoSizer>
+                        )}
+                    </InfiniteLoader>
+                </div>
+            )}
         </Stack>
     );
 }
