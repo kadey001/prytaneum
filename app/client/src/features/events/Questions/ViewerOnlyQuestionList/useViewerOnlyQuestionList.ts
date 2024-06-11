@@ -58,10 +58,12 @@ export function useViewerOnlyQuestionList({ fragmentRef }: UseViewrOnlyQuestionL
         [questions]
     );
 
+    const connections = React.useMemo(() => (questions?.__id ? [questions.__id] : []), [questions?.__id]);
+
     return {
         questions: questionList,
         eventId,
-        connections: questions?.__id ? [questions.__id] : [],
+        connections,
         currentQuestion,
         loadNext,
         loadPrevious,
