@@ -85,11 +85,13 @@ export function useDashboardEvents({ fragmentRef }: TArgs) {
         return eventList.map(({ node: event }) => event.id);
     }, [eventList]);
 
+    const connections = React.useMemo(() => (events?.__id ? [events.__id] : []), [events?.__id]);
+
     return {
         events: eventList,
         currentEvents,
         upcomingEvents,
         eventIds,
-        connections: events?.__id ? [events.__id] : [],
+        connections,
     };
 }

@@ -85,7 +85,7 @@ export function useLiveFeedbackList({ fragmentRef }: Props) {
         [liveFeedback]
     );
 
-    const connections = React.useMemo(() => (liveFeedback?.__id ? [liveFeedback.__id] : []), [liveFeedback]);
+    const connections = React.useMemo(() => (liveFeedback?.__id ? [liveFeedback.__id] : []), [liveFeedback?.__id]);
 
     const config = React.useMemo<GraphQLSubscriptionConfig<useLiveFeedbackListSubscription>>(
         () => ({
@@ -108,6 +108,6 @@ export function useLiveFeedbackList({ fragmentRef }: Props) {
     return {
         liveFeedback: isModerator ? feedbackList : filteredList,
         eventId,
-        connections: liveFeedback?.__id ? [liveFeedback.__id] : [],
+        connections,
     };
 }
