@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { connectionFromArray, fromGlobalId } from 'graphql-relay';
 import * as Feedback from './methods';
 import { Resolvers, withFilter, errors, toGlobalId, runMutation } from '@local/features/utils';
 import { ProtectedError } from '@local/lib/ProtectedError';
 import type { FeedbackOperation } from '@local/graphql-types';
 import { EventLiveFeedbackPrompt } from '../../../graphql-types';
+import { isModerator } from '../moderation/methods';
 
 const toFeedbackId = toGlobalId('EventLiveFeedback');
 const toFeedbackPromptId = toGlobalId('EventLiveFeedbackPrompt');
@@ -66,6 +68,39 @@ export const resolvers: Resolvers = {
                     topic: 'feedbackCRUD',
                     payload: {
                         feedbackCRUD: { operationType: 'CREATE', edge },
+                        isDM: false,
+                        recipientId: null,
+                        eventId,
+                    },
+                });
+                return edge;
+            });
+        },
+        async createFeedbackDM(parent, args, ctx) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                if (!args.input) throw new ProtectedError({ userMessage: errors.invalidArgs });
+                const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { id: recipientId } = fromGlobalId(args.input.recipientId);
+                const feedback = await Feedback.createFeedbackDM(
+                    ctx.viewer.id,
+                    eventId,
+                    recipientId,
+                    ctx.prisma,
+                    args.input
+                );
+                const formattedFeedback = toFeedbackId(feedback);
+                const edge = {
+                    node: formattedFeedback,
+                    cursor: feedback.createdAt.getTime().toString(),
+                };
+                ctx.pubsub.publish({
+                    topic: 'feedbackCRUD',
+                    payload: {
+                        feedbackCRUD: { operationType: 'CREATE', edge },
+                        isDM: true,
+                        recipientId,
+                        eventId,
                     },
                 });
                 return edge;
@@ -141,13 +176,24 @@ export const resolvers: Resolvers = {
     },
     Subscription: {
         feedbackCRUD: {
-            subscribe: withFilter<{ feedbackCRUD: FeedbackOperation }>(
+            subscribe: withFilter<{
+                feedbackCRUD: FeedbackOperation;
+                isDM: boolean;
+                recipientId: string;
+                eventId: string;
+            }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('feedbackCRUD'),
-                (payload, args, ctx) => {
-                    const { id: feedbackId } = fromGlobalId(payload.feedbackCRUD.edge.node.id);
+                async (payload, args, ctx) => {
+                    // Check that user is logged in
+                    if (!ctx.viewer.id) return false;
+                    // Check if user is the recipient of the DM
+                    if (payload.isDM && ctx.viewer.id === payload.recipientId) return true;
+                    // Check if it is an update for the right event
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    // TODO only update moderators & feedback creator as other participants cant see other's feedback
-                    return Feedback.doesEventMatchFeedback(eventId, feedbackId, ctx.prisma);
+                    if (eventId !== payload.eventId) return false;
+                    // Check if user is a moderator
+                    const hasPermission = await isModerator(ctx.viewer.id, eventId, ctx.prisma);
+                    return hasPermission;
                 }
             ),
         },
@@ -179,6 +225,13 @@ export const resolvers: Resolvers = {
         },
     },
     EventLiveFeedback: {
+        async dmRecipientId(parent, args, ctx) {
+            if (!parent.isDM) return null;
+            const recipientGlobalId = parent.dmRecipientId;
+            if (!recipientGlobalId) return null;
+            const { id: recipientId } = toUserId({ id: recipientGlobalId });
+            return recipientId;
+        },
         async createdBy(parent, args, ctx) {
             const { id: feedbackId } = fromGlobalId(parent.id);
             const submitter = await Feedback.findSubmitterByFeedbackId(feedbackId, ctx.prisma);
