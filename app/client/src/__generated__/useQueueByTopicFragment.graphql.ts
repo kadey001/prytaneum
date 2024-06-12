@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<911742b35149232350f00108c795e7b3>>
+ * @generated SignedSource<<d266dda4a5bd18af7ad349e52958cf32>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,6 +33,17 @@ export type useQueueByTopicFragment$data = {
         readonly position: string;
         readonly question: string;
         readonly refQuestion: {
+          readonly createdAt: Date | null;
+          readonly createdBy: {
+            readonly avatar: string | null;
+            readonly firstName: string | null;
+            readonly id: string;
+            readonly lastName: string | null;
+          } | null;
+          readonly id: string;
+          readonly lang: string | null;
+          readonly question: string;
+          readonly questionTranslated: string | null;
           readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
         } | null;
         readonly topics: ReadonlyArray<{
@@ -70,10 +81,64 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "question",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lang",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "position",
   "storageKey": null
 },
-v3 = [
+v5 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "User",
+  "kind": "LinkedField",
+  "name": "createdBy",
+  "plural": false,
+  "selections": [
+    (v1/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "lastName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "avatar",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "createdAt",
+  "storageKey": null
+},
+v7 = [
   {
     "kind": "Variable",
     "name": "lang",
@@ -177,21 +242,9 @@ return {
               "plural": false,
               "selections": [
                 (v1/*: any*/),
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "question",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "lang",
-                  "storageKey": null
-                },
                 (v2/*: any*/),
+                (v3/*: any*/),
+                (v4/*: any*/),
                 {
                   "alias": null,
                   "args": null,
@@ -221,50 +274,12 @@ return {
                       "name": "description",
                       "storageKey": null
                     },
-                    (v2/*: any*/)
+                    (v4/*: any*/)
                   ],
                   "storageKey": null
                 },
-                {
-                  "alias": null,
-                  "args": null,
-                  "concreteType": "User",
-                  "kind": "LinkedField",
-                  "name": "createdBy",
-                  "plural": false,
-                  "selections": [
-                    (v1/*: any*/),
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "firstName",
-                      "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "lastName",
-                      "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "avatar",
-                      "storageKey": null
-                    }
-                  ],
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "createdAt",
-                  "storageKey": null
-                },
+                (v5/*: any*/),
+                (v6/*: any*/),
                 {
                   "alias": null,
                   "args": null,
@@ -280,7 +295,7 @@ return {
                   "storageKey": null
                 },
                 {
-                  "args": (v3/*: any*/),
+                  "args": (v7/*: any*/),
                   "kind": "FragmentSpread",
                   "name": "QuestionActionsFragment"
                 },
@@ -295,7 +310,7 @@ return {
                   "name": "QuestionStatsFragment"
                 },
                 {
-                  "args": (v3/*: any*/),
+                  "args": (v7/*: any*/),
                   "kind": "FragmentSpread",
                   "name": "QuestionContentFragment"
                 },
@@ -312,8 +327,20 @@ return {
                   "name": "refQuestion",
                   "plural": false,
                   "selections": [
+                    (v1/*: any*/),
+                    (v2/*: any*/),
+                    (v3/*: any*/),
                     {
-                      "args": (v3/*: any*/),
+                      "alias": null,
+                      "args": (v7/*: any*/),
+                      "kind": "ScalarField",
+                      "name": "questionTranslated",
+                      "storageKey": null
+                    },
+                    (v5/*: any*/),
+                    (v6/*: any*/),
+                    {
+                      "args": (v7/*: any*/),
                       "kind": "FragmentSpread",
                       "name": "QuestionQuoteFragment"
                     }
@@ -386,6 +413,6 @@ return {
 };
 })();
 
-(node as any).hash = "d523e453fec281625923960d8a638825";
+(node as any).hash = "bff6548e02825af1f6b66bd10c275dc0";
 
 export default node;

@@ -45,6 +45,17 @@ export const USE_ON_DECK_FRAGMENT = graphql`
                         ...QuestionContentFragment @arguments(lang: $userLang)
                         ...QuestionTopicsFragment
                         refQuestion {
+                            id
+                            question
+                            lang
+                            questionTranslated(lang: $userLang)
+                            createdBy {
+                                id
+                                firstName
+                                lastName
+                                avatar
+                            }
+                            createdAt
                             ...QuestionQuoteFragment @arguments(lang: $userLang)
                         }
                     }
@@ -80,6 +91,17 @@ export const USE_ON_DECK_FRAGMENT = graphql`
                         ...QuestionContentFragment @arguments(lang: $userLang)
                         ...QuestionTopicsFragment
                         refQuestion {
+                            id
+                            question
+                            lang
+                            questionTranslated(lang: $userLang)
+                            createdBy {
+                                id
+                                firstName
+                                lastName
+                                avatar
+                            }
+                            createdAt
                             ...QuestionQuoteFragment @arguments(lang: $userLang)
                         }
                     }
