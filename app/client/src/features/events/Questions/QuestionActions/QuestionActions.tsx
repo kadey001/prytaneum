@@ -40,7 +40,7 @@ export function QuestionActions({
     return (
         <CardActions {...props} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             {likeEnabled && <Like fragmentRef={data} />}
-            {quoteEnabled && <Quote fragmentRef={data} />}
+            {quoteEnabled && <Quote fragmentRef={data} connections={connections} />}
             {queueEnabled && <QueueButton fragmentRef={data} />}
             {deleteEnabled && <DeleteButton fragmentRef={data} />}
         </CardActions>
