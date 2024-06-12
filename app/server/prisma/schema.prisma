@@ -136,6 +136,8 @@ model EventLiveFeedback {
     event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
     createdAt DateTime @default(now())
     message String @db.VarChar(500)
+    isDM Boolean @default(false)
+    dmRecipientId String? @db.Uuid // if isDM is true, this is the recipient
     isReply Boolean @default(false)
     refFeedbackId String? @db.Uuid
     parentFeedback EventLiveFeedback[] @relation("reply")
