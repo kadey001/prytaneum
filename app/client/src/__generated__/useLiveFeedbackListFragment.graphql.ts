@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b051f208530d28afd756efc8c213ab64>>
+ * @generated SignedSource<<8ba6d1fea1c98e006da2aa6f9ca37ac5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,7 +22,9 @@ export type useLiveFeedbackListFragment$data = {
           readonly id: string;
           readonly moderatorOf: boolean | null;
         } | null;
+        readonly dmRecipientId: string | null;
         readonly id: string;
+        readonly isDM: boolean | null;
         readonly message: string;
         readonly refFeedback: {
           readonly createdBy: {
@@ -162,6 +164,20 @@ return {
                   "name": "message",
                   "storageKey": null
                 },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "isDM",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "dmRecipientId",
+                  "storageKey": null
+                },
                 (v2/*: any*/),
                 {
                   "alias": null,
@@ -241,6 +257,6 @@ return {
 };
 })();
 
-(node as any).hash = "d3ec5be05ce4c1e749ac2cc58405ff57";
+(node as any).hash = "9ad7ce0ea9d2f0467580f252a7fff0db";
 
 export default node;

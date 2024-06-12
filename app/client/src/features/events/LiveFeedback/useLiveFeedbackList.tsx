@@ -15,6 +15,8 @@ export const USE_LIVE_FEEDBACK_LIST_SUBSCRIPTION = graphql`
                 node {
                     id
                     message
+                    isDM
+                    dmRecipientId
                     createdBy {
                         id
                         firstName
@@ -51,6 +53,8 @@ export const USE_LIVE_FEEDBACK_LIST = graphql`
                 node {
                     id
                     message
+                    isDM
+                    dmRecipientId
                     createdBy {
                         id
                         firstName
@@ -100,7 +104,10 @@ export function useLiveFeedbackList({ fragmentRef }: Props) {
     const filteredList = React.useMemo(
         () =>
             feedbackList.filter(
-                (feedback) => feedback.createdBy?.id === user?.id || feedback.refFeedback?.createdBy?.id === user?.id
+                (feedback) =>
+                    feedback.createdBy?.id === user?.id ||
+                    feedback.refFeedback?.createdBy?.id === user?.id ||
+                    feedback.dmRecipientId === user?.id
             ),
         [feedbackList, user]
     );
