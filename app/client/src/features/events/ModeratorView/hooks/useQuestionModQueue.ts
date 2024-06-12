@@ -47,6 +47,17 @@ export const USE_QUESTION_QUEUE = graphql`
                     ...QuestionContentFragment @arguments(lang: $userLang)
                     ...QuestionTopicsFragment
                     refQuestion {
+                        id
+                        question
+                        lang
+                        questionTranslated(lang: $userLang)
+                        createdBy {
+                            id
+                            firstName
+                            lastName
+                            avatar
+                        }
+                        createdAt
                         ...QuestionQuoteFragment @arguments(lang: $userLang)
                     }
                 }
