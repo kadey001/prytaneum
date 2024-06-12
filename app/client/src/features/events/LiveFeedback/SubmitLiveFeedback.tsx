@@ -14,21 +14,19 @@ import { LiveFeedbackForm, TLiveFeedbackFormState } from './LiveFeedbackForm';
 import { EventInfoPopperStage, useEventInfoPopper } from '@local/components/EventInfoPoppers';
 import { useEvent } from '../useEvent';
 
-interface Props {
-    eventId: string;
-}
-
 export const SUBMIT_LIVE_FEEDBACK_MUTATION = graphql`
-    mutation SubmitLiveFeedbackMutation($input: CreateFeedback!) {
+    mutation SubmitLiveFeedbackMutation($input: CreateFeedback!, $connections: [ID!]!) {
         createFeedback(input: $input) {
             isError
             message
-            body {
+            body @prependEdge(connections: $connections) {
                 cursor
                 node {
                     id
                     createdAt
                     message
+                    isDM
+                    dmRecipientId
                     createdBy {
                         id
                         firstName
@@ -40,7 +38,12 @@ export const SUBMIT_LIVE_FEEDBACK_MUTATION = graphql`
     }
 `;
 
-export function SubmitLiveFeedback({ eventId }: Props) {
+interface Props {
+    eventId: string;
+    connections: string[];
+}
+
+export function SubmitLiveFeedback({ eventId, connections }: Props) {
     const [isOpen, open, close] = useResponsiveDialog();
     const { user } = useUser();
     const { isModerator } = useEvent();
@@ -55,7 +58,7 @@ export function SubmitLiveFeedback({ eventId }: Props) {
             if (form.message.length > FEEDBACK_MAX_LENGTH) throw new Error('Question is too long!');
             if (isURL(form.message)) throw new Error('No links are allowed!');
             commit({
-                variables: { input: { ...form, eventId } },
+                variables: { input: { ...form, eventId }, connections },
                 onCompleted(payload) {
                     try {
                         if (payload.createFeedback.isError) throw new Error(payload.createFeedback.message);
@@ -65,6 +68,27 @@ export function SubmitLiveFeedback({ eventId }: Props) {
                         if (err instanceof Error) displaySnack(err.message, { variant: 'error' });
                         else displaySnack('Something went wrong!', { variant: 'error' });
                     }
+                },
+                optimisticResponse: {
+                    createFeedback: {
+                        isError: false,
+                        message: '',
+                        body: {
+                            cursor: '',
+                            node: {
+                                id: 'temp',
+                                createdAt: new Date().toISOString(),
+                                message: form.message,
+                                isDM: false,
+                                dmRecipientId: '',
+                                createdBy: {
+                                    id: user?.id ?? '',
+                                    firstName: user?.firstName ?? '',
+                                    lastName: user?.lastName ?? '',
+                                },
+                            },
+                        },
+                    },
                 },
             });
         } catch (err) {
