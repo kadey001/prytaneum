@@ -22,6 +22,8 @@ import { useEvent } from '../useEvent';
 import { useUnmuteParticipant } from './useUnmuteParticipant';
 import { Participant } from './ParticipantsList';
 import { getHashedColor } from '@local/core/getHashedColor';
+import { DMParticipant } from './DMParticipant';
+import { useUser } from '@local/features/accounts';
 
 export interface ParticipantCardProps {
     participant: Participant;
@@ -32,7 +34,12 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
     const { muteParticipant } = useMuteParticipant();
     const { unmuteParticipant } = useUnmuteParticipant();
     const { eventId } = useEvent();
+    const { user } = useUser();
     const { displaySnack } = useSnack();
+
+    const isCurrentUserCard = React.useMemo(() => {
+        return participant.id === user?.id;
+    }, [participant.id, user?.id]);
 
     function handleToggleParticipantMute() {
         if (!participant.isMuted)
@@ -83,7 +90,7 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
         return getHashedColor(authorName);
     }, [authorName]);
 
-    const participantActions = React.useMemo(() => {
+    const muteAction = React.useMemo(() => {
         if (participant.moderatorOf) {
             return (
                 <IconButton disabled={true}>
@@ -112,7 +119,7 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
 
     return (
         <React.Fragment>
-            <Card style={{ width: '100%' }}>
+            <Card sx={{ width: '100%' }}>
                 <CardHeader
                     avatar={<Avatar sx={{ bgcolor: avatarColor }}>{authorName[0]}</Avatar>}
                     title={
@@ -130,7 +137,12 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
                             authorName
                         )
                     }
-                    action={participantActions}
+                    action={
+                        <React.Fragment>
+                            {isCurrentUserCard ? null : <DMParticipant participant={participant} />}
+                            {isCurrentUserCard ? null : muteAction}
+                        </React.Fragment>
+                    }
                 />
             </Card>
             <ResponsiveDialog open={isOpen} onClose={close}>
