@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c9416c0e1821cd5af805afc4f90a58b1>>
+ * @generated SignedSource<<a4cd6a1aa1da619978eb9cd9a976d2be>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,6 +17,7 @@ export type CreateFeedback = {
   refFeedbackId?: string | null;
 };
 export type LiveFeedbackReplyActionMutation$variables = {
+  connections: ReadonlyArray<string>;
   eventId: string;
   input: CreateFeedback;
 };
@@ -25,8 +26,13 @@ export type LiveFeedbackReplyActionMutation$data = {
     readonly body: {
       readonly cursor: string;
       readonly node: {
+        readonly dmRecipientId: string | null;
         readonly id: string;
+        readonly isDM: boolean | null;
         readonly message: string;
+        readonly refFeedback: {
+          readonly " $fragmentSpreads": FragmentRefs<"LiveFeedbackReplyFragment">;
+        } | null;
         readonly " $fragmentSpreads": FragmentRefs<"LiveFeedbackAuthorFragment">;
       };
     } | null;
@@ -43,60 +49,127 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "eventId"
+  "name": "connections"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "eventId"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "input"
 },
-v2 = [
+v3 = [
   {
     "kind": "Variable",
     "name": "input",
     "variableName": "input"
   }
 ],
-v3 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "isError",
   "storageKey": null
 },
-v4 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "message",
   "storageKey": null
 },
-v5 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "cursor",
   "storageKey": null
 },
-v6 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v7 = [
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isDM",
+  "storageKey": null
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "dmRecipientId",
+  "storageKey": null
+},
+v10 = [
   {
     "kind": "Variable",
     "name": "eventId",
     "variableName": "eventId"
   }
-];
+],
+v11 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "User",
+  "kind": "LinkedField",
+  "name": "createdBy",
+  "plural": false,
+  "selections": [
+    (v7/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "lastName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "avatar",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": (v10/*: any*/),
+      "kind": "ScalarField",
+      "name": "moderatorOf",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "createdAt",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": [
       (v0/*: any*/),
-      (v1/*: any*/)
+      (v1/*: any*/),
+      (v2/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -104,14 +177,14 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": "EventFeedbackMutationResponse",
         "kind": "LinkedField",
         "name": "createFeedback",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
           (v4/*: any*/),
+          (v5/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -120,7 +193,7 @@ return {
             "name": "body",
             "plural": false,
             "selections": [
-              (v5/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -129,10 +202,28 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v6/*: any*/),
-                  (v4/*: any*/),
+                  (v7/*: any*/),
+                  (v5/*: any*/),
+                  (v8/*: any*/),
+                  (v9/*: any*/),
                   {
-                    "args": (v7/*: any*/),
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "EventLiveFeedback",
+                    "kind": "LinkedField",
+                    "name": "refFeedback",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "args": (v10/*: any*/),
+                        "kind": "FragmentSpread",
+                        "name": "LiveFeedbackReplyFragment"
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "args": (v10/*: any*/),
                     "kind": "FragmentSpread",
                     "name": "LiveFeedbackAuthorFragment"
                   }
@@ -152,6 +243,7 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
+      (v2/*: any*/),
       (v1/*: any*/),
       (v0/*: any*/)
     ],
@@ -160,14 +252,14 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": "EventFeedbackMutationResponse",
         "kind": "LinkedField",
         "name": "createFeedback",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
           (v4/*: any*/),
+          (v5/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -176,7 +268,7 @@ return {
             "name": "body",
             "plural": false,
             "selections": [
-              (v5/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -185,60 +277,48 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v6/*: any*/),
-                  (v4/*: any*/),
+                  (v7/*: any*/),
+                  (v5/*: any*/),
+                  (v8/*: any*/),
+                  (v9/*: any*/),
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "User",
+                    "concreteType": "EventLiveFeedback",
                     "kind": "LinkedField",
-                    "name": "createdBy",
+                    "name": "refFeedback",
                     "plural": false,
                     "selections": [
-                      (v6/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "firstName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "lastName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "avatar",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": (v7/*: any*/),
-                        "kind": "ScalarField",
-                        "name": "moderatorOf",
-                        "storageKey": null
-                      }
+                      (v7/*: any*/),
+                      (v5/*: any*/),
+                      (v11/*: any*/),
+                      (v12/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  }
+                  (v11/*: any*/),
+                  (v12/*: any*/)
                 ],
                 "storageKey": null
               }
             ],
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "filters": null,
+            "handle": "prependEdge",
+            "key": "",
+            "kind": "LinkedHandle",
+            "name": "body",
+            "handleArgs": [
+              {
+                "kind": "Variable",
+                "name": "connections",
+                "variableName": "connections"
+              }
+            ]
           }
         ],
         "storageKey": null
@@ -246,16 +326,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "81d1099cc0144585e5dc0e4185b798b5",
+    "cacheID": "92f67530a87373eef83dcf179168601c",
     "id": null,
     "metadata": {},
     "name": "LiveFeedbackReplyActionMutation",
     "operationKind": "mutation",
-    "text": "mutation LiveFeedbackReplyActionMutation(\n  $input: CreateFeedback!\n  $eventId: ID!\n) {\n  createFeedback(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        message\n        ...LiveFeedbackAuthorFragment_32qNee\n      }\n    }\n  }\n}\n\nfragment LiveFeedbackAuthorFragment_32qNee on EventLiveFeedback {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n    moderatorOf(eventId: $eventId)\n  }\n  createdAt\n}\n"
+    "text": "mutation LiveFeedbackReplyActionMutation(\n  $input: CreateFeedback!\n  $eventId: ID!\n) {\n  createFeedback(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        message\n        isDM\n        dmRecipientId\n        refFeedback {\n          ...LiveFeedbackReplyFragment_32qNee\n          id\n        }\n        ...LiveFeedbackAuthorFragment_32qNee\n      }\n    }\n  }\n}\n\nfragment LiveFeedbackAuthorFragment_32qNee on EventLiveFeedback {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n    moderatorOf(eventId: $eventId)\n  }\n  createdAt\n}\n\nfragment LiveFeedbackReplyFragment_32qNee on EventLiveFeedback {\n  id\n  message\n  ...LiveFeedbackAuthorFragment_32qNee\n}\n"
   }
 };
 })();
 
-(node as any).hash = "9d9bdcaf8f8704bb5ee3ec46aa8baebd";
+(node as any).hash = "fbc94ac91e00b9d10f7cb3b224d13ae1";
 
 export default node;

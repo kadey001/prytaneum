@@ -16,22 +16,33 @@ import { QUESTIONS_MAX_LENGTH } from '@local/utils/rules';
 import { useSnack } from '@local/core';
 import { useUser } from '@local/features/accounts';
 
-interface QuoteProps {
-    className?: string;
-    fragmentRef: QuoteFragment$key;
-}
-
 const QUOTE_MUTATION = graphql`
-    mutation QuoteMutation($input: CreateQuestion!, $lang: String!) @raw_response_type {
+    mutation QuoteMutation($input: CreateQuestion!, $connections: [ID!]!, $lang: String!) @raw_response_type {
         createQuestion(input: $input) {
             isError
             message
-            body {
+            body @prependEdge(connections: $connections) {
                 cursor
                 node {
                     id
+                    question
+                    position
+                    onDeckPosition
+                    topics {
+                        topic
+                        description
+                        position
+                    }
+                    createdBy {
+                        firstName
+                    }
+                    refQuestion {
+                        ...QuestionQuoteFragment @arguments(lang: $lang)
+                    }
+                    ...QuestionActionsFragment @arguments(lang: $lang)
                     ...QuestionAuthorFragment
                     ...QuestionContentFragment @arguments(lang: $lang)
+                    ...QuestionStatsFragment
                 }
             }
         }
@@ -46,7 +57,13 @@ export const QUOTE_FRAGMENT = graphql`
     }
 `;
 
-export function Quote({ className, fragmentRef }: QuoteProps) {
+interface QuoteProps {
+    className?: string;
+    fragmentRef: QuoteFragment$key;
+    connections: string[];
+}
+
+export function Quote({ className, fragmentRef, connections }: QuoteProps) {
     const [isOpen, open, close] = useResponsiveDialog(false);
     const [isLoading, setIsLoading] = React.useState(false);
     const { eventId } = useEvent();
@@ -73,6 +90,7 @@ export function Quote({ className, fragmentRef }: QuoteProps) {
                         isQuote: true,
                         refQuestion: data.id,
                     },
+                    connections,
                     lang: user?.preferredLang || 'EN',
                 },
                 onCompleted(payload) {

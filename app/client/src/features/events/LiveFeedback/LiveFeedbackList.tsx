@@ -28,7 +28,7 @@ export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs 
     const { user } = useUser();
     const [displayLiveFeedback, setDisplayLiveFeedback] = React.useState(false);
     const [isSearchOpen, setIsSearchOpen] = React.useState(false);
-    const { liveFeedback } = useLiveFeedbackList({ fragmentRef });
+    const { liveFeedback, connections } = useLiveFeedbackList({ fragmentRef });
     const { isModerator, eventId } = useEvent();
     // const [prevMsgLength, setPrevMsgLength] = React.useState<number>(0);
     const numOfMessages = React.useMemo(() => liveFeedback.length, [liveFeedback]);
@@ -94,7 +94,7 @@ export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs 
                                 <React.Fragment />
                             ) : (
                                 <CardActions>
-                                    <LiveFeedbackReplyAction fragmentRef={feedback} />
+                                    <LiveFeedbackReplyAction fragmentRef={feedback} connections={connections} />
                                 </CardActions>
                             )}
                         </Card>
@@ -127,7 +127,7 @@ export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs 
                         </IconButton>
                     </Grid>
                     <Grid item xs='auto'>
-                        <SubmitLiveFeedback eventId={eventId} />
+                        <SubmitLiveFeedback eventId={eventId} connections={connections} />
                     </Grid>
                     <Grid item xs='auto'>
                         <SubmitLiveFeedbackPrompt eventId={eventId} />
@@ -158,14 +158,14 @@ export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs 
                             </IconButton>
                         )}
                     </Grid>
-                    <SubmitLiveFeedback eventId={eventId} />
+                    <SubmitLiveFeedback eventId={eventId} connections={connections} />
                     <Tooltip title='Submit any feedback or questions directly to the event moderators.'>
                         <InfoIcon sx={{ color: 'primary.main' }} />
                     </Tooltip>
                 </Stack>
             );
         }
-    }, [eventId, isModerator, isSearchOpen, toggleSearch, user]);
+    }, [connections, eventId, isModerator, isSearchOpen, toggleSearch, user]);
 
     React.useEffect(() => {
         if (!user) setDisplayLiveFeedback(false);

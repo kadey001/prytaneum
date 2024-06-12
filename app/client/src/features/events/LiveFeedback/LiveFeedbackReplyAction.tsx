@@ -12,15 +12,20 @@ import { LiveFeedbackAuthor } from './LiveFeedbackAuthor';
 import { LIVE_FEEDBACK_REPLY_FRAGMENT } from './LiveFeedbackReply';
 
 const LIVE_FEEDBACK_REPLY_ACTION_MUTATION = graphql`
-    mutation LiveFeedbackReplyActionMutation($input: CreateFeedback!, $eventId: ID!) {
+    mutation LiveFeedbackReplyActionMutation($input: CreateFeedback!, $eventId: ID!, $connections: [ID!]!) {
         createFeedback(input: $input) {
             isError
             message
-            body {
+            body @prependEdge(connections: $connections) {
                 cursor
                 node {
                     id
                     message
+                    isDM
+                    dmRecipientId
+                    refFeedback {
+                        ...LiveFeedbackReplyFragment @arguments(eventId: $eventId)
+                    }
                     ...LiveFeedbackAuthorFragment @arguments(eventId: $eventId)
                 }
             }
@@ -30,9 +35,10 @@ const LIVE_FEEDBACK_REPLY_ACTION_MUTATION = graphql`
 
 interface Props {
     fragmentRef: LiveFeedbackReplyFragment$key;
+    connections: string[];
 }
 
-export function LiveFeedbackReplyAction({ fragmentRef }: Props) {
+export function LiveFeedbackReplyAction({ fragmentRef, connections }: Props) {
     const [isOpen, open, close] = useResponsiveDialog(false);
     const { eventId } = useEvent();
 
@@ -49,9 +55,9 @@ export function LiveFeedbackReplyAction({ fragmentRef }: Props) {
                     refFeedbackId: data.id,
                 },
                 eventId,
+                connections,
             },
         });
-        close();
     };
 
     const reply = React.useMemo(
