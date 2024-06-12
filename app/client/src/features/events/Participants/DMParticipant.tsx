@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useMutation, graphql } from 'react-relay';
+import { useMutation, graphql, ConnectionHandler } from 'react-relay';
 import { DialogContent, IconButton, Tooltip } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 
@@ -67,6 +67,20 @@ export function DMParticipant({ participant }: Props) {
                         if (err instanceof Error) displaySnack(err.message, { variant: 'error' });
                         else displaySnack('Something went wrong!', { variant: 'error' });
                     }
+                },
+                updater: (store) => {
+                    const payload = store.getRootField('createFeedbackDM');
+                    if (!payload) return console.error('No payload found!');
+                    const serverEdge = payload.getLinkedRecord('body');
+                    if (!serverEdge) return console.error('No serverEdge found!');
+                    const eventRecord = store.get(eventId);
+                    if (!eventRecord) return console.error('No eventRecord found!');
+                    const feedbackListConnection = ConnectionHandler.getConnection(
+                        eventRecord,
+                        'useLiveFeedbackListFragment_liveFeedback'
+                    );
+                    if (!feedbackListConnection) return console.error('No feedbackListConnection found!');
+                    ConnectionHandler.insertEdgeBefore(feedbackListConnection, serverEdge);
                 },
             });
         } catch (err) {
