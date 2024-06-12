@@ -26,6 +26,17 @@ export type Question = {
     likedByCount: number | null;
     isLikedByViewer: boolean | null;
     refQuestion: {
+        readonly id: string;
+        readonly question: string;
+        readonly lang: string | null;
+        readonly questionTranslated: string | null;
+        readonly createdBy: {
+            readonly id: string;
+            readonly firstName: string | null;
+            readonly lastName: string | null;
+            readonly avatar: string | null;
+        } | null;
+        readonly createdAt: string | Date | null;
         readonly ' $fragmentSpreads': FragmentRefs<'QuestionQuoteFragment'>;
     } | null;
 };

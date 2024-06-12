@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ddee1096fa1cdc83d238486524e40d2d>>
+ * @generated SignedSource<<c371cf4091c3912a30c3f42c9ab3aa7d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -34,6 +34,17 @@ export type useOnDeckFragment$data = {
           readonly position: string;
           readonly question: string;
           readonly refQuestion: {
+            readonly createdAt: Date | null;
+            readonly createdBy: {
+              readonly avatar: string | null;
+              readonly firstName: string | null;
+              readonly id: string;
+              readonly lastName: string | null;
+            } | null;
+            readonly id: string;
+            readonly lang: string | null;
+            readonly question: string;
+            readonly questionTranslated: string | null;
             readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
           } | null;
           readonly topics: ReadonlyArray<{
@@ -65,6 +76,17 @@ export type useOnDeckFragment$data = {
           readonly position: string;
           readonly question: string;
           readonly refQuestion: {
+            readonly createdAt: Date | null;
+            readonly createdBy: {
+              readonly avatar: string | null;
+              readonly firstName: string | null;
+              readonly id: string;
+              readonly lastName: string | null;
+            } | null;
+            readonly id: string;
+            readonly lang: string | null;
+            readonly question: string;
+            readonly questionTranslated: string | null;
             readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
           } | null;
           readonly topics: ReadonlyArray<{
@@ -96,17 +118,71 @@ v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "question",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lang",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "position",
   "storageKey": null
 },
-v2 = [
+v4 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "User",
+  "kind": "LinkedField",
+  "name": "createdBy",
+  "plural": false,
+  "selections": [
+    (v0/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "lastName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "avatar",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "createdAt",
+  "storageKey": null
+},
+v6 = [
   {
     "kind": "Variable",
     "name": "lang",
     "variableName": "userLang"
   }
 ],
-v3 = [
+v7 = [
   {
     "alias": null,
     "args": null,
@@ -131,21 +207,9 @@ v3 = [
         "plural": false,
         "selections": [
           (v0/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "question",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "lang",
-            "storageKey": null
-          },
           (v1/*: any*/),
+          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -175,50 +239,12 @@ v3 = [
                 "name": "description",
                 "storageKey": null
               },
-              (v1/*: any*/)
+              (v3/*: any*/)
             ],
             "storageKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "User",
-            "kind": "LinkedField",
-            "name": "createdBy",
-            "plural": false,
-            "selections": [
-              (v0/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "firstName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "lastName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatar",
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "createdAt",
-            "storageKey": null
-          },
+          (v4/*: any*/),
+          (v5/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -234,7 +260,7 @@ v3 = [
             "storageKey": null
           },
           {
-            "args": (v2/*: any*/),
+            "args": (v6/*: any*/),
             "kind": "FragmentSpread",
             "name": "QuestionActionsFragment"
           },
@@ -249,7 +275,7 @@ v3 = [
             "name": "QuestionStatsFragment"
           },
           {
-            "args": (v2/*: any*/),
+            "args": (v6/*: any*/),
             "kind": "FragmentSpread",
             "name": "QuestionContentFragment"
           },
@@ -266,8 +292,20 @@ v3 = [
             "name": "refQuestion",
             "plural": false,
             "selections": [
+              (v0/*: any*/),
+              (v1/*: any*/),
+              (v2/*: any*/),
               {
-                "args": (v2/*: any*/),
+                "alias": null,
+                "args": (v6/*: any*/),
+                "kind": "ScalarField",
+                "name": "questionTranslated",
+                "storageKey": null
+              },
+              (v4/*: any*/),
+              (v5/*: any*/),
+              {
+                "args": (v6/*: any*/),
                 "kind": "FragmentSpread",
                 "name": "QuestionQuoteFragment"
               }
@@ -391,7 +429,7 @@ return {
           "kind": "LinkedField",
           "name": "__useOnDeckFragment_questionRecord_connection",
           "plural": false,
-          "selections": (v3/*: any*/),
+          "selections": (v7/*: any*/),
           "storageKey": null
         },
         {
@@ -401,7 +439,7 @@ return {
           "kind": "LinkedField",
           "name": "__useOnDeckFragment_enqueuedQuestions_connection",
           "plural": false,
-          "selections": (v3/*: any*/),
+          "selections": (v7/*: any*/),
           "storageKey": null
         }
       ],
@@ -413,6 +451,6 @@ return {
 };
 })();
 
-(node as any).hash = "53c50f0a4bded3ab63dea19e5469038f";
+(node as any).hash = "ebce4972e13a7516dd87b8a7c328661a";
 
 export default node;

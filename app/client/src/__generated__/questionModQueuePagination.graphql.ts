@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<06d54ad134e9889c03c432c7b7c2d733>>
+ * @generated SignedSource<<1f136d1ec968ee0663b0908b509b3b11>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -321,11 +321,11 @@ return {
                             "plural": false,
                             "selections": [
                               (v8/*: any*/),
-                              (v13/*: any*/),
-                              (v14/*: any*/),
                               (v10/*: any*/),
                               (v11/*: any*/),
-                              (v15/*: any*/)
+                              (v15/*: any*/),
+                              (v13/*: any*/),
+                              (v14/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -402,16 +402,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2cd76f856d16d021f6ab9c2dba68db50",
+    "cacheID": "ed007e661be901e144ef183d0cb213b8",
     "id": null,
     "metadata": {},
     "name": "questionModQueuePagination",
     "operationKind": "query",
-    "text": "query questionModQueuePagination(\n  $after: String = \"\"\n  $first: Int = 1000\n  $userLang: String!\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useQuestionModQueueFragment_38VXrw\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_43mCLt on EventQuestion {\n  id\n  ...QuoteFragment_43mCLt\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_43mCLt on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $userLang)\n}\n\nfragment QuestionQuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QuestionTopicsFragment on EventQuestion {\n  topics {\n    topic\n    description\n    position\n  }\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment useQuestionModQueueFragment_38VXrw on Event {\n  id\n  currentQuestion\n  questionModQueue(first: $first, after: $after) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        lang\n        position\n        onDeckPosition\n        topics {\n          topic\n          description\n          position\n        }\n        createdBy {\n          id\n          firstName\n          lastName\n          avatar\n        }\n        createdAt\n        likedByCount\n        isLikedByViewer\n        ...QuestionActionsFragment_43mCLt\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment_43mCLt\n        ...QuestionTopicsFragment\n        refQuestion {\n          ...QuestionQuoteFragment_43mCLt\n          id\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query questionModQueuePagination(\n  $after: String = \"\"\n  $first: Int = 1000\n  $userLang: String!\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useQuestionModQueueFragment_38VXrw\n    id\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_43mCLt on EventQuestion {\n  id\n  ...QuoteFragment_43mCLt\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_43mCLt on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $userLang)\n}\n\nfragment QuestionQuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QuestionTopicsFragment on EventQuestion {\n  topics {\n    topic\n    description\n    position\n  }\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_43mCLt on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_43mCLt\n}\n\nfragment useQuestionModQueueFragment_38VXrw on Event {\n  id\n  currentQuestion\n  questionModQueue(first: $first, after: $after) {\n    edges {\n      cursor\n      node {\n        id\n        question\n        lang\n        position\n        onDeckPosition\n        topics {\n          topic\n          description\n          position\n        }\n        createdBy {\n          id\n          firstName\n          lastName\n          avatar\n        }\n        createdAt\n        likedByCount\n        isLikedByViewer\n        ...QuestionActionsFragment_43mCLt\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment_43mCLt\n        ...QuestionTopicsFragment\n        refQuestion {\n          id\n          question\n          lang\n          questionTranslated(lang: $userLang)\n          createdBy {\n            id\n            firstName\n            lastName\n            avatar\n          }\n          createdAt\n          ...QuestionQuoteFragment_43mCLt\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "129f5816b12ff309c616d367f3d8ab40";
+(node as any).hash = "f9d53e5eccf98c9e65d973d8fb47756d";
 
 export default node;

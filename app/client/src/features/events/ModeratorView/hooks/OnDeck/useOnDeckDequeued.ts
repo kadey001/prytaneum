@@ -23,6 +23,17 @@ export const USE_ON_DECK_DEQUEUED_MUTATION = graphql`
                     position
                     onDeckPosition
                     refQuestion {
+                        id
+                        question
+                        lang
+                        questionTranslated(lang: $lang)
+                        createdBy {
+                            id
+                            firstName
+                            lastName
+                            avatar
+                        }
+                        createdAt
                         ...QuestionQuoteFragment @arguments(lang: $lang)
                     }
                     ...QuestionActionsFragment @arguments(lang: $lang)
@@ -189,7 +200,21 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
                                     avatar: question.createdBy?.avatar ?? '',
                                 },
                                 createdAt: question.createdAt,
-                                refQuestion: question.refQuestion,
+                                refQuestion: question.refQuestion
+                                    ? {
+                                          id: question.id,
+                                          question: question.question,
+                                          lang: question.lang,
+                                          questionTranslated: question.question,
+                                          createdBy: {
+                                              id: question.createdBy?.id ?? '',
+                                              firstName: question.createdBy?.firstName ?? '',
+                                              lastName: question.createdBy?.lastName ?? '',
+                                              avatar: question.createdBy?.avatar ?? '',
+                                          },
+                                          createdAt: question.createdAt,
+                                      }
+                                    : null,
                                 likedByCount: question.likedByCount,
                                 isLikedByViewer: question.isLikedByViewer,
                             },

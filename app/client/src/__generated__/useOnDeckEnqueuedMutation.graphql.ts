@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5e624dae0b0379110d7af56afef6f18c>>
+ * @generated SignedSource<<95992348eedb3668522b3b710f7876a6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -29,6 +29,17 @@ export type useOnDeckEnqueuedMutation$data = {
         readonly position: string;
         readonly question: string;
         readonly refQuestion: {
+          readonly createdAt: Date | null;
+          readonly createdBy: {
+            readonly avatar: string | null;
+            readonly firstName: string | null;
+            readonly id: string;
+            readonly lastName: string | null;
+          } | null;
+          readonly id: string;
+          readonly lang: string | null;
+          readonly question: string;
+          readonly questionTranslated: string | null;
           readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
         } | null;
         readonly " $fragmentSpreads": FragmentRefs<"QuestionActionsFragment" | "QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment" | "QuestionTopicsFragment">;
@@ -112,14 +123,28 @@ v8 = {
   "name": "onDeckPosition",
   "storageKey": null
 },
-v9 = [
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lang",
+  "storageKey": null
+},
+v10 = [
   {
     "kind": "Variable",
     "name": "lang",
     "variableName": "lang"
   }
 ],
-v10 = {
+v11 = {
+  "alias": null,
+  "args": (v10/*: any*/),
+  "kind": "ScalarField",
+  "name": "questionTranslated",
+  "storageKey": null
+},
+v12 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -152,25 +177,11 @@ v10 = {
   ],
   "storageKey": null
 },
-v11 = {
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "createdAt",
-  "storageKey": null
-},
-v12 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "lang",
-  "storageKey": null
-},
-v13 = {
-  "alias": null,
-  "args": (v9/*: any*/),
-  "kind": "ScalarField",
-  "name": "questionTranslated",
   "storageKey": null
 };
 return {
@@ -219,8 +230,14 @@ return {
                     "name": "refQuestion",
                     "plural": false,
                     "selections": [
+                      (v5/*: any*/),
+                      (v6/*: any*/),
+                      (v9/*: any*/),
+                      (v11/*: any*/),
+                      (v12/*: any*/),
+                      (v13/*: any*/),
                       {
-                        "args": (v9/*: any*/),
+                        "args": (v10/*: any*/),
                         "kind": "FragmentSpread",
                         "name": "QuestionQuoteFragment"
                       }
@@ -228,7 +245,7 @@ return {
                     "storageKey": null
                   },
                   {
-                    "args": (v9/*: any*/),
+                    "args": (v10/*: any*/),
                     "kind": "FragmentSpread",
                     "name": "QuestionActionsFragment"
                   },
@@ -238,7 +255,7 @@ return {
                     "name": "QuestionAuthorFragment"
                   },
                   {
-                    "args": (v9/*: any*/),
+                    "args": (v10/*: any*/),
                     "kind": "FragmentSpread",
                     "name": "QuestionContentFragment"
                   },
@@ -311,18 +328,18 @@ return {
                     "plural": false,
                     "selections": [
                       (v5/*: any*/),
-                      (v10/*: any*/),
-                      (v11/*: any*/),
                       (v6/*: any*/),
+                      (v9/*: any*/),
+                      (v11/*: any*/),
                       (v12/*: any*/),
                       (v13/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v10/*: any*/),
-                  (v11/*: any*/),
                   (v12/*: any*/),
                   (v13/*: any*/),
+                  (v9/*: any*/),
+                  (v11/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -375,16 +392,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "85b6eb62a9d9d59a5d6d2d6e58514a0a",
+    "cacheID": "1df32953112f1a98012a745ec094876c",
     "id": null,
     "metadata": {},
     "name": "useOnDeckEnqueuedMutation",
     "operationKind": "mutation",
-    "text": "mutation useOnDeckEnqueuedMutation(\n  $input: AddQuestionToOnDeck!\n  $lang: String!\n) {\n  addQuestionToOnDeck(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        question\n        position\n        onDeckPosition\n        refQuestion {\n          ...QuestionQuoteFragment_3iqx2P\n          id\n        }\n        ...QuestionActionsFragment_3iqx2P\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_3iqx2P\n        ...QuestionStatsFragment\n        ...QuestionTopicsFragment\n      }\n    }\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_3iqx2P on EventQuestion {\n  id\n  ...QuoteFragment_3iqx2P\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n\nfragment QuestionQuoteFragment_3iqx2P on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_3iqx2P\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QuestionTopicsFragment on EventQuestion {\n  topics {\n    topic\n    description\n    position\n  }\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_3iqx2P on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_3iqx2P\n}\n"
+    "text": "mutation useOnDeckEnqueuedMutation(\n  $input: AddQuestionToOnDeck!\n  $lang: String!\n) {\n  addQuestionToOnDeck(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        question\n        position\n        onDeckPosition\n        refQuestion {\n          id\n          question\n          lang\n          questionTranslated(lang: $lang)\n          createdBy {\n            id\n            firstName\n            lastName\n            avatar\n          }\n          createdAt\n          ...QuestionQuoteFragment_3iqx2P\n        }\n        ...QuestionActionsFragment_3iqx2P\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_3iqx2P\n        ...QuestionStatsFragment\n        ...QuestionTopicsFragment\n      }\n    }\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_3iqx2P on EventQuestion {\n  id\n  ...QuoteFragment_3iqx2P\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n\nfragment QuestionQuoteFragment_3iqx2P on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_3iqx2P\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QuestionTopicsFragment on EventQuestion {\n  topics {\n    topic\n    description\n    position\n  }\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_3iqx2P on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_3iqx2P\n}\n"
   }
 };
 })();
 
-(node as any).hash = "73ea6c9c6f2736239c7b5767a411e885";
+(node as any).hash = "07f038ddd553c4c5c7af146c45f4a764";
 
 export default node;
