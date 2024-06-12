@@ -57,6 +57,12 @@ export type CreateFeedback = {
   refFeedbackId?: InputMaybe<Scalars['ID']>;
 };
 
+export type CreateFeedbackDm = {
+  eventId: Scalars['ID'];
+  message: Scalars['String'];
+  recipientId: Scalars['ID'];
+};
+
 export type CreateFeedbackPrompt = {
   choices: Array<Scalars['String']>;
   eventId: Scalars['ID'];
@@ -415,8 +421,10 @@ export type EventLiveFeedback = Node & {
   createdAt?: Maybe<Scalars['Date']>;
   createdBy?: Maybe<User>;
   createdById?: Maybe<Scalars['ID']>;
+  dmRecipientId?: Maybe<Scalars['ID']>;
   event?: Maybe<Event>;
   id: Scalars['ID'];
+  isDM?: Maybe<Scalars['Boolean']>;
   isReply?: Maybe<Scalars['Boolean']>;
   message: Scalars['String'];
   refFeedback?: Maybe<EventLiveFeedback>;
@@ -749,6 +757,7 @@ export type Mutation = {
   createBroadcastMessage: EventBroadcastMessageMutationResponse;
   createEvent: EventMutationResponse;
   createFeedback: EventFeedbackMutationResponse;
+  createFeedbackDM: EventFeedbackMutationResponse;
   createFeedbackPrompt: EventFeedbackPromptMutationResponse;
   createFeedbackPromptResponse: EventFeedbackPromptResponseMutationResponse;
   createInvite: InviteMutationResponse;
@@ -883,6 +892,11 @@ export type MutationCreateEventArgs = {
 
 export type MutationCreateFeedbackArgs = {
   input: CreateFeedback;
+};
+
+
+export type MutationCreateFeedbackDmArgs = {
+  input: CreateFeedbackDm;
 };
 
 

@@ -349,6 +349,7 @@ export type Mutation = {
     deleteBroadcastMessage: EventBroadcastMessageMutationResponse;
     editBroadcastMessage: EventBroadcastMessageMutationResponse;
     createFeedback: EventFeedbackMutationResponse;
+    createFeedbackDM: EventFeedbackMutationResponse;
     createFeedbackPrompt: EventFeedbackPromptMutationResponse;
     createFeedbackPromptResponse: EventFeedbackPromptResponseMutationResponse;
     shareFeedbackPromptResults: EventFeedbackPromptMutationResponse;
@@ -510,6 +511,10 @@ export type MutationeditBroadcastMessageArgs = {
 
 export type MutationcreateFeedbackArgs = {
     input: CreateFeedback;
+};
+
+export type MutationcreateFeedbackDMArgs = {
+    input: CreateFeedbackDM;
 };
 
 export type MutationcreateFeedbackPromptArgs = {
@@ -1222,6 +1227,8 @@ export type EventLiveFeedback = Node & {
     createdAt?: Maybe<Scalars['Date']>;
     createdBy?: Maybe<User>;
     createdById?: Maybe<Scalars['ID']>;
+    isDM?: Maybe<Scalars['Boolean']>;
+    dmRecipientId?: Maybe<Scalars['ID']>;
     isReply?: Maybe<Scalars['Boolean']>;
     refFeedback?: Maybe<EventLiveFeedback>;
 };
@@ -1341,6 +1348,12 @@ export type CreateFeedback = {
     eventId: Scalars['ID'];
     refFeedbackId?: InputMaybe<Scalars['ID']>;
     isReply?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type CreateFeedbackDM = {
+    message: Scalars['String'];
+    eventId: Scalars['ID'];
+    recipientId: Scalars['ID'];
 };
 
 export type CreateFeedbackPrompt = {
@@ -1982,6 +1995,7 @@ export type ResolversTypes = {
     EventFeedbackPromptResponseMutationResponse: ResolverTypeWrapper<EventFeedbackPromptResponseMutationResponse>;
     PostEventFeedbackMutationResponse: ResolverTypeWrapper<PostEventFeedbackMutationResponse>;
     CreateFeedback: CreateFeedback;
+    CreateFeedbackDM: CreateFeedbackDM;
     CreateFeedbackPrompt: CreateFeedbackPrompt;
     CreateFeedbackPromptResponse: CreateFeedbackPromptResponse;
     Votes: ResolverTypeWrapper<Votes>;
@@ -2157,6 +2171,7 @@ export type ResolversParentTypes = {
     EventFeedbackPromptResponseMutationResponse: EventFeedbackPromptResponseMutationResponse;
     PostEventFeedbackMutationResponse: PostEventFeedbackMutationResponse;
     CreateFeedback: CreateFeedback;
+    CreateFeedbackDM: CreateFeedbackDM;
     CreateFeedbackPrompt: CreateFeedbackPrompt;
     CreateFeedbackPromptResponse: CreateFeedbackPromptResponse;
     Votes: Votes;
@@ -2644,6 +2659,12 @@ export type MutationResolvers<
         ParentType,
         ContextType,
         RequireFields<MutationcreateFeedbackArgs, 'input'>
+    >;
+    createFeedbackDM?: Resolver<
+        ResolversTypes['EventFeedbackMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationcreateFeedbackDMArgs, 'input'>
     >;
     createFeedbackPrompt?: Resolver<
         ResolversTypes['EventFeedbackPromptMutationResponse'],
@@ -3409,6 +3430,8 @@ export type EventLiveFeedbackResolvers<
     createdAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
     createdBy?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
     createdById?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+    isDM?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+    dmRecipientId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
     isReply?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     refFeedback?: Resolver<Maybe<ResolversTypes['EventLiveFeedback']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -4261,6 +4284,8 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         createdAt?: LoaderResolver<Maybe<Scalars['Date']>, EventLiveFeedback, {}, TContext>;
         createdBy?: LoaderResolver<Maybe<User>, EventLiveFeedback, {}, TContext>;
         createdById?: LoaderResolver<Maybe<Scalars['ID']>, EventLiveFeedback, {}, TContext>;
+        isDM?: LoaderResolver<Maybe<Scalars['Boolean']>, EventLiveFeedback, {}, TContext>;
+        dmRecipientId?: LoaderResolver<Maybe<Scalars['ID']>, EventLiveFeedback, {}, TContext>;
         isReply?: LoaderResolver<Maybe<Scalars['Boolean']>, EventLiveFeedback, {}, TContext>;
         refFeedback?: LoaderResolver<Maybe<EventLiveFeedback>, EventLiveFeedback, {}, TContext>;
     };
