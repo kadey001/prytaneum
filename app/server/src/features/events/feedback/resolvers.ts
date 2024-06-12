@@ -68,8 +68,7 @@ export const resolvers: Resolvers = {
                     topic: 'feedbackCRUD',
                     payload: {
                         feedbackCRUD: { operationType: 'CREATE', edge },
-                        isDM: false,
-                        recipientId: null,
+                        recipientId: formattedFeedback.refFeedback ? formattedFeedback.refFeedback.createdById : null,
                         eventId,
                     },
                 });
@@ -98,7 +97,6 @@ export const resolvers: Resolvers = {
                     topic: 'feedbackCRUD',
                     payload: {
                         feedbackCRUD: { operationType: 'CREATE', edge },
-                        isDM: true,
                         recipientId,
                         eventId,
                     },
@@ -178,7 +176,6 @@ export const resolvers: Resolvers = {
         feedbackCRUD: {
             subscribe: withFilter<{
                 feedbackCRUD: FeedbackOperation;
-                isDM: boolean;
                 recipientId: string;
                 eventId: string;
             }>(
@@ -186,8 +183,8 @@ export const resolvers: Resolvers = {
                 async (payload, args, ctx) => {
                     // Check that user is logged in
                     if (!ctx.viewer.id) return false;
-                    // Check if user is the recipient of the DM
-                    if (payload.isDM && ctx.viewer.id === payload.recipientId) return true;
+                    // Check if user is the recipient of the DM or feedback reply
+                    if (ctx.viewer.id === payload.recipientId) return true;
                     // Check if it is an update for the right event
                     const { id: eventId } = fromGlobalId(args.eventId);
                     if (eventId !== payload.eventId) return false;
