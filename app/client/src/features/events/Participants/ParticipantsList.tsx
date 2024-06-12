@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { FragmentRefs, graphql } from 'relay-runtime';
 import { useQueryLoader, PreloadedQuery, usePreloadedQuery } from 'react-relay';
-import { Grid, List, ListItem, Typography } from '@mui/material';
+import { Grid, List, ListItem, Stack, Tooltip, Typography } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
 
 import type { ParticipantsListQuery } from '@local/__generated__/ParticipantsListQuery.graphql';
 import { ConditionalRender, Loader } from '@local/components';
@@ -54,12 +55,23 @@ export function ParticipantsList({ node }: ParticipantsListProps) {
 
     const [filteredList, handleSearch, handleFilterChange] = useFilters(participants, accessors);
 
+    const numberOfParticipants = React.useMemo(() => participants.length, [participants.length]);
+
     return (
         <Grid container display='grid' height={0} width='100%'>
-            <Grid item container alignItems='center' justifyContent='center' paddingY='.5rem'>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' paddingY='0.5rem'>
+                <div style={{ width: '45px' }} />
                 <Typography variant='h6'>Participants List</Typography>
-            </Grid>
-            {participants.length > 0 && (
+                <Stack direction='row' width='75px' justifySelf='flex-end'>
+                    <Tooltip title='Total Active Participants' placement='top'>
+                        <PersonIcon sx={{ color: 'red', marginLeft: '0.25rem' }} />
+                    </Tooltip>
+                    <Tooltip title={`${numberOfParticipants} Participants`} placement='top'>
+                        <Typography color='error'>{numberOfParticipants}</Typography>
+                    </Tooltip>
+                </Stack>
+            </Stack>
+            {numberOfParticipants > 0 && (
                 <ListFilter
                     style={{ flex: 1, marginLeft: '1rem', marginBottom: '-1rem' }}
                     onFilterChange={handleFilterChange}
@@ -68,7 +80,7 @@ export function ParticipantsList({ node }: ParticipantsListProps) {
                     length={filteredList.length}
                 />
             )}
-            {participants.length === 0 && (
+            {numberOfParticipants === 0 && (
                 <Grid item container justifyContent='center'>
                     <Typography variant='body1'>No participants found...</Typography>
                 </Grid>
