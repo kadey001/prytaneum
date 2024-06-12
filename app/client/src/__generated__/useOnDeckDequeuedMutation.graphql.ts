@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2f55668513588ad9d50cdbe093186357>>
+ * @generated SignedSource<<e37160a73772c6206b6fd1035770fd3c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -31,6 +31,17 @@ export type useOnDeckDequeuedMutation$data = {
         readonly position: string;
         readonly question: string;
         readonly refQuestion: {
+          readonly createdAt: Date | null;
+          readonly createdBy: {
+            readonly avatar: string | null;
+            readonly firstName: string | null;
+            readonly id: string;
+            readonly lastName: string | null;
+          } | null;
+          readonly id: string;
+          readonly lang: string | null;
+          readonly question: string;
+          readonly questionTranslated: string | null;
           readonly " $fragmentSpreads": FragmentRefs<"QuestionQuoteFragment">;
         } | null;
         readonly " $fragmentSpreads": FragmentRefs<"QuestionActionsFragment" | "QuestionAuthorFragment" | "QuestionContentFragment" | "QuestionStatsFragment" | "QuestionTopicsFragment">;
@@ -117,14 +128,28 @@ v10 = {
   "name": "onDeckPosition",
   "storageKey": null
 },
-v11 = [
+v11 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lang",
+  "storageKey": null
+},
+v12 = [
   {
     "kind": "Variable",
     "name": "lang",
     "variableName": "lang"
   }
 ],
-v12 = {
+v13 = {
+  "alias": null,
+  "args": (v12/*: any*/),
+  "kind": "ScalarField",
+  "name": "questionTranslated",
+  "storageKey": null
+},
+v14 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -157,25 +182,11 @@ v12 = {
   ],
   "storageKey": null
 },
-v13 = {
+v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "createdAt",
-  "storageKey": null
-},
-v14 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "lang",
-  "storageKey": null
-},
-v15 = {
-  "alias": null,
-  "args": (v11/*: any*/),
-  "kind": "ScalarField",
-  "name": "questionTranslated",
   "storageKey": null
 };
 return {
@@ -228,8 +239,14 @@ return {
                     "name": "refQuestion",
                     "plural": false,
                     "selections": [
+                      (v7/*: any*/),
+                      (v8/*: any*/),
+                      (v11/*: any*/),
+                      (v13/*: any*/),
+                      (v14/*: any*/),
+                      (v15/*: any*/),
                       {
-                        "args": (v11/*: any*/),
+                        "args": (v12/*: any*/),
                         "kind": "FragmentSpread",
                         "name": "QuestionQuoteFragment"
                       }
@@ -237,7 +254,7 @@ return {
                     "storageKey": null
                   },
                   {
-                    "args": (v11/*: any*/),
+                    "args": (v12/*: any*/),
                     "kind": "FragmentSpread",
                     "name": "QuestionActionsFragment"
                   },
@@ -247,7 +264,7 @@ return {
                     "name": "QuestionAuthorFragment"
                   },
                   {
-                    "args": (v11/*: any*/),
+                    "args": (v12/*: any*/),
                     "kind": "FragmentSpread",
                     "name": "QuestionContentFragment"
                   },
@@ -340,19 +357,19 @@ return {
                     "plural": false,
                     "selections": [
                       (v7/*: any*/),
-                      (v12/*: any*/),
-                      (v13/*: any*/),
                       (v8/*: any*/),
+                      (v11/*: any*/),
+                      (v13/*: any*/),
                       (v14/*: any*/),
                       (v15/*: any*/)
                     ],
                     "storageKey": null
                   },
                   (v7/*: any*/),
-                  (v12/*: any*/),
-                  (v13/*: any*/),
                   (v14/*: any*/),
                   (v15/*: any*/),
+                  (v11/*: any*/),
+                  (v13/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -405,16 +422,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "bf2ff9e1bc8ab30c3ec22e0c9847bd3f",
+    "cacheID": "bc1bad2f6dc5c277762b303dd5ed0267",
     "id": null,
     "metadata": {},
     "name": "useOnDeckDequeuedMutation",
     "operationKind": "mutation",
-    "text": "mutation useOnDeckDequeuedMutation(\n  $input: RemoveQuestionFromOnDeck!\n  $lang: String!\n) {\n  removeQuestionFromOnDeck(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        question\n        position\n        onDeckPosition\n        refQuestion {\n          ...QuestionQuoteFragment_3iqx2P\n          id\n        }\n        ...QuestionActionsFragment_3iqx2P\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_3iqx2P\n        ...QuestionStatsFragment\n        ...QuestionTopicsFragment\n      }\n    }\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_3iqx2P on EventQuestion {\n  id\n  ...QuoteFragment_3iqx2P\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n\nfragment QuestionQuoteFragment_3iqx2P on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_3iqx2P\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QuestionTopicsFragment on EventQuestion {\n  topics {\n    topic\n    description\n    position\n  }\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_3iqx2P on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_3iqx2P\n}\n"
+    "text": "mutation useOnDeckDequeuedMutation(\n  $input: RemoveQuestionFromOnDeck!\n  $lang: String!\n) {\n  removeQuestionFromOnDeck(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        question\n        position\n        onDeckPosition\n        refQuestion {\n          id\n          question\n          lang\n          questionTranslated(lang: $lang)\n          createdBy {\n            id\n            firstName\n            lastName\n            avatar\n          }\n          createdAt\n          ...QuestionQuoteFragment_3iqx2P\n        }\n        ...QuestionActionsFragment_3iqx2P\n        ...QuestionAuthorFragment\n        ...QuestionContentFragment_3iqx2P\n        ...QuestionStatsFragment\n        ...QuestionTopicsFragment\n      }\n    }\n  }\n}\n\nfragment DeleteButtonFragment on EventQuestion {\n  id\n  position\n}\n\nfragment LikeFragment on EventQuestion {\n  id\n  isLikedByViewer\n}\n\nfragment QuestionActionsFragment_3iqx2P on EventQuestion {\n  id\n  ...QuoteFragment_3iqx2P\n  ...LikeFragment\n  ...QueueButtonFragment\n  ...DeleteButtonFragment\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n\nfragment QuestionQuoteFragment_3iqx2P on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_3iqx2P\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n\nfragment QuestionTopicsFragment on EventQuestion {\n  topics {\n    topic\n    description\n    position\n  }\n}\n\nfragment QueueButtonFragment on EventQuestion {\n  id\n  question\n  position\n  topics {\n    topic\n    position\n  }\n}\n\nfragment QuoteFragment_3iqx2P on EventQuestion {\n  id\n  ...QuestionAuthorFragment\n  ...QuestionContentFragment_3iqx2P\n}\n"
   }
 };
 })();
 
-(node as any).hash = "487aece4d4e9f3b390a88651bd319878";
+(node as any).hash = "4fbd0984f19305194c78f1f8203af08f";
 
 export default node;
