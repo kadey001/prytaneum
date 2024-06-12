@@ -75,6 +75,8 @@ export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs 
     function rowRenderer({ index: rowIndex, key, parent, style }: RowRendererProps) {
         const feedback = filteredList[rowIndex];
 
+        const isMyMessage = feedback.createdBy?.id === user?.id;
+
         return (
             <CellMeasurer cache={cache} key={key} parent={parent} rowIndex={rowIndex}>
                 {({ registerChild }) => (
@@ -88,12 +90,12 @@ export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs 
                                     {feedback.message}
                                 </Typography>
                             </CardContent>
-                            {isModerator ? (
+                            {isMyMessage ? (
+                                <React.Fragment />
+                            ) : (
                                 <CardActions>
                                     <LiveFeedbackReplyAction fragmentRef={feedback} />
                                 </CardActions>
-                            ) : (
-                                <React.Fragment />
                             )}
                         </Card>
                     </div>

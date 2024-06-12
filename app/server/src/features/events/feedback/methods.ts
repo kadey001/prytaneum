@@ -1,5 +1,10 @@
 import { PrismaClient } from '@local/__generated__/prisma';
-import type { CreateFeedback, CreateFeedbackPrompt, CreateFeedbackPromptResponse } from '@local/graphql-types';
+import type {
+    CreateFeedback,
+    CreateFeedbackDM,
+    CreateFeedbackPrompt,
+    CreateFeedbackPromptResponse,
+} from '@local/graphql-types';
 import { fromGlobalId } from 'graphql-relay';
 import { isModerator } from '../moderation/methods';
 import { ProtectedError } from '../../../lib/ProtectedError';
@@ -40,6 +45,25 @@ export async function createFeedback(userId: string, eventId: string, prisma: Pr
         },
         include: {
             refFeedback: true,
+        },
+    });
+}
+
+export function createFeedbackDM(
+    userId: string,
+    eventId: string,
+    recipientId: string,
+    prisma: PrismaClient,
+    input: CreateFeedbackDM
+) {
+    return prisma.eventLiveFeedback.create({
+        data: {
+            createdById: userId,
+            eventId,
+            message: input.message,
+            isReply: false,
+            isDM: true,
+            dmRecipientId: recipientId,
         },
     });
 }

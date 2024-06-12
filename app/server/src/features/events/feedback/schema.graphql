@@ -5,6 +5,8 @@ type EventLiveFeedback implements Node {
     createdAt: Date
     createdBy: User
     createdById: ID
+    isDM: Boolean
+    dmRecipientId: ID
     isReply: Boolean
     refFeedback: EventLiveFeedback
 }
@@ -108,6 +110,12 @@ input CreateFeedback {
     isReply: Boolean
 }
 
+input CreateFeedbackDM {
+    message: String!
+    eventId: ID!
+    recipientId: ID!
+}
+
 input CreateFeedbackPrompt {
     prompt: String!
     eventId: ID!
@@ -131,6 +139,7 @@ type Votes {
 
 type Mutation {
     createFeedback(input: CreateFeedback!): EventFeedbackMutationResponse!
+    createFeedbackDM(input: CreateFeedbackDM!): EventFeedbackMutationResponse!
     createFeedbackPrompt(input: CreateFeedbackPrompt!): EventFeedbackPromptMutationResponse!
     createFeedbackPromptResponse(input: CreateFeedbackPromptResponse!): EventFeedbackPromptResponseMutationResponse!
     shareFeedbackPromptResults(eventId: ID!, promptId: ID!): EventFeedbackPromptMutationResponse!
