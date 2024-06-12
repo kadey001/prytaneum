@@ -70,6 +70,7 @@ export const resolvers: Resolvers = {
                         feedbackCRUD: { operationType: 'CREATE', edge },
                         recipientId: formattedFeedback.refFeedback ? formattedFeedback.refFeedback.createdById : null,
                         eventId,
+                        creatorId: ctx.viewer.id,
                     },
                 });
                 return edge;
@@ -99,6 +100,7 @@ export const resolvers: Resolvers = {
                         feedbackCRUD: { operationType: 'CREATE', edge },
                         recipientId,
                         eventId,
+                        creatorId: ctx.viewer.id,
                     },
                 });
                 return edge;
@@ -178,11 +180,14 @@ export const resolvers: Resolvers = {
                 feedbackCRUD: FeedbackOperation;
                 recipientId: string;
                 eventId: string;
+                creatorId: string;
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('feedbackCRUD'),
                 async (payload, args, ctx) => {
                     // Check that user is logged in
                     if (!ctx.viewer.id) return false;
+                    // Check if user is the creator of the feedback
+                    if (ctx.viewer.id === payload.creatorId) return false;
                     // Check if user is the recipient of the DM or feedback reply
                     if (ctx.viewer.id === payload.recipientId) return true;
                     // Check if it is an update for the right event
