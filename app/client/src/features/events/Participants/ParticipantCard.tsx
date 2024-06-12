@@ -83,6 +83,33 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
         return getHashedColor(authorName);
     }, [authorName]);
 
+    const participantActions = React.useMemo(() => {
+        if (participant.moderatorOf) {
+            return (
+                <IconButton disabled={true}>
+                    <VolumeUpIcon color='success' />
+                </IconButton>
+            );
+        }
+        if (participant.isMuted) {
+            return (
+                <IconButton onClick={open}>
+                    <Tooltip title='Unmute Participant' placement='top'>
+                        <VolumeOffIcon color='error' />
+                    </Tooltip>
+                </IconButton>
+            );
+        } else {
+            return (
+                <IconButton onClick={open}>
+                    <Tooltip title='Mute Participant' placement='top'>
+                        <VolumeUpIcon color='success' />
+                    </Tooltip>
+                </IconButton>
+            );
+        }
+    }, [participant, open]);
+
     return (
         <React.Fragment>
             <Card style={{ width: '100%' }}>
@@ -103,19 +130,7 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
                             authorName
                         )
                     }
-                    action={
-                        <IconButton onClick={open}>
-                            {participant.isMuted ? (
-                                <Tooltip title='Unmute Participant' placement='top'>
-                                    <VolumeOffIcon color='error' />
-                                </Tooltip>
-                            ) : (
-                                <Tooltip title='Mute Participant' placement='top'>
-                                    <VolumeUpIcon color='success' />
-                                </Tooltip>
-                            )}
-                        </IconButton>
-                    }
+                    action={participantActions}
                 />
             </Card>
             <ResponsiveDialog open={isOpen} onClose={close}>
