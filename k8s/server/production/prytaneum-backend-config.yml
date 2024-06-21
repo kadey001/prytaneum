@@ -1,10 +1,11 @@
 apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig
 metadata:
-  name: prytaneum-backendconfig
-  namespace: production
+    name: prytaneum-backendconfig
+    namespace: production
 spec:
-  timeoutSec: 1800
-  connectionDraining:
-    drainingTimeoutSec: 1800
-  
+    timeoutSec: 1800
+    connectionDraining:
+        drainingTimeoutSec: 1800
+    sessionAffinity:
+        affinityType: 'CLIENT_IP'
