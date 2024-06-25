@@ -46,7 +46,7 @@ export function QuestionList({
     const { questions, connections, loadNext, hasNext } = useQuestionList({ fragmentRef });
     const [isFrozen, setIsFrozen] = React.useState(false);
     const [frozenQuestions, setFrozenQuestions] = React.useState<typeof questions>(questions);
-    const QUESTIONS_BATCH_SIZE = 50;
+    const QUESTIONS_BATCH_SIZE = 25;
     useQuestionCreated({ connections });
     useQuestionUpdated({ connections });
     useQuestionDeleted({ connections });
@@ -216,7 +216,7 @@ export function QuestionList({
                             loadMoreRows={loadMoreRows}
                             minimumBatchSize={QUESTIONS_BATCH_SIZE}
                             rowCount={listLength}
-                            threshold={10}
+                            threshold={5}
                         >
                             {({ onRowsRendered, registerChild }) => (
                                 <AutoSizer>
