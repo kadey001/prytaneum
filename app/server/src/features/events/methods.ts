@@ -234,45 +234,86 @@ export async function findOrgByEventId(eventId: string, prisma: PrismaClient) {
     return result.organization;
 }
 
-export async function findQuestionsByEventId(eventId: string, prisma: PrismaClient) {
-    return prisma.eventQuestion.findMany({
+interface FindQuestionsByEventIdProps {
+    eventId: string;
+    first?: number | null;
+    after?: string | null;
+    prisma: PrismaClient;
+}
+export async function findQuestionsByEventId({ eventId, first, after, prisma }: FindQuestionsByEventIdProps) {
+    const hasAfterCursor = after !== '' && !!after;
+
+    const result = await prisma.eventQuestion.findMany({
         where: { eventId, isVisible: true },
         orderBy: { createdAt: 'desc' },
+        take: first ? first + 1 : undefined,
+        cursor: hasAfterCursor
+            ? {
+                  createdAt: new Date(parseInt(after, 10)),
+              }
+            : undefined,
+        skip: hasAfterCursor ? 1 : 0,
     });
+    const hasNextPage = first ? result.length > first : false;
+    return { questions: result, hasNextPage };
 }
 
+interface FindQuestionsByEventIdAndTopicProps {
+    eventId: string;
+    topic: string;
+    first?: number | null;
+    after?: string | null;
+    prisma: PrismaClient;
+}
 /**
- * find questions by event id
+ * find questions by event id and an event topic
  */
-export async function findQuestionsByEventIdAndTopic(eventId: string, topic: string, prisma: PrismaClient) {
-    console.log('findQuestionsByEventId', topic);
-    if (topic === 'default' || topic === '') {
-        // Get all questions that are not in any topic queue
-        return prisma.eventQuestion.findMany({
-            where: {
-                eventId,
-                isVisible: true,
-                OR: [{ position: { not: '-1' } }, { topics: { none: { position: { not: '-1' } } } }],
+export async function findQuestionsByEventIdAndTopic({
+    eventId,
+    topic,
+    first,
+    after,
+    prisma,
+}: FindQuestionsByEventIdAndTopicProps) {
+    const hasAfterCursor = after !== '' && !!after;
+    const isDefaultTopic = topic === 'default' || topic === '';
+
+    const getWhereOrQueryParam = () => {
+        if (!isDefaultTopic) return undefined;
+        return [{ position: { not: '-1' } }, { topics: { none: { position: { not: '-1' } } } }];
+    };
+    const getWhereTopicsQueryParam = () => {
+        if (isDefaultTopic) return undefined;
+        return {
+            some: {
+                topic: {
+                    topic,
+                },
+                position: { equals: '-1' },
             },
-            include: { topics: true },
-            orderBy: { createdAt: 'desc' },
-        });
-    }
-    return prisma.eventQuestion.findMany({
+        };
+    };
+    const getAfterCursorQueryParam = () => {
+        if (!hasAfterCursor) return undefined;
+        return {
+            createdAt: new Date(parseInt(after, 10)),
+        };
+    };
+
+    const result = await prisma.eventQuestion.findMany({
         where: {
             eventId,
             isVisible: true,
-            topics: {
-                some: {
-                    topic: {
-                        topic,
-                    },
-                    position: { equals: '-1' },
-                },
-            },
+            OR: getWhereOrQueryParam(),
+            topics: getWhereTopicsQueryParam(),
         },
         orderBy: { createdAt: 'desc' },
+        take: first ? first + 1 : undefined,
+        cursor: getAfterCursorQueryParam(),
+        skip: hasAfterCursor ? 1 : 0,
     });
+    const hasNextPage = first ? result.length > first : false;
+    return { questions: result, hasNextPage };
 }
 
 /**
