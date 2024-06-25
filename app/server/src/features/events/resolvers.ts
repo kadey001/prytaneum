@@ -191,13 +191,18 @@ export const resolvers: Resolvers = {
         },
         async questions(parent, args, ctx, info) {
             const { id: eventId } = fromGlobalId(parent.id);
-            const { viewerOnly, topic, first, after } = args;
+            const { viewerOnly, first, after } = args;
             if (!!viewerOnly) {
                 if (!ctx.viewer.id) return connectionFromArray([], args);
                 const questions = await Event.findQuestionsByEventIdAndUser(eventId, ctx.viewer.id, ctx.prisma);
                 return connectionFromArray(questions.map(toQuestionId), args);
             } else {
-                const questions = await Event.findQuestionsByEventId(eventId, ctx.prisma);
+                const { questions, hasNextPage } = await Event.findQuestionsByEventId({
+                    eventId,
+                    first,
+                    after,
+                    prisma: ctx.prisma,
+                });
                 const toQuestionEdge = (question: EventQuestion) => ({
                     node: question,
                     cursor: question.createdAt.getTime().toString(),
@@ -205,7 +210,7 @@ export const resolvers: Resolvers = {
                 const makeConnection = <T extends ReturnType<typeof toQuestionEdge>[]>(edges: T) => ({
                     edges,
                     pageInfo: {
-                        hasNextPage: false,
+                        hasNextPage,
                         hasPreviousPage: false,
                         startCursor: edges.length > 0 ? edges[0].cursor : '',
                         endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : '',
@@ -219,7 +224,13 @@ export const resolvers: Resolvers = {
             const { id: eventId } = fromGlobalId(parent.id);
             const { topic, first, after } = args;
 
-            const questions = await Event.findQuestionsByEventIdAndTopic(eventId, topic || '', ctx.prisma);
+            const { questions, hasNextPage } = await Event.findQuestionsByEventIdAndTopic({
+                eventId,
+                topic: topic ?? '',
+                first,
+                after,
+                prisma: ctx.prisma,
+            });
             const toQuestionEdge = (question: EventQuestion) => ({
                 node: question,
                 cursor: question.createdAt.getTime().toString(),
@@ -227,7 +238,7 @@ export const resolvers: Resolvers = {
             const makeConnection = <T extends ReturnType<typeof toQuestionEdge>[]>(edges: T) => ({
                 edges,
                 pageInfo: {
-                    hasNextPage: false,
+                    hasNextPage,
                     hasPreviousPage: false,
                     startCursor: edges.length > 0 ? edges[0].cursor : '',
                     endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : '',

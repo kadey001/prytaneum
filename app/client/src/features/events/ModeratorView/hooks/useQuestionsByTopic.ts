@@ -9,7 +9,7 @@ export const USE_QUESTIONS_BY_TOPIC = graphql`
     fragment useQuestionsByTopicFragment on Event
     @refetchable(queryName: "questionsByTopicPagination")
     @argumentDefinitions(
-        first: { type: "Int", defaultValue: 100 }
+        first: { type: "Int", defaultValue: 50 }
         after: { type: "String", defaultValue: "" }
         topic: { type: "String", defaultValue: "default" }
         userLang: { type: "String!" }
