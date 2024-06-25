@@ -183,7 +183,7 @@ model EventQuestion {
     id String @id @default(uuid()) @db.Uuid
     eventId String @db.Uuid
     event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    createdAt DateTime @default(now())
+    createdAt DateTime @default(now()) @unique
     refQuestionId String? @db.Uuid
     parentQuestion EventQuestion[] @relation("quote")
     refQuestion EventQuestion? @relation("quote", fields: [refQuestionId], references: [id], onDelete: Cascade)
