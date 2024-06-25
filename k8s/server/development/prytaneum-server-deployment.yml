@@ -9,8 +9,8 @@ spec:
     selector:
         matchLabels:
             app: prytaneum-server
-    replicas: 4
-    revisionHistoryLimit: 100
+    replicas: 2
+    revisionHistoryLimit: 200
     strategy:
         rollingUpdate:
             maxSurge: 25%
@@ -30,7 +30,7 @@ spec:
                           cpu: 250m
                           memory: 500Mi
                       requests:
-                          cpu: 150m
+                          cpu: 100m
                           memory: 300Mi
                   env:
                       - name: NODE_ENV
