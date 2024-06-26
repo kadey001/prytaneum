@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { graphql, useMutation, useSubscription } from 'react-relay';
-import { ConnectionHandler, GraphQLSubscriptionConfig } from 'relay-runtime';
+import { graphql, useMutation } from 'react-relay';
+import { ConnectionHandler } from 'relay-runtime';
 
-import type { useOnDeckDequeuedSubscription } from '@local/__generated__/useOnDeckDequeuedSubscription.graphql';
 import { useEvent } from '@local/features/events/useEvent';
 import { Question, Topic } from '../../types';
 import { calculateOnDeckDequeuePosition } from './utils';
@@ -47,19 +46,6 @@ export const USE_ON_DECK_DEQUEUED_MUTATION = graphql`
     }
 `;
 
-export const USE_ON_DECK_DEQUEUED = graphql`
-    subscription useOnDeckDequeuedSubscription($eventId: ID!, $connections: [ID!]!) {
-        enqueuedRemoveQuestion(eventId: $eventId) {
-            edge {
-                node {
-                    id @deleteEdge(connections: $connections)
-                }
-                cursor
-            }
-        }
-    }
-`;
-
 interface Props {
     connections: string[];
     topics: readonly Topic[];
@@ -70,20 +56,6 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
     const { eventId } = useEvent();
     const { user } = useUser();
     const { displaySnack } = useSnack();
-
-    //-- Subscription --//
-    const enqueuedPushConfig = React.useMemo<GraphQLSubscriptionConfig<useOnDeckDequeuedSubscription>>(
-        () => ({
-            variables: {
-                eventId,
-                connections,
-            },
-            subscription: USE_ON_DECK_DEQUEUED,
-        }),
-        [connections, eventId]
-    );
-
-    useSubscription<useOnDeckDequeuedSubscription>(enqueuedPushConfig);
 
     //-- Mutation --//
     type MutationInput = {
