@@ -81,7 +81,7 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
                 resumeParentRefreshing,
             }}
         >
-            <EventTopicContext.Provider value={{ topic: 'default' }}>
+            <EventTopicContext.Provider value={{ topic: 'default', topics: [] }}>
                 <PanelGroup autoSaveId='mod-panels-persistence' direction='horizontal'>
                     <Panel defaultSize={33} minSize={21}>
                         <ActionsPanels node={node} eventData={eventData} isLive={isLive} setIsLive={setIsLive} />
