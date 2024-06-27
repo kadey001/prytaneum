@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c95f009c42296cce13160edefc8de4b1>>
+ * @generated SignedSource<<cbb46518df56d17c022ede8bb4cf0484>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,6 @@ import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
 export type useTopicQueueRemoveSubscription$variables = {
   connections: ReadonlyArray<string>;
   eventId: string;
-  topic: string;
 };
 export type useTopicQueueRemoveSubscription$data = {
   readonly topicQueueRemove: {
@@ -40,31 +39,21 @@ v1 = {
   "kind": "LocalArgument",
   "name": "eventId"
 },
-v2 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "topic"
-},
-v3 = [
+v2 = [
   {
     "kind": "Variable",
     "name": "eventId",
     "variableName": "eventId"
-  },
-  {
-    "kind": "Variable",
-    "name": "topic",
-    "variableName": "topic"
   }
 ],
-v4 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v5 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -75,8 +64,7 @@ return {
   "fragment": {
     "argumentDefinitions": [
       (v0/*: any*/),
-      (v1/*: any*/),
-      (v2/*: any*/)
+      (v1/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -84,7 +72,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": "EventQuestionEdgeContainer",
         "kind": "LinkedField",
         "name": "topicQueueRemove",
@@ -106,11 +94,11 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/)
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v5/*: any*/)
+              (v4/*: any*/)
             ],
             "storageKey": null
           }
@@ -125,7 +113,6 @@ return {
   "operation": {
     "argumentDefinitions": [
       (v1/*: any*/),
-      (v2/*: any*/),
       (v0/*: any*/)
     ],
     "kind": "Operation",
@@ -133,7 +120,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": "EventQuestionEdgeContainer",
         "kind": "LinkedField",
         "name": "topicQueueRemove",
@@ -155,7 +142,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/),
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -175,7 +162,7 @@ return {
                 ],
                 "storageKey": null
               },
-              (v5/*: any*/)
+              (v4/*: any*/)
             ],
             "storageKey": null
           }
@@ -185,16 +172,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e3332abd17c0ee25c4fbdc3e0fb6b7b0",
+    "cacheID": "077dfa2f3e76d9e75f427571e2d01f8a",
     "id": null,
     "metadata": {},
     "name": "useTopicQueueRemoveSubscription",
     "operationKind": "subscription",
-    "text": "subscription useTopicQueueRemoveSubscription(\n  $eventId: String!\n  $topic: String!\n) {\n  topicQueueRemove(eventId: $eventId, topic: $topic) {\n    edge {\n      node {\n        id\n      }\n      cursor\n    }\n  }\n}\n"
+    "text": "subscription useTopicQueueRemoveSubscription(\n  $eventId: String!\n) {\n  topicQueueRemove(eventId: $eventId) {\n    edge {\n      node {\n        id\n      }\n      cursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "4a2d0b55f16e643175027923a5ed0cd7";
+(node as any).hash = "7eb535a388b87c10f04d4481689e8aa9";
 
 export default node;
