@@ -43,7 +43,6 @@ export const resolvers: Resolvers = {
                     payload: {
                         questionCreatedByTopic: { edge },
                         eventId,
-                        topics,
                     },
                 });
 
@@ -144,13 +143,11 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{
                 questionCreatedByTopic: EventQuestionEdgeContainer;
                 eventId: string;
-                topics: string[];
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionCreatedByTopic'),
                 (payload, args, ctx) => {
+                    // TODO: Check if viewer is event moderator
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    // Not filtering by topic server side since the question may be created with multiple topics
-                    // All the connections will be updated respectively on the client side relay updater
                     return eventId === payload.eventId;
                 }
             ),
@@ -261,7 +258,6 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{
                 topicQueuePush: EventQuestionEdgeContainer;
                 eventId: string;
-                topic: string;
                 viewerId: string;
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('topicQueuePush'),
@@ -276,7 +272,6 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{
                 topicQueueRemove: EventQuestionEdgeContainer;
                 eventId: string;
-                topic: string;
                 viewerId: string;
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('topicQueueRemove'),
@@ -291,17 +286,13 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{
                 questionEnqueued: EventQuestionEdgeContainer;
                 eventId: string;
-                topic: string;
                 viewerId: string;
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionEnqueued'),
                 (payload, args, ctx) => {
                     if (ctx.viewer.id === payload.viewerId) return false;
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    if (eventId === payload.eventId) {
-                        return payload.topic === args.topic;
-                    }
-                    return false;
+                    return eventId === payload.eventId;
                 }
             ),
         },
@@ -309,19 +300,13 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{
                 questionDequeued: EventQuestionEdgeContainer;
                 eventId: string;
-                topic: string;
                 viewerId: string;
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionDequeued'),
                 (payload, args, ctx) => {
                     if (ctx.viewer.id === payload.viewerId) return false;
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionDequeued.edge.node.id);
-                    if (eventId === payload.eventId) {
-                        // if (args.topic === 'default') return true;
-                        return payload.topic === args.topic;
-                    }
-                    return false;
+                    return eventId === payload.eventId;
                 }
             ),
         },

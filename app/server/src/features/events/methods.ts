@@ -255,7 +255,8 @@ export async function findQuestionsByEventId({ eventId, first, after, prisma }: 
         skip: hasAfterCursor ? 1 : 0,
     });
     const hasNextPage = first ? result.length > first : false;
-    return { questions: result, hasNextPage };
+    const questions = first ? result.slice(0, first) : result;
+    return { questions, hasNextPage };
 }
 
 interface FindQuestionsByEventIdAndTopicProps {
@@ -313,7 +314,8 @@ export async function findQuestionsByEventIdAndTopic({
         skip: hasAfterCursor ? 1 : 0,
     });
     const hasNextPage = first ? result.length > first : false;
-    return { questions: result, hasNextPage };
+    const questions = first ? result.slice(0, first) : result;
+    return { questions, hasNextPage };
 }
 
 /**

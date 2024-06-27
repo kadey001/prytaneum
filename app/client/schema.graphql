@@ -946,18 +946,18 @@ type Subscription {
 
   """Question subscription for all operations performed on questions"""
   questionCreated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
-  questionCreatedByTopic(eventId: ID!, topic: String!): EventQuestionEdgeContainer!
+  questionCreatedByTopic(eventId: ID!): EventQuestionEdgeContainer!
   questionDeleted(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
-  questionDequeued(eventId: String!, topic: String!): EventQuestionEdgeContainer!
-  questionEnqueued(eventId: String!, topic: String!): EventQuestionEdgeContainer!
+  questionDequeued(eventId: String!): EventQuestionEdgeContainer!
+  questionEnqueued(eventId: String!): EventQuestionEdgeContainer!
   questionRemovedFromEnqueued(eventId: ID!): EventQuestionEdgeContainer!
   questionRemovedFromRecord(eventId: ID!): EventQuestionEdgeContainer!
   questionUpdated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
   recordPushQuestion(eventId: ID!): EventQuestionEdgeContainer!
   recordRemoveQuestion(eventId: ID!): EventQuestionEdgeContainer!
   recordUnshiftQuestion(eventId: ID!): EventQuestionEdgeContainer!
-  topicQueuePush(eventId: String!, topic: String!): EventQuestionEdgeContainer!
-  topicQueueRemove(eventId: String!, topic: String!): EventQuestionEdgeContainer!
+  topicQueuePush(eventId: String!): EventQuestionEdgeContainer!
+  topicQueueRemove(eventId: String!): EventQuestionEdgeContainer!
   topicUpdated(eventId: String!): EventTopic
 
   """Subscribes to the creation of invites for a given event."""

@@ -132,10 +132,10 @@ type Subscription {
     questionCreated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
     questionUpdated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
     questionDeleted(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
-    questionCreatedByTopic(eventId: ID!, topic: String!): EventQuestionEdgeContainer!
+    questionCreatedByTopic(eventId: ID!): EventQuestionEdgeContainer!
 
-    questionEnqueued(eventId: String!, topic: String!): EventQuestionEdgeContainer!
-    questionDequeued(eventId: String!, topic: String!): EventQuestionEdgeContainer!
+    questionEnqueued(eventId: String!): EventQuestionEdgeContainer!
+    questionDequeued(eventId: String!): EventQuestionEdgeContainer!
 
     questionAddedToRecord(eventId: ID!): EventQuestionEdgeContainer!
     questionRemovedFromRecord(eventId: ID!): EventQuestionEdgeContainer!
@@ -154,8 +154,8 @@ type Subscription {
 
     questionAddedToEnqueued(eventId: ID!): EventQuestionEdgeContainer!
     questionRemovedFromEnqueued(eventId: ID!): EventQuestionEdgeContainer!
-    topicQueuePush(eventId: String!, topic: String!): EventQuestionEdgeContainer!
-    topicQueueRemove(eventId: String!, topic: String!): EventQuestionEdgeContainer!
+    topicQueuePush(eventId: String!): EventQuestionEdgeContainer!
+    topicQueueRemove(eventId: String!): EventQuestionEdgeContainer!
 }
 
 type Query {

@@ -1594,7 +1594,6 @@ export type SubscriptionQuestionCreatedArgs = {
 
 export type SubscriptionQuestionCreatedByTopicArgs = {
   eventId: Scalars['ID'];
-  topic: Scalars['String'];
 };
 
 
@@ -1606,13 +1605,11 @@ export type SubscriptionQuestionDeletedArgs = {
 
 export type SubscriptionQuestionDequeuedArgs = {
   eventId: Scalars['String'];
-  topic: Scalars['String'];
 };
 
 
 export type SubscriptionQuestionEnqueuedArgs = {
   eventId: Scalars['String'];
-  topic: Scalars['String'];
 };
 
 
@@ -1649,13 +1646,11 @@ export type SubscriptionRecordUnshiftQuestionArgs = {
 
 export type SubscriptionTopicQueuePushArgs = {
   eventId: Scalars['String'];
-  topic: Scalars['String'];
 };
 
 
 export type SubscriptionTopicQueueRemoveArgs = {
   eventId: Scalars['String'];
-  topic: Scalars['String'];
 };
 
 
