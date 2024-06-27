@@ -6,13 +6,8 @@ import { useSubscription } from 'react-relay';
 import { graphql, GraphQLSubscriptionConfig } from 'relay-runtime';
 
 const USE_TOPIC_QUEUE_PUSH = graphql`
-    subscription useTopicQueuePushSubscription(
-        $eventId: String!
-        $topic: String!
-        $connections: [ID!]!
-        $lang: String!
-    ) {
-        topicQueuePush(eventId: $eventId, topic: $topic) {
+    subscription useTopicQueuePushSubscription($eventId: String!, $connections: [ID!]!, $lang: String!) {
+        topicQueuePush(eventId: $eventId) {
             edge @appendEdge(connections: $connections) {
                 node {
                     id
@@ -34,19 +29,18 @@ const USE_TOPIC_QUEUE_PUSH = graphql`
 
 interface Props {
     eventId: string;
-    topic: string;
     connections: string[];
 }
 
-export function useTopicQueuePush({ eventId, topic, connections }: Props) {
+export function useTopicQueuePush({ eventId, connections }: Props) {
     const { user } = useUser();
 
     const config = React.useMemo<GraphQLSubscriptionConfig<useTopicQueuePushSubscription>>(
         () => ({
             subscription: USE_TOPIC_QUEUE_PUSH,
-            variables: { eventId, topic, connections, lang: user?.preferredLang ?? 'EN' },
+            variables: { eventId, connections, lang: user?.preferredLang ?? 'EN' },
         }),
-        [connections, eventId, topic, user?.preferredLang]
+        [connections, eventId, user?.preferredLang]
     );
 
     useSubscription<useTopicQueuePushSubscription>(config);

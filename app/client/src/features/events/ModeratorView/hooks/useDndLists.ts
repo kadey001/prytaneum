@@ -50,8 +50,8 @@ export function useDndLists({ node, topic, topics }: Props) {
     } = useOnDeck({ fragmentRef: node });
 
     // -- Relay Mutation/Subscription hooks --
-    useTopicQueuePush({ eventId, topic, connections: queueConnections });
-    useTopicQueueRemove({ eventId, topic, connections: queueConnections });
+    useTopicQueuePush({ eventId, connections: queueConnections });
+    useTopicQueueRemove({ eventId, connections: queueConnections });
 
     const { updateTopicQueuePosition } = useUpdateTopicQueuePosition({ eventId, topic });
     const { addQuestionToOnDeck } = useOnDeckEnqueued({ connections: [queueConnection], topics, topic });
