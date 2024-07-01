@@ -80,7 +80,6 @@ export async function regenerateEventTopics(eventId: string) {
         }
     );
     const data = response.data as { topics: { [key: string]: string }; locked_topics: string[] };
-    console.log('DATA: ', data);
     if (!data.topics)
         throw new ProtectedError({
             userMessage: 'No topics found. Please try again.',
@@ -102,67 +101,71 @@ interface UpdateTopicProps {
 }
 
 export async function updateTopic({ eventId, oldTopic, newTopic, description }: UpdateTopicProps) {
-    console.log('Updating topic: ', { eventId, oldTopic, newTopic, description });
-
-    const response = await axios.post(
-        process.env.MODERATION_URL,
-        {
-            stage: 'interactive',
-            action: 'rename',
-            eventId: eventId,
-            selected_topic: oldTopic,
-            new_topic: newTopic,
-            new_definition: description,
-        },
-        {
-            headers: { 'Content-Type': 'application/json' },
-        }
-    );
-    console.log('Response: ', response);
+    try {
+        await axios.post(
+            process.env.MODERATION_URL,
+            {
+                stage: 'interactive',
+                action: 'rename',
+                eventId: eventId,
+                selected_topic: oldTopic,
+                new_topic: newTopic,
+                new_definition: description,
+            },
+            {
+                headers: { 'Content-Type': 'application/json' },
+            }
+        );
+    } catch (error) {
+        console.error(error);
+        throw new ProtectedError({ userMessage: 'An error occurred while updating the topic' });
+    }
 }
 
 export async function deleteTopic(eventId: string, topic: string) {
-    console.log('Deleting topic: ', { eventId, topic });
-
-    const response = await axios.post(
-        process.env.MODERATION_URL,
-        {
-            stage: 'interactive',
-            action: 'remove',
-            eventId: eventId,
-            selected_topic: topic,
-        },
-        {
-            headers: { 'Content-Type': 'application/json' },
-        }
-    );
-    console.log('Response: ', response);
+    try {
+        await axios.post(
+            process.env.MODERATION_URL,
+            {
+                stage: 'interactive',
+                action: 'remove',
+                eventId: eventId,
+                selected_topic: topic,
+            },
+            {
+                headers: { 'Content-Type': 'application/json' },
+            }
+        );
+    } catch (error) {
+        console.error(error);
+        throw new ProtectedError({ userMessage: 'An error occurred while deleting the topic' });
+    }
 }
 
 export async function addTopic(eventId: string, topic: string, description: string) {
-    console.log('Adding topic: ', { eventId, topic, description });
-
-    const response = await axios.post(
-        process.env.MODERATION_URL,
-        {
-            stage: 'interactive',
-            action: 'add',
-            eventId: eventId,
-            new_topic: topic,
-            new_definition: description,
-        },
-        {
-            headers: { 'Content-Type': 'application/json' },
-        }
-    );
-    console.log('Response: ', response);
+    try {
+        await axios.post(
+            process.env.MODERATION_URL,
+            {
+                stage: 'interactive',
+                action: 'add',
+                eventId: eventId,
+                new_topic: topic,
+                new_definition: description,
+            },
+            {
+                headers: { 'Content-Type': 'application/json' },
+            }
+        );
+    } catch (error) {
+        console.error(error);
+        throw new ProtectedError({ userMessage: 'An error occurred while adding the topic' });
+    }
 }
 
 export async function lockTopic(eventId: string, topic: string) {
-    console.log('Locking topic: ', { eventId, topic });
-
     try {
-        const response = await axios.post(
+        await axios.post(
             process.env.MODERATION_URL,
             {
                 stage: 'interactive',
@@ -174,7 +177,6 @@ export async function lockTopic(eventId: string, topic: string) {
                 headers: { 'Content-Type': 'application/json' },
             }
         );
-        console.log('Response: ', response);
     } catch (error) {
         console.error(error);
         throw new ProtectedError({ userMessage: 'An error occurred while locking the topic' });
@@ -182,21 +184,23 @@ export async function lockTopic(eventId: string, topic: string) {
 }
 
 export async function unlockTopic(eventId: string, topic: string) {
-    console.log('Unlocking topic: ', { eventId, topic });
-
-    const response = await axios.post(
-        process.env.MODERATION_URL,
-        {
-            stage: 'interactive',
-            action: 'unlock',
-            eventId: eventId,
-            selected_topic: topic,
-        },
-        {
-            headers: { 'Content-Type': 'application/json' },
-        }
-    );
-    console.log('Response: ', response);
+    try {
+        await axios.post(
+            process.env.MODERATION_URL,
+            {
+                stage: 'interactive',
+                action: 'unlock',
+                eventId: eventId,
+                selected_topic: topic,
+            },
+            {
+                headers: { 'Content-Type': 'application/json' },
+            }
+        );
+    } catch (error) {
+        console.error(error);
+        throw new ProtectedError({ userMessage: 'An error occurred while unlocking the topic' });
+    }
 }
 
 export async function finalizeTopics(
@@ -207,11 +211,10 @@ export async function finalizeTopics(
     // Remove all existing topics
     await prisma.eventTopic.deleteMany({ where: { eventId } });
 
-    const result = await prisma.eventTopic.createMany({
+    await prisma.eventTopic.createMany({
         data: topics.map((topic) => ({ eventId, topic: topic.topic, description: topic.description })),
         skipDuplicates: true,
     });
-    console.log('Result: ', result);
 }
 
 export async function deleteAllTopics(eventId: string, prisma: PrismaClient) {

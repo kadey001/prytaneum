@@ -513,7 +513,6 @@ export const resolvers: Resolvers = {
                         cursor: updatedQuestion.createdAt.getTime().toString(),
                         node: questionWithGlobalId,
                     };
-                    console.log('Call to removeQuestionFromQueue');
                     ctx.pubsub.publish({
                         topic: 'topicQueueRemove',
                         payload: {

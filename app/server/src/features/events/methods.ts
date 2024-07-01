@@ -464,7 +464,6 @@ export async function findQueueByEventIdAndTopic(eventId: string, topic: string,
             },
             include: { topics: true },
         });
-        console.log('Getting Default Queue: ', result);
         return result;
     }
     const topicResult = await prisma.eventTopic.findUnique({ where: { eventId_topic: { eventId, topic } } });
@@ -494,13 +493,11 @@ export async function findQuestionModQueueByEventId(eventId: string, prisma: Pri
         orderBy: { position: 'asc' },
         select: { questionId: true },
     });
-    console.log('Getting Mod Queue: ', questionIds);
     const questions = await prisma.eventQuestion.findMany({
         where: {
             eventId,
             OR: [{ id: { in: questionIds.map((question) => question.questionId) } }, { position: { not: '-1' } }],
         },
-        // include: { topics: true },
     });
     return questions;
 }

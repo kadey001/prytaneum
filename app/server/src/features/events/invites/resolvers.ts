@@ -92,8 +92,6 @@ export const resolvers: Resolvers = {
                     const userId = ctx.viewer.id;
                     if (!userId) return false;
                     const { id: argEventId } = fromGlobalId(args.eventId);
-                    console.log('eventId', eventId);
-                    console.log('argEventId', argEventId);
 
                     return eventId === argEventId;
                 }
@@ -107,8 +105,6 @@ export const resolvers: Resolvers = {
                     const userId = ctx.viewer.id;
                     if (!userId) return false;
                     const { id: argEventId } = fromGlobalId(args.eventId);
-                    console.log('eventId', eventId);
-                    console.log('argEventId', argEventId);
 
                     return eventId === argEventId;
                 }

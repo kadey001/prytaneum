@@ -153,7 +153,6 @@ export const resolvers: Resolvers = {
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionCreatedByTopic'),
                 (payload, args, ctx) => {
-                    // TODO: Check if viewer is event moderator
                     const { id: eventId } = fromGlobalId(args.eventId);
                     return eventId === payload.eventId;
                 }
