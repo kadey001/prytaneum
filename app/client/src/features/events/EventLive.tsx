@@ -188,7 +188,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
                 resumeParentRefreshing,
             }}
         >
-            <EventTopicContext.Provider value={{ topic: 'default' }}>
+            <EventTopicContext.Provider value={{ topic: 'default', topics: [] }}>
                 <Grid
                     component={motion.div}
                     key='townhall-live'

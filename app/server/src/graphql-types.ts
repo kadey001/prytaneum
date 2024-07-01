@@ -930,16 +930,12 @@ export type Subscription = {
     questionCreatedByTopic: EventQuestionEdgeContainer;
     questionEnqueued: EventQuestionEdgeContainer;
     questionDequeued: EventQuestionEdgeContainer;
-    questionAddedToRecord: EventQuestionEdgeContainer;
-    questionRemovedFromRecord: EventQuestionEdgeContainer;
     recordPushQuestion: EventQuestionEdgeContainer;
     recordUnshiftQuestion: EventQuestionEdgeContainer;
     recordRemoveQuestion: EventQuestionEdgeContainer;
     enqueuedPushQuestion: EventQuestionEdgeContainer;
     enqueuedUnshiftQuestion: EventQuestionEdgeContainer;
     enqueuedRemoveQuestion: EventQuestionEdgeContainer;
-    questionAddedToEnqueued: EventQuestionEdgeContainer;
-    questionRemovedFromEnqueued: EventQuestionEdgeContainer;
     topicQueuePush: EventQuestionEdgeContainer;
     topicQueueRemove: EventQuestionEdgeContainer;
     topicUpdated?: Maybe<EventTopic>;
@@ -1010,24 +1006,13 @@ export type SubscriptionquestionDeletedArgs = {
 
 export type SubscriptionquestionCreatedByTopicArgs = {
     eventId: Scalars['ID'];
-    topic: Scalars['String'];
 };
 
 export type SubscriptionquestionEnqueuedArgs = {
-    eventId: Scalars['String'];
-    topic: Scalars['String'];
-};
-
-export type SubscriptionquestionDequeuedArgs = {
-    eventId: Scalars['String'];
-    topic: Scalars['String'];
-};
-
-export type SubscriptionquestionAddedToRecordArgs = {
     eventId: Scalars['ID'];
 };
 
-export type SubscriptionquestionRemovedFromRecordArgs = {
+export type SubscriptionquestionDequeuedArgs = {
     eventId: Scalars['ID'];
 };
 
@@ -1055,22 +1040,12 @@ export type SubscriptionenqueuedRemoveQuestionArgs = {
     eventId: Scalars['ID'];
 };
 
-export type SubscriptionquestionAddedToEnqueuedArgs = {
-    eventId: Scalars['ID'];
-};
-
-export type SubscriptionquestionRemovedFromEnqueuedArgs = {
-    eventId: Scalars['ID'];
-};
-
 export type SubscriptiontopicQueuePushArgs = {
-    eventId: Scalars['String'];
-    topic: Scalars['String'];
+    eventId: Scalars['ID'];
 };
 
 export type SubscriptiontopicQueueRemoveArgs = {
-    eventId: Scalars['String'];
-    topic: Scalars['String'];
+    eventId: Scalars['ID'];
 };
 
 export type SubscriptiontopicUpdatedArgs = {
@@ -3191,35 +3166,21 @@ export type SubscriptionResolvers<
         'questionCreatedByTopic',
         ParentType,
         ContextType,
-        RequireFields<SubscriptionquestionCreatedByTopicArgs, 'eventId' | 'topic'>
+        RequireFields<SubscriptionquestionCreatedByTopicArgs, 'eventId'>
     >;
     questionEnqueued?: SubscriptionResolver<
         ResolversTypes['EventQuestionEdgeContainer'],
         'questionEnqueued',
         ParentType,
         ContextType,
-        RequireFields<SubscriptionquestionEnqueuedArgs, 'eventId' | 'topic'>
+        RequireFields<SubscriptionquestionEnqueuedArgs, 'eventId'>
     >;
     questionDequeued?: SubscriptionResolver<
         ResolversTypes['EventQuestionEdgeContainer'],
         'questionDequeued',
         ParentType,
         ContextType,
-        RequireFields<SubscriptionquestionDequeuedArgs, 'eventId' | 'topic'>
-    >;
-    questionAddedToRecord?: SubscriptionResolver<
-        ResolversTypes['EventQuestionEdgeContainer'],
-        'questionAddedToRecord',
-        ParentType,
-        ContextType,
-        RequireFields<SubscriptionquestionAddedToRecordArgs, 'eventId'>
-    >;
-    questionRemovedFromRecord?: SubscriptionResolver<
-        ResolversTypes['EventQuestionEdgeContainer'],
-        'questionRemovedFromRecord',
-        ParentType,
-        ContextType,
-        RequireFields<SubscriptionquestionRemovedFromRecordArgs, 'eventId'>
+        RequireFields<SubscriptionquestionDequeuedArgs, 'eventId'>
     >;
     recordPushQuestion?: SubscriptionResolver<
         ResolversTypes['EventQuestionEdgeContainer'],
@@ -3263,33 +3224,19 @@ export type SubscriptionResolvers<
         ContextType,
         RequireFields<SubscriptionenqueuedRemoveQuestionArgs, 'eventId'>
     >;
-    questionAddedToEnqueued?: SubscriptionResolver<
-        ResolversTypes['EventQuestionEdgeContainer'],
-        'questionAddedToEnqueued',
-        ParentType,
-        ContextType,
-        RequireFields<SubscriptionquestionAddedToEnqueuedArgs, 'eventId'>
-    >;
-    questionRemovedFromEnqueued?: SubscriptionResolver<
-        ResolversTypes['EventQuestionEdgeContainer'],
-        'questionRemovedFromEnqueued',
-        ParentType,
-        ContextType,
-        RequireFields<SubscriptionquestionRemovedFromEnqueuedArgs, 'eventId'>
-    >;
     topicQueuePush?: SubscriptionResolver<
         ResolversTypes['EventQuestionEdgeContainer'],
         'topicQueuePush',
         ParentType,
         ContextType,
-        RequireFields<SubscriptiontopicQueuePushArgs, 'eventId' | 'topic'>
+        RequireFields<SubscriptiontopicQueuePushArgs, 'eventId'>
     >;
     topicQueueRemove?: SubscriptionResolver<
         ResolversTypes['EventQuestionEdgeContainer'],
         'topicQueueRemove',
         ParentType,
         ContextType,
-        RequireFields<SubscriptiontopicQueueRemoveArgs, 'eventId' | 'topic'>
+        RequireFields<SubscriptiontopicQueueRemoveArgs, 'eventId'>
     >;
     topicUpdated?: SubscriptionResolver<
         Maybe<ResolversTypes['EventTopic']>,

@@ -7,14 +7,9 @@ import { useEvent } from '../../useEvent';
 import { useUser } from '@local/features/accounts';
 
 export const USE_QUESTION_CREATED_SUBSCRIPTION = graphql`
-    subscription useQuestionCreatedByTopicSubscription(
-        $eventId: ID!
-        $topic: String!
-        $connections: [ID!]!
-        $lang: String!
-    ) {
-        questionCreatedByTopic(eventId: $eventId, topic: $topic) {
-            edge @prependEdge(connections: $connections) {
+    subscription useQuestionCreatedByTopicSubscription($eventId: ID!, $lang: String!) {
+        questionCreatedByTopic(eventId: $eventId) {
+            edge {
                 cursor
                 node {
                     id
@@ -44,7 +39,7 @@ export const USE_QUESTION_CREATED_SUBSCRIPTION = graphql`
 
 // Attempt to filter questions being added to the list by topic
 // Should only be added to the lists that are related to the question's topics & default
-export function useQuestionCreatedByTopic({ connections, topic }: { connections: string[]; topic: string }) {
+export function useQuestionCreatedByTopic() {
     const { eventId } = useEvent();
     const { user } = useUser();
 
@@ -52,8 +47,6 @@ export function useQuestionCreatedByTopic({ connections, topic }: { connections:
         () => ({
             variables: {
                 eventId,
-                topic,
-                connections,
                 lang: user?.preferredLang ?? 'EN',
             },
             subscription: USE_QUESTION_CREATED_SUBSCRIPTION,
@@ -71,7 +64,7 @@ export function useQuestionCreatedByTopic({ connections, topic }: { connections:
                 const topics = serverEdge.getLinkedRecord('node').getLinkedRecords('topics');
                 const topicNames = topics.map((_topic) => _topic.getValue('topic'));
 
-                // Always pdate the default topic list
+                // Always update the default topic list
                 const questionsByTopicConnection = ConnectionHandler.getConnectionID(
                     eventRecord.getDataID(),
                     'useQuestionsByTopicFragment_questionsByTopic'
@@ -92,7 +85,7 @@ export function useQuestionCreatedByTopic({ connections, topic }: { connections:
                 });
             },
         }),
-        [eventId, topic, connections, user?.preferredLang]
+        [eventId, user?.preferredLang]
     );
 
     useSubscription<useQuestionCreatedByTopicSubscription>(createdConfig);

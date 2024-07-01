@@ -26,9 +26,7 @@ import type { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer'
 
 import ListFilter, { useFilters, Accessors } from '@local/components/ListFilter';
 import { ArrayElement } from '@local/utils/ts-utils';
-import { useEvent } from '@local/features/events';
 import { useQuestionUpdated } from '@local/features/events/Questions/QuestionList/useQuestionUpdated';
-import { useQuestionDeleted } from '@local/features/events/Questions/QuestionList/useQuestionDeleted';
 import { useQuestionsByTopic } from './hooks/useQuestionsByTopic';
 import { useQuestionsByTopicFragment$key } from '@local/__generated__/useQuestionsByTopicFragment.graphql';
 import EventQuestion from './EventQuestion';
@@ -36,6 +34,7 @@ import { Topic } from './types';
 import { useQuestionDequeued } from './hooks/useQuestionDequeued';
 import { useQuestionEnqueued } from './hooks/useQuestionEnqueued';
 import { useQuestionCreatedByTopic } from './hooks/useQuestionCreatedByTopic';
+import { useQuestionDeletedByTopic } from './hooks/useQuestionDeletedByTopic';
 
 interface Props {
     fragmentRef: useQuestionsByTopicFragment$key;
@@ -59,7 +58,6 @@ export function QuestionListContainer({
     topics,
 }: Props) {
     const theme = useTheme();
-    const { eventId } = useEvent();
     const listRef = React.useRef<VirtualizedList | null>(null);
     const [isSearchOpen, setIsSearchOpen] = React.useState(false);
     const {
@@ -77,19 +75,19 @@ export function QuestionListContainer({
         [connections, questionsByTopicConnections]
     );
 
-    useQuestionCreatedByTopic({ topic, connections: questionsByTopicConnections });
+    useQuestionCreatedByTopic();
     useQuestionUpdated({ connections });
-    useQuestionDeleted({ connections: questionsByTopicConnections });
-    useQuestionDequeued({ eventId, topic, connections: questionsByTopicConnections });
-    useQuestionEnqueued({ eventId, topic, connections: questionsByTopicConnections });
+    useQuestionDeletedByTopic();
+    useQuestionDequeued();
+    useQuestionEnqueued();
 
     // Ensure that all topic lists are subscribed to.
     // Otherwise any updates to a non selected topic will not be updated without a page refresh
     React.useEffect(() => {
         topics.forEach((t) => {
-            refetch({ topic: t.topic }, { fetchPolicy: 'network-only' });
+            refetch({ topic: t.topic, first: 10 }, { fetchPolicy: 'network-only' });
         });
-        refetch({ topic }, { fetchPolicy: 'store-and-network' });
+        refetch({ topic, first: 50 }, { fetchPolicy: 'store-and-network' });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

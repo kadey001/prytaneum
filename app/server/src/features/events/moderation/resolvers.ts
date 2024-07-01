@@ -67,6 +67,7 @@ export const resolvers: Resolvers = {
                         topic: 'questionUpdated',
                         payload: {
                             questionUpdated: { edge },
+                            eventId,
                         },
                     });
                     return edge;
@@ -100,6 +101,7 @@ export const resolvers: Resolvers = {
                     topic: 'questionUpdated',
                     payload: {
                         questionUpdated: { edge },
+                        eventId,
                     },
                 });
                 return edge;
@@ -125,6 +127,7 @@ export const resolvers: Resolvers = {
                             cursor: newCurrentQuestionWithGlobalId.createdAt.getTime().toString(),
                         },
                     },
+                    eventId,
                 },
             });
 
@@ -137,6 +140,7 @@ export const resolvers: Resolvers = {
                             cursor: newCurrentQuestionWithGlobalId.createdAt.getTime().toString(),
                         },
                     },
+                    eventId,
                 },
             });
             return eventWithGlobalId;
@@ -159,6 +163,7 @@ export const resolvers: Resolvers = {
                             cursor: prevCurrentQuestion.createdAt.getTime().toString(),
                         },
                     },
+                    eventId,
                 },
             });
             ctx.pubsub.publish({
@@ -170,6 +175,7 @@ export const resolvers: Resolvers = {
                             cursor: prevCurrentQuestion.createdAt.getTime().toString(),
                         },
                     },
+                    eventId,
                 },
             });
             return eventWithGlobalId;
@@ -226,7 +232,7 @@ export const resolvers: Resolvers = {
                     topic: 'topicQueuePush',
                     payload: {
                         topicQueuePush: { edge },
-                        eventId: updatedQuestion.eventId,
+                        eventId,
                         topic: args.input.topic,
                         viewerId: ctx.viewer.id,
                     },
@@ -235,7 +241,7 @@ export const resolvers: Resolvers = {
                     topic: 'questionEnqueued',
                     payload: {
                         questionEnqueued: { edge },
-                        eventId: updatedQuestion.eventId,
+                        eventId,
                         topic: args.input.topic,
                         viewerId: ctx.viewer.id,
                     },
@@ -263,7 +269,7 @@ export const resolvers: Resolvers = {
                     topic: 'topicQueueRemove',
                     payload: {
                         topicQueueRemove: { edge },
-                        eventId: updatedQuestion.eventId,
+                        eventId,
                         topic: args.input.topic,
                         viewerId: ctx.viewer.id,
                     },
@@ -273,7 +279,7 @@ export const resolvers: Resolvers = {
                     topic: 'questionDequeued',
                     payload: {
                         questionDequeued: { edge },
-                        eventId: updatedQuestion.eventId,
+                        eventId,
                         topic: args.input.topic,
                         viewerId: ctx.viewer.id,
                     },
@@ -322,19 +328,21 @@ export const resolvers: Resolvers = {
                         topic: 'enqueuedPushQuestion',
                         payload: {
                             enqueuedPushQuestion: { edge },
+                            eventId,
                         },
                     });
                     ctx.pubsub.publish({
                         topic: 'questionUpdated',
                         payload: {
                             questionUpdated: { edge },
+                            eventId,
                         },
                     });
                     ctx.pubsub.publish({
                         topic: 'topicQueuePush',
                         payload: {
                             topicQueuePush: { edge },
-                            eventId: updatedQuestion.eventId,
+                            eventId,
                         },
                     });
                     return edge;
@@ -386,6 +394,7 @@ export const resolvers: Resolvers = {
                         topic: 'enqueuedPushQuestion',
                         payload: {
                             enqueuedPushQuestion: { edge },
+                            eventId,
                             viewerId: ctx.viewer.id,
                         },
                     });
@@ -447,6 +456,7 @@ export const resolvers: Resolvers = {
                         topic: 'enqueuedRemoveQuestion',
                         payload: {
                             enqueuedRemoveQuestion: { edge },
+                            eventId,
                             viewerId: ctx.viewer.id,
                         },
                     });
@@ -503,24 +513,25 @@ export const resolvers: Resolvers = {
                         cursor: updatedQuestion.createdAt.getTime().toString(),
                         node: questionWithGlobalId,
                     };
-                    console.log('Call to removeQuestionFromQueue');
                     ctx.pubsub.publish({
                         topic: 'topicQueueRemove',
                         payload: {
                             topicQueueRemove: { edge },
-                            eventId: updatedQuestion.eventId,
+                            eventId,
                         },
                     });
                     ctx.pubsub.publish({
                         topic: 'enqueuedRemoveQuestion',
                         payload: {
                             enqueuedRemoveQuestion: { edge },
+                            eventId,
                         },
                     });
                     ctx.pubsub.publish({
                         topic: 'questionUpdated',
                         payload: {
                             questionUpdated: { edge },
+                            eventId,
                         },
                     });
                     return edge;
@@ -572,6 +583,7 @@ export const resolvers: Resolvers = {
                         topic: 'questionUpdated',
                         payload: {
                             questionUpdated: { edge },
+                            eventId,
                         },
                     });
                     return edge;

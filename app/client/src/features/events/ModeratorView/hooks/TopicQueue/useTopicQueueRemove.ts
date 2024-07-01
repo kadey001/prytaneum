@@ -5,8 +5,8 @@ import { useSubscription } from 'react-relay';
 import { graphql, GraphQLSubscriptionConfig } from 'relay-runtime';
 
 const USE_TOPIC_QUEUE_REMOVE = graphql`
-    subscription useTopicQueueRemoveSubscription($eventId: String!, $topic: String!, $connections: [ID!]!) {
-        topicQueueRemove(eventId: $eventId, topic: $topic) {
+    subscription useTopicQueueRemoveSubscription($eventId: ID!, $connections: [ID!]!) {
+        topicQueueRemove(eventId: $eventId) {
             edge {
                 node {
                     id @deleteEdge(connections: $connections)
@@ -19,17 +19,16 @@ const USE_TOPIC_QUEUE_REMOVE = graphql`
 
 interface Props {
     eventId: string;
-    topic: string;
     connections: string[];
 }
 
-export function useTopicQueueRemove({ eventId, topic, connections }: Props) {
+export function useTopicQueueRemove({ eventId, connections }: Props) {
     const config = React.useMemo<GraphQLSubscriptionConfig<useTopicQueueRemoveSubscription>>(
         () => ({
             subscription: USE_TOPIC_QUEUE_REMOVE,
-            variables: { eventId, topic, connections },
+            variables: { eventId, connections },
         }),
-        [eventId, topic, connections]
+        [eventId, connections]
     );
 
     useSubscription<useTopicQueueRemoveSubscription>(config);

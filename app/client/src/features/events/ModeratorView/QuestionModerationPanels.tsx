@@ -53,7 +53,7 @@ export function QuestionModerationPanels({ node, topics }: QuestionModerationPan
     if (!topics) return <Loader />;
 
     return (
-        <EventTopicContext.Provider value={{ topic }}>
+        <EventTopicContext.Provider value={{ topic, topics }}>
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCorners}

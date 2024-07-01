@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { fromGlobalId, connectionFromArray } from 'graphql-relay';
 import * as Question from './methods';
+import { isModerator } from '@local/features/events/moderation/methods';
 import { Resolvers, withFilter, errors, toGlobalId, runMutation } from '@local/features/utils';
 import { ProtectedError } from '@local/lib/ProtectedError';
 import type { EventQuestionEdgeContainer } from '@local/graphql-types';
@@ -36,6 +37,7 @@ export const resolvers: Resolvers = {
                     payload: {
                         questionCreated: { edge },
                         authorId: ctx.viewer.id,
+                        eventId,
                     },
                 });
                 ctx.pubsub.publish({
@@ -43,7 +45,6 @@ export const resolvers: Resolvers = {
                     payload: {
                         questionCreatedByTopic: { edge },
                         eventId,
-                        topics,
                     },
                 });
 
@@ -96,6 +97,7 @@ export const resolvers: Resolvers = {
                     topic: 'questionUpdated',
                     payload: {
                         questionUpdated: { edge },
+                        eventId: question.eventId,
                     },
                 });
                 return edge;
@@ -104,24 +106,29 @@ export const resolvers: Resolvers = {
     },
     Subscription: {
         questionCreated: {
-            subscribe: withFilter<{ questionCreated: EventQuestionEdgeContainer; authorId: string }>(
+            subscribe: withFilter<{ questionCreated: EventQuestionEdgeContainer; authorId: string; eventId: string }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionCreated'),
-                (payload, args, ctx) => {
+                async (payload, args, ctx) => {
+                    const { eventId: questionEventId, authorId } = payload;
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionCreated.edge.node.id);
+                    const isViewerOnly = args.viewerOnly === true;
                     // Updated in mutation for viewer so no need to update via subscription
-                    if (payload.authorId === ctx.viewer.id) return false;
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
+                    if (authorId === ctx.viewer.id) return false;
+                    // If viewerOnly is true, only push questions to the moderators
+                    if (isViewerOnly) {
+                        const isViewerModerator = await isModerator(ctx.viewer.id, eventId, ctx.prisma);
+                        if (!isViewerModerator) return false;
+                    }
+                    return eventId === questionEventId;
                 }
             ),
         },
         questionUpdated: {
-            subscribe: withFilter<{ questionUpdated: EventQuestionEdgeContainer }>(
+            subscribe: withFilter<{ questionUpdated: EventQuestionEdgeContainer; eventId: string }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionUpdated'),
                 (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionUpdated.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
+                    return eventId === payload.eventId;
                 }
             ),
         },
@@ -131,7 +138,6 @@ export const resolvers: Resolvers = {
                 (payload, args, ctx) => {
                     const { eventId: questionEventId } = payload;
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionDeleted.edge.node.id);
                     if (args.viewerOnly === true) {
                         const { authorId } = payload;
                         if (authorId !== ctx.viewer.id) return false;
@@ -144,116 +150,75 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{
                 questionCreatedByTopic: EventQuestionEdgeContainer;
                 eventId: string;
-                topics: string[];
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionCreatedByTopic'),
                 (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    // Not filtering by topic server side since the question may be created with multiple topics
-                    // All the connections will be updated respectively on the client side relay updater
                     return eventId === payload.eventId;
                 }
             ),
         },
-        questionAddedToRecord: {
-            subscribe: withFilter<{ questionAddedToRecord: EventQuestionEdgeContainer }>(
-                (parent, args, ctx) => ctx.pubsub.subscribe('questionAddedToRecord'),
-                (payload, args, ctx) => {
-                    const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionAddedToRecord.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
-                }
-            ),
-        },
-        questionRemovedFromRecord: {
-            subscribe: withFilter<{ questionRemovedFromRecord: EventQuestionEdgeContainer }>(
-                (parent, args, ctx) => ctx.pubsub.subscribe('questionRemovedFromRecord'),
-                (payload, args, ctx) => {
-                    const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionRemovedFromRecord.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
-                }
-            ),
-        },
-        questionAddedToEnqueued: {
-            subscribe: withFilter<{ questionAddedToEnqueued: EventQuestionEdgeContainer }>(
-                (parent, args, ctx) => ctx.pubsub.subscribe('questionAddedToEnqueued'),
-                (payload, args, ctx) => {
-                    const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionAddedToEnqueued.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
-                }
-            ),
-        },
-        questionRemovedFromEnqueued: {
-            subscribe: withFilter<{ questionRemovedFromEnqueued: EventQuestionEdgeContainer }>(
-                (parent, args, ctx) => ctx.pubsub.subscribe('questionRemovedFromEnqueued'),
-                (payload, args, ctx) => {
-                    const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionRemovedFromEnqueued.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
-                }
-            ),
-        },
         enqueuedPushQuestion: {
-            subscribe: withFilter<{ enqueuedPushQuestion: EventQuestionEdgeContainer; viewerId: string }>(
+            subscribe: withFilter<{
+                enqueuedPushQuestion: EventQuestionEdgeContainer;
+                viewerId: string;
+                eventId: string;
+            }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('enqueuedPushQuestion'),
                 (payload, args, ctx) => {
                     if (ctx.viewer.id === payload.viewerId) return false;
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.enqueuedPushQuestion.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
+                    return eventId === payload.eventId;
                 }
             ),
         },
         enqueuedUnshiftQuestion: {
-            subscribe: withFilter<{ enqueuedUnshiftQuestion: EventQuestionEdgeContainer }>(
+            subscribe: withFilter<{ enqueuedUnshiftQuestion: EventQuestionEdgeContainer; eventId: string }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('enqueuedUnshiftQuestion'),
                 (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.enqueuedUnshiftQuestion.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
+                    return eventId === payload.eventId;
                 }
             ),
         },
         enqueuedRemoveQuestion: {
-            subscribe: withFilter<{ enqueuedRemoveQuestion: EventQuestionEdgeContainer; viewerId: string }>(
+            subscribe: withFilter<{
+                enqueuedRemoveQuestion: EventQuestionEdgeContainer;
+                viewerId: string;
+                eventId: string;
+            }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('enqueuedRemoveQuestion'),
                 (payload, args, ctx) => {
                     if (ctx.viewer.id === payload.viewerId) return false;
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.enqueuedRemoveQuestion.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
+                    return eventId === payload.eventId;
                 }
             ),
         },
         recordPushQuestion: {
-            subscribe: withFilter<{ recordPushQuestion: EventQuestionEdgeContainer }>(
+            subscribe: withFilter<{ recordPushQuestion: EventQuestionEdgeContainer; eventId: string }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('recordPushQuestion'),
                 (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.recordPushQuestion.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
+                    return eventId === payload.eventId;
                 }
             ),
         },
         recordUnshiftQuestion: {
-            subscribe: withFilter<{ recordUnshiftQuestion: EventQuestionEdgeContainer }>(
+            subscribe: withFilter<{ recordUnshiftQuestion: EventQuestionEdgeContainer; eventId: string }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('recordUnshiftQuestion'),
                 (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.recordUnshiftQuestion.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
+                    return eventId === payload.eventId;
                 }
             ),
         },
         recordRemoveQuestion: {
-            subscribe: withFilter<{ recordRemoveQuestion: EventQuestionEdgeContainer }>(
+            subscribe: withFilter<{ recordRemoveQuestion: EventQuestionEdgeContainer; eventId: string }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('recordRemoveQuestion'),
                 async (payload, args, ctx) => {
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.recordRemoveQuestion.edge.node.id);
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
+                    return eventId === payload.eventId;
                 }
             ),
         },
@@ -261,7 +226,6 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{
                 topicQueuePush: EventQuestionEdgeContainer;
                 eventId: string;
-                topic: string;
                 viewerId: string;
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('topicQueuePush'),
@@ -276,7 +240,6 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{
                 topicQueueRemove: EventQuestionEdgeContainer;
                 eventId: string;
-                topic: string;
                 viewerId: string;
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('topicQueueRemove'),
@@ -291,17 +254,13 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{
                 questionEnqueued: EventQuestionEdgeContainer;
                 eventId: string;
-                topic: string;
                 viewerId: string;
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionEnqueued'),
                 (payload, args, ctx) => {
                     if (ctx.viewer.id === payload.viewerId) return false;
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    if (eventId === payload.eventId) {
-                        return payload.topic === args.topic;
-                    }
-                    return false;
+                    return eventId === payload.eventId;
                 }
             ),
         },
@@ -309,19 +268,13 @@ export const resolvers: Resolvers = {
             subscribe: withFilter<{
                 questionDequeued: EventQuestionEdgeContainer;
                 eventId: string;
-                topic: string;
                 viewerId: string;
             }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionDequeued'),
                 (payload, args, ctx) => {
                     if (ctx.viewer.id === payload.viewerId) return false;
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionDequeued.edge.node.id);
-                    if (eventId === payload.eventId) {
-                        // if (args.topic === 'default') return true;
-                        return payload.topic === args.topic;
-                    }
-                    return false;
+                    return eventId === payload.eventId;
                 }
             ),
         },

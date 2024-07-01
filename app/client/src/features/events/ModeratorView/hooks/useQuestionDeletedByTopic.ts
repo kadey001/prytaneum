@@ -1,15 +1,16 @@
-// Subscription to the topic queue being updated
-import { useQuestionEnqueuedSubscription } from '@local/__generated__/useQuestionEnqueuedSubscription.graphql';
-import React from 'react';
-import { useSubscription } from 'react-relay';
-import { ConnectionHandler, graphql, GraphQLSubscriptionConfig } from 'relay-runtime';
-import { useEvent } from '../../useEvent';
+import { useMemo } from 'react';
+import { ConnectionHandler, GraphQLSubscriptionConfig } from 'relay-runtime';
+import { useSubscription, graphql } from 'react-relay';
+
+import type { useQuestionDeletedByTopicSubscription } from '@local/__generated__/useQuestionDeletedByTopicSubscription.graphql';
+import { useEvent } from '@local/features/events/useEvent';
 import { useTopic } from '../useTopic';
 
-const USE_QUESTION_ENQUEUED = graphql`
-    subscription useQuestionEnqueuedSubscription($eventId: ID!) {
-        questionEnqueued(eventId: $eventId) {
+export const USE_QUESTION_DELETED_BY_TOPIC_SUBSCRIPTION = graphql`
+    subscription useQuestionDeletedByTopicSubscription($eventId: ID!) {
+        questionDeleted(eventId: $eventId) {
             edge {
+                cursor
                 node {
                     id
                 }
@@ -18,19 +19,21 @@ const USE_QUESTION_ENQUEUED = graphql`
     }
 `;
 
-export function useQuestionEnqueued() {
+export function useQuestionDeletedByTopic() {
     const { eventId } = useEvent();
     const { topics } = useTopic();
 
-    const config = React.useMemo<GraphQLSubscriptionConfig<useQuestionEnqueuedSubscription>>(
+    const createdConfig = useMemo<GraphQLSubscriptionConfig<useQuestionDeletedByTopicSubscription>>(
         () => ({
-            subscription: USE_QUESTION_ENQUEUED,
-            variables: { eventId },
+            variables: {
+                eventId,
+            },
+            subscription: USE_QUESTION_DELETED_BY_TOPIC_SUBSCRIPTION,
             updater: (store) => {
                 const eventRecord = store.get(eventId);
                 if (!eventRecord) return console.error('Update failed: Event record not found!');
 
-                const payload = store.getRootField('questionEnqueued');
+                const payload = store.getRootField('questionDeleted');
                 if (!payload) return console.error('Update failed: No payload found!');
                 const serverEdge = payload.getLinkedRecord('edge');
                 if (!serverEdge) return console.error('Update failed: No edge found!');
@@ -62,5 +65,5 @@ export function useQuestionEnqueued() {
         [eventId, topics]
     );
 
-    useSubscription<useQuestionEnqueuedSubscription>(config);
+    useSubscription<useQuestionDeletedByTopicSubscription>(createdConfig);
 }
