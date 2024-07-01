@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { fromGlobalId, connectionFromArray } from 'graphql-relay';
 import * as Question from './methods';
+import { isModerator } from '@local/features/events/moderation/methods';
 import { Resolvers, withFilter, errors, toGlobalId, runMutation } from '@local/features/utils';
 import { ProtectedError } from '@local/lib/ProtectedError';
 import type { EventQuestionEdgeContainer } from '@local/graphql-types';
@@ -36,6 +37,7 @@ export const resolvers: Resolvers = {
                     payload: {
                         questionCreated: { edge },
                         authorId: ctx.viewer.id,
+                        eventId,
                     },
                 });
                 ctx.pubsub.publish({
@@ -103,14 +105,20 @@ export const resolvers: Resolvers = {
     },
     Subscription: {
         questionCreated: {
-            subscribe: withFilter<{ questionCreated: EventQuestionEdgeContainer; authorId: string }>(
+            subscribe: withFilter<{ questionCreated: EventQuestionEdgeContainer; authorId: string; eventId: string }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('questionCreated'),
-                (payload, args, ctx) => {
+                async (payload, args, ctx) => {
+                    const { eventId: questionEventId, authorId } = payload;
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    const { id: questionId } = fromGlobalId(payload.questionCreated.edge.node.id);
+                    const isViewerOnly = args.viewerOnly === true;
                     // Updated in mutation for viewer so no need to update via subscription
-                    if (payload.authorId === ctx.viewer.id) return false;
-                    return Question.doesEventMatch(eventId, questionId, ctx.prisma);
+                    if (authorId === ctx.viewer.id) return false;
+                    // If viewerOnly is true, only push questions to the moderators
+                    if (isViewerOnly) {
+                        const isViewerModerator = await isModerator(ctx.viewer.id, eventId, ctx.prisma);
+                        if (!isViewerModerator) return false;
+                    }
+                    return eventId === questionEventId;
                 }
             ),
         },
