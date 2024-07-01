@@ -941,23 +941,19 @@ type Subscription {
   """subscription for whenever a new org is added"""
   orgUpdated: OrganizationSubscription!
   participantMuted(eventId: ID!): Boolean
-  questionAddedToEnqueued(eventId: ID!): EventQuestionEdgeContainer!
-  questionAddedToRecord(eventId: ID!): EventQuestionEdgeContainer!
 
   """Question subscription for all operations performed on questions"""
   questionCreated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
   questionCreatedByTopic(eventId: ID!): EventQuestionEdgeContainer!
   questionDeleted(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
-  questionDequeued(eventId: String!): EventQuestionEdgeContainer!
-  questionEnqueued(eventId: String!): EventQuestionEdgeContainer!
-  questionRemovedFromEnqueued(eventId: ID!): EventQuestionEdgeContainer!
-  questionRemovedFromRecord(eventId: ID!): EventQuestionEdgeContainer!
+  questionDequeued(eventId: ID!): EventQuestionEdgeContainer!
+  questionEnqueued(eventId: ID!): EventQuestionEdgeContainer!
   questionUpdated(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
   recordPushQuestion(eventId: ID!): EventQuestionEdgeContainer!
   recordRemoveQuestion(eventId: ID!): EventQuestionEdgeContainer!
   recordUnshiftQuestion(eventId: ID!): EventQuestionEdgeContainer!
-  topicQueuePush(eventId: String!): EventQuestionEdgeContainer!
-  topicQueueRemove(eventId: String!): EventQuestionEdgeContainer!
+  topicQueuePush(eventId: ID!): EventQuestionEdgeContainer!
+  topicQueueRemove(eventId: ID!): EventQuestionEdgeContainer!
   topicUpdated(eventId: String!): EventTopic
 
   """Subscribes to the creation of invites for a given event."""

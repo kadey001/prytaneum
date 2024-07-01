@@ -7,7 +7,7 @@ import { useEvent } from '../../useEvent';
 import { useTopic } from '../useTopic';
 
 const USE_QUESTION_ENQUEUED = graphql`
-    subscription useQuestionEnqueuedSubscription($eventId: String!) {
+    subscription useQuestionEnqueuedSubscription($eventId: ID!) {
         questionEnqueued(eventId: $eventId) {
             edge {
                 node {

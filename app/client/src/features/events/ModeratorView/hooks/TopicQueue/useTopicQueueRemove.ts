@@ -5,7 +5,7 @@ import { useSubscription } from 'react-relay';
 import { graphql, GraphQLSubscriptionConfig } from 'relay-runtime';
 
 const USE_TOPIC_QUEUE_REMOVE = graphql`
-    subscription useTopicQueueRemoveSubscription($eventId: String!, $connections: [ID!]!) {
+    subscription useTopicQueueRemoveSubscription($eventId: ID!, $connections: [ID!]!) {
         topicQueueRemove(eventId: $eventId) {
             edge {
                 node {

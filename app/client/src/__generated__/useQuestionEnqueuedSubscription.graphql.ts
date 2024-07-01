@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3b191f044c524dd32dfc1c876b5dd92d>>
+ * @generated SignedSource<<aa408e038ef302e864305efdfa560955>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -100,16 +100,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "5eaebb6be01592ea8b91472b7ee4c315",
+    "cacheID": "e8cca9d102efde5906656d10a1833b1f",
     "id": null,
     "metadata": {},
     "name": "useQuestionEnqueuedSubscription",
     "operationKind": "subscription",
-    "text": "subscription useQuestionEnqueuedSubscription(\n  $eventId: String!\n) {\n  questionEnqueued(eventId: $eventId) {\n    edge {\n      node {\n        id\n      }\n    }\n  }\n}\n"
+    "text": "subscription useQuestionEnqueuedSubscription(\n  $eventId: ID!\n) {\n  questionEnqueued(eventId: $eventId) {\n    edge {\n      node {\n        id\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6d2d59119d72b6846dd7c4a867d0e7e1";
+(node as any).hash = "b9fd738b5c3f4a06cdd44e797d433b9a";
 
 export default node;

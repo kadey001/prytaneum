@@ -134,16 +134,13 @@ type Subscription {
     questionDeleted(eventId: ID!, viewerOnly: Boolean): EventQuestionEdgeContainer!
     questionCreatedByTopic(eventId: ID!): EventQuestionEdgeContainer!
 
-    questionEnqueued(eventId: String!): EventQuestionEdgeContainer!
-    questionDequeued(eventId: String!): EventQuestionEdgeContainer!
-
-    questionAddedToRecord(eventId: ID!): EventQuestionEdgeContainer!
-    questionRemovedFromRecord(eventId: ID!): EventQuestionEdgeContainer!
+    questionEnqueued(eventId: ID!): EventQuestionEdgeContainer!
+    questionDequeued(eventId: ID!): EventQuestionEdgeContainer!
 
     # Do not need to control the order that things
     # are removed since we cannot control that on the frontend
     # We need to control the order that things are added since
-    # we control that with append or prepend ont he frontend
+    # we control that with append or prepend on the frontend
     recordPushQuestion(eventId: ID!): EventQuestionEdgeContainer!
     recordUnshiftQuestion(eventId: ID!): EventQuestionEdgeContainer!
     recordRemoveQuestion(eventId: ID!): EventQuestionEdgeContainer!
@@ -152,10 +149,8 @@ type Subscription {
     enqueuedUnshiftQuestion(eventId: ID!): EventQuestionEdgeContainer!
     enqueuedRemoveQuestion(eventId: ID!): EventQuestionEdgeContainer!
 
-    questionAddedToEnqueued(eventId: ID!): EventQuestionEdgeContainer!
-    questionRemovedFromEnqueued(eventId: ID!): EventQuestionEdgeContainer!
-    topicQueuePush(eventId: String!): EventQuestionEdgeContainer!
-    topicQueueRemove(eventId: String!): EventQuestionEdgeContainer!
+    topicQueuePush(eventId: ID!): EventQuestionEdgeContainer!
+    topicQueueRemove(eventId: ID!): EventQuestionEdgeContainer!
 }
 
 type Query {

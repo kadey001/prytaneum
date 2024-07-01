@@ -1487,16 +1487,12 @@ export type Subscription = {
   /** subscription for whenever a new org is added */
   orgUpdated: OrganizationSubscription;
   participantMuted?: Maybe<Scalars['Boolean']>;
-  questionAddedToEnqueued: EventQuestionEdgeContainer;
-  questionAddedToRecord: EventQuestionEdgeContainer;
   /** Question subscription for all operations performed on questions */
   questionCreated: EventQuestionEdgeContainer;
   questionCreatedByTopic: EventQuestionEdgeContainer;
   questionDeleted: EventQuestionEdgeContainer;
   questionDequeued: EventQuestionEdgeContainer;
   questionEnqueued: EventQuestionEdgeContainer;
-  questionRemovedFromEnqueued: EventQuestionEdgeContainer;
-  questionRemovedFromRecord: EventQuestionEdgeContainer;
   questionUpdated: EventQuestionEdgeContainer;
   recordPushQuestion: EventQuestionEdgeContainer;
   recordRemoveQuestion: EventQuestionEdgeContainer;
@@ -1576,16 +1572,6 @@ export type SubscriptionParticipantMutedArgs = {
 };
 
 
-export type SubscriptionQuestionAddedToEnqueuedArgs = {
-  eventId: Scalars['ID'];
-};
-
-
-export type SubscriptionQuestionAddedToRecordArgs = {
-  eventId: Scalars['ID'];
-};
-
-
 export type SubscriptionQuestionCreatedArgs = {
   eventId: Scalars['ID'];
   viewerOnly?: InputMaybe<Scalars['Boolean']>;
@@ -1604,21 +1590,11 @@ export type SubscriptionQuestionDeletedArgs = {
 
 
 export type SubscriptionQuestionDequeuedArgs = {
-  eventId: Scalars['String'];
-};
-
-
-export type SubscriptionQuestionEnqueuedArgs = {
-  eventId: Scalars['String'];
-};
-
-
-export type SubscriptionQuestionRemovedFromEnqueuedArgs = {
   eventId: Scalars['ID'];
 };
 
 
-export type SubscriptionQuestionRemovedFromRecordArgs = {
+export type SubscriptionQuestionEnqueuedArgs = {
   eventId: Scalars['ID'];
 };
 
@@ -1645,12 +1621,12 @@ export type SubscriptionRecordUnshiftQuestionArgs = {
 
 
 export type SubscriptionTopicQueuePushArgs = {
-  eventId: Scalars['String'];
+  eventId: Scalars['ID'];
 };
 
 
 export type SubscriptionTopicQueueRemoveArgs = {
-  eventId: Scalars['String'];
+  eventId: Scalars['ID'];
 };
 
 

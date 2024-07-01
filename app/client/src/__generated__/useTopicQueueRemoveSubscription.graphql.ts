@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cbb46518df56d17c022ede8bb4cf0484>>
+ * @generated SignedSource<<8ec4ef0ee4cb4e4c4dad7280986eb37f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -172,16 +172,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "077dfa2f3e76d9e75f427571e2d01f8a",
+    "cacheID": "f0af406adade1a04fd38b38e0979e5ad",
     "id": null,
     "metadata": {},
     "name": "useTopicQueueRemoveSubscription",
     "operationKind": "subscription",
-    "text": "subscription useTopicQueueRemoveSubscription(\n  $eventId: String!\n) {\n  topicQueueRemove(eventId: $eventId) {\n    edge {\n      node {\n        id\n      }\n      cursor\n    }\n  }\n}\n"
+    "text": "subscription useTopicQueueRemoveSubscription(\n  $eventId: ID!\n) {\n  topicQueueRemove(eventId: $eventId) {\n    edge {\n      node {\n        id\n      }\n      cursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "7eb535a388b87c10f04d4481689e8aa9";
+(node as any).hash = "db4f8be2d5bb4bda67b84b655895a066";
 
 export default node;

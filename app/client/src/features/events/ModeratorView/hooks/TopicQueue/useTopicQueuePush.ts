@@ -6,7 +6,7 @@ import { useSubscription } from 'react-relay';
 import { graphql, GraphQLSubscriptionConfig } from 'relay-runtime';
 
 const USE_TOPIC_QUEUE_PUSH = graphql`
-    subscription useTopicQueuePushSubscription($eventId: String!, $connections: [ID!]!, $lang: String!) {
+    subscription useTopicQueuePushSubscription($eventId: ID!, $connections: [ID!]!, $lang: String!) {
         topicQueuePush(eventId: $eventId) {
             edge @appendEdge(connections: $connections) {
                 node {

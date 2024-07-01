@@ -6,7 +6,7 @@ import { ConnectionHandler, graphql, GraphQLSubscriptionConfig } from 'relay-run
 import { useEvent } from '../../useEvent';
 
 const USE_QUESTION_DEQUEUED = graphql`
-    subscription useQuestionDequeuedSubscription($eventId: String!, $lang: String!) {
+    subscription useQuestionDequeuedSubscription($eventId: ID!, $lang: String!) {
         questionDequeued(eventId: $eventId) {
             edge {
                 node {

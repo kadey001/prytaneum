@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3b8c3010ef9f72322e6cbc489de4c88b>>
+ * @generated SignedSource<<18229eda14fce8c5d7df165486053e1a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -317,16 +317,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b05946183015bea5691e974f6f7cd78f",
+    "cacheID": "e1d37a2162e38f5107e7c8340958594a",
     "id": null,
     "metadata": {},
     "name": "useTopicQueuePushSubscription",
     "operationKind": "subscription",
-    "text": "subscription useTopicQueuePushSubscription(\n  $eventId: String!\n  $lang: String!\n) {\n  topicQueuePush(eventId: $eventId) {\n    edge {\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment_3iqx2P\n        topics {\n          topic\n          position\n        }\n        position\n        onDeckPosition\n      }\n      cursor\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
+    "text": "subscription useTopicQueuePushSubscription(\n  $eventId: ID!\n  $lang: String!\n) {\n  topicQueuePush(eventId: $eventId) {\n    edge {\n      node {\n        id\n        ...QuestionAuthorFragment\n        ...QuestionStatsFragment\n        ...QuestionContentFragment_3iqx2P\n        topics {\n          topic\n          position\n        }\n        position\n        onDeckPosition\n      }\n      cursor\n    }\n  }\n}\n\nfragment QuestionAuthorFragment on EventQuestion {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment QuestionContentFragment_3iqx2P on EventQuestion {\n  question\n  lang\n  questionTranslated(lang: $lang)\n}\n\nfragment QuestionStatsFragment on EventQuestion {\n  id\n  likedByCount\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6d11eece2497f2bca3b3ecb54ea90821";
+(node as any).hash = "a8666f575322fb3c665de6383a39d3db";
 
 export default node;
