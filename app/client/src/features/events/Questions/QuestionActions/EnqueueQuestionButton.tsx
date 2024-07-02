@@ -100,6 +100,15 @@ export function EnqueueQuestionButton({ questionId }: QueueButtonProps) {
                 if (!connectionRecord) return console.error('Update failed: Connection record not found!');
                 ConnectionHandler.deleteNode(connectionRecord, questionId);
 
+                // Also remove the question from the default list (if the current topic is not default)
+                if (topic !== 'default') {
+                    const defaultConnectionId = connection + '(topic:"default")';
+                    const defaultConnectionRecord = store.get(defaultConnectionId);
+                    if (!defaultConnectionRecord)
+                        return console.error('Update failed: Default connection record not found!');
+                    ConnectionHandler.deleteNode(defaultConnectionRecord, questionId);
+                }
+
                 // Add the question to the topic queue
                 const queueConnection = ConnectionHandler.getConnection(
                     eventRecord,
