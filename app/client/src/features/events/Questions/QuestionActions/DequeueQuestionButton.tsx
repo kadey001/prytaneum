@@ -63,6 +63,7 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
     const { user } = useUser();
     const { topic } = useTopic();
     const { displaySnack } = useSnack();
+
     const handleClick = React.useCallback(() => {
         commit({
             variables: {
@@ -89,24 +90,34 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
                 if (!queueConnectionRecord) return console.error('Update failed: Connection record not found!');
                 ConnectionHandler.deleteNode(queueConnectionRecord, questionId);
 
-                // Add edge back to the question list by topic
+                // Get the connection for the question list by topic
                 const questionsByTopicConnection = ConnectionHandler.getConnectionID(
                     eventRecord.getDataID(),
                     'useQuestionsByTopicFragment_questionsByTopic'
                 );
-                const questionsByTopicConnectionId = questionsByTopicConnection + `(topic:"${topic}")`;
-                const questionsByTopicConnectionRecord = store.get(questionsByTopicConnectionId);
-                if (!questionsByTopicConnectionRecord)
-                    return console.error(`Update failed: Connection record ${questionsByTopicConnectionId} not found!`);
-                questionsByTopicConnectionRecord.invalidateRecord();
+                if (!questionsByTopicConnection) return console.error('Update failed: Connection not found!');
+                // Get the payload from the mutation
                 const payload = store.getRootField('removeQuestionFromTopicQueue');
                 if (!payload) return console.error('Update failed: No payload found!');
                 const serverEdge = payload.getLinkedRecord('body');
                 if (!serverEdge) return console.error('Update failed: No edge found!');
+
+                // Always add edge back to the default queue
+                const connectionId = questionsByTopicConnection + '(topic:"default")';
+                const connectionRecord = store.get(connectionId);
+                if (!connectionRecord) return console.error('Update failed: Connection record not found!');
+                ConnectionHandler.insertEdgeAfter(connectionRecord, serverEdge);
+
+                // Add the question to the topic queues
+                const questionsByTopicConnectionId = questionsByTopicConnection + `(topic:"${topic}")`;
+                const questionsByTopicConnectionRecord = store.get(questionsByTopicConnectionId);
+                if (!questionsByTopicConnectionRecord)
+                    return console.error(`Update failed: Connection record ${questionsByTopicConnectionId} not found!`);
                 ConnectionHandler.insertEdgeAfter(questionsByTopicConnectionRecord, serverEdge);
             },
         });
     }, [commit, displaySnack, eventId, questionId, topic, user]);
+
     return (
         <IconButton onClick={handleClick}>
             <Tooltip title='Dequeue Question' placement='bottom'>
