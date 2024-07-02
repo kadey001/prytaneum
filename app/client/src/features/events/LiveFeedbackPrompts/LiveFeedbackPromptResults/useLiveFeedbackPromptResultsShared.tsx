@@ -26,13 +26,26 @@ interface Props {
 
 export function useLiveFeedbackPromptResultsShared({ openFeedbackPromptResults }: Props) {
     const { isModerator, eventId } = useEvent();
+    const enqueuedPromptResults: Array<Prompt> = React.useMemo(() => [], []);
 
     const promptRef = React.useRef<Prompt>({ id: '', prompt: '' });
 
+    const openPromptResults = React.useCallback(
+        (promptId: string) => {
+            const promptResultIndex = enqueuedPromptResults.findIndex((_prompt) => _prompt.id === promptId);
+            if (promptResultIndex === -1) return console.error(`Prompt with id ${promptId} not found`);
+            const promptResult = enqueuedPromptResults[promptResultIndex];
+            if (!promptResult) return console.error(`Prompt with id ${promptId} not found`);
+            promptRef.current = { ...promptRef.current, id: promptResult.id, prompt: promptResult.prompt };
+            openFeedbackPromptResults();
+            enqueuedPromptResults.splice(promptResultIndex, 1);
+        },
+        [enqueuedPromptResults, openFeedbackPromptResults]
+    );
     const updateCurrentPrompt = ({ id, prompt }: Prompt) => {
         promptRef.current = { ...promptRef.current, id: id, prompt: prompt };
     };
-    const { displaySnack, closeSnack } = useLiveFeedbackPromptResultsSnack({ openFeedbackPromptResults });
+    const { displaySnack } = useLiveFeedbackPromptResultsSnack({ openPromptResults });
 
     const config = React.useMemo<GraphQLSubscriptionConfig<useLiveFeedbackPromptResultsSharedSubscription>>(
         () => ({
@@ -46,13 +59,13 @@ export function useLiveFeedbackPromptResultsShared({ openFeedbackPromptResults }
                 updateCurrentPrompt(feedbackPromptResultsShared);
                 if (isModerator) console.log('Moderator received prompt');
 
-                // TODO: add moderator check
-                displaySnack('Feedback Prompt Results', { variant: 'info' });
+                const promptId = feedbackPromptResultsShared.id;
+                displaySnack(promptId, 'Feedback Prompt Results', { variant: 'info' });
             },
         }),
         [displaySnack, eventId, isModerator]
     );
 
     useSubscription<useLiveFeedbackPromptResultsSharedSubscription>(config);
-    return { feedbackPromptResultsRef: promptRef, closeFeedbackPromptResultsSnack: closeSnack };
+    return { feedbackPromptResultsRef: promptRef };
 }
