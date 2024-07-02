@@ -61,7 +61,7 @@ export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
     const eventId = data.id;
 
     // Subscribe to live feedback prompts
-    const { feedbackPromptRef, closeFeedbackPromptSnack } = useLiveFeedbackPrompt({ openFeedbackPromptResponse });
+    const { feedbackPromptRef } = useLiveFeedbackPrompt({ openFeedbackPromptResponse });
     const { feedbackPromptResultsRef, closeFeedbackPromptResultsSnack } = useLiveFeedbackPromptResultsShared({
         openFeedbackPromptResults,
     });
@@ -138,7 +138,6 @@ export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
             <SubmitLiveFeedbackPromptResponse
                 eventId={eventId}
                 promptRef={feedbackPromptRef}
-                closeSnack={closeFeedbackPromptSnack}
                 isOpen={isFeedbackPromptResponseOpen}
                 open={openFeedbackPromptResponse}
                 close={closeFeedbackPromptResponse}
