@@ -5,9 +5,10 @@ import Close from '@mui/icons-material/Close';
 
 interface Props {
     openPromptResults: (promptId: string) => void;
+    removePromptResult: (promptId: string) => void;
 }
 
-export function useLiveFeedbackPromptResultsSnack({ openPromptResults }: Props) {
+export function useLiveFeedbackPromptResultsSnack({ openPromptResults, removePromptResult }: Props) {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const onClick = useCallback(
@@ -29,6 +30,7 @@ export function useLiveFeedbackPromptResultsSnack({ openPromptResults }: Props) 
                 <div>
                     <Button
                         onClick={() => {
+                            removePromptResult(promptId);
                             closeSnackbar(key);
                         }}
                     >
@@ -37,7 +39,7 @@ export function useLiveFeedbackPromptResultsSnack({ openPromptResults }: Props) 
                 </div>
             </div>
         ),
-        [closeSnackbar, onClick]
+        [closeSnackbar, onClick, removePromptResult]
     );
 
     const displaySnack = useCallback(

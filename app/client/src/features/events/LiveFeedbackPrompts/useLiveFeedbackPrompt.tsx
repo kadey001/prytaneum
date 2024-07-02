@@ -35,6 +35,15 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
     const { eventId } = useEvent();
     const enqueuedPrompts: Array<Prompt> = React.useMemo(() => [], []);
 
+    const removePrompt = React.useCallback(
+        (promptId: string) => {
+            const promptIndex = enqueuedPrompts.findIndex((_prompt) => _prompt.id === promptId);
+            if (promptIndex === -1) return console.error(`Prompt with id ${promptId} not found`);
+            enqueuedPrompts.splice(promptIndex, 1);
+        },
+        [enqueuedPrompts]
+    );
+
     const promptRef = React.useRef<Prompt>({
         id: '',
         prompt: '',
@@ -66,7 +75,7 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
         [enqueuedPrompts, openFeedbackPromptResponse]
     );
 
-    const { displaySnack } = useLiveFeedbackPromptResponseSnack({ openPrompt });
+    const { displaySnack } = useLiveFeedbackPromptResponseSnack({ openPrompt, removePrompt });
 
     const config = React.useMemo<GraphQLSubscriptionConfig<useLiveFeedbackPromptSubscription>>(
         () => ({

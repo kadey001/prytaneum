@@ -28,6 +28,15 @@ export function useLiveFeedbackPromptResultsShared({ openFeedbackPromptResults }
     const { isModerator, eventId } = useEvent();
     const enqueuedPromptResults: Array<Prompt> = React.useMemo(() => [], []);
 
+    const removePromptResult = React.useCallback(
+        (promptId: string) => {
+            const promptResultIndex = enqueuedPromptResults.findIndex((_prompt) => _prompt.id === promptId);
+            if (promptResultIndex === -1) return console.error(`Prompt with id ${promptId} not found`);
+            enqueuedPromptResults.splice(promptResultIndex, 1);
+        },
+        [enqueuedPromptResults]
+    );
+
     const promptRef = React.useRef<Prompt>({ id: '', prompt: '' });
 
     const openPromptResults = React.useCallback(
@@ -45,7 +54,7 @@ export function useLiveFeedbackPromptResultsShared({ openFeedbackPromptResults }
     const updateCurrentPrompt = ({ id, prompt }: Prompt) => {
         promptRef.current = { ...promptRef.current, id: id, prompt: prompt };
     };
-    const { displaySnack } = useLiveFeedbackPromptResultsSnack({ openPromptResults });
+    const { displaySnack } = useLiveFeedbackPromptResultsSnack({ openPromptResults, removePromptResult });
 
     const config = React.useMemo<GraphQLSubscriptionConfig<useLiveFeedbackPromptResultsSharedSubscription>>(
         () => ({

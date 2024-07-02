@@ -6,9 +6,10 @@ import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 
 interface Props {
     openPrompt: (promptId: string) => void;
+    removePrompt: (promptId: string) => void;
 }
 
-export function useLiveFeedbackPromptResponseSnack({ openPrompt }: Props) {
+export function useLiveFeedbackPromptResponseSnack({ openPrompt, removePrompt }: Props) {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const onClick = useCallback(
@@ -30,12 +31,17 @@ export function useLiveFeedbackPromptResponseSnack({ openPrompt }: Props) {
                 >
                     Respond
                 </Button>
-                <Button onClick={() => closeSnackbar(key)}>
+                <Button
+                    onClick={() => {
+                        removePrompt(promptId);
+                        closeSnackbar(key);
+                    }}
+                >
                     <Close />
                 </Button>
             </div>
         ),
-        [onClick, closeSnackbar]
+        [onClick, removePrompt, closeSnackbar]
     );
 
     const displaySnack = useCallback(
