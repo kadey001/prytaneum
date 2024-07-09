@@ -67,6 +67,7 @@ export type CreateFeedbackPrompt = {
   choices: Array<Scalars['String']>;
   eventId: Scalars['ID'];
   feedbackType: Scalars['String'];
+  isDraft: Scalars['Boolean'];
   prompt: Scalars['String'];
 };
 
@@ -447,6 +448,7 @@ export type EventLiveFeedbackPrompt = Node & {
   createdAt?: Maybe<Scalars['Date']>;
   event?: Maybe<Event>;
   id: Scalars['ID'];
+  isDraft?: Maybe<Scalars['Boolean']>;
   isMultipleChoice?: Maybe<Scalars['Boolean']>;
   isOpenEnded?: Maybe<Scalars['Boolean']>;
   isVote?: Maybe<Scalars['Boolean']>;
@@ -823,6 +825,7 @@ export type Mutation = {
    * returns false if an account with the provided email cannot be found
    */
   resetPasswordRequest: ResetPasswordRequestMutationResponse;
+  shareFeedbackPromptDraft: EventFeedbackPromptMutationResponse;
   shareFeedbackPromptResults: EventFeedbackPromptMutationResponse;
   /** Start the event so that it is "live" */
   startEvent: EventMutationResponse;
@@ -1110,6 +1113,11 @@ export type MutationResetPasswordArgs = {
 
 export type MutationResetPasswordRequestArgs = {
   input: ResetPasswordRequestForm;
+};
+
+
+export type MutationShareFeedbackPromptDraftArgs = {
+  promptId: Scalars['ID'];
 };
 
 

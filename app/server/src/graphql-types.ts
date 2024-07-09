@@ -351,6 +351,7 @@ export type Mutation = {
     createFeedback: EventFeedbackMutationResponse;
     createFeedbackDM: EventFeedbackMutationResponse;
     createFeedbackPrompt: EventFeedbackPromptMutationResponse;
+    shareFeedbackPromptDraft: EventFeedbackPromptMutationResponse;
     createFeedbackPromptResponse: EventFeedbackPromptResponseMutationResponse;
     shareFeedbackPromptResults: EventFeedbackPromptMutationResponse;
     submitPostEventFeedback: PostEventFeedbackMutationResponse;
@@ -519,6 +520,10 @@ export type MutationcreateFeedbackDMArgs = {
 
 export type MutationcreateFeedbackPromptArgs = {
     input: CreateFeedbackPrompt;
+};
+
+export type MutationshareFeedbackPromptDraftArgs = {
+    promptId: Scalars['ID'];
 };
 
 export type MutationcreateFeedbackPromptResponseArgs = {
@@ -1218,6 +1223,7 @@ export type EventLiveFeedbackPrompt = Node & {
     isOpenEnded?: Maybe<Scalars['Boolean']>;
     isMultipleChoice?: Maybe<Scalars['Boolean']>;
     multipleChoiceOptions?: Maybe<Array<Scalars['String']>>;
+    isDraft?: Maybe<Scalars['Boolean']>;
     responses?: Maybe<EventLiveFeedbackPromptResponseConnection>;
 };
 
@@ -1336,6 +1342,7 @@ export type CreateFeedbackPrompt = {
     eventId: Scalars['ID'];
     feedbackType: Scalars['String'];
     choices: Array<Scalars['String']>;
+    isDraft: Scalars['Boolean'];
 };
 
 export type CreateFeedbackPromptResponse = {
@@ -2647,6 +2654,12 @@ export type MutationResolvers<
         ContextType,
         RequireFields<MutationcreateFeedbackPromptArgs, 'input'>
     >;
+    shareFeedbackPromptDraft?: Resolver<
+        ResolversTypes['EventFeedbackPromptMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationshareFeedbackPromptDraftArgs, 'promptId'>
+    >;
     createFeedbackPromptResponse?: Resolver<
         ResolversTypes['EventFeedbackPromptResponseMutationResponse'],
         ParentType,
@@ -3396,6 +3409,7 @@ export type EventLiveFeedbackPromptResolvers<
     isOpenEnded?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     isMultipleChoice?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     multipleChoiceOptions?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+    isDraft?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     responses?: Resolver<
         Maybe<ResolversTypes['EventLiveFeedbackPromptResponseConnection']>,
         ParentType,
@@ -4246,6 +4260,7 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         isOpenEnded?: LoaderResolver<Maybe<Scalars['Boolean']>, EventLiveFeedbackPrompt, {}, TContext>;
         isMultipleChoice?: LoaderResolver<Maybe<Scalars['Boolean']>, EventLiveFeedbackPrompt, {}, TContext>;
         multipleChoiceOptions?: LoaderResolver<Maybe<Array<Scalars['String']>>, EventLiveFeedbackPrompt, {}, TContext>;
+        isDraft?: LoaderResolver<Maybe<Scalars['Boolean']>, EventLiveFeedbackPrompt, {}, TContext>;
         responses?: LoaderResolver<
             Maybe<EventLiveFeedbackPromptResponseConnection>,
             EventLiveFeedbackPrompt,
