@@ -111,7 +111,32 @@ export const resolvers: Resolvers = {
                 if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
                 if (!args.input) throw new ProtectedError({ userMessage: errors.invalidArgs });
                 const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { isDraft } = args.input;
                 const prompt = await Feedback.createFeedbackPrompt(ctx.viewer.id, eventId, ctx.prisma, args.input);
+                const formattedPrompt = toFeedbackPromptId(prompt);
+                const edge = {
+                    node: formattedPrompt,
+                    cursor: formattedPrompt.id,
+                };
+                if (!isDraft)
+                    ctx.pubsub.publish({
+                        topic: 'feedbackPrompted',
+                        payload: { feedbackPrompted: formattedPrompt },
+                    });
+                return edge;
+            });
+        },
+        async shareFeedbackPromptDraft(parent, args, ctx) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                const { id: promptId } = fromGlobalId(args.promptId);
+                const prompt = await Feedback.findPromptByPromptId(promptId, ctx.prisma);
+                await Feedback.shareFeedbackPromptDraft(promptId, ctx.prisma);
+                if (!prompt)
+                    throw new ProtectedError({
+                        userMessage: 'Inalid Prompt',
+                        internalMessage: 'Expected Prompt but got null',
+                    });
                 const formattedPrompt = toFeedbackPromptId(prompt);
                 const edge = {
                     node: formattedPrompt,
