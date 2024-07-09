@@ -26,7 +26,8 @@ export function ShareFeedbackResults() {
             </Button>
             <StyledDialog
                 fullScreen={fullscreen}
-                maxWidth='lg'
+                maxWidth='md'
+                fullWidth
                 scroll='paper'
                 open={open}
                 onClose={handleClose}
