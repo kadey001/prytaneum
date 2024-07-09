@@ -22,7 +22,7 @@ export type TLiveFeedbackPromptFormState = {
 };
 
 export interface LiveFeedbackPromptFormProps {
-    onSubmit?: (state: TLiveFeedbackPromptFormState) => void;
+    onSubmit?: (state: TLiveFeedbackPromptFormState, isDraft: boolean) => void;
     onCancel?: () => void;
 }
 
@@ -78,8 +78,16 @@ export function LiveFeedbackPromptForm({ onSubmit, onCancel }: LiveFeedbackPromp
         return true;
     };
 
+    const onSaveDraft = () => {
+        if (onSubmit) onSubmit(form, true);
+    };
+
     return (
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form
+            onSubmit={handleSubmit((_form) => {
+                if (onSubmit) onSubmit(_form, false);
+            })}
+        >
             <FormTitle title='Feedback Prompt' />
             <FormContent>
                 <Grid container alignItems='center' justifyContent='space-around'>
@@ -184,6 +192,14 @@ export function LiveFeedbackPromptForm({ onSubmit, onCancel }: LiveFeedbackPromp
                         Cancel
                     </Button>
                 )}
+                <Button
+                    disabled={!isPromptValidForSubmission()}
+                    onClick={onSaveDraft}
+                    variant='contained'
+                    color='primary'
+                >
+                    Save as Draft
+                </Button>
                 <Button disabled={!isPromptValidForSubmission()} type='submit' variant='contained' color='primary'>
                     Create
                 </Button>

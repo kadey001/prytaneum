@@ -40,13 +40,13 @@ export function SubmitLiveFeedbackPrompt({ className, eventId }: Props) {
     const { displaySnack } = useSnack();
     const [commit] = useMutation<SubmitLiveFeedbackPromptMutation>(SUBMIT_LIVE_FEEDBACK_PROMPT_MUTATION);
 
-    function handleSubmit(form: TLiveFeedbackPromptFormState) {
+    function handleSubmit(form: TLiveFeedbackPromptFormState, isDraft: boolean = false) {
         try {
             // Validate length and url presence before submitting to avoid unessisary serverside validation
             if (form.prompt.length > FEEDBACK_PROMPT_MAX_LENGTH) throw new Error('Prompt is too long!');
             if (isURL(form.prompt)) throw new Error('no links are allowed!');
             commit({
-                variables: { input: { ...form, eventId } },
+                variables: { input: { ...form, eventId, isDraft } },
                 onCompleted(payload) {
                     try {
                         if (payload.createFeedbackPrompt.isError) throw new Error(payload.createFeedbackPrompt.message);
