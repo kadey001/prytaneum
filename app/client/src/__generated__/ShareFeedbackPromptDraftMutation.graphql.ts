@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e440992c0e01aff9cdef7488361468d8>>
+ * @generated SignedSource<<33f3b694485e7772020dfcc95af3a47a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,18 +9,11 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type CreateFeedbackPrompt = {
-  choices: ReadonlyArray<string>;
-  eventId: string;
-  feedbackType: string;
-  isDraft: boolean;
-  prompt: string;
+export type ShareFeedbackPromptDraftMutation$variables = {
+  promptId: string;
 };
-export type SubmitLiveFeedbackPromptMutation$variables = {
-  input: CreateFeedbackPrompt;
-};
-export type SubmitLiveFeedbackPromptMutation$data = {
-  readonly createFeedbackPrompt: {
+export type ShareFeedbackPromptDraftMutation$data = {
+  readonly shareFeedbackPromptDraft: {
     readonly body: {
       readonly cursor: string;
       readonly node: {
@@ -33,9 +26,9 @@ export type SubmitLiveFeedbackPromptMutation$data = {
     readonly message: string;
   };
 };
-export type SubmitLiveFeedbackPromptMutation = {
-  response: SubmitLiveFeedbackPromptMutation$data;
-  variables: SubmitLiveFeedbackPromptMutation$variables;
+export type ShareFeedbackPromptDraftMutation = {
+  response: ShareFeedbackPromptDraftMutation$data;
+  variables: ShareFeedbackPromptDraftMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -43,7 +36,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "input"
+    "name": "promptId"
   }
 ],
 v1 = [
@@ -52,13 +45,13 @@ v1 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "input",
-        "variableName": "input"
+        "name": "promptId",
+        "variableName": "promptId"
       }
     ],
     "concreteType": "EventFeedbackPromptMutationResponse",
     "kind": "LinkedField",
-    "name": "createFeedbackPrompt",
+    "name": "shareFeedbackPromptDraft",
     "plural": false,
     "selections": [
       {
@@ -134,7 +127,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "SubmitLiveFeedbackPromptMutation",
+    "name": "ShareFeedbackPromptDraftMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -143,20 +136,20 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "SubmitLiveFeedbackPromptMutation",
+    "name": "ShareFeedbackPromptDraftMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "a078d8b00b1ca67c2f3a2be949836e8a",
+    "cacheID": "356453ddbff2a7bcb811bd5f6669279b",
     "id": null,
     "metadata": {},
-    "name": "SubmitLiveFeedbackPromptMutation",
+    "name": "ShareFeedbackPromptDraftMutation",
     "operationKind": "mutation",
-    "text": "mutation SubmitLiveFeedbackPromptMutation(\n  $input: CreateFeedbackPrompt!\n) {\n  createFeedbackPrompt(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        createdAt\n        prompt\n      }\n    }\n  }\n}\n"
+    "text": "mutation ShareFeedbackPromptDraftMutation(\n  $promptId: ID!\n) {\n  shareFeedbackPromptDraft(promptId: $promptId) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        createdAt\n        prompt\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1526af588ad93ae620168862b0f64a3f";
+(node as any).hash = "61fc7c499aa303e7d949b45f71958f09";
 
 export default node;
