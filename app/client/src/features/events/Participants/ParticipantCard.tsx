@@ -33,7 +33,7 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
     const [isOpen, open, close] = useResponsiveDialog();
     const { muteParticipant } = useMuteParticipant();
     const { unmuteParticipant } = useUnmuteParticipant();
-    const { eventId } = useEvent();
+    const { eventId, isModerator } = useEvent();
     const { user } = useUser();
     const { displaySnack } = useSnack();
 
@@ -115,7 +115,7 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
                 </IconButton>
             );
         }
-    }, [participant, open]);
+    }, [participant.moderatorOf, participant.isMuted, open]);
 
     return (
         <React.Fragment>
@@ -139,8 +139,8 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
                     }
                     action={
                         <React.Fragment>
-                            {isCurrentUserCard ? null : <DMParticipant participant={participant} />}
-                            {isCurrentUserCard ? null : muteAction}
+                            {isCurrentUserCard || !isModerator ? null : <DMParticipant participant={participant} />}
+                            {isCurrentUserCard || !isModerator ? null : muteAction}
                         </React.Fragment>
                     }
                 />
