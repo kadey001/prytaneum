@@ -30,12 +30,14 @@ interface ActionsPanelProps {
 
 export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPanelProps) {
     type Tabs = 'Moderator' | 'Feedback' | 'Broadcast' | 'Participants';
-    const [tab, setTab] = React.useState<Tabs>('Moderator');
+    const selectedTabFromSession = sessionStorage.getItem(`${node.id}-tab`) as Tabs | null;
+    const [tab, setTab] = React.useState<Tabs>(selectedTabFromSession ?? 'Moderator');
     const [numOfFeedbackMsgs, setNumOfFeedbackMsgs] = React.useState<number>(0);
 
     const handleTabChange = (e: React.SyntheticEvent, newTab: Tabs) => {
         e.preventDefault();
         setTab(newTab);
+        sessionStorage.setItem(`${node.id}-tab`, newTab);
     };
 
     return (
