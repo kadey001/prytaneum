@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Grid, useMediaQuery } from '@mui/material';
+import { Grid, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { motion } from 'framer-motion';
 import { graphql, useQueryLoader, PreloadedQuery, usePreloadedQuery } from 'react-relay';
@@ -22,6 +23,7 @@ import { useEventDetails } from './useEventDetails';
 import { usePingEvent } from './Participants/usePingEvent';
 import { useHashedColor } from '@local/core/getHashedColor';
 import { EventTopicContext } from './ModeratorView/EventTopicContext';
+import { useParticipantList } from './Participants/useParticipantList';
 
 export const EVENT_LIVE_QUERY = graphql`
     query EventLiveQuery($eventId: ID!, $lang: String!) {
@@ -35,6 +37,7 @@ export const EVENT_LIVE_QUERY = graphql`
                 ...useEventDetailsFragment
                 ...SpeakerListFragment
                 ...useOnDeckFragment @arguments(userLang: $lang)
+                ...useParticipantListFragment @arguments(eventId: $eventId)
             }
         }
     }
@@ -77,6 +80,8 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
     const { eventData, isLive, setIsLive, pauseEventDetailsRefresh, resumeEventDetailsRefresh } = useEventDetails({
         fragmentRef: node,
     });
+    const { participants } = useParticipantList({ fragmentRef: node, eventId: node.id });
+    const numOfParticipants = participants.length;
     const isModerator = Boolean(node.isViewerModerator);
     const { user } = useUser();
     const { id: eventId } = eventData;
@@ -220,6 +225,14 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
                         >
                             <EventVideo fragmentRef={node} />
                         </Grid>
+                        <Grid container item sx={{ display: 'flex', justifyContent: 'flex-end', paddingRight: '1rem' }}>
+                            <Tooltip title='Total Active Participants' placement='top'>
+                                <PersonIcon sx={{ color: 'red', marginLeft: '0.25rem' }} />
+                            </Tooltip>
+                            <Tooltip title={`${numOfParticipants} Participants`} placement='top'>
+                                <Typography color='error'>{numOfParticipants}</Typography>
+                            </Tooltip>
+                        </Grid>
                         <EventDetailsCard eventData={eventData} />
                         <SpeakerList fragmentRef={node} />
                     </Grid>
@@ -235,6 +248,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
                                 isViewerModerator={isModerator}
                                 isLive={isLive}
                                 setIsLive={setIsLive}
+                                participants={participants}
                             />
                         </div>
                     </Grid>

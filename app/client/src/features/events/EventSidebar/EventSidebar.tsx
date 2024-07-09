@@ -23,6 +23,8 @@ import {
     EventQuestionInfoPopper,
     useEventInfoPopper,
 } from '@local/components/EventInfoPoppers';
+import { Participant } from '../Participants/useParticipantList';
+import ParticipantList from '../Participants/ParticipantList';
 
 export const EVENT_SIDEBAR_FRAGMENT = graphql`
     fragment EventSidebarFragment on Event {
@@ -47,8 +49,9 @@ export interface EventSidebarProps {
     isViewerModerator: boolean;
     isLive: boolean;
     setIsLive: React.Dispatch<React.SetStateAction<boolean>>;
+    participants: Participant[];
 }
-export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
+export const EventSidebar = ({ fragmentRef, participants }: EventSidebarProps) => {
     const theme = useTheme();
     const mdUpBreakpoint = useMediaQuery(theme.breakpoints.up('md'));
     const smDownBreakpoint = useMediaQuery(theme.breakpoints.down('sm'));
@@ -191,6 +194,17 @@ export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
                             overflow: 'visible', // Prevents badge from being cut off
                         }}
                     />
+                    <Tab
+                        id='participants-tab'
+                        label={
+                            smDownBreakpoint ? <Typography variant='caption'>Participants</Typography> : 'Participants'
+                        }
+                        value={2}
+                        sx={{
+                            'aria-controls': 'participants-tabpanel-2',
+                            overflow: 'visible', // Prevents badge from being cut off
+                        }}
+                    />
                 </StyledTabs>
                 <EventQuestionInfoPopper questionContainerRef={questionTabRef} />
                 <EventFeedbackInfoPopper feedbackContainerRef={feedbackTabRef} />
@@ -210,6 +224,7 @@ export const EventSidebar = ({ fragmentRef }: EventSidebarProps) => {
                         isVisible={selectedTab === 1}
                         setNumOfFeedbackMsgs={setNumOfFeedbackMsgs}
                     />
+                    <ParticipantList participants={participants} isVisible={selectedTab === 2} />
                 </StyledColumnGrid>
             </Grid>
         </Grid>
