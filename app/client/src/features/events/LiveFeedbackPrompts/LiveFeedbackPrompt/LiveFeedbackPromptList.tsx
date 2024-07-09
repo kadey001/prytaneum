@@ -2,7 +2,6 @@ import * as React from 'react';
 import { graphql, PreloadedQuery, useQueryLoader, usePreloadedQuery, fetchQuery } from 'react-relay';
 import {
     List,
-    ListItem,
     Card,
     CardContent,
     Typography,
@@ -11,7 +10,10 @@ import {
     DialogContent,
     Tabs,
     Tab,
+    CardActions,
+    CardHeader,
 } from '@mui/material';
+import DescriptionIcon from '@mui/icons-material/Description';
 import { OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { useTheme, alpha } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -22,6 +24,7 @@ import { ShareFeedbackPromptResults } from '../LiveFeedbackPromptResponses';
 import { useEnvironment } from '@local/core';
 import { useEvent } from '@local/features/events/useEvent';
 import { StyledDialogTitle, Loader, StyledDialog, ConditionalRender } from '@local/components';
+import { ShareFeedbackPromptDraft } from './ShareFeedbackPromptDraft';
 
 export const LIVE_FEEDBACK_PROMPT_LIST_QUERY = graphql`
     query LiveFeedbackPromptListQuery($eventId: ID!) {
@@ -33,6 +36,7 @@ export const LIVE_FEEDBACK_PROMPT_LIST_QUERY = graphql`
             isMultipleChoice
             multipleChoiceOptions
             createdAt
+            isDraft
         }
     }
 `;
@@ -44,6 +48,7 @@ export type Prompt = {
     readonly isOpenEnded: boolean | null;
     readonly isMultipleChoice: boolean | null;
     readonly multipleChoiceOptions: ReadonlyArray<string> | null;
+    readonly isDraft: boolean | null;
     readonly createdAt: Date | null;
 };
 
@@ -54,27 +59,37 @@ interface PromptItemProps {
 
 function PromptItem({ prompt, handleClick }: PromptItemProps) {
     return (
-        <ListItem style={{ paddingBottom: '.5rem', paddingTop: '.5rem' }}>
-            <Grid container direction='column' alignContent='center' spacing={1}>
-                <Card>
-                    <CardContent>
-                        <Grid container direction='row' alignItems='center' justifyContent='space-around'>
-                            <Grid item>
-                                <Typography variant='inherit' sx={{ wordBreak: 'break-word' }}>
-                                    {prompt.prompt}
-                                </Typography>
-                            </Grid>
-                            <Grid item paddingRight={0.5}>
-                                <IconButton onClick={() => handleClick(prompt)}>
-                                    <OpenInNewIcon />
-                                    <Typography variant='subtitle1'>View</Typography>
-                                </IconButton>
-                            </Grid>
-                        </Grid>
-                    </CardContent>
-                </Card>
-            </Grid>
-        </ListItem>
+        <Card sx={{ margin: '0.25rem' }}>
+            {prompt.isDraft ? (
+                <CardHeader
+                    title={
+                        <IconButton disabled={true}>
+                            <DescriptionIcon />
+                            <Typography>Draft</Typography>
+                        </IconButton>
+                    }
+                />
+            ) : null}
+            <CardContent>
+                <Grid container direction='row' alignItems='center' justifyContent='space-around'>
+                    <Grid item>
+                        <Typography variant='inherit' sx={{ wordBreak: 'break-word' }}>
+                            {prompt.prompt}
+                        </Typography>
+                    </Grid>
+                </Grid>
+            </CardContent>
+            <CardActions sx={{ justifyContent: 'center' }}>
+                {prompt.isDraft ? (
+                    <ShareFeedbackPromptDraft prompt={prompt} />
+                ) : (
+                    <IconButton onClick={() => handleClick(prompt)}>
+                        <OpenInNewIcon />
+                        <Typography variant='subtitle1'>View</Typography>
+                    </IconButton>
+                )}
+            </CardActions>
+        </Card>
     );
 }
 
