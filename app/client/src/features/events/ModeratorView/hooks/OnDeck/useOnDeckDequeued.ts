@@ -174,17 +174,17 @@ export function useOnDeckDequeued({ connections, topic: currentTopic }: Props) {
                                 createdAt: question.createdAt,
                                 refQuestion: question.refQuestion
                                     ? {
-                                          id: question.id,
-                                          question: question.question,
-                                          lang: question.lang,
-                                          questionTranslated: question.question,
+                                          id: question.refQuestion.id,
+                                          question: question.refQuestion.question,
+                                          lang: question.refQuestion.lang,
+                                          questionTranslated: question.refQuestion.question,
                                           createdBy: {
-                                              id: question.createdBy?.id ?? '',
-                                              firstName: question.createdBy?.firstName ?? '',
-                                              lastName: question.createdBy?.lastName ?? '',
-                                              avatar: question.createdBy?.avatar ?? '',
+                                              id: question.refQuestion.createdBy?.id ?? '',
+                                              firstName: question.refQuestion.createdBy?.firstName ?? '',
+                                              lastName: question.refQuestion.createdBy?.lastName ?? '',
+                                              avatar: question.refQuestion.createdBy?.avatar ?? '',
                                           },
-                                          createdAt: question.createdAt,
+                                          createdAt: question.refQuestion.createdAt,
                                       }
                                     : null,
                                 likedByCount: question.likedByCount,
