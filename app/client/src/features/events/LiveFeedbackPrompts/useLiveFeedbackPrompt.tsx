@@ -33,6 +33,16 @@ interface Props {
 
 export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
     const { eventId } = useEvent();
+    const enqueuedPrompts: Array<Prompt> = React.useMemo(() => [], []);
+
+    const removePrompt = React.useCallback(
+        (promptId: string) => {
+            const promptIndex = enqueuedPrompts.findIndex((_prompt) => _prompt.id === promptId);
+            if (promptIndex === -1) return console.error(`Prompt with id ${promptId} not found`);
+            enqueuedPrompts.splice(promptIndex, 1);
+        },
+        [enqueuedPrompts]
+    );
 
     const promptRef = React.useRef<Prompt>({
         id: '',
@@ -43,25 +53,29 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
         multipleChoiceOptions: [],
     });
 
-    const updateCurrentPrompt = ({
-        id,
-        prompt,
-        isVote,
-        isOpenEnded,
-        isMultipleChoice,
-        multipleChoiceOptions,
-    }: Prompt) => {
-        promptRef.current = {
-            ...promptRef.current,
-            id: id,
-            prompt: prompt,
-            isVote: isVote,
-            isOpenEnded: isOpenEnded,
-            isMultipleChoice: isMultipleChoice,
-            multipleChoiceOptions: multipleChoiceOptions,
-        };
-    };
-    const { displaySnack, closeSnack } = useLiveFeedbackPromptResponseSnack({ openFeedbackPromptResponse });
+    const openPrompt = React.useCallback(
+        (promptId: string) => {
+            const promptIndex = enqueuedPrompts.findIndex((_prompt) => _prompt.id === promptId);
+            if (promptIndex === -1) return console.error(`Prompt with id ${promptId} not found`);
+            const prompt = enqueuedPrompts[promptIndex];
+            if (!prompt) return console.error(`Prompt with id ${promptId} not found`);
+            promptRef.current = {
+                ...promptRef.current,
+                id: prompt.id,
+                prompt: prompt.prompt,
+                isVote: prompt.isVote,
+                isOpenEnded: prompt.isOpenEnded,
+                isMultipleChoice: prompt.isMultipleChoice,
+                multipleChoiceOptions: prompt.multipleChoiceOptions,
+            };
+            openFeedbackPromptResponse();
+            // Remove prompt from enqueuedPrompts
+            enqueuedPrompts.splice(promptIndex, 1);
+        },
+        [enqueuedPrompts, openFeedbackPromptResponse]
+    );
+
+    const { displaySnack } = useLiveFeedbackPromptResponseSnack({ openPrompt, removePrompt });
 
     const config = React.useMemo<GraphQLSubscriptionConfig<useLiveFeedbackPromptSubscription>>(
         () => ({
@@ -72,9 +86,16 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
             onNext: (data) => {
                 if (!data) return;
                 const { feedbackPrompted } = data;
-                const { id, prompt, isVote, isOpenEnded, isMultipleChoice, multipleChoiceOptions } = feedbackPrompted;
-                updateCurrentPrompt({
-                    id,
+                const {
+                    id: promptId,
+                    prompt,
+                    isVote,
+                    isOpenEnded,
+                    isMultipleChoice,
+                    multipleChoiceOptions,
+                } = feedbackPrompted;
+                enqueuedPrompts.push({
+                    id: promptId,
                     prompt,
                     isVote: !!isVote,
                     isOpenEnded: !!isOpenEnded,
@@ -82,13 +103,12 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
                     multipleChoiceOptions: multipleChoiceOptions === null ? [] : [...multipleChoiceOptions],
                 });
 
-                // TODO: add moderator check
-                displaySnack('New Feedback Prompt', { variant: 'info' });
+                displaySnack(promptId, 'New Feedback Prompt', { variant: 'info' });
             },
         }),
-        [displaySnack, eventId]
+        [displaySnack, enqueuedPrompts, eventId]
     );
 
     useSubscription<useLiveFeedbackPromptSubscription>(config);
-    return { feedbackPromptRef: promptRef, closeFeedbackPromptSnack: closeSnack };
+    return { feedbackPromptRef: promptRef };
 }

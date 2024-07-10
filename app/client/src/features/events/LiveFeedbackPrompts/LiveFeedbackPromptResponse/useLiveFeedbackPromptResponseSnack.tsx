@@ -5,25 +5,35 @@ import Close from '@mui/icons-material/Close';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 
 interface Props {
-    openFeedbackPromptResponse: () => void;
+    openPrompt: (promptId: string) => void;
+    removePrompt: (promptId: string) => void;
 }
 
-export function useLiveFeedbackPromptResponseSnack({ openFeedbackPromptResponse }: Props) {
+export function useLiveFeedbackPromptResponseSnack({ openPrompt, removePrompt }: Props) {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const onClick = useCallback(() => {
-        openFeedbackPromptResponse();
-        closeSnackbar();
-    }, [closeSnackbar, openFeedbackPromptResponse]);
+    const onClick = useCallback(
+        (key: SnackbarKey, promptId: string) => {
+            openPrompt(promptId);
+            closeSnackbar(key);
+        },
+        [closeSnackbar, openPrompt]
+    );
 
     const feedbackPromptAction = useCallback(
-        (key: SnackbarKey) => (
+        (key: SnackbarKey, promptId: string) => (
             <div>
-                <Button variant='contained' color='primary' onClick={onClick} startIcon={<QuestionAnswerIcon />}>
+                <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() => onClick(key, promptId)}
+                    startIcon={<QuestionAnswerIcon />}
+                >
                     Respond
                 </Button>
                 <Button
                     onClick={() => {
+                        removePrompt(promptId);
                         closeSnackbar(key);
                     }}
                 >
@@ -31,14 +41,14 @@ export function useLiveFeedbackPromptResponseSnack({ openFeedbackPromptResponse 
                 </Button>
             </div>
         ),
-        [closeSnackbar, onClick]
+        [onClick, removePrompt, closeSnackbar]
     );
 
-    const makeSnack = useCallback(
-        (message: string, options?: OptionsObject) => {
+    const displaySnack = useCallback(
+        (promptId: string, message: string, options?: OptionsObject) => {
             enqueueSnackbar(message, {
                 variant: options?.variant || 'default',
-                action: options?.action || feedbackPromptAction,
+                action: (key) => options?.action || feedbackPromptAction(key, promptId),
                 onExited: options?.onExited,
                 color: 'inherit',
                 anchorOrigin: {
@@ -50,5 +60,5 @@ export function useLiveFeedbackPromptResponseSnack({ openFeedbackPromptResponse 
         },
         [enqueueSnackbar, feedbackPromptAction]
     );
-    return { displaySnack: makeSnack, closeSnack: closeSnackbar };
+    return { displaySnack };
 }

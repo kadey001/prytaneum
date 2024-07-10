@@ -129,7 +129,6 @@ function PreloadedViewLiveFeedbackPromptResults({ promptId }: { promptId: string
 
 interface ViewLiveFeedbackPromptResultsProps {
     promptRef: React.MutableRefObject<Prompt>;
-    closeSnack: () => void;
     open: boolean;
     setOpen: (value: boolean) => void;
     close: () => void;
