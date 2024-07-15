@@ -15,26 +15,33 @@ import { isURL } from '@local/utils';
 interface Props {
     className?: string;
     eventId: string;
+    connections: string[];
 }
 
 export const SUBMIT_LIVE_FEEDBACK_PROMPT_MUTATION = graphql`
-    mutation SubmitLiveFeedbackPromptMutation($input: CreateFeedbackPrompt!) {
+    mutation SubmitLiveFeedbackPromptMutation($input: CreateFeedbackPrompt!, $connections: [ID!]!) {
         createFeedbackPrompt(input: $input) {
             isError
             message
-            body {
+            body @appendEdge(connections: $connections) {
                 cursor
                 node {
                     id
-                    createdAt
                     prompt
+                    isVote
+                    isOpenEnded
+                    isMultipleChoice
+                    multipleChoiceOptions
+                    createdAt
+                    isDraft
+                    ...useLiveFeedbackPromptResponsesFragment
                 }
             }
         }
     }
 `;
 
-export function SubmitLiveFeedbackPrompt({ className, eventId }: Props) {
+export function SubmitLiveFeedbackPrompt({ className, eventId, connections }: Props) {
     const [isOpen, open, close] = useResponsiveDialog();
     const { user } = useUser();
     const { displaySnack } = useSnack();
@@ -46,7 +53,7 @@ export function SubmitLiveFeedbackPrompt({ className, eventId }: Props) {
             if (form.prompt.length > FEEDBACK_PROMPT_MAX_LENGTH) throw new Error('Prompt is too long!');
             if (isURL(form.prompt)) throw new Error('no links are allowed!');
             commit({
-                variables: { input: { ...form, eventId, isDraft } },
+                variables: { input: { ...form, eventId, isDraft }, connections },
                 onCompleted(payload) {
                     try {
                         if (payload.createFeedbackPrompt.isError) throw new Error(payload.createFeedbackPrompt.message);

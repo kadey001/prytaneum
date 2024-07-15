@@ -6,6 +6,8 @@ import type { ModeratorActionsStartEventMutation } from '@local/__generated__/Mo
 import type { ModeratorActionsEndEventMutation } from '@local/__generated__/ModeratorActionsEndEventMutation.graphql';
 import { useSnack } from '@local/core';
 import { ConfirmationDialog } from '@local/components/ConfirmationDialog';
+import { ShareFeedbackResults } from '../LiveFeedbackPrompts';
+import { useLiveFeedbackPromptsFragment$key } from '@local/__generated__/useLiveFeedbackPromptsFragment.graphql';
 
 export const START_EVENT_MUTATION = graphql`
     mutation ModeratorActionsStartEventMutation($eventId: String!) {
@@ -27,9 +29,10 @@ export interface ModeratorActionsProps {
     isLive: Boolean;
     setIsLive: React.Dispatch<React.SetStateAction<boolean>>;
     eventId: string;
+    fragmentRef: useLiveFeedbackPromptsFragment$key;
 }
 
-export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorActionsProps) {
+export function ModeratorActions({ isLive, setIsLive, eventId, fragmentRef }: ModeratorActionsProps) {
     const { displaySnack } = useSnack();
     const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = React.useState(false);
 
@@ -85,6 +88,9 @@ export function ModeratorActions({ isLive, setIsLive, eventId }: ModeratorAction
                 <Button variant='contained' color={isLive ? 'error' : 'success'} onClick={openConfirmationDialog}>
                     {isLive ? 'End Event' : 'Start Event'}
                 </Button>
+                <React.Suspense fallback={<ShareFeedbackResults fragmentRef={fragmentRef} />}>
+                    <ShareFeedbackResults fragmentRef={fragmentRef} />
+                </React.Suspense>
             </Stack>
             <ConfirmationDialog
                 title='Update Event Status'

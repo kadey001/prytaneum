@@ -21,8 +21,7 @@ export const SHARE_PROMPT_DRAFT_MUTATION = graphql`
                 cursor
                 node {
                     id
-                    createdAt
-                    prompt
+                    isDraft
                 }
             }
         }
@@ -48,6 +47,11 @@ export function ShareFeedbackPromptDraft({ prompt }: Props) {
                         if (err instanceof Error) displaySnack(err.message, { variant: 'error' });
                         else displaySnack('Something went wrong!');
                     }
+                },
+                updater(store) {
+                    const promptRecord = store.get(prompt.id);
+                    if (!promptRecord) return console.error('Prompt not found in store');
+                    promptRecord.setValue(false, 'isDraft');
                 },
             });
         } catch (err) {

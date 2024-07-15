@@ -18,7 +18,7 @@ import { StyledColumnGrid } from '@local/components/StyledColumnGrid';
 import { StyledTabs } from '@local/components/StyledTabs';
 import { QuestionList } from './Questions';
 import { CurrentQuestionCard } from './Moderation/ManageQuestions/CurrentQuestionCard';
-import { ActionsPanels } from './ModeratorView/ActionsPanels';
+import { PreloadedActionsPanels } from './ModeratorView/ActionsPanels';
 import { EventTopicContext } from './ModeratorView/EventTopicContext';
 import { useUser } from '../accounts';
 
@@ -56,7 +56,7 @@ interface EventLiveProps {
 }
 
 function EventLiveModeratorView({ node }: EventLiveProps) {
-    const { eventData, isLive, setIsLive, pauseEventDetailsRefresh, resumeEventDetailsRefresh } = useEventDetails({
+    const { pauseEventDetailsRefresh, resumeEventDetailsRefresh } = useEventDetails({
         fragmentRef: node,
     });
     const { id: eventId } = node;
@@ -84,7 +84,7 @@ function EventLiveModeratorView({ node }: EventLiveProps) {
             <EventTopicContext.Provider value={{ topic: 'default', topics: [] }}>
                 <PanelGroup autoSaveId='mod-panels-persistence' direction='horizontal'>
                     <Panel defaultSize={33} minSize={21}>
-                        <ActionsPanels node={node} eventData={eventData} isLive={isLive} setIsLive={setIsLive} />
+                        <PreloadedActionsPanels />
                     </Panel>
                     <PanelResizeHandle>
                         <Grid container justifyContent='center' height='100%' width='0.5rem'>

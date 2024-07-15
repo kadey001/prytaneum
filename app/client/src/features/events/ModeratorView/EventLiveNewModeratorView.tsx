@@ -14,7 +14,7 @@ import { useEventDetails } from '../useEventDetails';
 import { usePingEvent } from '../Participants/usePingEvent';
 
 import { EventLiveNewModeratorViewQuery } from '@local/__generated__/EventLiveNewModeratorViewQuery.graphql';
-import { ActionsPanels } from './ActionsPanels';
+import { PreloadedActionsPanels } from './ActionsPanels';
 import { QuestionModerationPanels } from './QuestionModerationPanels';
 import { VerticalPanelResizeHandle } from '@local/components/PanelHandle';
 import { useUser } from '@local/features/accounts';
@@ -32,14 +32,9 @@ export const EVENT_LIVE_MODERATOR_VIEW_QUERY = graphql`
                     topic
                     description
                 }
-                ...useBroadcastMessageListFragment
-                ...EventVideoFragment
                 ...useEventDetailsFragment
-                ...SpeakerListFragment
-                ...useBroadcastMessageListFragment
                 ...useQuestionQueueFragment @arguments(userLang: $userLang)
                 ...QuestionCarouselFragment @arguments(userLang: $userLang)
-                ...useLiveFeedbackListFragment @arguments(eventId: $eventId)
                 ...useQuestionsByTopicFragment @arguments(userLang: $userLang)
                 ...useQueueByTopicFragment @arguments(userLang: $userLang)
                 ...useOnDeckFragment @arguments(userLang: $userLang)
@@ -64,7 +59,7 @@ interface EventLiveProps {
 function EventLiveNewModeratorView({ node, refresh }: EventLiveProps) {
     const theme = useTheme();
     const isXlDownBreakpoint = useMediaQuery(theme.breakpoints.down('xl')); // Below 1080p (likely 720p)
-    const { eventData, isLive, setIsLive, pauseEventDetailsRefresh, resumeEventDetailsRefresh } = useEventDetails({
+    const { eventData, pauseEventDetailsRefresh, resumeEventDetailsRefresh } = useEventDetails({
         fragmentRef: node,
     });
     const { id: eventId } = node;
@@ -94,7 +89,7 @@ function EventLiveNewModeratorView({ node, refresh }: EventLiveProps) {
             <PanelGroup direction='horizontal'>
                 <Panel defaultSize={isXlDownBreakpoint ? 30 : 20} minSize={isXlDownBreakpoint ? 25 : 18} maxSize={40}>
                     <React.Suspense fallback={<Loader />}>
-                        <ActionsPanels node={node} eventData={eventData} isLive={isLive} setIsLive={setIsLive} />
+                        <PreloadedActionsPanels />
                     </React.Suspense>
                 </Panel>
                 <VerticalPanelResizeHandle />

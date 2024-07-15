@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<33f3b694485e7772020dfcc95af3a47a>>
+ * @generated SignedSource<<7dae3e5cd57cfc374c72f18c77a93cc3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,9 +17,8 @@ export type ShareFeedbackPromptDraftMutation$data = {
     readonly body: {
       readonly cursor: string;
       readonly node: {
-        readonly createdAt: Date | null;
         readonly id: string;
-        readonly prompt: string;
+        readonly isDraft: boolean | null;
       };
     } | null;
     readonly isError: boolean;
@@ -102,14 +101,7 @@ v1 = [
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "createdAt",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "prompt",
+                "name": "isDraft",
                 "storageKey": null
               }
             ],
@@ -140,16 +132,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "356453ddbff2a7bcb811bd5f6669279b",
+    "cacheID": "05117cd188b209d760c45045f795854a",
     "id": null,
     "metadata": {},
     "name": "ShareFeedbackPromptDraftMutation",
     "operationKind": "mutation",
-    "text": "mutation ShareFeedbackPromptDraftMutation(\n  $promptId: ID!\n) {\n  shareFeedbackPromptDraft(promptId: $promptId) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        createdAt\n        prompt\n      }\n    }\n  }\n}\n"
+    "text": "mutation ShareFeedbackPromptDraftMutation(\n  $promptId: ID!\n) {\n  shareFeedbackPromptDraft(promptId: $promptId) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        isDraft\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "61fc7c499aa303e7d949b45f71958f09";
+(node as any).hash = "1d638ee75cb7c20f9eb6967756c3f20e";
 
 export default node;
