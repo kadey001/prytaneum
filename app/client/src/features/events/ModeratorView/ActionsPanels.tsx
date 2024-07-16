@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import * as React from 'react';
+import { FragmentRefs, graphql } from 'relay-runtime';
 import { Badge, Grid, Stack, Tab, Tooltip } from '@mui/material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import HandymanIcon from '@mui/icons-material/Handyman';
@@ -7,7 +8,7 @@ import PodcastsIcon from '@mui/icons-material/Podcasts';
 import FeedbackIcon from '@mui/icons-material/Feedback';
 import { Panel, PanelGroup } from 'react-resizable-panels';
 
-import { EventVideo } from '@local/features/events';
+import { EventVideo, useEvent } from '@local/features/events';
 import { EventDetailsCard } from '../EventDetailsCard';
 import { SpeakerList } from '../Speakers';
 
@@ -17,18 +18,39 @@ import { StyledColumnGrid } from '@local/components/StyledColumnGrid';
 import { StyledTabs } from '@local/components/StyledTabs';
 import { LiveFeedbackList } from '../LiveFeedback';
 import { BroadcastMessageList } from '../BroadcastMessages/BroadcastMessageList';
-import { Node } from './EventLiveNewModeratorView';
-import { useEventDetailsFragment$data } from '@local/__generated__/useEventDetailsFragment.graphql';
 import { HorizontalResizeHandle } from '@local/components/PanelHandle';
+import { PreloadedQuery, usePreloadedQuery, useQueryLoader } from 'react-relay';
+import { ActionsPanelsQuery } from '@local/__generated__/ActionsPanelsQuery.graphql';
+import { ConditionalRender, Loader } from '@local/components';
+import { useEventDetails } from '../useEventDetails';
+
+export const ACTIONS_PANELS_QUERY = graphql`
+    query ActionsPanelsQuery($eventId: ID!) {
+        node(id: $eventId) {
+            id
+            ...EventVideoFragment
+            ...SpeakerListFragment
+            ...useBroadcastMessageListFragment
+            ...useEventDetailsFragment
+            ...useLiveFeedbackListFragment @arguments(eventId: $eventId)
+            ...useLiveFeedbackPromptsFragment
+        }
+    }
+`;
+
+export type ActionsPanelsNode = {
+    readonly id: string;
+    readonly ' $fragmentSpreads': FragmentRefs<any>;
+};
 
 interface ActionsPanelProps {
-    node: Node;
-    eventData: useEventDetailsFragment$data;
-    isLive: boolean;
-    setIsLive: React.Dispatch<React.SetStateAction<boolean>>;
+    node: ActionsPanelsNode;
 }
 
-export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPanelProps) {
+function ActionsPanels({ node }: ActionsPanelProps) {
+    const { eventData, isLive, setIsLive } = useEventDetails({
+        fragmentRef: node,
+    });
     type Tabs = 'Moderator' | 'Feedback' | 'Broadcast' | 'Participants';
     const selectedTabFromSession = sessionStorage.getItem(`${node.id}-tab`) as Tabs | null;
     const [tab, setTab] = React.useState<Tabs>(selectedTabFromSession ?? 'Moderator');
@@ -150,31 +172,31 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
                         />
                         <Tab
                             label={
-                                <Tooltip
-                                    title='Feedback'
-                                    placement='top'
-                                    slotProps={{
-                                        popper: {
-                                            modifiers: [
-                                                {
-                                                    name: 'offset',
-                                                    options: {
-                                                        offset: [0, +2],
+                                <React.Fragment>
+                                    <Tooltip
+                                        title='Messages'
+                                        placement='top'
+                                        slotProps={{
+                                            popper: {
+                                                modifiers: [
+                                                    {
+                                                        name: 'offset',
+                                                        options: {
+                                                            offset: [0, +2],
+                                                        },
                                                     },
-                                                },
-                                            ],
-                                        },
-                                    }}
-                                >
-                                    <React.Fragment>
+                                                ],
+                                            },
+                                        }}
+                                    >
                                         <FeedbackIcon />
-                                        <Badge
-                                            badgeContent={numOfFeedbackMsgs}
-                                            color='error'
-                                            sx={{ transform: 'translate(25px, -23px)' }}
-                                        />
-                                    </React.Fragment>
-                                </Tooltip>
+                                    </Tooltip>
+                                    <Badge
+                                        badgeContent={numOfFeedbackMsgs}
+                                        color='error'
+                                        sx={{ transform: 'translate(25px, -23px)' }}
+                                    />
+                                </React.Fragment>
                             }
                             value='Feedback'
                             sx={{
@@ -193,7 +215,12 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
                     >
                         {tab === 'Participants' && <PreloadedParticipantsList eventId={eventData.id} />}
                         {tab === 'Moderator' && (
-                            <ModeratorActions isLive={isLive} setIsLive={setIsLive} eventId={eventData.id} />
+                            <ModeratorActions
+                                fragmentRef={node}
+                                isLive={isLive}
+                                setIsLive={setIsLive}
+                                eventId={eventData.id}
+                            />
                         )}
                         <BroadcastMessageList fragmentRef={node} isVisible={tab === 'Broadcast'} />
                         <LiveFeedbackList
@@ -205,5 +232,36 @@ export function ActionsPanels({ node, eventData, isLive, setIsLive }: ActionsPan
                 </Stack>
             </Panel>
         </PanelGroup>
+    );
+}
+
+interface ActionsPanelsContainerProps {
+    queryRef: PreloadedQuery<ActionsPanelsQuery>;
+}
+
+function ActionsPanelsContainer({ queryRef }: ActionsPanelsContainerProps) {
+    const { node } = usePreloadedQuery<ActionsPanelsQuery>(ACTIONS_PANELS_QUERY, queryRef);
+
+    if (!node) return null;
+    return <ActionsPanels node={node} />;
+}
+
+export function PreloadedActionsPanels() {
+    const [queryRef, loadQuery, disposeQuery] = useQueryLoader<ActionsPanelsQuery>(ACTIONS_PANELS_QUERY);
+    const { eventId } = useEvent();
+
+    React.useEffect(() => {
+        if (!queryRef) loadQuery({ eventId });
+        return disposeQuery;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    if (!queryRef) return <Loader />;
+
+    return (
+        <ConditionalRender client={true}>
+            <React.Suspense fallback={<Loader />}>
+                <ActionsPanelsContainer queryRef={queryRef} />
+            </React.Suspense>
+        </ConditionalRender>
     );
 }

@@ -187,7 +187,7 @@ export function EventFeedbackInfoPopper({ feedbackContainerRef }: EventFeedbackI
                             <InfoIcon sx={{ color: 'white' }} />
                         </Tooltip>
                         <Typography fontWeight='bold' color='white' width='25rem'>
-                            In the feedback tab you can directly message the event moderators with your feedback or
+                            In the messages tab you can directly message the event moderators with your feedback or
                             about any technical issues you may be experiencing.
                         </Typography>
                         <Tooltip title='Dismiss' placement='bottom-start'>

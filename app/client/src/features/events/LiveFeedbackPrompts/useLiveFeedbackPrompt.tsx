@@ -11,6 +11,7 @@ export const USE_LIVE_FEEDBACK_PROMPT_SUBSCRIPTION = graphql`
             id
             prompt
             isVote
+            isDraft
             isOpenEnded
             isMultipleChoice
             multipleChoiceOptions

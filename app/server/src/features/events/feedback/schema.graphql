@@ -20,6 +20,7 @@ type EventLiveFeedbackPrompt implements Node {
     isOpenEnded: Boolean
     isMultipleChoice: Boolean
     multipleChoiceOptions: [String!]
+    isDraft: Boolean
     responses(first: Int, after: String): EventLiveFeedbackPromptResponseConnection
 }
 
@@ -121,6 +122,7 @@ input CreateFeedbackPrompt {
     eventId: ID!
     feedbackType: String!
     choices: [String!]!
+    isDraft: Boolean!
 }
 
 input CreateFeedbackPromptResponse {
@@ -141,6 +143,7 @@ type Mutation {
     createFeedback(input: CreateFeedback!): EventFeedbackMutationResponse!
     createFeedbackDM(input: CreateFeedbackDM!): EventFeedbackMutationResponse!
     createFeedbackPrompt(input: CreateFeedbackPrompt!): EventFeedbackPromptMutationResponse!
+    shareFeedbackPromptDraft(promptId: ID!): EventFeedbackPromptMutationResponse!
     createFeedbackPromptResponse(input: CreateFeedbackPromptResponse!): EventFeedbackPromptResponseMutationResponse!
     shareFeedbackPromptResults(eventId: ID!, promptId: ID!): EventFeedbackPromptMutationResponse!
     submitPostEventFeedback(feedback: String!, eventId: ID!): PostEventFeedbackMutationResponse!

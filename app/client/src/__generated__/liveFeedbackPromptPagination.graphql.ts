@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<20dd5724ae36070c6e31d0d0b86dcb0e>>
+ * @generated SignedSource<<6485e28718254ff21c71d8ab2821f4f2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -108,10 +108,17 @@ v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "isMultipleChoice",
+  "storageKey": null
+},
+v10 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "createdAt",
   "storageKey": null
 },
-v10 = [
+v11 = [
   {
     "kind": "Literal",
     "name": "after",
@@ -123,7 +130,7 @@ v10 = [
     "value": 100
   }
 ],
-v11 = {
+v12 = {
   "alias": null,
   "args": null,
   "concreteType": "PageInfo",
@@ -148,7 +155,7 @@ v11 = {
   ],
   "storageKey": null
 },
-v12 = {
+v13 = {
   "kind": "ClientExtension",
   "selections": [
     {
@@ -238,7 +245,22 @@ return {
                           (v9/*: any*/),
                           {
                             "alias": null,
-                            "args": (v10/*: any*/),
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "multipleChoiceOptions",
+                            "storageKey": null
+                          },
+                          (v10/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "isDraft",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": (v11/*: any*/),
                             "concreteType": "EventLiveFeedbackPromptResponseConnection",
                             "kind": "LinkedField",
                             "name": "responses",
@@ -278,13 +300,7 @@ return {
                                         "name": "vote",
                                         "storageKey": null
                                       },
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "isMultipleChoice",
-                                        "storageKey": null
-                                      },
+                                      (v9/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -292,7 +308,7 @@ return {
                                         "name": "multipleChoiceResponse",
                                         "storageKey": null
                                       },
-                                      (v9/*: any*/),
+                                      (v10/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -332,14 +348,14 @@ return {
                                 ],
                                 "storageKey": null
                               },
-                              (v11/*: any*/),
-                              (v12/*: any*/)
+                              (v12/*: any*/),
+                              (v13/*: any*/)
                             ],
                             "storageKey": "responses(after:\"\",first:100)"
                           },
                           {
                             "alias": null,
-                            "args": (v10/*: any*/),
+                            "args": (v11/*: any*/),
                             "filters": null,
                             "handle": "connection",
                             "key": "useLiveFeedbackPromptResponsesFragment_responses",
@@ -353,8 +369,8 @@ return {
                     ],
                     "storageKey": null
                   },
-                  (v11/*: any*/),
-                  (v12/*: any*/)
+                  (v12/*: any*/),
+                  (v13/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -377,16 +393,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1fd7977d8575d87a747a5dfe3d67c1f4",
+    "cacheID": "3f757520fb1c8542885356b00b761dbe",
     "id": null,
     "metadata": {},
     "name": "liveFeedbackPromptPagination",
     "operationKind": "query",
-    "text": "query liveFeedbackPromptPagination(\n  $after: String = \"\"\n  $first: Int = 100\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useLiveFeedbackPromptsFragment_2HEEH6\n    id\n  }\n}\n\nfragment useLiveFeedbackPromptResponsesFragment on EventLiveFeedbackPrompt {\n  id\n  responses(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        isOpenEnded\n        response\n        isVote\n        vote\n        isMultipleChoice\n        multipleChoiceResponse\n        createdAt\n        createdBy {\n          id\n          firstName\n        }\n        prompt {\n          id\n          prompt\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptsFragment_2HEEH6 on Event {\n  id\n  liveFeedbackPrompts(first: $first, after: $after) {\n    edges {\n      cursor\n      node {\n        id\n        prompt\n        isVote\n        isOpenEnded\n        createdAt\n        ...useLiveFeedbackPromptResponsesFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query liveFeedbackPromptPagination(\n  $after: String = \"\"\n  $first: Int = 100\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useLiveFeedbackPromptsFragment_2HEEH6\n    id\n  }\n}\n\nfragment useLiveFeedbackPromptResponsesFragment on EventLiveFeedbackPrompt {\n  id\n  responses(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        isOpenEnded\n        response\n        isVote\n        vote\n        isMultipleChoice\n        multipleChoiceResponse\n        createdAt\n        createdBy {\n          id\n          firstName\n        }\n        prompt {\n          id\n          prompt\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptsFragment_2HEEH6 on Event {\n  id\n  liveFeedbackPrompts(first: $first, after: $after) {\n    edges {\n      cursor\n      node {\n        id\n        prompt\n        isVote\n        isOpenEnded\n        isMultipleChoice\n        multipleChoiceOptions\n        createdAt\n        isDraft\n        ...useLiveFeedbackPromptResponsesFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "c2b59a234a10b7a15a32749b775ab6d6";
+(node as any).hash = "a5e3537c394d291525e3f7a7a48f92bd";
 
 export default node;

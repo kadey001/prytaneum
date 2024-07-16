@@ -55,6 +55,7 @@ input CreateFeedbackPrompt {
   choices: [String!]!
   eventId: ID!
   feedbackType: String!
+  isDraft: Boolean!
   prompt: String!
 }
 
@@ -371,6 +372,7 @@ type EventLiveFeedbackPrompt implements Node {
   createdAt: Date
   event: Event
   id: ID!
+  isDraft: Boolean
   isMultipleChoice: Boolean
   isOpenEnded: Boolean
   isVote: Boolean
@@ -726,6 +728,7 @@ type Mutation {
   returns false if an account with the provided email cannot be found
   """
   resetPasswordRequest(input: ResetPasswordRequestForm!): ResetPasswordRequestMutationResponse!
+  shareFeedbackPromptDraft(promptId: ID!): EventFeedbackPromptMutationResponse!
   shareFeedbackPromptResults(eventId: ID!, promptId: ID!): EventFeedbackPromptMutationResponse!
 
   """

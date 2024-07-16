@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<84ee54f1708561a5fe709e611c1700aa>>
+ * @generated SignedSource<<25544f616efb4a8cd317fcda83c0a5f5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type LiveFeedbackPromptListQuery$data = {
   readonly prompts: ReadonlyArray<{
     readonly createdAt: Date | null;
     readonly id: string;
+    readonly isDraft: boolean | null;
     readonly isMultipleChoice: boolean | null;
     readonly isOpenEnded: boolean | null;
     readonly isVote: boolean | null;
@@ -99,6 +100,13 @@ v1 = [
         "kind": "ScalarField",
         "name": "createdAt",
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "isDraft",
+        "storageKey": null
       }
     ],
     "storageKey": null
@@ -122,16 +130,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "e9176f8e469f4c201b51c7b34fc8fedf",
+    "cacheID": "64a08e29ef45a98e69780a5f92f8e6c6",
     "id": null,
     "metadata": {},
     "name": "LiveFeedbackPromptListQuery",
     "operationKind": "query",
-    "text": "query LiveFeedbackPromptListQuery(\n  $eventId: ID!\n) {\n  prompts(eventId: $eventId) {\n    id\n    prompt\n    isVote\n    isOpenEnded\n    isMultipleChoice\n    multipleChoiceOptions\n    createdAt\n  }\n}\n"
+    "text": "query LiveFeedbackPromptListQuery(\n  $eventId: ID!\n) {\n  prompts(eventId: $eventId) {\n    id\n    prompt\n    isVote\n    isOpenEnded\n    isMultipleChoice\n    multipleChoiceOptions\n    createdAt\n    isDraft\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "670c938adc08344b88d0d215058bb087";
+(node as any).hash = "819cd55290e3a4e76fc35973d5359334";
 
 export default node;

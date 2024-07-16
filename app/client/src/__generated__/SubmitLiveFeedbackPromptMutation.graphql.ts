@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3526446ea9acc144ad562529dc9ee236>>
+ * @generated SignedSource<<78151c8ff4ad120f16c1d61075af9857>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,16 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type CreateFeedbackPrompt = {
   choices: ReadonlyArray<string>;
   eventId: string;
   feedbackType: string;
+  isDraft: boolean;
   prompt: string;
 };
 export type SubmitLiveFeedbackPromptMutation$variables = {
+  connections: ReadonlyArray<string>;
   input: CreateFeedbackPrompt;
 };
 export type SubmitLiveFeedbackPromptMutation$data = {
@@ -25,7 +28,13 @@ export type SubmitLiveFeedbackPromptMutation$data = {
       readonly node: {
         readonly createdAt: Date | null;
         readonly id: string;
+        readonly isDraft: boolean | null;
+        readonly isMultipleChoice: boolean | null;
+        readonly isOpenEnded: boolean | null;
+        readonly isVote: boolean | null;
+        readonly multipleChoiceOptions: ReadonlyArray<string> | null;
         readonly prompt: string;
+        readonly " $fragmentSpreads": FragmentRefs<"useLiveFeedbackPromptResponsesFragment">;
       };
     } | null;
     readonly isError: boolean;
@@ -38,84 +47,163 @@ export type SubmitLiveFeedbackPromptMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "connections"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "input"
+},
+v2 = [
   {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "input"
+    "kind": "Variable",
+    "name": "input",
+    "variableName": "input"
   }
 ],
-v1 = [
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isError",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "message",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "cursor",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "prompt",
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isVote",
+  "storageKey": null
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isOpenEnded",
+  "storageKey": null
+},
+v10 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isMultipleChoice",
+  "storageKey": null
+},
+v11 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "multipleChoiceOptions",
+  "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "createdAt",
+  "storageKey": null
+},
+v13 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isDraft",
+  "storageKey": null
+},
+v14 = [
   {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "input",
-        "variableName": "input"
-      }
+    "kind": "Literal",
+    "name": "after",
+    "value": ""
+  },
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 100
+  }
+];
+return {
+  "fragment": {
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
     ],
-    "concreteType": "EventFeedbackPromptMutationResponse",
-    "kind": "LinkedField",
-    "name": "createFeedbackPrompt",
-    "plural": false,
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "SubmitLiveFeedbackPromptMutation",
     "selections": [
       {
         "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "isError",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "message",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": "EventLiveFeedbackPromptEdge",
+        "args": (v2/*: any*/),
+        "concreteType": "EventFeedbackPromptMutationResponse",
         "kind": "LinkedField",
-        "name": "body",
+        "name": "createFeedbackPrompt",
         "plural": false,
         "selections": [
+          (v3/*: any*/),
+          (v4/*: any*/),
           {
             "alias": null,
             "args": null,
-            "kind": "ScalarField",
-            "name": "cursor",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "EventLiveFeedbackPrompt",
+            "concreteType": "EventLiveFeedbackPromptEdge",
             "kind": "LinkedField",
-            "name": "node",
+            "name": "body",
             "plural": false,
             "selections": [
+              (v5/*: any*/),
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "createdAt",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "prompt",
+                "concreteType": "EventLiveFeedbackPrompt",
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  (v6/*: any*/),
+                  (v7/*: any*/),
+                  (v8/*: any*/),
+                  (v9/*: any*/),
+                  (v10/*: any*/),
+                  (v11/*: any*/),
+                  (v12/*: any*/),
+                  (v13/*: any*/),
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "useLiveFeedbackPromptResponsesFragment"
+                  }
+                ],
                 "storageKey": null
               }
             ],
@@ -125,37 +213,236 @@ v1 = [
         "storageKey": null
       }
     ],
-    "storageKey": null
-  }
-];
-return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "SubmitLiveFeedbackPromptMutation",
-    "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "SubmitLiveFeedbackPromptMutation",
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "concreteType": "EventFeedbackPromptMutationResponse",
+        "kind": "LinkedField",
+        "name": "createFeedbackPrompt",
+        "plural": false,
+        "selections": [
+          (v3/*: any*/),
+          (v4/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "EventLiveFeedbackPromptEdge",
+            "kind": "LinkedField",
+            "name": "body",
+            "plural": false,
+            "selections": [
+              (v5/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "EventLiveFeedbackPrompt",
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  (v6/*: any*/),
+                  (v7/*: any*/),
+                  (v8/*: any*/),
+                  (v9/*: any*/),
+                  (v10/*: any*/),
+                  (v11/*: any*/),
+                  (v12/*: any*/),
+                  (v13/*: any*/),
+                  {
+                    "alias": null,
+                    "args": (v14/*: any*/),
+                    "concreteType": "EventLiveFeedbackPromptResponseConnection",
+                    "kind": "LinkedField",
+                    "name": "responses",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "EventLiveFeedbackPromptResponseEdge",
+                        "kind": "LinkedField",
+                        "name": "edges",
+                        "plural": true,
+                        "selections": [
+                          (v5/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "EventLiveFeedbackPromptResponse",
+                            "kind": "LinkedField",
+                            "name": "node",
+                            "plural": false,
+                            "selections": [
+                              (v6/*: any*/),
+                              (v9/*: any*/),
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "response",
+                                "storageKey": null
+                              },
+                              (v8/*: any*/),
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "vote",
+                                "storageKey": null
+                              },
+                              (v10/*: any*/),
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "multipleChoiceResponse",
+                                "storageKey": null
+                              },
+                              (v12/*: any*/),
+                              {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": "User",
+                                "kind": "LinkedField",
+                                "name": "createdBy",
+                                "plural": false,
+                                "selections": [
+                                  (v6/*: any*/),
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "firstName",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": "EventLiveFeedbackPrompt",
+                                "kind": "LinkedField",
+                                "name": "prompt",
+                                "plural": false,
+                                "selections": [
+                                  (v6/*: any*/),
+                                  (v7/*: any*/)
+                                ],
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "__typename",
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "PageInfo",
+                        "kind": "LinkedField",
+                        "name": "pageInfo",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "endCursor",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "hasNextPage",
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ClientExtension",
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "__id",
+                            "storageKey": null
+                          }
+                        ]
+                      }
+                    ],
+                    "storageKey": "responses(after:\"\",first:100)"
+                  },
+                  {
+                    "alias": null,
+                    "args": (v14/*: any*/),
+                    "filters": null,
+                    "handle": "connection",
+                    "key": "useLiveFeedbackPromptResponsesFragment_responses",
+                    "kind": "LinkedHandle",
+                    "name": "responses"
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "filters": null,
+            "handle": "appendEdge",
+            "key": "",
+            "kind": "LinkedHandle",
+            "name": "body",
+            "handleArgs": [
+              {
+                "kind": "Variable",
+                "name": "connections",
+                "variableName": "connections"
+              }
+            ]
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "a078d8b00b1ca67c2f3a2be949836e8a",
+    "cacheID": "e39b92e5fce6643cf6430beaaf121f3d",
     "id": null,
     "metadata": {},
     "name": "SubmitLiveFeedbackPromptMutation",
     "operationKind": "mutation",
-    "text": "mutation SubmitLiveFeedbackPromptMutation(\n  $input: CreateFeedbackPrompt!\n) {\n  createFeedbackPrompt(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        createdAt\n        prompt\n      }\n    }\n  }\n}\n"
+    "text": "mutation SubmitLiveFeedbackPromptMutation(\n  $input: CreateFeedbackPrompt!\n) {\n  createFeedbackPrompt(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        prompt\n        isVote\n        isOpenEnded\n        isMultipleChoice\n        multipleChoiceOptions\n        createdAt\n        isDraft\n        ...useLiveFeedbackPromptResponsesFragment\n      }\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptResponsesFragment on EventLiveFeedbackPrompt {\n  id\n  responses(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        isOpenEnded\n        response\n        isVote\n        vote\n        isMultipleChoice\n        multipleChoiceResponse\n        createdAt\n        createdBy {\n          id\n          firstName\n        }\n        prompt {\n          id\n          prompt\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1526af588ad93ae620168862b0f64a3f";
+(node as any).hash = "f74350ab9d12e1620fdfd61e7eab091a";
 
 export default node;

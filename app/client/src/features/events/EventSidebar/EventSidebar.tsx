@@ -104,7 +104,7 @@ export const EventSidebar = ({ fragmentRef, participants }: EventSidebarProps) =
         if (smDownBreakpoint) {
             return (
                 <React.Fragment>
-                    <Typography variant='caption'>Feedback</Typography>
+                    <Typography variant='caption'>Messages</Typography>
                     <Badge
                         badgeContent={numOfFeedbackMsgs}
                         color='error'
@@ -115,7 +115,7 @@ export const EventSidebar = ({ fragmentRef, participants }: EventSidebarProps) =
         }
         return (
             <React.Fragment>
-                Feedback
+                Messages
                 <Badge badgeContent={numOfFeedbackMsgs} color='error' sx={{ transform: 'translate(40px, -23px)' }} />
             </React.Fragment>
         );

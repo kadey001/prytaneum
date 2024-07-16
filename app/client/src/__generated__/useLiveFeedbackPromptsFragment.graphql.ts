@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f7050f4bc16b2c24a40d2c44779e9818>>
+ * @generated SignedSource<<f9a12a85389b7cc7edf1a431899fa34c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,8 +19,11 @@ export type useLiveFeedbackPromptsFragment$data = {
       readonly node: {
         readonly createdAt: Date | null;
         readonly id: string;
+        readonly isDraft: boolean | null;
+        readonly isMultipleChoice: boolean | null;
         readonly isOpenEnded: boolean | null;
         readonly isVote: boolean | null;
+        readonly multipleChoiceOptions: ReadonlyArray<string> | null;
         readonly prompt: string;
         readonly " $fragmentSpreads": FragmentRefs<"useLiveFeedbackPromptResponsesFragment">;
       };
@@ -146,7 +149,28 @@ return {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
+                  "name": "isMultipleChoice",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "multipleChoiceOptions",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
                   "name": "createdAt",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "isDraft",
                   "storageKey": null
                 },
                 {
@@ -213,6 +237,6 @@ return {
 };
 })();
 
-(node as any).hash = "c2b59a234a10b7a15a32749b775ab6d6";
+(node as any).hash = "a5e3537c394d291525e3f7a7a48f92bd";
 
 export default node;

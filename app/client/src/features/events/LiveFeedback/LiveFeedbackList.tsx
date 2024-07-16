@@ -14,8 +14,6 @@ import { LiveFeedbackAuthor } from './LiveFeedbackAuthor';
 import { useEvent } from '../useEvent';
 import { LiveFeedbackReplyAction } from './LiveFeedbackReplyAction';
 import { LiveFeedbackReply } from './LiveFeedbackReply';
-import { SubmitLiveFeedbackPrompt } from '../LiveFeedbackPrompts/LiveFeedbackPrompt';
-import { ShareFeedbackResults } from '../LiveFeedbackPrompts';
 import { SubmitLiveFeedback } from './SubmitLiveFeedback';
 
 interface LiveFeedbackListProps {
@@ -107,13 +105,11 @@ export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs 
     const ActionButtons = React.useMemo(() => {
         if (isModerator) {
             return (
-                <Grid
-                    container
+                <Stack
                     direction='row'
-                    justifyContent='space-around'
+                    justifyContent='space-between'
                     alignItems='center'
                     marginBottom={isSearchOpen ? '.5rem' : '0rem'}
-                    spacing={0.5}
                 >
                     <Grid item xs='auto'>
                         <IconButton
@@ -126,16 +122,8 @@ export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs 
                             </Tooltip>
                         </IconButton>
                     </Grid>
-                    <Grid item xs='auto'>
-                        <SubmitLiveFeedback eventId={eventId} connections={connections} />
-                    </Grid>
-                    <Grid item xs='auto'>
-                        <SubmitLiveFeedbackPrompt eventId={eventId} />
-                    </Grid>
-                    <Grid item xs='auto'>
-                        <ShareFeedbackResults />
-                    </Grid>
-                </Grid>
+                    <SubmitLiveFeedback eventId={eventId} connections={connections} />
+                </Stack>
             );
         } else {
             return (
@@ -175,7 +163,7 @@ export function LiveFeedbackList({ fragmentRef, isVisible, setNumOfFeedbackMsgs 
     if (!isVisible) return <React.Fragment />;
 
     return (
-        <Stack direction='column' alignItems='stretch' width='100%' padding={1} paddingRight={0}>
+        <Stack direction='column' alignItems='stretch' width='100%' paddingRight={0}>
             <Paper sx={{ padding: '1rem', marginX: '8px', marginBottom: '0.5rem' }}>
                 {ActionButtons}
                 <ListFilter

@@ -18,7 +18,10 @@ const USE_LIVE_FEEDBACK_PROMPTS = graphql`
                     prompt
                     isVote
                     isOpenEnded
+                    isMultipleChoice
+                    multipleChoiceOptions
                     createdAt
+                    isDraft
                     ...useLiveFeedbackPromptResponsesFragment
                 }
             }
@@ -31,23 +34,32 @@ const USE_LIVE_FEEDBACK_PROMPTS = graphql`
 
 export interface Props {
     fragmentRef: useLiveFeedbackPromptsFragment$key;
-    modalIsOpen: boolean;
+    isModalOpen: boolean;
+    isShareResultsOpen: boolean;
 }
 
-export function useLiveFeedbackPrompts({ fragmentRef, modalIsOpen }: Props) {
+export function useLiveFeedbackPrompts({ fragmentRef, isModalOpen, isShareResultsOpen }: Props) {
     const [data, refetch] = useRefetchableFragment(USE_LIVE_FEEDBACK_PROMPTS, fragmentRef);
     const { liveFeedbackPrompts } = data;
 
     const REFETCH_INTERVAL = 20000; // 20 seconds
     const refresh = React.useCallback(() => {
         // if the modal is open, don't refetch (Ensures secondary modal doesn't flash)
-        if (modalIsOpen) return;
+        if (isModalOpen) return;
         refetch(
             { first: 100, after: data.liveFeedbackPrompts?.pageInfo?.endCursor || '' },
-            { fetchPolicy: 'network-only' }
+            { fetchPolicy: 'store-and-network' }
         );
-    }, [modalIsOpen, refetch, data.liveFeedbackPrompts?.pageInfo?.endCursor]);
-    useRefresh({ refreshInterval: REFETCH_INTERVAL, callback: refresh });
+    }, [isModalOpen, refetch, data.liveFeedbackPrompts?.pageInfo?.endCursor]);
+    const { pauseRefresh, resumeRefresh } = useRefresh({ refreshInterval: REFETCH_INTERVAL, callback: refresh });
+
+    React.useEffect(() => {
+        if (isModalOpen || !isShareResultsOpen) {
+            pauseRefresh();
+        } else {
+            resumeRefresh();
+        }
+    }, [isModalOpen, isShareResultsOpen, pauseRefresh, resumeRefresh]);
 
     const promptsList = React.useMemo(
         () =>
@@ -57,11 +69,10 @@ export function useLiveFeedbackPrompts({ fragmentRef, modalIsOpen }: Props) {
         [liveFeedbackPrompts]
     );
 
-    // Set up refresh polling interval (20 seconds) to keep data fresh
-    React.useEffect(() => {
-        const interval = setInterval(refresh, REFETCH_INTERVAL);
-        return () => clearInterval(interval);
-    }, [refresh]);
+    const connections = React.useMemo(
+        () => (data.liveFeedbackPrompts?.__id ? [data.liveFeedbackPrompts?.__id] : []),
+        [data.liveFeedbackPrompts?.__id]
+    );
 
-    return { prompts: promptsList };
+    return { prompts: promptsList, connections, pauseRefresh, resumeRefresh };
 }

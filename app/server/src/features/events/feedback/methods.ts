@@ -23,8 +23,15 @@ export async function promptResponses(promptId: string, prisma: PrismaClient) {
     });
 }
 
-export async function findPromptByPromptId(promptId: string, prisma: PrismaClient) {
+export function findPromptByPromptId(promptId: string, prisma: PrismaClient) {
     return prisma.eventLiveFeedbackPrompt.findUnique({ where: { id: promptId } });
+}
+
+export function shareFeedbackPromptDraft(promptId: string, prisma: PrismaClient) {
+    return prisma.eventLiveFeedbackPrompt.update({
+        where: { id: promptId },
+        data: { isDraft: false },
+    });
 }
 
 export async function findPromptsByEventId(eventId: string, prisma: PrismaClient) {
@@ -91,6 +98,7 @@ export async function createFeedbackPrompt(
             isOpenEnded: feedbackType === 'open-ended',
             isMultipleChoice: feedbackType === 'multiple-choice',
             multipleChoiceOptions: input.choices,
+            isDraft: input.isDraft,
         },
     });
 }

@@ -155,6 +155,7 @@ model EventLiveFeedbackPrompt {
     isOpenEnded Boolean @default(false)
     isMultipleChoice Boolean @default(false)
     multipleChoiceOptions String[] @default([]) // Format is ["option1", "option2"]
+    isDraft Boolean @default(false)
     responses EventLiveFeedbackPromptResponse[]
 }
 
