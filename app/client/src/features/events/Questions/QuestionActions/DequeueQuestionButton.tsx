@@ -96,11 +96,16 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
                     'useQuestionsByTopicFragment_questionsByTopic'
                 );
                 if (!questionsByTopicConnection) return console.error('Update failed: Connection not found!');
+
                 // Get the payload from the mutation
                 const payload = store.getRootField('removeQuestionFromTopicQueue');
                 if (!payload) return console.error('Update failed: No payload found!');
                 const serverEdge = payload.getLinkedRecord('body');
                 if (!serverEdge) return console.error('Update failed: No edge found!');
+                const node = serverEdge.getLinkedRecord('node');
+                if (!node) return console.error('Update failed: No node found!');
+                const topics = node.getLinkedRecords('topics');
+                if (!topics) return console.error('Update failed: No topics found!');
 
                 // Always add edge back to the default queue
                 const connectionId = questionsByTopicConnection + '(topic:"default")';
@@ -109,11 +114,16 @@ export function DequeueQuestionButton({ questionId }: QueueButtonProps) {
                 ConnectionHandler.insertEdgeAfter(connectionRecord, serverEdge);
 
                 // Add the question to the topic queues
-                const questionsByTopicConnectionId = questionsByTopicConnection + `(topic:"${topic}")`;
-                const questionsByTopicConnectionRecord = store.get(questionsByTopicConnectionId);
-                if (!questionsByTopicConnectionRecord)
-                    return console.error(`Update failed: Connection record ${questionsByTopicConnectionId} not found!`);
-                ConnectionHandler.insertEdgeAfter(questionsByTopicConnectionRecord, serverEdge);
+                topics.forEach((topicRecord) => {
+                    const _topic = topicRecord.getValue('topic') as string;
+                    const questionsByTopicConnectionId = questionsByTopicConnection + `(topic:"${_topic}")`;
+                    const questionsByTopicConnectionRecord = store.get(questionsByTopicConnectionId);
+                    if (!questionsByTopicConnectionRecord)
+                        return console.error(
+                            `Update failed: Connection record ${questionsByTopicConnectionId} not found!`
+                        );
+                    ConnectionHandler.insertEdgeAfter(questionsByTopicConnectionRecord, serverEdge);
+                });
             },
         });
     }, [commit, displaySnack, eventId, questionId, topic, user]);
