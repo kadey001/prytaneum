@@ -172,31 +172,31 @@ function ActionsPanels({ node }: ActionsPanelProps) {
                         />
                         <Tab
                             label={
-                                <Tooltip
-                                    title='Feedback'
-                                    placement='top'
-                                    slotProps={{
-                                        popper: {
-                                            modifiers: [
-                                                {
-                                                    name: 'offset',
-                                                    options: {
-                                                        offset: [0, +2],
+                                <React.Fragment>
+                                    <Tooltip
+                                        title='Messages'
+                                        placement='top'
+                                        slotProps={{
+                                            popper: {
+                                                modifiers: [
+                                                    {
+                                                        name: 'offset',
+                                                        options: {
+                                                            offset: [0, +2],
+                                                        },
                                                     },
-                                                },
-                                            ],
-                                        },
-                                    }}
-                                >
-                                    <React.Fragment>
+                                                ],
+                                            },
+                                        }}
+                                    >
                                         <FeedbackIcon />
-                                        <Badge
-                                            badgeContent={numOfFeedbackMsgs}
-                                            color='error'
-                                            sx={{ transform: 'translate(25px, -23px)' }}
-                                        />
-                                    </React.Fragment>
-                                </Tooltip>
+                                    </Tooltip>
+                                    <Badge
+                                        badgeContent={numOfFeedbackMsgs}
+                                        color='error'
+                                        sx={{ transform: 'translate(25px, -23px)' }}
+                                    />
+                                </React.Fragment>
                             }
                             value='Feedback'
                             sx={{
