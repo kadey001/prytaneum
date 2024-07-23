@@ -6,7 +6,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { StyledDialogTitle, StyledDialog } from '@local/components';
 import { useLiveFeedbackPromptsFragment$key } from '@local/__generated__/useLiveFeedbackPromptsFragment.graphql';
-import { FeedbackPromptsList } from './LiveFeedbackPrompt/FeedbackPromptsList';
+import { LiveFeedbackPromptsList } from './LiveFeedbackPrompt/LiveFeedbackPromptList';
 
 interface ShareFeedbackResultsProps {
     fragmentRef: useLiveFeedbackPromptsFragment$key;
@@ -43,7 +43,7 @@ export function ShareFeedbackResults({ fragmentRef }: ShareFeedbackResultsProps)
                 </StyledDialogTitle>
                 <DialogContent dividers>
                     <Grid container direction='column' alignItems='center'>
-                        <FeedbackPromptsList fragmentRef={fragmentRef} isShareResultsOpen={open} />
+                        <LiveFeedbackPromptsList fragmentRef={fragmentRef} isShareResultsOpen={open} />
                     </Grid>
                 </DialogContent>
             </StyledDialog>

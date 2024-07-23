@@ -54,6 +54,7 @@ export type Query = {
     prompt?: Maybe<EventLiveFeedbackPrompt>;
     prompts?: Maybe<Array<EventLiveFeedbackPrompt>>;
     promptResponseVotes: Votes;
+    promptResponseViewpoints?: Maybe<Array<Scalars['String']>>;
     /** Validates an invite token and logs the user in if they are already registered. */
     validateInvite: ValidateInviteQueryResponse;
     eventParticipants: Array<Maybe<EventParticipant>>;
@@ -95,6 +96,10 @@ export type QuerypromptsArgs = {
 };
 
 export type QuerypromptResponseVotesArgs = {
+    promptId: Scalars['ID'];
+};
+
+export type QuerypromptResponseViewpointsArgs = {
     promptId: Scalars['ID'];
 };
 
@@ -355,6 +360,7 @@ export type Mutation = {
     createFeedbackPromptResponse: EventFeedbackPromptResponseMutationResponse;
     shareFeedbackPromptResults: EventFeedbackPromptMutationResponse;
     submitPostEventFeedback: PostEventFeedbackMutationResponse;
+    generateViewpoints: EventFeedbackPromptMutationResponse;
     createInvite: InviteMutationResponse;
     uninviteUser: InviteMutationResponse;
     hideQuestion?: Maybe<EventQuestion>;
@@ -538,6 +544,11 @@ export type MutationshareFeedbackPromptResultsArgs = {
 export type MutationsubmitPostEventFeedbackArgs = {
     feedback: Scalars['String'];
     eventId: Scalars['ID'];
+};
+
+export type MutationgenerateViewpointsArgs = {
+    eventId: Scalars['ID'];
+    promptId: Scalars['ID'];
 };
 
 export type MutationcreateInviteArgs = {
@@ -1225,6 +1236,8 @@ export type EventLiveFeedbackPrompt = Node & {
     multipleChoiceOptions?: Maybe<Array<Scalars['String']>>;
     isDraft?: Maybe<Scalars['Boolean']>;
     responses?: Maybe<EventLiveFeedbackPromptResponseConnection>;
+    viewpoints?: Maybe<Array<Scalars['String']>>;
+    stakeholders?: Maybe<Array<Scalars['String']>>;
 };
 
 export type EventLiveFeedbackPromptresponsesArgs = {
@@ -2308,6 +2321,12 @@ export type QueryResolvers<
         ContextType,
         RequireFields<QuerypromptResponseVotesArgs, 'promptId'>
     >;
+    promptResponseViewpoints?: Resolver<
+        Maybe<Array<ResolversTypes['String']>>,
+        ParentType,
+        ContextType,
+        RequireFields<QuerypromptResponseViewpointsArgs, 'promptId'>
+    >;
     validateInvite?: Resolver<
         ResolversTypes['ValidateInviteQueryResponse'],
         ParentType,
@@ -2677,6 +2696,12 @@ export type MutationResolvers<
         ParentType,
         ContextType,
         RequireFields<MutationsubmitPostEventFeedbackArgs, 'feedback' | 'eventId'>
+    >;
+    generateViewpoints?: Resolver<
+        ResolversTypes['EventFeedbackPromptMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationgenerateViewpointsArgs, 'eventId' | 'promptId'>
     >;
     createInvite?: Resolver<
         ResolversTypes['InviteMutationResponse'],
@@ -3416,6 +3441,8 @@ export type EventLiveFeedbackPromptResolvers<
         ContextType,
         Partial<EventLiveFeedbackPromptresponsesArgs>
     >;
+    viewpoints?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+    stakeholders?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -4267,6 +4294,8 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
             EventLiveFeedbackPromptresponsesArgs,
             TContext
         >;
+        viewpoints?: LoaderResolver<Maybe<Array<Scalars['String']>>, EventLiveFeedbackPrompt, {}, TContext>;
+        stakeholders?: LoaderResolver<Maybe<Array<Scalars['String']>>, EventLiveFeedbackPrompt, {}, TContext>;
     };
 
     EventLiveFeedbackPromptResponse?: {

@@ -379,6 +379,8 @@ type EventLiveFeedbackPrompt implements Node {
   multipleChoiceOptions: [String!]
   prompt: String!
   responses(after: String, first: Int): EventLiveFeedbackPromptResponseConnection
+  stakeholders: [String!]
+  viewpoints: [String!]
 }
 
 type EventLiveFeedbackPromptConnection {
@@ -687,6 +689,7 @@ type Mutation {
   Material limited to ~120k characters
   """
   generateEventTopics(eventId: String!, material: String!): TopicGenerationMutationResponse
+  generateViewpoints(eventId: ID!, promptId: ID!): EventFeedbackPromptMutationResponse!
   hideQuestion(input: HideQuestion!): EventQuestion
   lockTopic(eventId: String!, topic: String!): TopicLockToggleMutationResponse
   lockTopics(eventId: String!, topics: [String!]!): MutationResponse
@@ -856,6 +859,7 @@ type Query {
   myFeedback(eventId: ID!): [EventLiveFeedback]
   node(id: ID!): Node
   prompt(promptId: ID!): EventLiveFeedbackPrompt
+  promptResponseViewpoints(promptId: ID!): [String!]
   promptResponseVotes(promptId: ID!): Votes!
   promptResponses(promptId: ID!): [EventLiveFeedbackPromptResponse!]
   prompts(eventId: ID!): [EventLiveFeedbackPrompt!]

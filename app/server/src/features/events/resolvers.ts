@@ -309,11 +309,19 @@ export const resolvers: Resolvers = {
             const { id: eventId } = fromGlobalId(parent.id);
             const queryResult = await Event.findLiveFeedbackPromptsByEventId(eventId, ctx.prisma);
             const { feedbackPrompt: liveFeedbackPrompts } = queryResult || { feedbackPrompt: [] };
-            const connection = connectionFromArray(liveFeedbackPrompts.map(toFeedbackPromptId), args);
-
-            if (liveFeedbackPrompts.length === 0)
-                connection.pageInfo = { ...connection.pageInfo, startCursor: '', endCursor: '' };
-            return connection;
+            const edges = liveFeedbackPrompts
+                .map(toFeedbackPromptId)
+                .map((prompt) => ({ node: prompt, cursor: prompt.createdAt.getTime().toString() }));
+            // TODO Filter the results if viewer is not a moderator
+            return {
+                edges,
+                pageInfo: {
+                    hasNextPage: false,
+                    hasPreviousPage: false,
+                    startCursor: edges[0]?.cursor.toString(),
+                    endCursor: edges[liveFeedbackPrompts.length - 1]?.cursor.toString(),
+                },
+            };
         },
         async questionQueue(parent, args, ctx, info) {
             const { id: eventId } = fromGlobalId(parent.id);

@@ -46,7 +46,9 @@ export function ShareFeedbackPromptResults({ prompt }: ShareFeedbackResultsProps
                 <DialogContent>
                     <Grid container>
                         <Grid container item justifyContent='center'>
-                            <Typography>Are you sure?</Typography>
+                            <Typography>
+                                Are you sure you would like to share the stats and summarized viewpoints?
+                            </Typography>
                         </Grid>
                         <Grid container item justifyContent='center'>
                             <Button onClick={close}>Cancel</Button>

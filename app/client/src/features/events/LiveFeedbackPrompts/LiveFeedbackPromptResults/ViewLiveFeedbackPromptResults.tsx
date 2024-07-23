@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { graphql } from 'relay-runtime';
 import { useQueryLoader, PreloadedQuery, usePreloadedQuery } from 'react-relay';
-import { DialogContent, Grid, Typography, useMediaQuery } from '@mui/material';
+import { Chip, DialogContent, Divider, Grid, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { Prompt } from './useLiveFeedbackPromptResultsShared';
@@ -29,6 +29,7 @@ const VIEW_LIVE_FEEDBACK_PROMPT_RESULTS = graphql`
             isOpenEnded
             isMultipleChoice
             multipleChoiceOptions
+            viewpoints
         }
     }
 `;
@@ -51,10 +52,12 @@ interface ResultsProps {
         readonly isMultipleChoice: boolean | null;
         readonly multipleChoiceOptions: readonly string[] | null;
         readonly prompt: string;
+        readonly viewpoints: readonly string[] | null;
     };
 }
 
 function Results({ promptResponseVotes, promptResponses, prompt }: ResultsProps) {
+    const { viewpoints } = prompt;
     const { for: forVotes, against: againstVotes, conflicted: conflictedVotes } = promptResponseVotes;
 
     const zeroVotes = React.useMemo(() => {
@@ -71,7 +74,7 @@ function Results({ promptResponseVotes, promptResponses, prompt }: ResultsProps)
         return prompt.multipleChoiceOptions ? [...prompt.multipleChoiceOptions] : [];
     }, [prompt.multipleChoiceOptions]);
 
-    const DisplayChart = () => {
+    const chart = React.useMemo(() => {
         if (prompt.isVote)
             return zeroVotes ? (
                 <Typography>No Votes To Display</Typography>
@@ -87,11 +90,35 @@ function Results({ promptResponseVotes, promptResponses, prompt }: ResultsProps)
                 />
             );
         return <React.Fragment />;
-    };
+    }, [
+        prompt.isVote,
+        prompt.isMultipleChoice,
+        zeroVotes,
+        forVotes,
+        againstVotes,
+        conflictedVotes,
+        multipleChoiceOptions,
+        multipleChoiceResponses,
+    ]);
 
     return (
         <React.Fragment>
-            <DisplayChart />
+            <Typography variant='h4'>
+                Summarized Viewpoints{' '}
+                <Tooltip title='Using Google Gemini' placement='top'>
+                    <img src='/static/google-gemini-icon.svg' alt='Gemini Logo' width='25px' height='25px' />
+                </Tooltip>
+            </Typography>
+            {viewpoints
+                ? viewpoints.map((viewpoint, index) => (
+                      <div key={index} style={{ marginBottom: '0.5rem' }}>
+                          <Chip label={viewpoint} />
+                      </div>
+                  ))
+                : null}
+            <Divider sx={{ width: '100%' }} />
+            {!prompt.isOpenEnded ? <Typography variant='h4'>Results Chart</Typography> : null}
+            {chart}
         </React.Fragment>
     );
 }
@@ -116,12 +143,10 @@ function PreloadedViewLiveFeedbackPromptResults({ promptId }: { promptId: string
     );
 
     React.useEffect(() => {
-        if (!queryRef) loadQuery({ promptId }, { fetchPolicy: 'network-only' });
-    }, [queryRef, loadQuery, promptId]);
-
-    React.useEffect(() => {
+        if (!queryRef) loadQuery({ promptId }, { fetchPolicy: 'store-and-network' });
         return () => disposeQuery();
-    }, [disposeQuery]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     if (!queryRef) return <Loader />;
     return <LiveFeedbackPromptResults queryRef={queryRef} />;

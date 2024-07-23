@@ -22,6 +22,8 @@ type EventLiveFeedbackPrompt implements Node {
     multipleChoiceOptions: [String!]
     isDraft: Boolean
     responses(first: Int, after: String): EventLiveFeedbackPromptResponseConnection
+    viewpoints: [String!]
+    stakeholders: [String!]
 }
 
 enum Vote {
@@ -147,6 +149,7 @@ type Mutation {
     createFeedbackPromptResponse(input: CreateFeedbackPromptResponse!): EventFeedbackPromptResponseMutationResponse!
     shareFeedbackPromptResults(eventId: ID!, promptId: ID!): EventFeedbackPromptMutationResponse!
     submitPostEventFeedback(feedback: String!, eventId: ID!): PostEventFeedbackMutationResponse!
+    generateViewpoints(eventId: ID!, promptId: ID!): EventFeedbackPromptMutationResponse!
 }
 
 type Query {
@@ -155,6 +158,7 @@ type Query {
     prompt(promptId: ID!): EventLiveFeedbackPrompt
     prompts(eventId: ID!): [EventLiveFeedbackPrompt!]
     promptResponseVotes(promptId: ID!): Votes!
+    promptResponseViewpoints(promptId: ID!): [String!]
 }
 
 type Subscription {

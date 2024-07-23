@@ -70,9 +70,10 @@ export function useLiveFeedbackPromptResultsShared({ openFeedbackPromptResults }
 
                 const promptId = feedbackPromptResultsShared.id;
                 displaySnack(promptId, 'Feedback Prompt Results', { variant: 'info' });
+                enqueuedPromptResults.push({ id: promptId, prompt: feedbackPromptResultsShared.prompt });
             },
         }),
-        [displaySnack, eventId, isModerator]
+        [displaySnack, enqueuedPromptResults, eventId, isModerator]
     );
 
     useSubscription<useLiveFeedbackPromptResultsSharedSubscription>(config);

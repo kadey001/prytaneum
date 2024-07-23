@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { graphql, useQueryLoader, PreloadedQuery, usePreloadedQuery, fetchQuery } from 'react-relay';
-import { List, ListItem, Card, CardContent, Typography, Grid, Button } from '@mui/material';
+import { List, ListItem, Card, CardContent, Typography, Grid, Button, Divider } from '@mui/material';
 
-import { Loader } from '@local/components';
+import { ConditionalRender, Loader } from '@local/components';
 import { LiveFeedbackPromptResponseListQuery } from '@local/__generated__/LiveFeedbackPromptResponseListQuery.graphql';
 import { useEnvironment } from '@local/core';
 import { Prompt } from '../LiveFeedbackPrompt/LiveFeedbackPromptList';
@@ -101,7 +101,7 @@ function PromptResponseList({ promptResponses, promptData }: PromptListProps) {
         );
     }, [promptResponses]);
 
-    const DisplayChart = () => {
+    const chart = React.useMemo(() => {
         if (promptData.isVote)
             return zeroVotes ? (
                 <Typography>No Votes To Display</Typography>
@@ -119,10 +119,16 @@ function PromptResponseList({ promptResponses, promptData }: PromptListProps) {
                 />
             );
         return <React.Fragment />;
-    };
+    }, [promptData, zeroVotes, voteCount, multipleChoiceResponses]);
 
     return (
         <React.Fragment>
+            {!promptData.isOpenEnded && (
+                <React.Fragment>
+                    <Typography variant='h4'>Chart</Typography>
+                    <Divider sx={{ width: '100%', marginBottom: '0.5rem' }} />
+                </React.Fragment>
+            )}
             <Grid container justifyContent='center' paddingBottom='1rem'>
                 {promptData.isVote || promptData.isMultipleChoice ? (
                     <Button onClick={toggleChartVisiblity}>{chartVisiblity ? 'Hide Chart' : 'Show Chart'}</Button>
@@ -130,7 +136,9 @@ function PromptResponseList({ promptResponses, promptData }: PromptListProps) {
                     <React.Fragment />
                 )}
             </Grid>
-            {chartVisiblity && <DisplayChart />}
+            {chartVisiblity && chart}
+            <Typography variant='h4'>Responses</Typography>
+            <Divider sx={{ width: '100%', marginBottom: '0.5rem' }} />
             <List id='live-feedback-prompt-response-list'>
                 {responses.map(({ id, response, vote, multipleChoiceResponse, createdAt, createdBy }) => (
                     <ListItem key={id} style={{ paddingBottom: '.5rem', paddingTop: '.5rem' }}>
@@ -198,7 +206,7 @@ export function PreloadedLiveFeedbackPromptResponseList({ prompt }: PreloadedLiv
     );
     const [isRefreshing, setIsRefreshing] = React.useState(false);
     const { env } = useEnvironment();
-    // const REFRESH_INTERVAL = 30000; // 30 seconds
+    const REFRESH_INTERVAL = 30000; // 30 seconds
     const promptData = {
         promptId: prompt.id,
         prompt: prompt.prompt,
@@ -228,16 +236,21 @@ export function PreloadedLiveFeedbackPromptResponseList({ prompt }: PreloadedLiv
         // Fetch data from store and network on initial load
         // This Ensures any cached data is displayed right away but will still be kept up to date
         if (!queryRef) loadQuery({ promptId }, { fetchPolicy: 'store-and-network' });
-        // const interval = setInterval(refresh, REFRESH_INTERVAL);
+        const interval = setInterval(refresh, REFRESH_INTERVAL);
         // return () => clearInterval(interval);
-    }, [loadQuery, promptId, queryRef, refresh]);
-
-    React.useEffect(() => {
-        // Cleanup query on component unmount
-        return () => disposeQuery();
+        return () => {
+            clearInterval(interval);
+            disposeQuery();
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!queryRef) return <Loader />;
-    return <LiveFeedbackPromptResponseList queryRef={queryRef} promptData={promptData} />;
+    return (
+        <ConditionalRender client>
+            <React.Suspense fallback={<Loader />}>
+                <LiveFeedbackPromptResponseList queryRef={queryRef} promptData={promptData} />
+            </React.Suspense>
+        </ConditionalRender>
+    );
 }

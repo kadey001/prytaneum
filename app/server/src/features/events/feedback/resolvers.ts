@@ -173,6 +173,9 @@ export const resolvers: Resolvers = {
                 if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
                 if (!args.eventId || !args.promptId) throw new ProtectedError({ userMessage: errors.invalidArgs });
                 const { id: promptId } = fromGlobalId(args.promptId);
+                const { id: eventId } = fromGlobalId(args.eventId);
+                // TODO: Pass in option to use ai summary
+                await Feedback.summarizePromptResponses(promptId, eventId, ctx.redis, ctx.prisma);
                 const prompt = await Feedback.findPromptByPromptId(promptId, ctx.prisma);
                 if (!prompt)
                     throw new ProtectedError({
@@ -196,6 +199,26 @@ export const resolvers: Resolvers = {
                 const { feedback } = args;
                 const { id: eventId } = fromGlobalId(args.eventId);
                 await Feedback.submitPostEventFeedback(feedback, eventId, ctx.viewer.id, ctx.prisma);
+            });
+        },
+        async generateViewpoints(parent, args, ctx) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                if (!args.promptId) throw new ProtectedError({ userMessage: errors.invalidArgs });
+                const { id: eventId } = fromGlobalId(args.eventId);
+                const { id: promptId } = fromGlobalId(args.promptId);
+                const prompt = await Feedback.summarizePromptResponses(promptId, eventId, ctx.redis, ctx.prisma);
+                if (!prompt)
+                    throw new ProtectedError({
+                        userMessage: 'Inalid Prompt',
+                        internalMessage: 'Expected Prompt but got null',
+                    });
+                const formattedPrompt = toFeedbackPromptId(prompt);
+                const edge = {
+                    node: formattedPrompt,
+                    cursor: formattedPrompt.id,
+                };
+                return edge;
             });
         },
     },
@@ -280,6 +303,11 @@ export const resolvers: Resolvers = {
             if (responses.length === 0)
                 connection.pageInfo = { ...connection.pageInfo, startCursor: '', endCursor: '' };
             return connection;
+        },
+        async viewpoints(parent, args, ctx) {
+            const { id: promptId } = fromGlobalId(parent.id);
+            const viewpoints = await Feedback.findViewpointsByPromptId(promptId, ctx.prisma);
+            return viewpoints;
         },
     },
     EventLiveFeedbackPromptResponse: {

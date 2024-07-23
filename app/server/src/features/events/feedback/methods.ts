@@ -1,4 +1,5 @@
 import { PrismaClient } from '@local/__generated__/prisma';
+import axios, { AxiosResponse } from 'axios';
 import type {
     CreateFeedback,
     CreateFeedbackDM,
@@ -9,6 +10,7 @@ import { fromGlobalId } from 'graphql-relay';
 import { isModerator } from '../moderation/methods';
 import { ProtectedError } from '../../../lib/ProtectedError';
 import { Vote } from '@local/graphql-types';
+import Redis, { Cluster } from 'ioredis';
 
 export async function myFeedback(userId: string, eventId: string, prisma: PrismaClient) {
     const result = await prisma.eventLiveFeedback.findMany({
@@ -20,6 +22,55 @@ export async function myFeedback(userId: string, eventId: string, prisma: Prisma
 export async function promptResponses(promptId: string, prisma: PrismaClient) {
     return prisma.eventLiveFeedbackPromptResponse.findMany({
         where: { promptId },
+    });
+}
+
+export async function summarizePromptResponses(
+    promptId: string,
+    eventId: string,
+    redis: Redis | Cluster,
+    prisma: PrismaClient
+) {
+    const moderationIssueEventKey = `moderation_issue_${eventId}}`;
+    const eventIssue = await redis.get(moderationIssueEventKey);
+    if (!eventIssue) {
+        const event = await prisma.event.findUnique({ where: { id: eventId }, select: { issue: true } });
+        if (!event) {
+            throw new ProtectedError({ userMessage: 'Event not found' });
+        }
+        const { issue } = event;
+        redis.set(moderationIssueEventKey, issue);
+    }
+    const _responses = await prisma.eventLiveFeedbackPromptResponse.findMany({
+        where: { promptId },
+        select: { response: true },
+    });
+
+    const responses = _responses.map((response) => response.response);
+
+    type ExpectedResponse = string[];
+    let response: AxiosResponse<ExpectedResponse> | null = null;
+    try {
+        const url = process.env.MODERATION_URL + 'promptsummary';
+        response = await axios.post(
+            url,
+            {
+                prompt_responses: responses,
+                eventId,
+            },
+            {
+                headers: { 'Content-Type': 'application/json' },
+            }
+        );
+        if (!response) throw new Error('Could not summarize responses, No response from moderation service.');
+    } catch (error) {
+        console.error(error);
+    }
+    const viewpoints = response?.data || [];
+
+    return prisma.eventLiveFeedbackPrompt.update({
+        where: { id: promptId },
+        data: { viewpoints },
     });
 }
 
@@ -143,6 +194,15 @@ export async function findResponsesByPromptId(promptId: string, prisma: PrismaCl
     });
 }
 
+export async function findViewpointsByPromptId(promptId: string, prisma: PrismaClient) {
+    const queryResult = await prisma.eventLiveFeedbackPrompt.findUnique({
+        where: { id: promptId },
+        select: { viewpoints: true },
+    });
+    if (!queryResult) return null;
+    return queryResult.viewpoints;
+}
+
 export async function doesEventMatchFeedback(eventId: string, feedbackId: string, prisma: PrismaClient) {
     const found = await prisma.eventLiveFeedback.findFirst({
         where: { eventId, id: feedbackId },
@@ -195,10 +255,6 @@ export async function countPromptResponseVotes(promptId: string, prisma: PrismaC
     });
 
     if (!queryResult) throw new ProtectedError({ userMessage: 'Prompt not found' });
-    if (!queryResult.isVote && !queryResult.isMultipleChoice)
-        throw new ProtectedError({
-            userMessage: 'Can only currently share vote and multiple choice type prompt results',
-        });
 
     const votes = { for: 0, against: 0, conflicted: 0 };
     queryResult.responses.forEach((response) => {

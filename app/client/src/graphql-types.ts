@@ -455,6 +455,8 @@ export type EventLiveFeedbackPrompt = Node & {
   multipleChoiceOptions?: Maybe<Array<Scalars['String']>>;
   prompt: Scalars['String'];
   responses?: Maybe<EventLiveFeedbackPromptResponseConnection>;
+  stakeholders?: Maybe<Array<Scalars['String']>>;
+  viewpoints?: Maybe<Array<Scalars['String']>>;
 };
 
 
@@ -791,6 +793,7 @@ export type Mutation = {
    * Material limited to ~120k characters
    */
   generateEventTopics?: Maybe<TopicGenerationMutationResponse>;
+  generateViewpoints: EventFeedbackPromptMutationResponse;
   hideQuestion?: Maybe<EventQuestion>;
   lockTopic?: Maybe<TopicLockToggleMutationResponse>;
   lockTopics?: Maybe<MutationResponse>;
@@ -1013,6 +1016,12 @@ export type MutationFinalizeTopicsArgs = {
 export type MutationGenerateEventTopicsArgs = {
   eventId: Scalars['String'];
   material: Scalars['String'];
+};
+
+
+export type MutationGenerateViewpointsArgs = {
+  eventId: Scalars['ID'];
+  promptId: Scalars['ID'];
 };
 
 
@@ -1344,6 +1353,7 @@ export type Query = {
   myFeedback?: Maybe<Array<Maybe<EventLiveFeedback>>>;
   node?: Maybe<Node>;
   prompt?: Maybe<EventLiveFeedbackPrompt>;
+  promptResponseViewpoints?: Maybe<Array<Scalars['String']>>;
   promptResponseVotes: Votes;
   promptResponses?: Maybe<Array<EventLiveFeedbackPromptResponse>>;
   prompts?: Maybe<Array<EventLiveFeedbackPrompt>>;
@@ -1388,6 +1398,11 @@ export type QueryNodeArgs = {
 
 
 export type QueryPromptArgs = {
+  promptId: Scalars['ID'];
+};
+
+
+export type QueryPromptResponseViewpointsArgs = {
   promptId: Scalars['ID'];
 };
 

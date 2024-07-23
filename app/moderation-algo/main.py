@@ -6,6 +6,8 @@ from AlgoStages.substantiveness import IsSubstantive
 from AlgoStages.offensiveness import IsOffensive
 from AlgoStages.relevance import IsRelevant
 from AlgoStages.classifyQuestion import DoesQuestionFitCategory
+from PromptAnalysis.promptSummarization import SummarizePosts
+from PromptAnalysis.analyzeStakeholders import ExtractShareholders
 from Translation.translation import TranslateText
 from PerspectiveAPI import InitPerspectiveAPI
 from Utilities.logEvents import LogEventConsole
@@ -290,6 +292,59 @@ def HandleUserInput():
     else:
         LogEventConsole('Request must be in JSON format', 'ERROR')
         return jsonify({'ERROR': 'Request must be in JSON format'}), 415 # HTTP unsupported media type
+
+@app.route('/promptsummary', methods=['POST'])
+def PromptSummarization():
+    # Check if the request contains JSON data
+    if request.is_json:
+        # NOTE: Make sure Google API is initialized at this point
+        model = 'gemini-pro'
+
+        # Connect to Redis with a week expiration time for stored data
+        secInAWeek = 604800
+        r = ConnectToRedis()
+
+        # Get the event ID
+        eventId = request.get_json().get('eventId')
+        if(not eventId):
+            LogEventConsole('Missing or invalid field "eventId" in request data', 'ERROR')
+            return jsonify({'ERROR': 'Missing or invalid field "eventId" in request data'}), 422 # HTTP unprocessable Entity
+
+        # At this point, the issue should already be available in Redis
+        issue = r.get('moderation_issue_{}'.format(eventId))
+
+        # Get the list of user prompt responses
+        promptResponses = request.get_json().get('prompt_responses')
+        if(not promptResponses):
+            LogEventConsole('Missing field(s) in request data', 'ERROR')
+            return jsonify({'ERROR': 'Missing field(s) in request data'}), 422 # HTTP unprocessable Entity
+        
+        # Summarize the viewpoints from the prompt
+        viewpoints = SummarizePosts(model, issue, promptResponses) # [viewpoint1, viewpoint2, ...]
+
+        # Return the viewpoints with success log message
+        LogEventConsole('Successful run of prompt summarization')
+        return jsonify(viewpoints), 200 # HTTP success
+
+@app.route('/stakeholders', methods=['POST'])
+def StakeholderExtraction():
+    # Check if the request contains JSON data
+    if request.is_json:
+        # NOTE: Make sure Google API is initialized at this point
+        model = 'gemini-pro'
+
+        # Get the list of user prompt responses
+        promptResponses = request.get_json().get('prompt_responses')
+        if(not promptResponses):
+            LogEventConsole('Missing field(s) in request data', 'ERROR')
+            return jsonify({'ERROR': 'Missing field(s) in request data'}), 422 # HTTP unprocessable Entity
+
+        # Identify the stakeholders from the prompt responses
+        stakeholders = ExtractShareholders(model, promptResponses) # [stakeholder1, stakeholder2, ...]
+
+        # Return the stakeholders with success log message
+        LogEventConsole('Successful run of stakeholder extraction')
+        return jsonify(stakeholders), 200 # HTTP success
 
 if __name__ == '__main__':
     # Initialize Google API before starting the app

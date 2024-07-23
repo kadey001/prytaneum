@@ -22,6 +22,7 @@ const USE_LIVE_FEEDBACK_PROMPTS = graphql`
                     multipleChoiceOptions
                     createdAt
                     isDraft
+                    viewpoints
                     ...useLiveFeedbackPromptResponsesFragment
                 }
             }
@@ -74,5 +75,5 @@ export function useLiveFeedbackPrompts({ fragmentRef, isModalOpen, isShareResult
         [data.liveFeedbackPrompts?.__id]
     );
 
-    return { prompts: promptsList, connections, pauseRefresh, resumeRefresh };
+    return { prompts: promptsList, connections, pauseRefresh, resumeRefresh, refresh };
 }

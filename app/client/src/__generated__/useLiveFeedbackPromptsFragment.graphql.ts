@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f9a12a85389b7cc7edf1a431899fa34c>>
+ * @generated SignedSource<<9ecec0b05a3b64449b3a70afa3d0fc6c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,6 +25,7 @@ export type useLiveFeedbackPromptsFragment$data = {
         readonly isVote: boolean | null;
         readonly multipleChoiceOptions: ReadonlyArray<string> | null;
         readonly prompt: string;
+        readonly viewpoints: ReadonlyArray<string> | null;
         readonly " $fragmentSpreads": FragmentRefs<"useLiveFeedbackPromptResponsesFragment">;
       };
     }> | null;
@@ -174,6 +175,13 @@ return {
                   "storageKey": null
                 },
                 {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "viewpoints",
+                  "storageKey": null
+                },
+                {
                   "args": null,
                   "kind": "FragmentSpread",
                   "name": "useLiveFeedbackPromptResponsesFragment"
@@ -237,6 +245,6 @@ return {
 };
 })();
 
-(node as any).hash = "a5e3537c394d291525e3f7a7a48f92bd";
+(node as any).hash = "82998b041a9c00cf850fbf3eeea6bb76";
 
 export default node;
