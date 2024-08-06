@@ -300,6 +300,8 @@ def PromptSummarization():
         # NOTE: Make sure Google API is initialized at this point
         model = 'gemini-pro'
 
+        # Connect to Redis with 12 weeks expiration time for stored data
+        secInAWeek = 7257600
         r = ConnectToRedis()
 
         # Get the event ID
