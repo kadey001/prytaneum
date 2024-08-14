@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9fb67df8ceb0a5ca7f7a1659aed61bf6>>
+ * @generated SignedSource<<86e3c951618ce2b08f02c1024706b656>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,10 +15,13 @@ export type UploadReadingMaterialsMutation$variables = {
 };
 export type UploadReadingMaterialsMutation$data = {
   readonly generateEventTopics: {
-    readonly body: ReadonlyArray<{
-      readonly description: string;
-      readonly topic: string;
-    }> | null;
+    readonly body: {
+      readonly issue: string;
+      readonly topics: ReadonlyArray<{
+        readonly description: string;
+        readonly topic: string;
+      }> | null;
+    } | null;
     readonly isError: boolean;
     readonly message: string;
   } | null;
@@ -64,23 +67,41 @@ v1 = [
       {
         "alias": null,
         "args": null,
-        "concreteType": "GeneratedTopic",
+        "concreteType": "TopicGenerationBody",
         "kind": "LinkedField",
         "name": "body",
-        "plural": true,
+        "plural": false,
         "selections": [
           {
             "alias": null,
             "args": null,
-            "kind": "ScalarField",
-            "name": "topic",
+            "concreteType": "GeneratedTopic",
+            "kind": "LinkedField",
+            "name": "topics",
+            "plural": true,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "topic",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "description",
+                "storageKey": null
+              }
+            ],
             "storageKey": null
           },
           {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
-            "name": "description",
+            "name": "issue",
             "storageKey": null
           }
         ],
@@ -122,16 +143,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "c6f5797c9e34f05915ab75f6aba4bbe6",
+    "cacheID": "cb82ea2b48c8159a738eddb8752cd317",
     "id": null,
     "metadata": {},
     "name": "UploadReadingMaterialsMutation",
     "operationKind": "mutation",
-    "text": "mutation UploadReadingMaterialsMutation(\n  $eventId: String!\n  $material: String!\n) {\n  generateEventTopics(eventId: $eventId, material: $material) {\n    body {\n      topic\n      description\n    }\n    isError\n    message\n  }\n}\n"
+    "text": "mutation UploadReadingMaterialsMutation(\n  $eventId: String!\n  $material: String!\n) {\n  generateEventTopics(eventId: $eventId, material: $material) {\n    body {\n      topics {\n        topic\n        description\n      }\n      issue\n    }\n    isError\n    message\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d4ad51c18197600e7bf8f5ceaf057e54";
+(node as any).hash = "582b9138be334fe83c65988de23d6109";
 
 export default node;

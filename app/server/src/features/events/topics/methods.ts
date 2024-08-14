@@ -64,7 +64,7 @@ export async function generateEventTopics(eventId: string, readingMaterials: str
 
     await prisma.event.update({ where: { id: eventId }, data: { issue: data.issue } });
     const topics = Object.keys(data.topics).map((key) => ({ topic: key, description: data.topics[key] }));
-    return topics;
+    return { topics, issue: data.issue };
 }
 
 export async function regenerateEventTopics(eventId: string) {
@@ -79,7 +79,7 @@ export async function regenerateEventTopics(eventId: string) {
             headers: { 'Content-Type': 'application/json' },
         }
     );
-    const data = response.data as { topics: { [key: string]: string }; locked_topics: string[] };
+    const data = response.data as { topics: { [key: string]: string }; locked_topics: string[]; issue: string };
     if (!data.topics)
         throw new ProtectedError({
             userMessage: 'No topics found. Please try again.',
@@ -90,7 +90,7 @@ export async function regenerateEventTopics(eventId: string) {
         description: data.topics[key],
         locked: data.locked_topics.includes(key),
     }));
-    return topics;
+    return { topics, issue: data.issue };
 }
 
 interface UpdateTopicProps {

@@ -22,8 +22,13 @@ type GeneratedTopic {
     locked: Boolean
 }
 
+type TopicGenerationBody {
+    topics: [GeneratedTopic!]
+    issue: String!
+}
+
 type TopicGenerationMutationResponse implements MutationResponse {
-    body: [GeneratedTopic!]
+    body: TopicGenerationBody
     isError: Boolean!
     message: String!
 }

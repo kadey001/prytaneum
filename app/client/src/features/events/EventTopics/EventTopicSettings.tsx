@@ -21,12 +21,16 @@ import { useSnack } from '@local/core';
 type TTopicContext = {
     topics: Topic[];
     setTopics: React.Dispatch<React.SetStateAction<Topic[]>>;
+    issue: string;
+    setIssue: React.Dispatch<React.SetStateAction<string>>;
     isReadingMaterialsUploaded: boolean;
 };
 
 export const TopicContext = React.createContext<TTopicContext>({
     topics: [],
     setTopics: () => {},
+    issue: '',
+    setIssue: () => {},
     isReadingMaterialsUploaded: false,
 });
 
@@ -40,8 +44,13 @@ export function EventTopicSettings({}: Props) {
     const [activeStep, setActiveStep] = React.useState(0);
     const [isReadingMaterialsUploaded, setIsReadingMaterialsUploaded] = React.useState(false);
     const [topics, setTopics] = React.useState<Topic[]>([]);
+    const [issue, setIssue] = React.useState<string>('Test');
     const [isOpen, open, close] = useResponsiveDialog();
     const { finalizeTopics } = useFinalizeTopics();
+
+    React.useEffect(() => {
+        console.log(issue);
+    }, [issue]);
 
     const handleCloseDialog: DialogProps['onClose'] = (event, reason) => {
         if (reason === 'backdropClick') return;
@@ -89,7 +98,9 @@ export function EventTopicSettings({}: Props) {
     const memoizedTopics = React.useMemo(() => topics, [topics]);
 
     return (
-        <TopicContext.Provider value={{ topics: memoizedTopics, setTopics, isReadingMaterialsUploaded }}>
+        <TopicContext.Provider
+            value={{ topics: memoizedTopics, setTopics, issue, setIssue, isReadingMaterialsUploaded }}
+        >
             <PreloadedTopicList />
             <Dialog open={isOpen} onClose={handleCloseDialog} maxWidth='lg' fullWidth>
                 <Grid container justifyContent='end'>
@@ -126,7 +137,7 @@ export function EventTopicSettings({}: Props) {
                 </Stepper>
                 {activeStep === 0 && (
                     <Grid container justifyContent='center' padding='2rem'>
-                        <UploadReadingMaterials onSuccess={onReadingMaterialsUploaded} setTopics={setTopics} />
+                        <UploadReadingMaterials onSuccess={onReadingMaterialsUploaded} />
                     </Grid>
                 )}
                 {activeStep === 1 && (
@@ -136,7 +147,7 @@ export function EventTopicSettings({}: Props) {
                 )}
                 {activeStep === 2 && (
                     <Grid container justifyContent='center' padding='2rem'>
-                        <FinalizeTopics topics={topics} />
+                        <FinalizeTopics topics={topics} issue={issue} />
                     </Grid>
                 )}
                 <React.Fragment>

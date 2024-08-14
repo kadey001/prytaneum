@@ -985,8 +985,13 @@ type TopicFinalizeMutationResponse implements MutationResponse {
   message: String!
 }
 
+type TopicGenerationBody {
+  issue: String!
+  topics: [GeneratedTopic!]
+}
+
 type TopicGenerationMutationResponse implements MutationResponse {
-  body: [GeneratedTopic!]
+  body: TopicGenerationBody
   isError: Boolean!
   message: String!
 }

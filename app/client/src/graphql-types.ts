@@ -1682,9 +1682,15 @@ export type TopicFinalizeMutationResponse = MutationResponse & {
   message: Scalars['String'];
 };
 
+export type TopicGenerationBody = {
+  __typename?: 'TopicGenerationBody';
+  issue: Scalars['String'];
+  topics?: Maybe<Array<GeneratedTopic>>;
+};
+
 export type TopicGenerationMutationResponse = MutationResponse & {
   __typename?: 'TopicGenerationMutationResponse';
-  body?: Maybe<Array<GeneratedTopic>>;
+  body?: Maybe<TopicGenerationBody>;
   isError: Scalars['Boolean'];
   message: Scalars['String'];
 };

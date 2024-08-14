@@ -1726,9 +1726,15 @@ export type GeneratedTopic = {
     locked?: Maybe<Scalars['Boolean']>;
 };
 
+export type TopicGenerationBody = {
+    __typename?: 'TopicGenerationBody';
+    topics?: Maybe<Array<GeneratedTopic>>;
+    issue: Scalars['String'];
+};
+
 export type TopicGenerationMutationResponse = MutationResponse & {
     __typename?: 'TopicGenerationMutationResponse';
-    body?: Maybe<Array<GeneratedTopic>>;
+    body?: Maybe<TopicGenerationBody>;
     isError: Scalars['Boolean'];
     message: Scalars['String'];
 };
@@ -2044,6 +2050,7 @@ export type ResolversTypes = {
     EventTopic: ResolverTypeWrapper<EventTopic>;
     EventQuestionTopic: ResolverTypeWrapper<EventQuestionTopic>;
     GeneratedTopic: ResolverTypeWrapper<GeneratedTopic>;
+    TopicGenerationBody: ResolverTypeWrapper<TopicGenerationBody>;
     TopicGenerationMutationResponse: ResolverTypeWrapper<TopicGenerationMutationResponse>;
     TopicMutationResponse: ResolverTypeWrapper<TopicMutationResponse>;
     TopicOnly: ResolverTypeWrapper<TopicOnly>;
@@ -2221,6 +2228,7 @@ export type ResolversParentTypes = {
     EventTopic: EventTopic;
     EventQuestionTopic: EventQuestionTopic;
     GeneratedTopic: GeneratedTopic;
+    TopicGenerationBody: TopicGenerationBody;
     TopicGenerationMutationResponse: TopicGenerationMutationResponse;
     TopicMutationResponse: TopicMutationResponse;
     TopicOnly: TopicOnly;
@@ -3853,11 +3861,20 @@ export type GeneratedTopicResolvers<
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TopicGenerationBodyResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['TopicGenerationBody'] = ResolversParentTypes['TopicGenerationBody']
+> = {
+    topics?: Resolver<Maybe<Array<ResolversTypes['GeneratedTopic']>>, ParentType, ContextType>;
+    issue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TopicGenerationMutationResponseResolvers<
     ContextType = MercuriusContext,
     ParentType extends ResolversParentTypes['TopicGenerationMutationResponse'] = ResolversParentTypes['TopicGenerationMutationResponse']
 > = {
-    body?: Resolver<Maybe<Array<ResolversTypes['GeneratedTopic']>>, ParentType, ContextType>;
+    body?: Resolver<Maybe<ResolversTypes['TopicGenerationBody']>, ParentType, ContextType>;
     isError?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -4033,6 +4050,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
     EventTopic?: EventTopicResolvers<ContextType>;
     EventQuestionTopic?: EventQuestionTopicResolvers<ContextType>;
     GeneratedTopic?: GeneratedTopicResolvers<ContextType>;
+    TopicGenerationBody?: TopicGenerationBodyResolvers<ContextType>;
     TopicGenerationMutationResponse?: TopicGenerationMutationResponseResolvers<ContextType>;
     TopicMutationResponse?: TopicMutationResponseResolvers<ContextType>;
     TopicOnly?: TopicOnlyResolvers<ContextType>;
@@ -4573,8 +4591,13 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         locked?: LoaderResolver<Maybe<Scalars['Boolean']>, GeneratedTopic, {}, TContext>;
     };
 
+    TopicGenerationBody?: {
+        topics?: LoaderResolver<Maybe<Array<GeneratedTopic>>, TopicGenerationBody, {}, TContext>;
+        issue?: LoaderResolver<Scalars['String'], TopicGenerationBody, {}, TContext>;
+    };
+
     TopicGenerationMutationResponse?: {
-        body?: LoaderResolver<Maybe<Array<GeneratedTopic>>, TopicGenerationMutationResponse, {}, TContext>;
+        body?: LoaderResolver<Maybe<TopicGenerationBody>, TopicGenerationMutationResponse, {}, TContext>;
         isError?: LoaderResolver<Scalars['Boolean'], TopicGenerationMutationResponse, {}, TContext>;
         message?: LoaderResolver<Scalars['String'], TopicGenerationMutationResponse, {}, TContext>;
     };

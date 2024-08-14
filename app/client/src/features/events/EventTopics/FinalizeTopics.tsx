@@ -6,9 +6,10 @@ import { Topic } from './types';
 
 interface Props {
     topics: Topic[];
+    issue: string;
 }
 
-export function FinalizeTopics({ topics }: Props) {
+export function FinalizeTopics({ topics, issue }: Props) {
     const finalizedTopics = React.useMemo(() => topics, [topics]);
 
     const memoizedTopicChips = React.useMemo(() => {
@@ -27,6 +28,9 @@ export function FinalizeTopics({ topics }: Props) {
             <Grid item xs={12}>
                 <Typography variant='body1'>Are you sure you want to finalize these topics?</Typography>
             </Grid>
+            <Typography variant='body1'>
+                <b>Event Issue:</b> {issue}
+            </Typography>
             <Grid container justifyContent='center'>
                 {memoizedTopicChips}
             </Grid>

@@ -20,13 +20,17 @@ import { LoadingButton } from '@local/components/LoadingButton';
 import { EVENT_READING_MATERIALS_MAX_LENGTH } from '@local/utils/rules';
 import { UploadReadingMaterialsMutation } from '@local/__generated__/UploadReadingMaterialsMutation.graphql';
 import { Topic } from './types';
+import { TopicContext } from './EventTopicSettings';
 
 const UPLOAD_READING_MATERIALS = graphql`
     mutation UploadReadingMaterialsMutation($eventId: String!, $material: String!) {
         generateEventTopics(eventId: $eventId, material: $material) {
             body {
-                topic
-                description
+                topics {
+                    topic
+                    description
+                }
+                issue
             }
             isError
             message
@@ -36,16 +40,16 @@ const UPLOAD_READING_MATERIALS = graphql`
 
 interface Props {
     onSuccess: () => void;
-    setTopics: React.Dispatch<React.SetStateAction<Topic[]>>;
 }
 
-export function UploadReadingMaterials({ onSuccess, setTopics }: Props) {
+export function UploadReadingMaterials({ onSuccess }: Props) {
     const { displaySnack } = useSnack();
     const { eventId } = useEvent();
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const [isOpen, openDialog, closeDialog] = useResponsiveDialog();
     const [readingMaterials, setReadingMaterials] = React.useState<string>('');
     const [commit] = useMutation<UploadReadingMaterialsMutation>(UPLOAD_READING_MATERIALS);
+    const { setTopics, setIssue } = React.useContext(TopicContext);
 
     const handleUpload = () => {
         setIsLoading(true);
@@ -56,10 +60,15 @@ export function UploadReadingMaterials({ onSuccess, setTopics }: Props) {
                     if (!response.generateEventTopics)
                         throw new Error('An error occurred while uploading reading materials.');
                     if (response.generateEventTopics.isError) throw new Error(response.generateEventTopics.message);
-                    if (!response.generateEventTopics.body || response.generateEventTopics.body.length === 0)
+                    if (!response.generateEventTopics.body) throw new Error('No response body was returned');
+                    if (
+                        !response.generateEventTopics.body.topics ||
+                        response.generateEventTopics.body.topics.length === 0
+                    )
                         throw new Error('No topics were returned, please try again with more materials.');
-                    const topics = response.generateEventTopics.body as Topic[];
+                    const topics = response.generateEventTopics.body.topics as Topic[];
                     setTopics(topics);
+                    setIssue(response.generateEventTopics.body.issue);
                     displaySnack('Reading materials uploaded successfully', { variant: 'success' });
                     setReadingMaterials('');
                     setIsLoading(false);

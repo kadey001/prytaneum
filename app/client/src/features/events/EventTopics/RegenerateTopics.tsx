@@ -13,13 +13,13 @@ import { Topic } from './types';
  *  Excludes any locked topics.
  */
 export function RegenerateTopics() {
-    const { topics, setTopics } = React.useContext(TopicContext);
+    const { topics, setTopics, setIssue } = React.useContext(TopicContext);
     const { regenerateTopics } = useRegenerateTopics();
     const [isLoading, setIsLoading] = React.useState(false);
 
     const handleRegenerateTopics = () => {
         setIsLoading(true);
-        const onSuccess = (newTopics: Topic[]) => {
+        const onSuccess = (newTopics: Topic[], issue: string) => {
             console.log('Topics before regeneration:', topics);
             const filteredNewTopics = newTopics.filter((topic) => {
                 const isAlreadyLockedTopic = topics.some((_topic) => _topic.topic === topic.topic && _topic.locked);
@@ -28,6 +28,7 @@ export function RegenerateTopics() {
             const updatedTopicList = topics.filter((topic) => topic.locked).concat(filteredNewTopics);
             console.log('Topics after regeneration:', updatedTopicList);
             setTopics(updatedTopicList);
+            setIssue(issue);
             setIsLoading(false);
         };
         const onFailure = () => {
