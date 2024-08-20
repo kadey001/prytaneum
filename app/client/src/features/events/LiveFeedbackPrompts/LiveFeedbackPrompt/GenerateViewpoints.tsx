@@ -18,6 +18,7 @@ export const GENERATE_VIEWPOINTS_MUTATION = graphql`
                 node {
                     id
                     viewpoints
+                    voteViewpoints
                 }
             }
         }
@@ -49,12 +50,15 @@ export default function GenerateViewpoints({ promptId, setSelectedPrompt }: Prop
                 if (!node) return console.error('No node returned from generateViewpoints mutation');
                 const viewpoints = node.getValue('viewpoints');
                 if (!viewpoints) return console.error('No viewpoints returned from generateViewpoints mutation');
+                const voteViewpoints = node.getValue('voteViewpoints') as Record<string, string[]> | null;
+                if (!voteViewpoints)
+                    return console.error('No voteViewpoints returned from generateViewpoints mutation');
                 const promptRecord = store.get(promptId);
                 if (!promptRecord) return console.error('No prompt found in store');
                 promptRecord.setValue(viewpoints, 'viewpoints');
                 setSelectedPrompt((prev) => {
                     if (!prev) return prev;
-                    return { ...prev, viewpoints: viewpoints as string[] };
+                    return { ...prev, viewpoints: viewpoints as string[], voteViewpoints };
                 });
             },
             onError: (error) => {
@@ -65,7 +69,7 @@ export default function GenerateViewpoints({ promptId, setSelectedPrompt }: Prop
 
     return (
         <React.Fragment>
-            <ResponsiveDialog open={isOpen} onClose={close} title='Share Results With Participants'>
+            <ResponsiveDialog open={isOpen} onClose={close} title='Generate Viewpoints'>
                 <DialogContent>
                     <Grid container>
                         <Grid container item justifyContent='center'>
