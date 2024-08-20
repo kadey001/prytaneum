@@ -62,6 +62,7 @@ async function generateViewpointsByVote(promptId: string, issue: string, eventId
         });
 
         const responses = _responses.map((response) => response.response);
+        if (responses.length === 0) continue;
 
         let response: AxiosResponse<string[]> | null = null;
         try {
@@ -101,6 +102,7 @@ async function generateViewpointsByMultipleChoice(
         });
 
         const responses = _responses.map((response) => response.response);
+        if (responses.length === 0) continue;
 
         let response: AxiosResponse<string[]> | null = null;
         try {
