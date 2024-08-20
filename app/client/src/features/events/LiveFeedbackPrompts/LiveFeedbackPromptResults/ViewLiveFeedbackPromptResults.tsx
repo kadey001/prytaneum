@@ -1,14 +1,16 @@
 import * as React from 'react';
 import { graphql } from 'relay-runtime';
 import { useQueryLoader, PreloadedQuery, usePreloadedQuery } from 'react-relay';
-import { Chip, DialogContent, Divider, Grid, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import { DialogContent, Divider, Grid, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import { Prompt } from './useLiveFeedbackPromptResultsShared';
+import { Prompt as PromptRef } from './useLiveFeedbackPromptResultsShared';
+import { Prompt } from '../LiveFeedbackPrompt/LiveFeedbackPromptList';
 import { ConditionalRender, Loader, StyledDialog, StyledDialogTitle } from '@local/components';
 import { ViewLiveFeedbackPromptResultsQuery } from '@local/__generated__/ViewLiveFeedbackPromptResultsQuery.graphql';
 import { VoteResponseChart } from '../LiveFeedbackPromptResponse/VoteResponseChart';
 import { MultipleChoiceResponseChart } from '../LiveFeedbackPromptResponse';
+import ViewpointsList from '../LiveFeedbackPrompt/ViewpointsList';
 
 const VIEW_LIVE_FEEDBACK_PROMPT_RESULTS = graphql`
     query ViewLiveFeedbackPromptResultsQuery($promptId: ID!) {
@@ -24,12 +26,15 @@ const VIEW_LIVE_FEEDBACK_PROMPT_RESULTS = graphql`
             multipleChoiceResponse
         }
         prompt(promptId: $promptId) {
+            id
+            createdAt
             prompt
             isVote
             isOpenEnded
             isMultipleChoice
             multipleChoiceOptions
             viewpoints
+            voteViewpoints
         }
     }
 `;
@@ -47,17 +52,19 @@ interface ResultsProps {
         readonly vote: string | null;
     }[];
     prompt: {
+        readonly id: string;
+        readonly createdAt: Date | null;
+        readonly prompt: string;
         readonly isOpenEnded: boolean | null;
         readonly isVote: boolean | null;
         readonly isMultipleChoice: boolean | null;
         readonly multipleChoiceOptions: readonly string[] | null;
-        readonly prompt: string;
         readonly viewpoints: readonly string[] | null;
+        readonly voteViewpoints: Record<string, readonly string[]> | null;
     };
 }
 
 function Results({ promptResponseVotes, promptResponses, prompt }: ResultsProps) {
-    const { viewpoints } = prompt;
     const { for: forVotes, against: againstVotes, conflicted: conflictedVotes } = promptResponseVotes;
 
     const zeroVotes = React.useMemo(() => {
@@ -103,19 +110,7 @@ function Results({ promptResponseVotes, promptResponses, prompt }: ResultsProps)
 
     return (
         <React.Fragment>
-            <Typography variant='h4'>
-                Summarized Viewpoints{' '}
-                <Tooltip title='Using Google Gemini' placement='top'>
-                    <img src='/static/google-gemini-icon.svg' alt='Gemini Logo' width='25px' height='25px' />
-                </Tooltip>
-            </Typography>
-            {viewpoints
-                ? viewpoints.map((viewpoint, index) => (
-                      <div key={index} style={{ marginBottom: '0.5rem' }}>
-                          <Chip label={viewpoint} />
-                      </div>
-                  ))
-                : null}
+            <ViewpointsList prompt={prompt as Prompt} vote='default' />
             <Divider sx={{ width: '100%' }} />
             {!prompt.isOpenEnded ? <Typography variant='h4'>Results Chart</Typography> : null}
             {chart}
@@ -153,7 +148,7 @@ function PreloadedViewLiveFeedbackPromptResults({ promptId }: { promptId: string
 }
 
 interface ViewLiveFeedbackPromptResultsProps {
-    promptRef: React.MutableRefObject<Prompt>;
+    promptRef: React.MutableRefObject<PromptRef>;
     open: boolean;
     setOpen: (value: boolean) => void;
     close: () => void;
