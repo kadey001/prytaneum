@@ -214,7 +214,7 @@ export const EventSidebar = ({ fragmentRef, participants }: EventSidebarProps) =
                         flexGrow: 1,
                         padding: 0,
                     }}
-                    scrollable={false}
+                    scrollable={selectedTab === 2}
                 >
                     <QuestionList fragmentRef={data} isVisible={selectedTab === 0} searchOnly={false} />
                     <LiveFeedbackList

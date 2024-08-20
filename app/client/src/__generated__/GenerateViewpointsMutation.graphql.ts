@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4a8edaba1c029997e98985b3b3dea849>>
+ * @generated SignedSource<<9c61f1eaeb363806f7d6113fa7083e21>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,6 +20,7 @@ export type GenerateViewpointsMutation$data = {
       readonly node: {
         readonly id: string;
         readonly viewpoints: ReadonlyArray<string> | null;
+        readonly voteViewpoints: any | null;
       };
     } | null;
     readonly isError: boolean;
@@ -114,6 +115,13 @@ v1 = [
                 "kind": "ScalarField",
                 "name": "viewpoints",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "voteViewpoints",
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -143,16 +151,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "7b9953ab2f125fac029457e383839012",
+    "cacheID": "55957d2a7f9961a532cccf203f1ffd54",
     "id": null,
     "metadata": {},
     "name": "GenerateViewpointsMutation",
     "operationKind": "mutation",
-    "text": "mutation GenerateViewpointsMutation(\n  $eventId: ID!\n  $promptId: ID!\n) {\n  generateViewpoints(eventId: $eventId, promptId: $promptId) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        viewpoints\n      }\n    }\n  }\n}\n"
+    "text": "mutation GenerateViewpointsMutation(\n  $eventId: ID!\n  $promptId: ID!\n) {\n  generateViewpoints(eventId: $eventId, promptId: $promptId) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        viewpoints\n        voteViewpoints\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "f1bc33bf93017e833546d010cba4e8b4";
+(node as any).hash = "d7273e1d4da70155aea5937e5caabedc";
 
 export default node;
