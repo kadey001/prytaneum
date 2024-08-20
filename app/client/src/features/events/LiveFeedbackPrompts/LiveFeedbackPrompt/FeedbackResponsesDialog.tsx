@@ -37,7 +37,7 @@ export default function FeedbackResponsesDialog({
 }: Props) {
     const theme = useTheme();
     const fullscreen = useMediaQuery(theme.breakpoints.down('md'));
-    const [voteKey, setVoteKey] = React.useState<string>('');
+    const [voteKey, setVoteKey] = React.useState<string>('default');
 
     const handleSelectionChange = (e: SelectChangeEvent<string>) => {
         e.preventDefault();
@@ -90,26 +90,32 @@ export default function FeedbackResponsesDialog({
                         ) : null}
                         <ShareFeedbackResultsButton />
                     </Stack>
-                    <FormControl sx={{ m: 1, minWidth: 120 }}>
-                        <InputLabel id='lang-label'>Vote</InputLabel>
-                        <Select
-                            labelId='vote-select-label'
-                            id='vote-select'
-                            label='Vote'
-                            name='vote'
-                            value={voteKey}
-                            onChange={handleSelectionChange}
-                        >
-                            <MenuItem value='default'>default</MenuItem>
-                            {selectedPrompt?.voteViewpoints
-                                ? Object.keys(selectedPrompt.voteViewpoints).map((viewpoint, index) => (
-                                      <MenuItem key={index} value={viewpoint}>
-                                          {viewpoint}
-                                      </MenuItem>
-                                  ))
-                                : null}
-                        </Select>
-                    </FormControl>
+                    {!selectedPrompt?.isOpenEnded ? (
+                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                            <InputLabel id='lang-label'>Vote</InputLabel>
+                            <Select
+                                labelId='vote-select-label'
+                                id='vote-select'
+                                label='Vote'
+                                name='vote'
+                                value={voteKey}
+                                onChange={handleSelectionChange}
+                            >
+                                <MenuItem value='default'>default</MenuItem>
+                                {selectedPrompt?.voteViewpoints ? (
+                                    Object.keys(selectedPrompt.voteViewpoints).map((viewpoint, index) => (
+                                        <MenuItem key={index} value={viewpoint}>
+                                            {viewpoint}
+                                        </MenuItem>
+                                    ))
+                                ) : (
+                                    <React.Fragment />
+                                )}
+                            </Select>
+                        </FormControl>
+                    ) : (
+                        <React.Fragment />
+                    )}
                     {selectedPrompt ? <ViewpointsList prompt={selectedPrompt} vote={voteKey} /> : null}
                     {selectedPrompt ? (
                         <PreloadedLiveFeedbackPromptResponseList prompt={selectedPrompt} vote={voteKey} />
