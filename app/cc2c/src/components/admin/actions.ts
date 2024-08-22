@@ -51,12 +51,28 @@ export async function getAllUsers(ammount: number) {
                 firstName: true,
                 lastName: true,
                 role: true,
+                studentOf: {
+                    select: {
+                        class: {
+                            select: {
+                                termId: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 
         const hasNextPage = users.length > ammount;
 
-        return { users: hasNextPage ? users.slice(0, -2) : users, hasNextPage };
+        // Add termId to student users for users table data
+        const formattedUsers = users.map((user) => {
+            if (user.role !== 'STUDENT') return { ...user, termId: null };
+            const termId = user.studentOf[0]?.class.termId;
+            return { ...user, termId };
+        });
+
+        return { users: hasNextPage ? formattedUsers.slice(0, -2) : formattedUsers, hasNextPage };
     } catch (error) {
         console.error(error);
         return { users: [], hasNextPage: false };
@@ -110,12 +126,28 @@ export async function loadNextPageUsers(ammount: number, page: number, filter: U
                 firstName: true,
                 lastName: true,
                 role: true,
+                studentOf: {
+                    select: {
+                        class: {
+                            select: {
+                                termId: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 
         const hasNextPage = users.length > ammount;
 
-        return { users: hasNextPage ? users.slice(0, -2) : users, hasNextPage };
+        // Add termId to student users for users table data
+        const formattedUsers = users.map((user) => {
+            if (user.role !== 'STUDENT') return { ...user, termId: null };
+            const termId = user.studentOf[0]?.class.termId;
+            return { ...user, termId };
+        });
+
+        return { users: hasNextPage ? formattedUsers.slice(0, -2) : formattedUsers, hasNextPage };
     } catch (error) {
         console.error(error);
         return { users: [], hasNextPage: false };
@@ -143,12 +175,29 @@ export async function refreshUsers(ammount: number, filter: UsersTableSearchFilt
                 firstName: true,
                 lastName: true,
                 role: true,
+                studentOf: {
+                    select: {
+                        classId: true,
+                        class: {
+                            select: {
+                                termId: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 
         const hasNextPage = users.length > ammount;
 
-        return { users: hasNextPage ? users.slice(0, -2) : users, hasNextPage };
+        // Add termId to student users for users table data
+        const formattedUsers = users.map((user) => {
+            if (user.role !== 'STUDENT') return { ...user, termId: null };
+            const termId = user.studentOf[0]?.class.termId;
+            return { ...user, termId };
+        });
+
+        return { users: hasNextPage ? formattedUsers.slice(0, -2) : formattedUsers, hasNextPage };
     } catch (error) {
         console.error(error);
         return { users: [], hasNextPage: false };

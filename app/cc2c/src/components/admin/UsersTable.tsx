@@ -230,6 +230,9 @@ export function UsersTable({}: UsersTableProps) {
                                 <Typography fontWeight='bold'>User Role</Typography>
                             </TableCell>
                             <TableCell style={{ width: 150 }}>
+                                <Typography fontWeight='bold'>Term ID</Typography>
+                            </TableCell>
+                            <TableCell style={{ width: 150 }}>
                                 <Typography fontWeight='bold'>Actions</Typography>
                             </TableCell>
                         </TableRow>
@@ -251,6 +254,13 @@ export function UsersTable({}: UsersTableProps) {
                                 </TableCell>
                                 <TableCell>
                                     <Typography>{user.role.toLocaleLowerCase()}</Typography>
+                                </TableCell>
+                                <TableCell>
+                                    {user.role === 'STUDENT' ? (
+                                        <Typography>{user.termId ? user.termId : 'N/A'}</Typography>
+                                    ) : (
+                                        <Typography>N/A</Typography>
+                                    )}
                                 </TableCell>
                                 {user.role === 'ADMIN' ? (
                                     <TableCell>
