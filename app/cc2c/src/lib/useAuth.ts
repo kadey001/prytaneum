@@ -10,6 +10,7 @@ export type User = {
     lastName: string;
     email: string;
     role: Role;
+    termId?: string | null;
 };
 
 export function useAuth() {
