@@ -7,7 +7,11 @@ def SummarizePosts(model: str, topic: str, posts: list, subtopic='', force=False
         prompt = f'Summarize the viewpoints on "{subtopic}", within the broad topic of "{topic}",'
     else:
         prompt = f'Summarize the viewpoints on "{topic}" '
-    prompt += 'in the following comments in just one to five sentences. '
+    #prompt += 'in the following comments in just one to five sentences. '
+    prompt += 'in the following comments'
+    if(len(posts) > 5):
+        prompt += ' in just one to five sentences'
+    prompt += '. '
     prompt += 'Start each sentence on a new line with a dash. '
     prompt += 'The comments are:\n'
     for i, post in enumerate(posts):
