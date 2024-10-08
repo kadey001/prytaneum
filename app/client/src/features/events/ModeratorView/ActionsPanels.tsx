@@ -23,11 +23,13 @@ import { PreloadedQuery, usePreloadedQuery, useQueryLoader } from 'react-relay';
 import { ActionsPanelsQuery } from '@local/__generated__/ActionsPanelsQuery.graphql';
 import { ConditionalRender, Loader } from '@local/components';
 import { useEventDetails } from '../useEventDetails';
+import GoogleMeet from '@local/features/google-meet/GoogleMeet';
 
 export const ACTIONS_PANELS_QUERY = graphql`
     query ActionsPanelsQuery($eventId: ID!) {
         node(id: $eventId) {
             id
+            ...useGoogleMeetFragment
             ...EventVideoFragment
             ...SpeakerListFragment
             ...useBroadcastMessageListFragment
@@ -62,6 +64,10 @@ function ActionsPanels({ node }: ActionsPanelProps) {
         sessionStorage.setItem(`${node.id}-tab`, newTab);
     };
 
+    React.useEffect(() => {
+        console.log('Event Data:', eventData);
+    }, [eventData]);
+
     return (
         <PanelGroup autoSaveId='mod-panels-child-persistence' direction='vertical'>
             <Panel defaultSize={25} minSize={20}>
@@ -71,7 +77,11 @@ function ActionsPanels({ node }: ActionsPanelProps) {
                         height: '100%',
                     }}
                 >
-                    <EventVideo fragmentRef={node} />
+                    {eventData.eventType === 'GOOGLE_MEET' ? (
+                        <GoogleMeet fragmentRef={node} />
+                    ) : (
+                        <EventVideo fragmentRef={node} />
+                    )}
                     <EventDetailsCard eventData={eventData} />
                     <SpeakerList fragmentRef={node} />
                 </Grid>
