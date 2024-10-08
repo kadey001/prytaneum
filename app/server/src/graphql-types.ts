@@ -800,7 +800,7 @@ export type Event = Node & {
     /** The broadcast message currently being broadcasted, corresponds to a "position" value on the event broadcastmessage */
     currentBroadcastMessage?: Maybe<Scalars['Int']>;
     topics?: Maybe<Array<EventTopic>>;
-    eventType?: Maybe<EventType>;
+    eventType?: Maybe<Scalars['String']>;
     googleMeetUrl?: Maybe<Scalars['String']>;
 };
 
@@ -3093,7 +3093,7 @@ export type EventResolvers<
     currentQuestion?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     currentBroadcastMessage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
     topics?: Resolver<Maybe<Array<ResolversTypes['EventTopic']>>, ParentType, ContextType>;
-    eventType?: Resolver<Maybe<ResolversTypes['EventType']>, ParentType, ContextType>;
+    eventType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     googleMeetUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -4236,7 +4236,7 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         currentQuestion?: LoaderResolver<Maybe<Scalars['String']>, Event, {}, TContext>;
         currentBroadcastMessage?: LoaderResolver<Maybe<Scalars['Int']>, Event, {}, TContext>;
         topics?: LoaderResolver<Maybe<Array<EventTopic>>, Event, {}, TContext>;
-        eventType?: LoaderResolver<Maybe<EventType>, Event, {}, TContext>;
+        eventType?: LoaderResolver<Maybe<Scalars['String']>, Event, {}, TContext>;
         googleMeetUrl?: LoaderResolver<Maybe<Scalars['String']>, Event, {}, TContext>;
     };
 

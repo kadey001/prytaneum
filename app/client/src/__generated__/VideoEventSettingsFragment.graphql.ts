@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<86bcc5adecf51e437552076cdc73e270>>
+ * @generated SignedSource<<2935493431494e7ae5226582cb5de48f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,10 +9,9 @@
 // @ts-nocheck
 
 import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
-export type EventType = "GOOGLE_MEET" | "NO_VIDEO" | "YOUTUBE_STREAM" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type VideoEventSettingsFragment$data = {
-  readonly eventType: EventType | null;
+  readonly eventType: string | null;
   readonly id: string;
   readonly " $fragmentSpreads": FragmentRefs<"GoogleMeetSettingsFragment" | "YoutubeSettingsFragment">;
   readonly " $fragmentType": "VideoEventSettingsFragment";

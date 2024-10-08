@@ -195,7 +195,7 @@ type Event implements Node {
 
   """The planned end date time string"""
   endDateTime: Date
-  eventType: EventType
+  eventType: String
   googleMeetUrl: String
   id: ID!
 
