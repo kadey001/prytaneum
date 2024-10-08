@@ -22,6 +22,9 @@ export default class MyDocument extends Document {
                                 `,
                         }}
                     />
+                    {/* <!-- Google Meets SDK --> */}
+                    <script async type='text/javascript' src='https://www.gstatic.com/meetjs/embed/0.1.0/meet.js' />
+                    <link href='https://www.gstatic.com/meetjs/embed/0.1.0/meet.css' rel='stylesheet' />
                     {/* PWA primary color */}
                     <meta name='theme-color' content={themes.dark.palette.primary.main} />
                     <link
