@@ -1,8 +1,10 @@
 import { fromGlobalId } from 'graphql-relay';
-import { getOrCreateServer } from '@local/core/server';
-import { getPrismaClient } from '@local/core/utils';
+
 import { register } from './methods';
+import { getOrCreateServer } from '@local/core/server';
+import { getPrismaClient, getRedisClient } from '@local/core/utils';
 import { sign } from '@local/lib/jwt';
+import { createAndGetGoogleOAuthClient } from '@local/core/utils/google-auth';
 
 const server = getOrCreateServer();
 
@@ -68,6 +70,52 @@ server.route({
             res.header('Access-Control-Allow-Origin', '*');
             res.header('Access-Control-Allow-Methods', 'POST');
             res.status(500).send('Error generating token');
+        }
+    },
+});
+
+// Callback route for Google OAuth 2.0 authentication
+// Saves the refresh token in the database
+server.route({
+    method: 'GET',
+    url: '/api/auth/callback/google',
+    handler: async (req, res) => {
+        try {
+            const {
+                error,
+                state: reqState,
+                code,
+            } = req.query as { error: string | undefined; state: string; code: string };
+
+            if (error) {
+                server.log.error(error);
+                throw new Error(error);
+            }
+
+            const redis = getRedisClient(server.log);
+            const prisma = getPrismaClient(server.log);
+
+            type State = { userId: string; postAuthRedirectUrl: string };
+            const { userId, postAuthRedirectUrl } = JSON.parse(reqState) as State;
+
+            const state = await redis.get(`${userId}-state`);
+            if (!state) throw new Error('State not found in Redis');
+            if (state !== reqState) throw new Error('State mismatch');
+
+            const googleAuthClient = createAndGetGoogleOAuthClient();
+            googleAuthClient.on('tokens', async (tokens) => {
+                if (tokens.refresh_token) {
+                    await prisma.user.update({
+                        where: { id: userId },
+                        data: { oAuthRefreshToken: tokens.refresh_token },
+                    });
+                }
+            });
+            await googleAuthClient.getToken(code);
+            res.redirect(postAuthRedirectUrl);
+        } catch (error) {
+            server.log.error(error);
+            return res.status(500).send('Error authenticating');
         }
     },
 });

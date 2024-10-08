@@ -8,6 +8,7 @@ import * as hooks from './hooks';
 
 require('@local/features/accounts/account');
 require('@local/features/events/moderation/issue-guide');
+require('@local/features/google/google-meet');
 
 export function startup() {
     const server = getOrCreateServer();
