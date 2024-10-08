@@ -40,3 +40,5 @@ test-results/
 playwright-report/
 allure-report/
 allure-results/
+
+index.d.ts
