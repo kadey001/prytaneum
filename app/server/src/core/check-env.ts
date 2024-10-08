@@ -56,6 +56,12 @@ const isValidModerationUrl = isString(process.env.MODERATION_URL);
 
 const isValidGCPProjectId = isString(process.env.GCP_PROJECT_ID);
 
+const isValidGoogleClientId = isString(process.env.GOOGLE_CLIENT_ID);
+
+const isValidGoogleClientSecret = isString(process.env.GOOGLE_CLIENT_SECRET);
+
+const isValidGoogleRedirectUri = isString(process.env.GOOGLE_REDIRECT_URI);
+
 export function checkEnv() {
     if (!isValidNodeEnv) throw new Error('NODE_ENV is not a valid value');
     // if (!isValidCookieSecret) throw new Error('COOKIE_SECRET is not valid');
@@ -72,4 +78,7 @@ export function checkEnv() {
     if (!isValidGCPIssueGuidesBucket) throw new Error('GCLOUD_ISSUE_GUIDES_STORAGE_BUCKET is not valid');
     if (!isValidModerationUrl) throw new Error('MODERATION_URL is not valid');
     if (!isValidGCPProjectId) throw new Error('GCP_PROJECT_ID is not valid');
+    if (!isValidGoogleClientId) throw new Error('GOOGLE_CLIENT_ID is not valid');
+    if (!isValidGoogleClientSecret) throw new Error('GOOGLE_CLIENT_SECRET is not valid');
+    if (!isValidGoogleRedirectUri) throw new Error('GOOGLE_REDIRECT_URI is not valid');
 }
