@@ -1,0 +1,6 @@
+-- CreateEnum
+CREATE TYPE "EventType" AS ENUM ('NO_VIDEO', 'GOOGLE_MEET', 'YOUTUBE_STREAM');
+
+-- AlterTable
+ALTER TABLE "Event" ADD COLUMN     "eventType" "EventType" NOT NULL DEFAULT 'NO_VIDEO',
+ADD COLUMN     "googleMeetUrl" VARCHAR(500) NOT NULL DEFAULT '';
