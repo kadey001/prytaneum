@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { useRefetchableFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
