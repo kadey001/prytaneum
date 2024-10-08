@@ -390,6 +390,7 @@ export type Mutation = {
      * TODO: make this an EventMutationResponse
      */
     prevQuestion: Event;
+    updateEventType: UpdateEventTypeMutationResponse;
     participantPingEvent: ParticipantPingEventMutationResponse;
     muteParticipant: MuteParticipantMutationResponse;
     unmuteParticipant: MuteParticipantMutationResponse;
@@ -622,6 +623,10 @@ export type MutationprevQuestionArgs = {
     eventId: Scalars['ID'];
 };
 
+export type MutationupdateEventTypeArgs = {
+    input: UpdateEventType;
+};
+
 export type MutationparticipantPingEventArgs = {
     eventId: Scalars['ID'];
 };
@@ -795,6 +800,8 @@ export type Event = Node & {
     /** The broadcast message currently being broadcasted, corresponds to a "position" value on the event broadcastmessage */
     currentBroadcastMessage?: Maybe<Scalars['Int']>;
     topics?: Maybe<Array<EventTopic>>;
+    eventType?: Maybe<EventType>;
+    googleMeetUrl?: Maybe<Scalars['String']>;
 };
 
 export type EventquestionsArgs = {
@@ -865,6 +872,12 @@ export type EventquestionQueueArgs = {
     first?: InputMaybe<Scalars['Int']>;
     after?: InputMaybe<Scalars['String']>;
 };
+
+export enum EventType {
+    NO_VIDEO = 'NO_VIDEO',
+    GOOGLE_MEET = 'GOOGLE_MEET',
+    YOUTUBE_STREAM = 'YOUTUBE_STREAM',
+}
 
 /** Event Edge */
 export type EventEdge = {
@@ -1489,6 +1502,18 @@ export type ModeratorMutationResponse = MutationResponse & {
     body?: Maybe<User>;
 };
 
+export type UpdateEventType = {
+    eventId: Scalars['ID'];
+    eventType: EventType;
+};
+
+export type UpdateEventTypeMutationResponse = MutationResponse & {
+    __typename?: 'UpdateEventTypeMutationResponse';
+    isError: Scalars['Boolean'];
+    message: Scalars['String'];
+    body?: Maybe<Scalars['String']>;
+};
+
 export type EventParticipant = {
     __typename?: 'EventParticipant';
     user: User;
@@ -1917,6 +1942,7 @@ export type ResolversTypes = {
         | ResolversTypes['PostEventFeedbackMutationResponse']
         | ResolversTypes['InviteMutationResponse']
         | ResolversTypes['ModeratorMutationResponse']
+        | ResolversTypes['UpdateEventTypeMutationResponse']
         | ResolversTypes['ParticipantPingEventMutationResponse']
         | ResolversTypes['MuteParticipantMutationResponse']
         | ResolversTypes['EventQuestionMutationResponse']
@@ -1952,6 +1978,7 @@ export type ResolversTypes = {
     ValidatePasswordResetTokenQueryResponse: ResolverTypeWrapper<ValidatePasswordResetTokenQueryResponse>;
     Mutation: ResolverTypeWrapper<{}>;
     Event: ResolverTypeWrapper<Event>;
+    EventType: EventType;
     EventEdge: ResolverTypeWrapper<EventEdge>;
     EventConnection: ResolverTypeWrapper<EventConnection>;
     CreateEvent: CreateEvent;
@@ -2017,6 +2044,8 @@ export type ResolversTypes = {
     UpdateOnDeckPosition: UpdateOnDeckPosition;
     UpdateTopicQueuePosition: UpdateTopicQueuePosition;
     ModeratorMutationResponse: ResolverTypeWrapper<ModeratorMutationResponse>;
+    UpdateEventType: UpdateEventType;
+    UpdateEventTypeMutationResponse: ResolverTypeWrapper<UpdateEventTypeMutationResponse>;
     EventParticipant: ResolverTypeWrapper<EventParticipant>;
     EventParticipantEdge: ResolverTypeWrapper<EventParticipantEdge>;
     EventParticipantConnection: ResolverTypeWrapper<EventParticipantConnection>;
@@ -2096,6 +2125,7 @@ export type ResolversParentTypes = {
         | ResolversParentTypes['PostEventFeedbackMutationResponse']
         | ResolversParentTypes['InviteMutationResponse']
         | ResolversParentTypes['ModeratorMutationResponse']
+        | ResolversParentTypes['UpdateEventTypeMutationResponse']
         | ResolversParentTypes['ParticipantPingEventMutationResponse']
         | ResolversParentTypes['MuteParticipantMutationResponse']
         | ResolversParentTypes['EventQuestionMutationResponse']
@@ -2194,6 +2224,8 @@ export type ResolversParentTypes = {
     UpdateOnDeckPosition: UpdateOnDeckPosition;
     UpdateTopicQueuePosition: UpdateTopicQueuePosition;
     ModeratorMutationResponse: ModeratorMutationResponse;
+    UpdateEventType: UpdateEventType;
+    UpdateEventTypeMutationResponse: UpdateEventTypeMutationResponse;
     EventParticipant: EventParticipant;
     EventParticipantEdge: EventParticipantEdge;
     EventParticipantConnection: EventParticipantConnection;
@@ -2388,6 +2420,7 @@ export type MutationResponseResolvers<
         | 'PostEventFeedbackMutationResponse'
         | 'InviteMutationResponse'
         | 'ModeratorMutationResponse'
+        | 'UpdateEventTypeMutationResponse'
         | 'ParticipantPingEventMutationResponse'
         | 'MuteParticipantMutationResponse'
         | 'EventQuestionMutationResponse'
@@ -2814,6 +2847,12 @@ export type MutationResolvers<
         ContextType,
         RequireFields<MutationprevQuestionArgs, 'eventId'>
     >;
+    updateEventType?: Resolver<
+        ResolversTypes['UpdateEventTypeMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationupdateEventTypeArgs, 'input'>
+    >;
     participantPingEvent?: Resolver<
         ResolversTypes['ParticipantPingEventMutationResponse'],
         ParentType,
@@ -3054,6 +3093,8 @@ export type EventResolvers<
     currentQuestion?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     currentBroadcastMessage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
     topics?: Resolver<Maybe<Array<ResolversTypes['EventTopic']>>, ParentType, ContextType>;
+    eventType?: Resolver<Maybe<ResolversTypes['EventType']>, ParentType, ContextType>;
+    googleMeetUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -3617,6 +3658,16 @@ export type ModeratorMutationResponseResolvers<
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateEventTypeMutationResponseResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['UpdateEventTypeMutationResponse'] = ResolversParentTypes['UpdateEventTypeMutationResponse']
+> = {
+    isError?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    body?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type EventParticipantResolvers<
     ContextType = MercuriusContext,
     ParentType extends ResolversParentTypes['EventParticipant'] = ResolversParentTypes['EventParticipant']
@@ -4012,6 +4063,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
     InviteMutationResponse?: InviteMutationResponseResolvers<ContextType>;
     ValidateInviteQueryResponse?: ValidateInviteQueryResponseResolvers<ContextType>;
     ModeratorMutationResponse?: ModeratorMutationResponseResolvers<ContextType>;
+    UpdateEventTypeMutationResponse?: UpdateEventTypeMutationResponseResolvers<ContextType>;
     EventParticipant?: EventParticipantResolvers<ContextType>;
     EventParticipantEdge?: EventParticipantEdgeResolvers<ContextType>;
     EventParticipantConnection?: EventParticipantConnectionResolvers<ContextType>;
@@ -4184,6 +4236,8 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         currentQuestion?: LoaderResolver<Maybe<Scalars['String']>, Event, {}, TContext>;
         currentBroadcastMessage?: LoaderResolver<Maybe<Scalars['Int']>, Event, {}, TContext>;
         topics?: LoaderResolver<Maybe<Array<EventTopic>>, Event, {}, TContext>;
+        eventType?: LoaderResolver<Maybe<EventType>, Event, {}, TContext>;
+        googleMeetUrl?: LoaderResolver<Maybe<Scalars['String']>, Event, {}, TContext>;
     };
 
     EventEdge?: {
@@ -4425,6 +4479,12 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         isError?: LoaderResolver<Scalars['Boolean'], ModeratorMutationResponse, {}, TContext>;
         message?: LoaderResolver<Scalars['String'], ModeratorMutationResponse, {}, TContext>;
         body?: LoaderResolver<Maybe<User>, ModeratorMutationResponse, {}, TContext>;
+    };
+
+    UpdateEventTypeMutationResponse?: {
+        isError?: LoaderResolver<Scalars['Boolean'], UpdateEventTypeMutationResponse, {}, TContext>;
+        message?: LoaderResolver<Scalars['String'], UpdateEventTypeMutationResponse, {}, TContext>;
+        body?: LoaderResolver<Maybe<Scalars['String']>, UpdateEventTypeMutationResponse, {}, TContext>;
     };
 
     EventParticipant?: {

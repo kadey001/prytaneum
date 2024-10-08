@@ -197,6 +197,8 @@ export type Event = Node & {
   description?: Maybe<Scalars['String']>;
   /** The planned end date time string */
   endDateTime?: Maybe<Scalars['Date']>;
+  eventType?: Maybe<EventType>;
+  googleMeetUrl?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   /** List of users who can view event when private */
   invited?: Maybe<UserConnection>;
@@ -672,6 +674,12 @@ export type EventTopic = Node & Topic & {
   topic: Scalars['String'];
 };
 
+export enum EventType {
+  GoogleMeet = 'GOOGLE_MEET',
+  NoVideo = 'NO_VIDEO',
+  YoutubeStream = 'YOUTUBE_STREAM'
+}
+
 export type EventVideo = Node & {
   __typename?: 'EventVideo';
   event?: Maybe<Event>;
@@ -841,6 +849,7 @@ export type Mutation = {
   unmuteParticipant: MuteParticipantMutationResponse;
   updateEmail: UserMutationResponse;
   updateEvent: EventMutationResponse;
+  updateEventType: UpdateEventTypeMutationResponse;
   updateModerator: ModeratorMutationResponse;
   updateOnDeckPosition: EventQuestionMutationResponse;
   updateOrganization: OrganizationMutationResponse;
@@ -1180,6 +1189,11 @@ export type MutationUpdateEmailArgs = {
 
 export type MutationUpdateEventArgs = {
   event: UpdateEvent;
+};
+
+
+export type MutationUpdateEventTypeArgs = {
+  input: UpdateEventType;
 };
 
 
@@ -1738,6 +1752,18 @@ export type UpdateEvent = {
   startDateTime?: InputMaybe<Scalars['Date']>;
   title?: InputMaybe<Scalars['String']>;
   topic?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateEventType = {
+  eventId: Scalars['ID'];
+  eventType: EventType;
+};
+
+export type UpdateEventTypeMutationResponse = MutationResponse & {
+  __typename?: 'UpdateEventTypeMutationResponse';
+  body?: Maybe<Scalars['String']>;
+  isError: Scalars['Boolean'];
+  message: Scalars['String'];
 };
 
 export type UpdateModerator = {
