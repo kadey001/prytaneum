@@ -2,7 +2,8 @@ import { graphql } from 'relay-runtime';
 import { useMutation } from 'react-relay';
 import { useSnack } from '@local/core';
 import { useEvent } from '@local/features/events';
-import { EventType, useEventTypeMutation } from '@local/__generated__/useEventTypeMutation.graphql';
+import type { useEventTypeMutation } from '@local/__generated__/useEventTypeMutation.graphql';
+import type { EventType } from '@local/graphql-types';
 
 const UPDATE_EVENT_TYPE = graphql`
     mutation useEventTypeMutation($input: UpdateEventType!) {

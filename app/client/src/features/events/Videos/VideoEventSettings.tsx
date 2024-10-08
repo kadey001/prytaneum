@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { Grid, MenuItem, FormControl, InputLabel, Select, Typography, Button } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 
-import { EventType, VideoEventSettingsFragment$key } from '@local/__generated__/VideoEventSettingsFragment.graphql';
+import { VideoEventSettingsFragment$key } from '@local/__generated__/VideoEventSettingsFragment.graphql';
 import { YoutubeSettings } from './YoutubeSettings';
 import { GoogleMeetSettings } from './GoogleMeetSettings';
-import { graphql } from 'relay-runtime';
-import { useFragment } from 'react-relay';
 import { useEventType } from './useEventType';
+import type { EventType } from '@local/graphql-types';
 
 export const VIDEO_EVENT_SETTINGS_FRAGMENT = graphql`
     fragment VideoEventSettingsFragment on Event @refetchable(queryName: "VideoEventSettingsFragmentRefresh") {
@@ -25,7 +26,9 @@ interface EventSettingsProps {
 
 export const VideoEventSettings = ({ fragmentRef }: EventSettingsProps) => {
     const data = useFragment(VIDEO_EVENT_SETTINGS_FRAGMENT, fragmentRef);
-    const [videoType, setVideoType] = React.useState<EventType>(data.eventType || 'NO_VIDEO');
+    const defaultEventType: EventType =
+        data.eventType === null ? ('NO_VIDEO' as EventType) : (data.eventType as EventType);
+    const [videoType, setVideoType] = React.useState<EventType>(defaultEventType);
     const { updateEventType } = useEventType();
 
     const handleVideoTypeChange = (event: SelectChangeEvent<EventType>) => {
