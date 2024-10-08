@@ -128,6 +128,14 @@ type Event implements Node {
     currentBroadcastMessage: Int
 
     topics: [EventTopic!]
+    eventType: String
+    googleMeetUrl: String
+}
+
+enum EventType {
+    NO_VIDEO
+    GOOGLE_MEET
+    YOUTUBE_STREAM
 }
 
 """

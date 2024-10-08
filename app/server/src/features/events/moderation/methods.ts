@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@local/__generated__/prisma';
+import { EventType, Prisma, PrismaClient } from '@local/__generated__/prisma';
 import { errors } from '@local/features/utils';
 import { register } from '@local/features/accounts/methods';
 import { ProtectedError } from '@local/lib/ProtectedError';
@@ -665,4 +665,11 @@ export function getTopicPosition(question: EventQuestion, topic: string) {
     const topicPosition = question?.topics?.find((t) => t.topic === topic)?.position;
     if (!topicPosition) return parseInt(question.position);
     return parseInt(topicPosition);
+}
+
+export function updateEventType(eventId: string, eventType: EventType, prisma: PrismaClient) {
+    return prisma.event.update({
+        where: { id: eventId },
+        data: { eventType },
+    });
 }

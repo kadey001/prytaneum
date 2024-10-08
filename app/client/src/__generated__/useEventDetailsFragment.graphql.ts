@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<10c565d523e8dadb4e8b0d517b9b076a>>
+ * @generated SignedSource<<3e6c4e2f9ba3a24d2c82353ad131f740>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import { FragmentRefs } from "relay-runtime";
 export type useEventDetailsFragment$data = {
   readonly description: string | null;
   readonly endDateTime: Date | null;
+  readonly eventType: string | null;
   readonly id: string;
   readonly isActive: boolean | null;
   readonly isPrivate: boolean | null;
@@ -143,6 +144,13 @@ return {
         (v2/*: any*/)
       ],
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "eventType",
+      "storageKey": null
     }
   ],
   "type": "Event",
@@ -150,6 +158,6 @@ return {
 };
 })();
 
-(node as any).hash = "ab121b9a240a802beddc0771de354001";
+(node as any).hash = "2d6630ee926052816d4d4260094d1d77";
 
 export default node;

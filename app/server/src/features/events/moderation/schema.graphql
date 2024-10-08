@@ -92,6 +92,17 @@ type ModeratorMutationResponse implements MutationResponse {
     body: User
 }
 
+input UpdateEventType {
+    eventId: ID!
+    eventType: EventType!
+}
+
+type UpdateEventTypeMutationResponse implements MutationResponse {
+    isError: Boolean!
+    message: String!
+    body: String
+}
+
 type Mutation {
     hideQuestion(input: HideQuestion!): EventQuestion
     updateQuestionPosition(input: UpdateQuestionPosition!): EventQuestionMutationResponse!
@@ -127,6 +138,7 @@ type Mutation {
     TODO: make this an EventMutationResponse
     """
     prevQuestion(eventId: ID!): Event!
+    updateEventType(input: UpdateEventType!): UpdateEventTypeMutationResponse!
 }
 
 type Subscription {

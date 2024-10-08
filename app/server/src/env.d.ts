@@ -19,6 +19,9 @@ declare global {
             REDIS_URL: string;
             GCLOUD_ISSUE_GUIDES_STORAGE_BUCKET: string;
             MODERATION_URL: string;
+            GOOGLE_CLIENT_ID: string;
+            GOOGLE_CLIENT_SECRET: string;
+            GOOGLE_REDIRECT_URI: string;
         }
     }
 }

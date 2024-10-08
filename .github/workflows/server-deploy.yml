@@ -27,6 +27,9 @@ env:
     NAMESPACE: ${{ vars.NAMESPACE }}
     ORIGIN: ${{ vars.ORIGIN }}
     DATABASE_URL: ${{ secrets.DATABASE_URL }} # Used for prisma migration
+    GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+    GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+    GOOGLE_REDIRECT_URI: ${{ vars.GOOGLE_REDIRECT_URI }}
 
 jobs:
     staging:
@@ -74,6 +77,9 @@ jobs:
                     --build-arg ORIGIN="$ORIGIN" \
                     --build-arg GITHUB_SHA="$GITHUB_SHA" \
                     --build-arg GITHUB_REF="$GITHUB_REF" \
+                    --build-arg GOOGLE_CLIENT_ID="$GOOGLE_CLIENT_ID" \
+                    --build-arg GOOGLE_CLIENT_SECRET="$GOOGLE_CLIENT_SECRET" \
+                    --build-arg GOOGLE_REDIRECT_URI="$GOOGLE_REDIRECT_URI" \
                     .
 
             # Push the Server image to Google Container Registry
@@ -160,6 +166,9 @@ jobs:
                     --build-arg ORIGIN="$ORIGIN" \
                     --build-arg GITHUB_SHA="$GITHUB_SHA" \
                     --build-arg GITHUB_REF="$GITHUB_REF" \
+                    --build-arg GOOGLE_CLIENT_ID="$GOOGLE_CLIENT_ID" \
+                    --build-arg GOOGLE_CLIENT_SECRET="$GOOGLE_CLIENT_SECRET" \
+                    --build-arg GOOGLE_REDIRECT_URI="$GOOGLE_REDIRECT_URI" \
                     .
 
             # Push the Server image to Google Container Registry

@@ -594,6 +594,17 @@ export const resolvers: Resolvers = {
                 }
             });
         },
+        async updateEventType(parent, args, ctx, info) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { eventType } = args.input;
+
+                const result = await Moderation.updateEventType(eventId, eventType, ctx.prisma);
+
+                return result.eventType;
+            });
+        },
     },
     Subscription: {
         eventLiveFeedbackCreated: {

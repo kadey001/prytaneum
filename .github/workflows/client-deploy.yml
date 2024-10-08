@@ -29,6 +29,8 @@ env:
     GRAPHQL_URL: ${{ vars.GRAPHQL_URL }}
     GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
     ORIGIN: ${{ vars.ORIGIN }}
+    API_URL: ${{ vars.API_URL }}
+    GOOGLE_MEET_API_KEY: ${{ vars.GOOGLE_MEET_API_KEY }}
 
 jobs:
     staging:
@@ -76,6 +78,9 @@ jobs:
                     --build-arg GRAPHQL_URL="$GRAPHQL_URL" \
                     --build-arg DEPLOYMENT_ENV="development" \
                     --build-arg GOOGLE_ANALYTICS_ID="$GOOGLE_ANALYTICS_ID" \
+                    --build-arg ORIGIN="$ORIGIN" \
+                    --build-arg API_URL="$API_URL" \
+                    --build-arg GOOGLE_MEET_API_KEY="$GOOGLE_MEET_API_KEY" \
                     .
 
             # Push the Client image to Google Container Registry
@@ -150,6 +155,9 @@ jobs:
                     --build-arg GITHUB_REF="$GITHUB_REF" \
                     --build-arg DEPLOYMENT_ENV="production" \
                     --build-arg GOOGLE_ANALYTICS_ID="$GOOGLE_ANALYTICS_ID" \
+                    --build-arg ORIGIN="$ORIGIN" \
+                    --build-arg API_URL="$API_URL" \
+                    --build-arg GOOGLE_MEET_API_KEY="$GOOGLE_MEET_API_KEY" \
                     .
 
             # Push the Client image to Google Container Registry

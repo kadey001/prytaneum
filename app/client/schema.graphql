@@ -195,6 +195,8 @@ type Event implements Node {
 
   """The planned end date time string"""
   endDateTime: Date
+  eventType: String
+  googleMeetUrl: String
   id: ID!
 
   """List of users who can view event when private"""
@@ -566,6 +568,12 @@ type EventTopic implements Node & Topic {
   topic: String!
 }
 
+enum EventType {
+  GOOGLE_MEET
+  NO_VIDEO
+  YOUTUBE_STREAM
+}
+
 type EventVideo implements Node {
   event: Event
   id: ID!
@@ -748,6 +756,7 @@ type Mutation {
   unmuteParticipant(eventId: ID!, userId: ID!): MuteParticipantMutationResponse!
   updateEmail(input: UpdateEmailForm!): UserMutationResponse!
   updateEvent(event: UpdateEvent!): EventMutationResponse!
+  updateEventType(input: UpdateEventType!): UpdateEventTypeMutationResponse!
   updateModerator(input: UpdateModerator!): ModeratorMutationResponse!
   updateOnDeckPosition(input: UpdateOnDeckPosition!): EventQuestionMutationResponse!
   updateOrganization(input: UpdateOrganization!): OrganizationMutationResponse!
@@ -1035,6 +1044,17 @@ input UpdateEvent {
   startDateTime: Date
   title: String
   topic: String
+}
+
+input UpdateEventType {
+  eventId: ID!
+  eventType: EventType!
+}
+
+type UpdateEventTypeMutationResponse implements MutationResponse {
+  body: String
+  isError: Boolean!
+  message: String!
 }
 
 input UpdateModerator {

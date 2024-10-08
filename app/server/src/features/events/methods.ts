@@ -81,6 +81,8 @@ export async function createEvent(userId: string, prisma: PrismaClient, input: C
         createdById: userId,
         issueGuideUrl: '',
         issue: '',
+        eventType: 'NO_VIDEO',
+        googleMeetUrl: '',
     };
 
     const result = await prisma.event.create({

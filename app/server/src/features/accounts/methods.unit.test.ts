@@ -23,6 +23,7 @@ const userData = {
     preferredLang: 'EN',
     isAdmin: false,
     canMakeOrgs: false,
+    oAuthRefreshToken: null,
 };
 
 beforeAll(async () => {

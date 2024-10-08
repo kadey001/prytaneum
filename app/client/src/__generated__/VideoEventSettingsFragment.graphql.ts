@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7aa33df486740b061691cea1c601c638>>
+ * @generated SignedSource<<2935493431494e7ae5226582cb5de48f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,21 +8,12 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Fragment, ReaderFragment } from 'relay-runtime';
+import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type VideoEventSettingsFragment$data = {
+  readonly eventType: string | null;
   readonly id: string;
-  readonly videos: {
-    readonly __id: string;
-    readonly edges: ReadonlyArray<{
-      readonly cursor: string;
-      readonly node: {
-        readonly id: string;
-        readonly lang: string;
-        readonly url: string;
-      };
-    }> | null;
-  } | null;
+  readonly " $fragmentSpreads": FragmentRefs<"GoogleMeetSettingsFragment" | "YoutubeSettingsFragment">;
   readonly " $fragmentType": "VideoEventSettingsFragment";
 };
 export type VideoEventSettingsFragment$key = {
@@ -30,148 +21,50 @@ export type VideoEventSettingsFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"VideoEventSettingsFragment">;
 };
 
-const node: ReaderFragment = (function(){
-var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-};
-return {
-  "argumentDefinitions": [
-    {
-      "defaultValue": "",
-      "kind": "LocalArgument",
-      "name": "after"
-    },
-    {
-      "defaultValue": 10,
-      "kind": "LocalArgument",
-      "name": "first"
-    }
-  ],
+const node: ReaderFragment = {
+  "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": {
-    "connection": [
-      {
-        "count": "first",
-        "cursor": "after",
-        "direction": "forward",
-        "path": [
-          "videos"
-        ]
-      }
-    ]
+    "refetch": {
+      "connection": null,
+      "fragmentPathInResult": [
+        "node"
+      ],
+      "operation": require('./VideoEventSettingsFragmentRefresh.graphql'),
+      "identifierField": "id"
+    }
   },
   "name": "VideoEventSettingsFragment",
   "selections": [
-    (v0/*: any*/),
     {
-      "alias": "videos",
+      "alias": null,
       "args": null,
-      "concreteType": "EventVideoConnection",
-      "kind": "LinkedField",
-      "name": "__VideoEventSettingsFragment_videos_connection",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "EventVideoEdge",
-          "kind": "LinkedField",
-          "name": "edges",
-          "plural": true,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "concreteType": "EventVideo",
-              "kind": "LinkedField",
-              "name": "node",
-              "plural": false,
-              "selections": [
-                (v0/*: any*/),
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "url",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "lang",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "__typename",
-                  "storageKey": null
-                }
-              ],
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "cursor",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "PageInfo",
-          "kind": "LinkedField",
-          "name": "pageInfo",
-          "plural": false,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "endCursor",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "hasNextPage",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        },
-        {
-          "kind": "ClientExtension",
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "__id",
-              "storageKey": null
-            }
-          ]
-        }
-      ],
+      "kind": "ScalarField",
+      "name": "eventType",
+      "storageKey": null
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "YoutubeSettingsFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "GoogleMeetSettingsFragment"
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
       "storageKey": null
     }
   ],
   "type": "Event",
   "abstractKey": null
 };
-})();
 
-(node as any).hash = "9aaabb0071b13bb0b5e8796825f540d7";
+(node as any).hash = "34fd7f679509a7341d213af56a9a4110";
 
 export default node;
