@@ -112,7 +112,7 @@ export function EventSettings({ queryRef }: Props) {
                             },
                             {
                                 title: 'Video',
-                                description: 'Modify the list of video streams and their languages',
+                                description: 'Select and configure the type of video for this event',
                                 component: <VideoEventSettings fragmentRef={data.node} />,
                             },
                             {

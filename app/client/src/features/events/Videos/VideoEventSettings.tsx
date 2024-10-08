@@ -1,194 +1,78 @@
 import * as React from 'react';
-import {
-    List,
-    ListItem,
-    ListItemText,
-    Grid,
-    Typography,
-    Button,
-    DialogContent,
-    Menu,
-    MenuItem,
-    ListItemSecondaryAction,
-    IconButton,
-} from '@mui/material';
-import { Add, MoreVert } from '@mui/icons-material';
-import { graphql, useFragment } from 'react-relay';
+import { Grid, MenuItem, FormControl, InputLabel, Select, Typography, Button } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 
-import type { VideoEventSettingsFragment$key } from '@local/__generated__/VideoEventSettingsFragment.graphql';
-import type { EventVideo } from '@local/graphql-types';
-import { ResponsiveDialog } from '@local/components/ResponsiveDialog';
-import { CreateVideo } from './CreateVideo';
-import { UpdateVideo } from './UpdateVideo';
-import { DeleteVideo } from './DeleteVideo';
+import { EventType, VideoEventSettingsFragment$key } from '@local/__generated__/VideoEventSettingsFragment.graphql';
+import { YoutubeSettings } from './YoutubeSettings';
+import { GoogleMeetSettings } from './GoogleMeetSettings';
+import { graphql } from 'relay-runtime';
+import { useFragment } from 'react-relay';
+import { useEventType } from './useEventType';
 
 export const VIDEO_EVENT_SETTINGS_FRAGMENT = graphql`
-    fragment VideoEventSettingsFragment on Event
-    @argumentDefinitions(first: { type: "Int", defaultValue: 10 }, after: { type: "String", defaultValue: "" }) {
-        id
-        videos(first: $first, after: $after) @connection(key: "VideoEventSettingsFragment_videos") {
-            __id
-            edges {
-                node {
-                    id
-                    url
-                    lang
-                }
-                cursor
-            }
-        }
+    fragment VideoEventSettingsFragment on Event @refetchable(queryName: "VideoEventSettingsFragmentRefresh") {
+        eventType
+        ...YoutubeSettingsFragment
+        ...GoogleMeetSettingsFragment
     }
 `;
 
-interface TState {
-    isFormDialogOpen: boolean;
-    isConfDialogOpen: boolean;
-    anchorEl: HTMLElement | null;
-    focusedVideo: EventVideo | null;
-}
-
-type Action =
-    | { type: 'dialog/create-video'; payload?: never }
-    | { type: 'dialog/update-video'; payload?: never }
-    | { type: 'dialog/delete-video'; payload?: never }
-    | { type: 'dialog/close-all'; payload?: never }
-    | { type: 'videos/focus'; payload: { video: EventVideo; anchorEl: HTMLElement } };
-
-const reducer = (state: TState, action: Action): TState => {
-    switch (action.type) {
-        case 'dialog/create-video':
-            // clear focused video if any, open the form dialog, close any other dialogs
-            return { ...state, focusedVideo: null, isFormDialogOpen: true, isConfDialogOpen: false, anchorEl: null };
-        case 'dialog/update-video':
-            // if there's no focused video, then we cannot try to update null!
-            if (state.focusedVideo === null) return state;
-            // ensure everything else is closed
-            return {
-                ...state,
-                isFormDialogOpen: true,
-                isConfDialogOpen: false,
-                anchorEl: null,
-            };
-        case 'dialog/delete-video':
-            // if there's no focused video, cannot try to delete that one
-            if (state.focusedVideo === null) return state;
-            // close all other possible dialogs, open confirmation dialog
-            return {
-                ...state,
-                isFormDialogOpen: false,
-                isConfDialogOpen: true,
-                anchorEl: null,
-            };
-        case 'videos/focus':
-            // assign payload as the focused video and anchor El
-            return {
-                ...state,
-                anchorEl: action.payload.anchorEl,
-                focusedVideo: action.payload.video,
-            };
-        case 'dialog/close-all':
-            // close all possible things that are open
-            return {
-                ...state,
-                anchorEl: null,
-                isFormDialogOpen: false,
-                isConfDialogOpen: false,
-            };
-        default:
-            return state;
-    }
-};
+// TODO: Add a mutation to change the EventType
 
 interface EventSettingsProps {
     fragmentRef: VideoEventSettingsFragment$key;
-    className?: string;
 }
 
-export const VideoEventSettings = ({ fragmentRef, className }: EventSettingsProps) => {
-    const { videos, id: eventId } = useFragment(VIDEO_EVENT_SETTINGS_FRAGMENT, fragmentRef);
-    const videoEdges = React.useMemo(() => videos?.edges?.map(({ node }) => node) || [], [videos?.edges]);
-    const connections = React.useMemo(() => (videos?.__id ? [videos.__id] : []), [videos]);
-    const [{ isFormDialogOpen, isConfDialogOpen, anchorEl, focusedVideo }, dispatch] = React.useReducer(reducer, {
-        isFormDialogOpen: false,
-        isConfDialogOpen: false,
-        anchorEl: null,
-        focusedVideo: null,
-    });
+export const VideoEventSettings = ({ fragmentRef }: EventSettingsProps) => {
+    const data = useFragment(VIDEO_EVENT_SETTINGS_FRAGMENT, fragmentRef);
+    const [videoType, setVideoType] = React.useState<EventType>(data.eventType || 'NO_VIDEO');
+    const { updateEventType } = useEventType();
 
-    // close all dialogs
-    const close = () => dispatch({ type: 'dialog/close-all' });
+    const handleVideoTypeChange = (event: SelectChangeEvent<EventType>) => {
+        const newEventType = event.target.value as EventType;
+        setVideoType(newEventType);
+    };
 
-    // open the more-vert menu
-    const openMenu = (video: EventVideo) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-        dispatch({ type: 'videos/focus', payload: { video, anchorEl: e.currentTarget } });
-
-    // open the update form
-    const openUpdateForm = () => dispatch({ type: 'dialog/update-video' });
-
-    // open the deletion prompt
-    const promptDelete = () => dispatch({ type: 'dialog/delete-video' });
-
-    // open the form for creating a new video
-    const openFormDialog = () => dispatch({ type: 'dialog/create-video' });
+    const updateVideoType = () => {
+        const onSuccess = () => {
+            console.log('Success');
+        };
+        const onFailure = () => {
+            console.error('Failed to update video type');
+        };
+        updateEventType(videoType, onSuccess, onFailure);
+    };
 
     return (
-        <Grid container justifyContent='center' className={className}>
-            <ResponsiveDialog open={isFormDialogOpen} onClose={close}>
-                <DialogContent>
-                    {focusedVideo !== null ? (
-                        <UpdateVideo
-                            onSubmit={close}
-                            video={{ id: focusedVideo.id, url: focusedVideo.url, lang: focusedVideo.lang }}
-                            eventId={eventId}
-                        />
-                    ) : (
-                        <CreateVideo onSubmit={close} eventId={eventId} connections={connections} />
-                    )}
-                </DialogContent>
-            </ResponsiveDialog>
-            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={close}>
-                <MenuItem onClick={openUpdateForm}>Update</MenuItem>
-                <MenuItem sx={{ color: 'red' }} onClick={promptDelete}>
-                    Delete
-                </MenuItem>
-            </Menu>
-            <DeleteVideo
-                open={isConfDialogOpen}
-                onClose={close}
-                title={`Delete "${focusedVideo?.lang}" video?`}
-                onConfirm={close}
-                video={focusedVideo}
-                eventId={eventId}
-                connections={connections}
-            >
-                <>
-                    Are you sure you want to delete the&nbsp;
-                    <b>{focusedVideo?.lang}</b> video?
-                </>
-            </DeleteVideo>
-            {videoEdges.length > 0 ? (
-                <List sx={{ width: '100%' }} disablePadding>
-                    {videoEdges.map(({ id, url, lang }) => (
-                        <ListItem key={id} disableGutters>
-                            <ListItemText primary={lang} secondary={url} />
-                            <ListItemSecondaryAction>
-                                <IconButton onClick={openMenu({ id, url, lang })} size='large'>
-                                    <MoreVert />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                    ))}
-                </List>
-            ) : (
-                <Typography variant='body2' color='textSecondary'>
-                    No videos to display
-                </Typography>
-            )}
-            <Grid container justifyContent='flex-end'>
-                <Button variant='outlined' onClick={openFormDialog} startIcon={<Add />}>
-                    Add Video
+        <Grid container justifyContent='center' alignItems='center'>
+            <Grid item>
+                <FormControl>
+                    <InputLabel id='video-type-input'>Video Type</InputLabel>
+                    <Select
+                        labelId='video-type-input'
+                        id='video-type'
+                        value={videoType}
+                        label='videoType'
+                        onChange={handleVideoTypeChange}
+                    >
+                        <MenuItem value='NO_VIDEO'>No video</MenuItem>
+                        <MenuItem value='YOUTUBE_STREAM'>Youtube</MenuItem>
+                        <MenuItem value='GOOGLE_MEET'>Google Meet</MenuItem>
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item>
+                <Button variant='contained' color='primary' onClick={updateVideoType}>
+                    Set Event Video Type
                 </Button>
             </Grid>
+            {videoType === 'NO_VIDEO' ? (
+                <Grid container justifyContent='center'>
+                    <Typography>{'No video will play for this event (good for in person events)'}</Typography>
+                </Grid>
+            ) : null}
+            {videoType === 'GOOGLE_MEET' ? <GoogleMeetSettings fragmentRef={data} /> : null}
+            {videoType === 'YOUTUBE_STREAM' ? <YoutubeSettings fragmentRef={data} /> : null}
         </Grid>
     );
 };
