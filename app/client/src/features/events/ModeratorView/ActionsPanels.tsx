@@ -72,6 +72,7 @@ function ActionsPanels({ node }: ActionsPanelProps) {
         <PanelGroup autoSaveId='mod-panels-child-persistence' direction='vertical'>
             <Panel defaultSize={25} minSize={20}>
                 <Grid
+                    id='google-meet'
                     sx={{
                         overflow: 'auto',
                         height: '100%',
@@ -86,6 +87,7 @@ function ActionsPanels({ node }: ActionsPanelProps) {
                     <SpeakerList fragmentRef={node} />
                 </Grid>
             </Panel>
+            <div style={{ height: '1rem' }} />
             <HorizontalResizeHandle />
             <Panel defaultSize={50} minSize={25}>
                 <Stack direction='column' justifyContent='center' alignContent='center' height='100%'>
