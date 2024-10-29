@@ -229,7 +229,9 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
                             }}
                         >
                             {eventData.eventType === 'GOOGLE_MEET' ? (
-                                <GoogleMeet fragmentRef={node} />
+                                <div id='google-meet' className='meet-frame'>
+                                    <GoogleMeet fragmentRef={node} />
+                                </div>
                             ) : (
                                 <EventVideo fragmentRef={node} />
                             )}
@@ -244,6 +246,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
                         </Grid>
                         <EventDetailsCard eventData={eventData} />
                         <SpeakerList fragmentRef={node} />
+                        <div style={{ height: '1rem' }} />
                     </Grid>
                     <Grid container item xs={12} md={4} direction='column'>
                         <div
