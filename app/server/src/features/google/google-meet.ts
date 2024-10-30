@@ -3,7 +3,11 @@ import { fromGlobalId } from 'graphql-relay';
 import { getOrCreateServer } from '@local/core/server';
 import { getPrismaClient, getRedisClient } from '@local/core/utils';
 import axios, { AxiosError } from 'axios';
-import { createAndGetGoogleOAuthClient, getOrCreateGoogleOAuthClient } from '@local/core/utils/google-auth';
+import {
+    getAccessTokenByUserId,
+    getOrCreateGoogleOAuthClient,
+    validateRefreshToken,
+} from '@local/core/utils/google-auth';
 
 const server = getOrCreateServer();
 
@@ -42,6 +46,34 @@ server.route({
 
 server.route({
     method: 'POST',
+    url: '/api/auth/meet/check',
+    handler: async (req, res) => {
+        const body = req.body as { userId: string };
+        const { id: userId } = fromGlobalId(body.userId);
+
+        const prisma = getPrismaClient(server.log);
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { oAuthRefreshToken: true },
+        });
+
+        if (!user || !user.oAuthRefreshToken) {
+            return res.status(400).send('User not found or not authenticated');
+        }
+
+        const refreshTokenValid = await validateRefreshToken(user.oAuthRefreshToken);
+        if (!refreshTokenValid) {
+            return res.status(400).send('Refresh token invalid or expired');
+        }
+
+        res.status(200).send('Authenticated');
+    },
+});
+
+// TODO: Add all event moderators emails to the Google Meet space as moderators
+// TODO: Add options when creating the Google Meet space
+server.route({
+    method: 'POST',
     url: '/api/google-meet/create',
     handler: async (req, res) => {
         const body = req.body as { userId: string; eventId: string };
@@ -49,30 +81,10 @@ server.route({
         const { id: eventId } = fromGlobalId(body.eventId);
 
         const prisma = getPrismaClient(server.log);
-        const googleAuthClient = createAndGetGoogleOAuthClient();
 
         try {
-            const user = await prisma.user.findUnique({
-                where: { id: userId },
-                select: { oAuthRefreshToken: true },
-            });
-
-            if (!user) throw new Error('User not found');
-
-            if (!user.oAuthRefreshToken) {
-                server.log.error(`User ${userId} does not have refresh token`);
-                throw new Error('Refresh token not found, please re-authenticate');
-            }
-
-            googleAuthClient.setCredentials({
-                refresh_token: user.oAuthRefreshToken,
-            });
-
-            const accessTokenResponse = await googleAuthClient.getAccessToken();
-            if (accessTokenResponse.res?.status !== 200 || !accessTokenResponse.token) {
-                throw new Error('Error getting access token');
-            }
-            const accessToken = accessTokenResponse.token;
+            console.log('Creating Google Meet space for event:', eventId);
+            const accessToken = await getAccessTokenByUserId(userId);
 
             const result = await axios.post(
                 'https://meet.googleapis.com/v2beta/spaces',
