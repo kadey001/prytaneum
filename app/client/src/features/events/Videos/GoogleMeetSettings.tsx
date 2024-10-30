@@ -88,7 +88,7 @@ export const GoogleMeetSettings = ({ fragmentRef }: GoogleMeetSettingsProps) => 
 
     const handleViewMeeting = () => {
         if (meetingUrl) {
-            window.location.href = meetingUrl;
+            window.open(meetingUrl, '_blank', 'noopener,noreferrer');
         }
     };
 
