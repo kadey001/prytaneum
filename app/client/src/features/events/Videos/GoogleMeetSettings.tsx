@@ -27,6 +27,33 @@ export const GoogleMeetSettings = ({ fragmentRef }: GoogleMeetSettingsProps) => 
     const { user } = useUser();
     const { eventId } = useEvent();
     const [meetingUrl, setMeetingUrl] = React.useState(fragmentData.googleMeetUrl || '');
+    const [authenticated, setIsAuthenticated] = React.useState({ isLoading: true, isAuth: false });
+
+    React.useEffect(() => {
+        if (user) {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/meet/check`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    userId: user.id,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then((res) => {
+                    if (!res.ok || res.status !== 200) {
+                        console.error(res.statusText);
+                        setIsAuthenticated({ isLoading: false, isAuth: false });
+                        return;
+                    }
+                    setIsAuthenticated({ isLoading: false, isAuth: true });
+                })
+                .catch((err) => {
+                    console.error(err);
+                    setIsAuthenticated({ isLoading: false, isAuth: false });
+                });
+        }
+    }, [user]);
 
     const handleClick = () => {
         if (!user) {
@@ -56,6 +83,8 @@ export const GoogleMeetSettings = ({ fragmentRef }: GoogleMeetSettingsProps) => 
     };
 
     // TODO: Store auth token locally to use for calling Google Meet API directly (Need refresh logic/checks)
+    // TODO: Add a way to refresh the token if it's expired
+    // TODO: Refactor this if using more auth checks in the future
     const createMeet = () => {
         if (!user) {
             return console.error('User not found, please login');
@@ -101,9 +130,11 @@ export const GoogleMeetSettings = ({ fragmentRef }: GoogleMeetSettingsProps) => 
                 <Typography variant='h6'>Google Meet Settings</Typography>
             </Grid>
             <React.Fragment>
-                <Button variant='contained' onClick={handleClick}>
-                    Authenticate with Google
-                </Button>
+                {!authenticated.isLoading && authenticated.isAuth ? (
+                    <Button variant='contained' onClick={handleClick}>
+                        Authenticate with Google
+                    </Button>
+                ) : null}
                 {meetingUrl === '' ? (
                     <Button onClick={createMeet}>Create Google Meet</Button>
                 ) : (

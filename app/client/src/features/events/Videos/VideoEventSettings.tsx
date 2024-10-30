@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Grid, MenuItem, FormControl, InputLabel, Select, Typography, Button } from '@mui/material';
+import { Grid, MenuItem, FormControl, InputLabel, Select, Typography } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -31,19 +31,19 @@ export const VideoEventSettings = ({ fragmentRef }: EventSettingsProps) => {
     const [videoType, setVideoType] = React.useState<EventType>(defaultEventType);
     const { updateEventType } = useEventType();
 
-    const handleVideoTypeChange = (event: SelectChangeEvent<EventType>) => {
-        const newEventType = event.target.value as EventType;
-        setVideoType(newEventType);
+    const updateVideoType = (_videoType: EventType) => {
+        const prevVideoType = videoType;
+        setVideoType(_videoType);
+        const onSuccess = () => {};
+        const onFailure = () => {
+            setVideoType(prevVideoType);
+        };
+        updateEventType(_videoType, onSuccess, onFailure);
     };
 
-    const updateVideoType = () => {
-        const onSuccess = () => {
-            console.log('Success');
-        };
-        const onFailure = () => {
-            console.error('Failed to update video type');
-        };
-        updateEventType(videoType, onSuccess, onFailure);
+    const handleVideoTypeChange = (event: SelectChangeEvent<EventType>) => {
+        const newEventType = event.target.value as EventType;
+        updateVideoType(newEventType);
     };
 
     return (
@@ -52,6 +52,7 @@ export const VideoEventSettings = ({ fragmentRef }: EventSettingsProps) => {
                 <FormControl>
                     <InputLabel id='video-type-input'>Video Type</InputLabel>
                     <Select
+                        style={{ width: '200px' }}
                         labelId='video-type-input'
                         id='video-type'
                         value={videoType}
@@ -63,11 +64,6 @@ export const VideoEventSettings = ({ fragmentRef }: EventSettingsProps) => {
                         <MenuItem value='GOOGLE_MEET'>Google Meet</MenuItem>
                     </Select>
                 </FormControl>
-            </Grid>
-            <Grid item>
-                <Button variant='contained' color='primary' onClick={updateVideoType}>
-                    Set Event Video Type
-                </Button>
             </Grid>
             {videoType === 'NO_VIDEO' ? (
                 <Grid container justifyContent='center'>
