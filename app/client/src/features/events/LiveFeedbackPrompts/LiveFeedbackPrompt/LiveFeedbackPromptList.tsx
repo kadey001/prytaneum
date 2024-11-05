@@ -220,6 +220,11 @@ export function LiveFeedbackPromptsList({ fragmentRef, isShareResultsOpen }: Liv
         handleOpen();
     };
 
+    React.useEffect(() => {
+        refresh();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <React.Fragment>
             <SubmitLiveFeedbackPrompt eventId={eventId} connections={connections} />
