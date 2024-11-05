@@ -70,9 +70,7 @@ def ConnectToRedis() -> redis.Redis:
     REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', None)
     NODE_ENV = os.environ.get('NODE_ENV')
     if NODE_ENV == 'production':
-        startup_nodes = [ClusterNode(host=REDIS_HOST, port=REDIS_PORT)]
-        return RedisCluster(startup_nodes=startup_nodes, skip_full_coverage_check=True, decode_responses=True, 
-                            socket_timeout=5, socket_connect_timeout=5)
+        return redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, charset='utf-8', decode_responses=True)
     return redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, username=REDIS_USERNAME, password=REDIS_PASSWORD,
                             charset='utf-8', decode_responses=True)
 

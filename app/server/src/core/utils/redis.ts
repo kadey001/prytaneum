@@ -14,37 +14,28 @@ function generateNewRedisClient(logger: FastifyBaseLogger) {
     logger.debug('DEBUG DNS lookup');
     const dns = require('dns');
     const res = dns.lookup(process.env.REDIS_HOST, console.log);
-    console.log(res);
+    logger.info('DNS lookup result:', res);
     logger.info('Generating new redis client.');
     if (process.env.NODE_ENV === 'production') {
         logger.info('Using production redis client.');
-        return new Redis.Cluster(
-            [
-                {
-                    host: process.env.REDIS_HOST,
-                    port: Number(process.env.REDIS_PORT),
-                },
-            ],
-            {
-                slotsRefreshTimeout: 10000, // 10 seconds
-                clusterRetryStrategy(times) {
-                    if (times > 20) return null; // End reconnecting after 20 attempts
-                    const delay = Math.min(times * 50, 2000);
-                    return delay;
-                },
-                redisOptions: {
-                    connectTimeout: 10000, // 10 seconds
-                    reconnectOnError(err) {
-                        const targetError = 'READONLY';
-                        if (err.message.includes(targetError)) {
-                            // Only reconnect when the error contains "READONLY"
-                            return true; // or `return 1;`
-                        }
-                        return false;
-                    },
-                },
-            }
-        );
+        return new Redis({
+            host: process.env.REDIS_HOST,
+            port: Number(process.env.REDIS_PORT),
+            connectTimeout: 10000, // 10 seconds
+            retryStrategy(times) {
+                if (times > 20) return null; // End reconnecting after 20 attempts
+                const delay = Math.min(times * 50, 2000);
+                return delay;
+            },
+            reconnectOnError(err) {
+                const targetError = 'READONLY';
+                if (err.message.includes(targetError)) {
+                    // Only reconnect when the error contains "READONLY"
+                    return true; // or `return 1;`
+                }
+                return false;
+            },
+        });
     }
     return new Redis({
         host: process.env.REDIS_HOST,
