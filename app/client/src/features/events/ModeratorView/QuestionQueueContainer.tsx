@@ -15,19 +15,24 @@ interface Props {
 export function QuestionQueueContainer({ id, questions, topic }: Props) {
     const { setNodeRef } = useDroppable({ id });
 
+    const topicSelected = React.useMemo(() => {
+        return topic !== 'default';
+    }, [topic]);
+
     return (
         <Stack direction='column' maxHeight={0} width='100%'>
+            <Grid sx={{ textAlign: 'center' }}>
+                {topicSelected && (
+                    <Typography variant='h5' marginTop='1rem'>
+                        Topic: {topic}
+                    </Typography>
+                )}
+            </Grid>
             {questions.length === 0 && (
                 <Grid container justifyContent='center' padding='1rem'>
-                    {topic === 'default' ? (
-                        <Typography align='center' variant='body1' marginTop='1rem'>
-                            No questions enqueued yet.
-                        </Typography>
-                    ) : (
-                        <Typography align='center' variant='body1' marginTop='1rem'>
-                            No Questions enqueued for topic: {'"' + topic + '"'} yet.
-                        </Typography>
-                    )}
+                    <Typography align='center' variant='body1' marginTop='1rem'>
+                        No questions enqueued yet.
+                    </Typography>
                     <div ref={setNodeRef} />
                 </Grid>
             )}
