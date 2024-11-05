@@ -43,36 +43,6 @@ spec:
                             configMapKeyRef:
                                 name: moderation-algo-config
                                 key: REDIS_HOST
-                      - name: REDIS_HOST_NODE_1
-                        valueFrom:
-                            configMapKeyRef:
-                                name: moderation-algo-config
-                                key: REDIS_HOST_NODE_1
-                      - name: REDIS_HOST_NODE_2
-                        valueFrom:
-                            configMapKeyRef:
-                                name: moderation-algo-config
-                                key: REDIS_HOST_NODE_2
-                      - name: REDIS_HOST_NODE_3
-                        valueFrom:
-                            configMapKeyRef:
-                                name: moderation-algo-config
-                                key: REDIS_HOST_NODE_3
-                      - name: REDIS_HOST_NODE_4
-                        valueFrom:
-                            configMapKeyRef:
-                                name: moderation-algo-config
-                                key: REDIS_HOST_NODE_4
-                      - name: REDIS_HOST_NODE_5
-                        valueFrom:
-                            configMapKeyRef:
-                                name: moderation-algo-config
-                                key: REDIS_HOST_NODE_5
-                      - name: REDIS_HOST_NODE_6
-                        valueFrom:
-                            configMapKeyRef:
-                                name: moderation-algo-config
-                                key: REDIS_HOST_NODE_6
                       - name: REDIS_PORT
                         valueFrom:
                             configMapKeyRef:
