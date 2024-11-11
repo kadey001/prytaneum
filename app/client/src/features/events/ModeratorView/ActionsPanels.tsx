@@ -64,10 +64,6 @@ function ActionsPanels({ node }: ActionsPanelProps) {
         sessionStorage.setItem(`${node.id}-tab`, newTab);
     };
 
-    React.useEffect(() => {
-        console.log('Event Data:', eventData);
-    }, [eventData]);
-
     return (
         <PanelGroup autoSaveId='mod-panels-child-persistence' direction='vertical'>
             <Panel defaultSize={25} minSize={20}>
