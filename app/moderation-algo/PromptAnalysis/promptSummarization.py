@@ -12,6 +12,7 @@ def SummarizePosts(model: str, topic: str, posts: list, subtopic='', force=False
     if(len(posts) > 5):
         prompt += ' in just one to five sentences'
     prompt += '. '
+    prompt += 'Your summarized viewpoints should read like real viewpoints. '
     prompt += 'Start each sentence on a new line with a dash. '
     prompt += 'The comments are:\n'
     for i, post in enumerate(posts):
