@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<534f23d77aea7a5634c03a55f5ddf9c5>>
+ * @generated SignedSource<<dda90795e0bc4c028169ec0afd120675>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -162,22 +162,23 @@ v18 = {
   "name": "topic",
   "storageKey": null
 },
-v19 = [
+v19 = {
+  "kind": "Literal",
+  "name": "first",
+  "value": 100
+},
+v20 = [
   (v9/*: any*/),
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 100
-  }
+  (v19/*: any*/)
 ],
-v20 = {
+v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "message",
   "storageKey": null
 },
-v21 = {
+v22 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -199,7 +200,7 @@ v21 = {
   ],
   "storageKey": null
 },
-v22 = {
+v23 = {
   "alias": null,
   "args": null,
   "concreteType": "PageInfo",
@@ -212,28 +213,31 @@ v22 = {
   ],
   "storageKey": null
 },
-v23 = {
+v24 = [
+  (v19/*: any*/)
+],
+v25 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "prompt",
   "storageKey": null
 },
-v24 = {
+v26 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "isVote",
   "storageKey": null
 },
-v25 = {
+v27 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "isOpenEnded",
   "storageKey": null
 },
-v26 = {
+v28 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -617,7 +621,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v19/*: any*/),
+                "args": (v20/*: any*/),
                 "concreteType": "EventLiveFeedbackConnection",
                 "kind": "LinkedField",
                 "name": "liveFeedback",
@@ -641,7 +645,7 @@ return {
                         "plural": false,
                         "selections": [
                           (v2/*: any*/),
-                          (v20/*: any*/),
+                          (v21/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -656,7 +660,7 @@ return {
                             "name": "dmRecipientId",
                             "storageKey": null
                           },
-                          (v21/*: any*/),
+                          (v22/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -665,9 +669,9 @@ return {
                             "name": "refFeedback",
                             "plural": false,
                             "selections": [
-                              (v21/*: any*/),
+                              (v22/*: any*/),
                               (v2/*: any*/),
-                              (v20/*: any*/),
+                              (v21/*: any*/),
                               (v14/*: any*/)
                             ],
                             "storageKey": null
@@ -680,14 +684,14 @@ return {
                     ],
                     "storageKey": null
                   },
-                  (v22/*: any*/),
+                  (v23/*: any*/),
                   (v17/*: any*/)
                 ],
                 "storageKey": "liveFeedback(after:\"\",first:100)"
               },
               {
                 "alias": null,
-                "args": (v19/*: any*/),
+                "args": (v20/*: any*/),
                 "filters": null,
                 "handle": "connection",
                 "key": "useLiveFeedbackListFragment_liveFeedback",
@@ -696,7 +700,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v19/*: any*/),
+                "args": (v24/*: any*/),
                 "concreteType": "EventLiveFeedbackPromptConnection",
                 "kind": "LinkedField",
                 "name": "liveFeedbackPrompts",
@@ -720,10 +724,10 @@ return {
                         "plural": false,
                         "selections": [
                           (v2/*: any*/),
-                          (v23/*: any*/),
-                          (v24/*: any*/),
                           (v25/*: any*/),
                           (v26/*: any*/),
+                          (v27/*: any*/),
+                          (v28/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -755,7 +759,7 @@ return {
                           },
                           {
                             "alias": null,
-                            "args": (v19/*: any*/),
+                            "args": (v24/*: any*/),
                             "concreteType": "EventLiveFeedbackPromptResponseConnection",
                             "kind": "LinkedField",
                             "name": "responses",
@@ -779,7 +783,7 @@ return {
                                     "plural": false,
                                     "selections": [
                                       (v2/*: any*/),
-                                      (v25/*: any*/),
+                                      (v27/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -787,7 +791,7 @@ return {
                                         "name": "response",
                                         "storageKey": null
                                       },
-                                      (v24/*: any*/),
+                                      (v26/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -795,7 +799,7 @@ return {
                                         "name": "vote",
                                         "storageKey": null
                                       },
-                                      (v26/*: any*/),
+                                      (v28/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -826,7 +830,7 @@ return {
                                         "plural": false,
                                         "selections": [
                                           (v2/*: any*/),
-                                          (v23/*: any*/)
+                                          (v25/*: any*/)
                                         ],
                                         "storageKey": null
                                       },
@@ -837,14 +841,14 @@ return {
                                 ],
                                 "storageKey": null
                               },
-                              (v22/*: any*/),
+                              (v23/*: any*/),
                               (v17/*: any*/)
                             ],
-                            "storageKey": "responses(after:\"\",first:100)"
+                            "storageKey": "responses(first:100)"
                           },
                           {
                             "alias": null,
-                            "args": (v19/*: any*/),
+                            "args": (v24/*: any*/),
                             "filters": null,
                             "handle": "connection",
                             "key": "useLiveFeedbackPromptResponsesFragment_responses",
@@ -858,14 +862,14 @@ return {
                     ],
                     "storageKey": null
                   },
-                  (v22/*: any*/),
+                  (v23/*: any*/),
                   (v17/*: any*/)
                 ],
-                "storageKey": "liveFeedbackPrompts(after:\"\",first:100)"
+                "storageKey": "liveFeedbackPrompts(first:100)"
               },
               {
                 "alias": null,
-                "args": (v19/*: any*/),
+                "args": (v24/*: any*/),
                 "filters": null,
                 "handle": "connection",
                 "key": "useLiveFeedbackPromptsFragment_liveFeedbackPrompts",
@@ -882,12 +886,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "07ed5e34b8b2a5ec5c6c61a8649f7b99",
+    "cacheID": "a536a10955691d4ecdd8fc7920983aab",
     "id": null,
     "metadata": {},
     "name": "ActionsPanelsQuery",
     "operationKind": "query",
-    "text": "query ActionsPanelsQuery(\n  $eventId: ID!\n) {\n  node(id: $eventId) {\n    __typename\n    id\n    ...useGoogleMeetFragment\n    ...EventVideoFragment\n    ...SpeakerListFragment\n    ...useBroadcastMessageListFragment\n    ...useEventDetailsFragment\n    ...useLiveFeedbackListFragment_32qNee\n    ...useLiveFeedbackPromptsFragment\n  }\n}\n\nfragment BroadcastMessageActionsFragment on EventBroadcastMessage {\n  id\n  ...DeleteBroadcastMessageButtonFragment\n  ...EditBroadcastMessageButtonFragment\n}\n\nfragment BroadcastMessageAuthorFragment on EventBroadcastMessage {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment BroadcastMessageContentFragment_TYBrd on EventBroadcastMessage {\n  broadcastMessage\n  lang\n  translatedBroadcastMessage(lang: \"EN\")\n}\n\nfragment DeleteBroadcastMessageButtonFragment on EventBroadcastMessage {\n  id\n  position\n}\n\nfragment EditBroadcastMessageButtonFragment on EventBroadcastMessage {\n  id\n}\n\nfragment EventVideoFragment on Event {\n  videos {\n    edges {\n      cursor\n      node {\n        url\n        lang\n        id\n      }\n    }\n  }\n  id\n}\n\nfragment LiveFeedbackAuthorFragment_32qNee on EventLiveFeedback {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n    moderatorOf(eventId: $eventId)\n  }\n  createdAt\n}\n\nfragment LiveFeedbackReplyFragment_32qNee on EventLiveFeedback {\n  id\n  message\n  ...LiveFeedbackAuthorFragment_32qNee\n}\n\nfragment SpeakerListFragment on Event {\n  speakers {\n    edges {\n      node {\n        id\n        pictureUrl\n        name\n        description\n        title\n      }\n      cursor\n    }\n  }\n  id\n}\n\nfragment useBroadcastMessageListFragment on Event {\n  id\n  currentBroadcastMessage\n  broadcastMessages(first: 50, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        broadcastMessage\n        isVisible\n        createdBy {\n          firstName\n          id\n        }\n        ...BroadcastMessageActionsFragment\n        ...BroadcastMessageAuthorFragment\n        ...BroadcastMessageContentFragment_TYBrd\n        __typename\n      }\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useEventDetailsFragment on Event {\n  id\n  title\n  topic\n  description\n  startDateTime\n  endDateTime\n  isActive\n  isViewerModerator\n  isPrivate\n  isViewerInvited\n  issueGuideUrl\n  topics {\n    id\n    topic\n    description\n  }\n  eventType\n}\n\nfragment useGoogleMeetFragment on Event {\n  googleMeetUrl\n  id\n}\n\nfragment useLiveFeedbackListFragment_32qNee on Event {\n  id\n  liveFeedback(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        message\n        isDM\n        dmRecipientId\n        createdBy {\n          id\n          firstName\n          moderatorOf(eventId: $eventId)\n        }\n        refFeedback {\n          createdBy {\n            id\n            firstName\n            moderatorOf(eventId: $eventId)\n          }\n          ...LiveFeedbackReplyFragment_32qNee\n          id\n        }\n        ...LiveFeedbackReplyFragment_32qNee\n        ...LiveFeedbackAuthorFragment_32qNee\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptResponsesFragment on EventLiveFeedbackPrompt {\n  id\n  responses(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        isOpenEnded\n        response\n        isVote\n        vote\n        isMultipleChoice\n        multipleChoiceResponse\n        createdAt\n        createdBy {\n          id\n          firstName\n        }\n        prompt {\n          id\n          prompt\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptsFragment on Event {\n  id\n  liveFeedbackPrompts(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        prompt\n        isVote\n        isOpenEnded\n        isMultipleChoice\n        multipleChoiceOptions\n        createdAt\n        isDraft\n        viewpoints\n        voteViewpoints\n        ...useLiveFeedbackPromptResponsesFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query ActionsPanelsQuery(\n  $eventId: ID!\n) {\n  node(id: $eventId) {\n    __typename\n    id\n    ...useGoogleMeetFragment\n    ...EventVideoFragment\n    ...SpeakerListFragment\n    ...useBroadcastMessageListFragment\n    ...useEventDetailsFragment\n    ...useLiveFeedbackListFragment_32qNee\n    ...useLiveFeedbackPromptsFragment\n  }\n}\n\nfragment BroadcastMessageActionsFragment on EventBroadcastMessage {\n  id\n  ...DeleteBroadcastMessageButtonFragment\n  ...EditBroadcastMessageButtonFragment\n}\n\nfragment BroadcastMessageAuthorFragment on EventBroadcastMessage {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment BroadcastMessageContentFragment_TYBrd on EventBroadcastMessage {\n  broadcastMessage\n  lang\n  translatedBroadcastMessage(lang: \"EN\")\n}\n\nfragment DeleteBroadcastMessageButtonFragment on EventBroadcastMessage {\n  id\n  position\n}\n\nfragment EditBroadcastMessageButtonFragment on EventBroadcastMessage {\n  id\n}\n\nfragment EventVideoFragment on Event {\n  videos {\n    edges {\n      cursor\n      node {\n        url\n        lang\n        id\n      }\n    }\n  }\n  id\n}\n\nfragment LiveFeedbackAuthorFragment_32qNee on EventLiveFeedback {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n    moderatorOf(eventId: $eventId)\n  }\n  createdAt\n}\n\nfragment LiveFeedbackReplyFragment_32qNee on EventLiveFeedback {\n  id\n  message\n  ...LiveFeedbackAuthorFragment_32qNee\n}\n\nfragment SpeakerListFragment on Event {\n  speakers {\n    edges {\n      node {\n        id\n        pictureUrl\n        name\n        description\n        title\n      }\n      cursor\n    }\n  }\n  id\n}\n\nfragment useBroadcastMessageListFragment on Event {\n  id\n  currentBroadcastMessage\n  broadcastMessages(first: 50, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        broadcastMessage\n        isVisible\n        createdBy {\n          firstName\n          id\n        }\n        ...BroadcastMessageActionsFragment\n        ...BroadcastMessageAuthorFragment\n        ...BroadcastMessageContentFragment_TYBrd\n        __typename\n      }\n    }\n    pageInfo {\n      startCursor\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useEventDetailsFragment on Event {\n  id\n  title\n  topic\n  description\n  startDateTime\n  endDateTime\n  isActive\n  isViewerModerator\n  isPrivate\n  isViewerInvited\n  issueGuideUrl\n  topics {\n    id\n    topic\n    description\n  }\n  eventType\n}\n\nfragment useGoogleMeetFragment on Event {\n  googleMeetUrl\n  id\n}\n\nfragment useLiveFeedbackListFragment_32qNee on Event {\n  id\n  liveFeedback(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        message\n        isDM\n        dmRecipientId\n        createdBy {\n          id\n          firstName\n          moderatorOf(eventId: $eventId)\n        }\n        refFeedback {\n          createdBy {\n            id\n            firstName\n            moderatorOf(eventId: $eventId)\n          }\n          ...LiveFeedbackReplyFragment_32qNee\n          id\n        }\n        ...LiveFeedbackReplyFragment_32qNee\n        ...LiveFeedbackAuthorFragment_32qNee\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptResponsesFragment on EventLiveFeedbackPrompt {\n  id\n  responses(first: 100) {\n    edges {\n      cursor\n      node {\n        id\n        isOpenEnded\n        response\n        isVote\n        vote\n        isMultipleChoice\n        multipleChoiceResponse\n        createdAt\n        createdBy {\n          id\n          firstName\n        }\n        prompt {\n          id\n          prompt\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptsFragment on Event {\n  id\n  liveFeedbackPrompts(first: 100) {\n    edges {\n      cursor\n      node {\n        id\n        prompt\n        isVote\n        isOpenEnded\n        isMultipleChoice\n        multipleChoiceOptions\n        createdAt\n        isDraft\n        viewpoints\n        voteViewpoints\n        ...useLiveFeedbackPromptResponsesFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

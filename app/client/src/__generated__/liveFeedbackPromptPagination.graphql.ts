@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<949f9359ffae266e06e98e1bc01c1c99>>
+ * @generated SignedSource<<c20e24bc3287f1893f68fe67de18f50a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -28,7 +28,7 @@ export type liveFeedbackPromptPagination = {
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
-    "defaultValue": "",
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "after"
   },
@@ -119,11 +119,6 @@ v10 = {
   "storageKey": null
 },
 v11 = [
-  {
-    "kind": "Literal",
-    "name": "after",
-    "value": ""
-  },
   {
     "kind": "Literal",
     "name": "first",
@@ -365,7 +360,7 @@ return {
                               (v12/*: any*/),
                               (v13/*: any*/)
                             ],
-                            "storageKey": "responses(after:\"\",first:100)"
+                            "storageKey": "responses(first:100)"
                           },
                           {
                             "alias": null,
@@ -407,16 +402,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "632db8a04b6ab530f0fff31097fcea13",
+    "cacheID": "e64bdb8c36cbbb7b7179066cbee20025",
     "id": null,
     "metadata": {},
     "name": "liveFeedbackPromptPagination",
     "operationKind": "query",
-    "text": "query liveFeedbackPromptPagination(\n  $after: String = \"\"\n  $first: Int = 100\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useLiveFeedbackPromptsFragment_2HEEH6\n    id\n  }\n}\n\nfragment useLiveFeedbackPromptResponsesFragment on EventLiveFeedbackPrompt {\n  id\n  responses(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        isOpenEnded\n        response\n        isVote\n        vote\n        isMultipleChoice\n        multipleChoiceResponse\n        createdAt\n        createdBy {\n          id\n          firstName\n        }\n        prompt {\n          id\n          prompt\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptsFragment_2HEEH6 on Event {\n  id\n  liveFeedbackPrompts(first: $first, after: $after) {\n    edges {\n      cursor\n      node {\n        id\n        prompt\n        isVote\n        isOpenEnded\n        isMultipleChoice\n        multipleChoiceOptions\n        createdAt\n        isDraft\n        viewpoints\n        voteViewpoints\n        ...useLiveFeedbackPromptResponsesFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query liveFeedbackPromptPagination(\n  $after: String\n  $first: Int = 100\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...useLiveFeedbackPromptsFragment_2HEEH6\n    id\n  }\n}\n\nfragment useLiveFeedbackPromptResponsesFragment on EventLiveFeedbackPrompt {\n  id\n  responses(first: 100) {\n    edges {\n      cursor\n      node {\n        id\n        isOpenEnded\n        response\n        isVote\n        vote\n        isMultipleChoice\n        multipleChoiceResponse\n        createdAt\n        createdBy {\n          id\n          firstName\n        }\n        prompt {\n          id\n          prompt\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptsFragment_2HEEH6 on Event {\n  id\n  liveFeedbackPrompts(first: $first, after: $after) {\n    edges {\n      cursor\n      node {\n        id\n        prompt\n        isVote\n        isOpenEnded\n        isMultipleChoice\n        multipleChoiceOptions\n        createdAt\n        isDraft\n        viewpoints\n        voteViewpoints\n        ...useLiveFeedbackPromptResponsesFragment\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "881b97dcc21acf753a74c1958d00e88b";
+(node as any).hash = "03232f20673e50ece1440cd18346be74";
 
 export default node;
