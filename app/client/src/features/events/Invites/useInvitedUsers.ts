@@ -2,7 +2,7 @@ import * as React from 'react';
 import { graphql, useRefetchableFragment } from 'react-relay';
 
 import { useInvitedUsersListFragment$key } from '@local/__generated__/useInvitedUsersListFragment.graphql';
-import { useRefresh } from '@local/features/core';
+import { useRefresh } from '@local/core';
 
 export const USE_INVITED_USERS_LIST_FRAGMENT = graphql`
     fragment useInvitedUsersListFragment on Event

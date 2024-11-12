@@ -4,7 +4,7 @@ import { isAfter, isBefore } from 'date-fns';
 
 import type { useDashboardEventsFragment$key } from '@local/__generated__/useDashboardEventsFragment.graphql';
 import type { DashboardEventsRefreshQuery } from '@local/__generated__/DashboardEventsRefreshQuery.graphql';
-import { useRefresh } from '../core';
+import { useRefresh } from '@local/core';
 
 export const USE_DASHBOARD_EVENTS_FRAGMENT = graphql`
     fragment useDashboardEventsFragment on User

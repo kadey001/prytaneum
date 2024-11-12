@@ -19,7 +19,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import { SpeakerListFragment$key } from '@local/__generated__/SpeakerListFragment.graphql';
 import { SpeakerCard } from './SpeakerCard';
-import { useRefresh } from '@local/features/core';
+import { useRefresh } from '@local/core';
 
 interface SpeakerItemProps {
     className?: string;

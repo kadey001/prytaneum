@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import { isAfter, isBefore } from 'date-fns';
 
 import { DashboardEventListItem } from './DashboardEventListItem';
-import { useRefresh } from '../core';
+import { useRefresh } from '@local/core';
 
 export type TDashboardEvent = {
     readonly id: string;
