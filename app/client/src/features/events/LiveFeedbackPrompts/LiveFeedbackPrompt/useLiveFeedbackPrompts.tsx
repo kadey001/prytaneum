@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { graphql, useRefetchableFragment } from 'react-relay';
 import { useLiveFeedbackPromptsFragment$key } from '@local/__generated__/useLiveFeedbackPromptsFragment.graphql';
-import { useRefresh } from '@local/features/core';
+import { useRefresh } from '@local/core';
 
 const USE_LIVE_FEEDBACK_PROMPTS = graphql`
     fragment useLiveFeedbackPromptsFragment on Event

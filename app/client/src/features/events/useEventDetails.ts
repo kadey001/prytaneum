@@ -2,7 +2,7 @@ import * as React from 'react';
 import { graphql, useRefetchableFragment } from 'react-relay';
 
 import { useEventDetailsFragment$key } from '@local/__generated__/useEventDetailsFragment.graphql';
-import { useRefresh } from '@local/features/core';
+import { useRefresh } from '@local/core';
 
 export const USE_EVENT_DETAILS_FRAGMENT = graphql`
     fragment useEventDetailsFragment on Event @refetchable(queryName: "UseEventDetailsRefetchQuery") {

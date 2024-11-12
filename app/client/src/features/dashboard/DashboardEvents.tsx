@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import { isAfter, isBefore } from 'date-fns';
 
 import { DashboardEventListItem } from './DashboardEventListItem';
-import { useRefresh } from '../core';
+import { useRefresh } from '@local/core';
 
 export type TDashboardEvent = {
     readonly id: string;
@@ -87,7 +87,7 @@ export function DashboardEvents({ dashboardEvents }: DashboardEventsProps) {
             >
                 {upcomingEvents.length === 0 && (
                     <Grid container justifyContent='center'>
-                        <Typography variant='subtitle2'>No Ongoing Events To Display</Typography>
+                        <Typography variant='subtitle2'>No Upcoming Events To Display</Typography>
                     </Grid>
                 )}
                 {upcomingEvents.map((event, idx) => (

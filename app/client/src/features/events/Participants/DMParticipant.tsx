@@ -8,7 +8,7 @@ import { ResponsiveDialog, useResponsiveDialog } from '@local/components/Respons
 import { useUser } from '@local/features/accounts';
 import { isURL } from '@local/utils/index';
 import { FEEDBACK_MAX_LENGTH } from '@local/utils/rules';
-import { useSnack } from '@local/features/core/useSnack';
+import { useSnack } from '@local/core';
 import { DMParticipantForm, TDMParticipantFormState } from './DMParticipantForm';
 import { useEvent } from '../useEvent';
 import type { Participant } from './useParticipantList';

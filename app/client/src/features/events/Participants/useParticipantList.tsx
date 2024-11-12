@@ -2,7 +2,7 @@ import * as React from 'react';
 import { graphql, useRefetchableFragment } from 'react-relay';
 
 import { useParticipantListFragment$key } from '@local/__generated__/useParticipantListFragment.graphql';
-import { useRefresh } from '@local/features/core';
+import { useRefresh } from '@local/core';
 
 export const USE_PARTICIPANT_LIST_FRAGMENT = graphql`
     fragment useParticipantListFragment on Event

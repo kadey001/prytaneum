@@ -4,7 +4,7 @@ import { Skeleton } from '@mui/material';
 
 import type { EventVideoFragment$key } from '@local/__generated__/EventVideoFragment.graphql';
 import { VideoPlayer } from '@local/components/VideoPlayer';
-import { useRefresh } from '@local/features/core';
+import { useRefresh } from '@local/core';
 
 export const EVENT_VIDEO_FRAGMENT = graphql`
     fragment EventVideoFragment on Event @refetchable(queryName: "EventVideoRefetchQuery") {
