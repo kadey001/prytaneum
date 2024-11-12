@@ -2,10 +2,15 @@ import { fromGlobalId } from 'graphql-relay';
 
 import { getOrCreateServer } from '@local/core/server';
 import { getPrismaClient, getRedisClient } from '@local/core/utils';
-import axios, { AxiosError } from 'axios';
-import { createAndGetGoogleOAuthClient, getOrCreateGoogleOAuthClient } from '@local/core/utils/google-auth';
+import axios from 'axios';
+import { getOrCreateGoogleJWTClient, getOrCreateGoogleOAuthClient } from '@local/core/utils/google-auth';
 
 const server = getOrCreateServer();
+
+const GOOGLE_MEET_SCOPES = [
+    'https://www.googleapis.com/auth/meetings.space.created',
+    'https://www.googleapis.com/auth/meetings.space.readonly',
+];
 
 // Create a auth url for Google OAuth 2.0 authentication with Google Meet API scopes
 server.route({
@@ -23,15 +28,9 @@ server.route({
 
         const googleAuthClient = getOrCreateGoogleOAuthClient();
 
-        // Scopes for Google Meet API
-        const SCOPES = [
-            'https://www.googleapis.com/auth/meetings.space.created',
-            'https://www.googleapis.com/auth/meetings.space.readonly',
-        ];
-
         const url = googleAuthClient.generateAuthUrl({
             access_type: 'offline',
-            scope: SCOPES,
+            scope: GOOGLE_MEET_SCOPES,
             state: state,
             prompt: 'consent', // TODO: Remove for production?
         });
@@ -44,37 +43,28 @@ server.route({
     method: 'POST',
     url: '/api/google-meet/create',
     handler: async (req, res) => {
-        const body = req.body as { userId: string; eventId: string };
-        const { id: userId } = fromGlobalId(body.userId);
-        const { id: eventId } = fromGlobalId(body.eventId);
-
-        const prisma = getPrismaClient(server.log);
-        const googleAuthClient = createAndGetGoogleOAuthClient();
-
         try {
+            type ExpectedBody = { userId: string; eventId: string; coHosts?: string[] };
+            const body = req.body as ExpectedBody;
+            const { id: userId } = fromGlobalId(body.userId);
+            const { id: eventId } = fromGlobalId(body.eventId);
+
+            const prisma = getPrismaClient(server.log);
+
+            server.log.info(`Creating Google Meet for event ${eventId} by user ${userId}`);
             const user = await prisma.user.findUnique({
                 where: { id: userId },
-                select: { oAuthRefreshToken: true },
+                select: { email: true },
             });
 
             if (!user) throw new Error('User not found');
 
-            if (!user.oAuthRefreshToken) {
-                server.log.error(`User ${userId} does not have refresh token`);
-                throw new Error('Refresh token not found, please re-authenticate');
-            }
+            const jwtClient = getOrCreateGoogleJWTClient({ scopes: GOOGLE_MEET_SCOPES });
+            const { token: accessToken } = await jwtClient.getAccessToken();
 
-            googleAuthClient.setCredentials({
-                refresh_token: user.oAuthRefreshToken,
-            });
+            if (!accessToken) throw new Error('Error getting access token');
 
-            const accessTokenResponse = await googleAuthClient.getAccessToken();
-            if (accessTokenResponse.res?.status !== 200 || !accessTokenResponse.token) {
-                throw new Error('Error getting access token');
-            }
-            const accessToken = accessTokenResponse.token;
-
-            const result = await axios.post(
+            const createMeetResult = await axios.post<CreateMeetResponseData>(
                 'https://meet.googleapis.com/v2beta/spaces',
                 {
                     config: {
@@ -97,22 +87,72 @@ server.route({
                 }
             );
 
-            type CreateMeetResponseData = { name: string; meetingUri: string; meetingCode: string };
-            const { name, meetingUri, meetingCode } = result.data as CreateMeetResponseData;
+            if (createMeetResult.status !== 200) {
+                throw new Error(`Error creating meeting: ${createMeetResult.statusText}`);
+            }
 
+            type CreateMeetResponseData = { name?: string; meetingUri?: string; meetingCode?: string };
+            const { name: spaceName, meetingUri, meetingCode } = createMeetResult.data;
+
+            if (!meetingUri || !meetingCode || !spaceName) {
+                throw new Error('Error creating meeting');
+            }
             await prisma.event.update({
                 where: { id: eventId },
                 data: {
                     googleMeetUrl: meetingUri,
+                    googleMeetSpace: spaceName,
                 },
             });
 
-            res.status(200).send(JSON.stringify({ name, meetingUri, meetingCode }));
+            let coHosts: String[] = [];
+            if (body.coHosts) coHosts = body.coHosts;
+
+            // Check if current user is already in the list of coHosts
+            if (!coHosts.includes(user.email)) {
+                coHosts.push(user.email);
+            }
+
+            const promises = coHosts.map((email) =>
+                axios.post(
+                    `https://meet.googleapis.com/v2beta/${spaceName}/members`,
+                    {
+                        email,
+                        role: 'COHOST',
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                )
+            );
+
+            const results = await Promise.allSettled(promises);
+            const failedCoHosts: String[] = [];
+
+            results.map((promise, idx) => {
+                const email = coHosts[idx];
+                if (promise.status === 'rejected') {
+                    server.log.error(`Error adding user ${email} as CoHost: ${promise.reason}`);
+                    failedCoHosts.push(email);
+                } else {
+                    server.log.info(`Add User ${email} as CoHost: ${promise.status}`);
+                }
+            });
+
+            res.status(200).send(JSON.stringify({ spaceName, meetingUri, meetingCode, failedCoHosts }));
         } catch (error) {
             server.log.error(error);
-            if (error instanceof Error) return res.status(400).send(error.message);
-            if (error instanceof AxiosError) return res.status(error.status ?? 402).send(error.message);
-            return res.status(500).send('An unexpected error occurred');
+
+            if (error instanceof Error) {
+                res.status(400).send({ error: error.message });
+            } else if (axios.isAxiosError(error)) {
+                res.status(error.response?.status ?? 500).send({ error: error.message });
+            } else {
+                res.status(500).send({ error: 'An unexpected error occurred' });
+            }
         }
     },
 });
