@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, InputAdornment, IconButton, Link as MUILink, Grid, Typography, TextField } from '@mui/material';
+import { InputAdornment, IconButton, Link as MUILink, Grid, Typography, TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
@@ -93,10 +93,8 @@ export function LoginFormDemo() {
                         },
                     }}
                 >
-                    <LoadingButton loading={false}>
-                        <Button fullWidth variant='contained' color='secondary'>
-                            Login
-                        </Button>
+                    <LoadingButton loading={false} fullWidth variant='contained' color='secondary'>
+                        Login
                     </LoadingButton>
                 </Grid>
             </Form>

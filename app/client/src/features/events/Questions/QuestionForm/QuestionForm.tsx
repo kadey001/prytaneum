@@ -61,10 +61,14 @@ export function QuestionForm({ quote, onSubmit, onCancel, isLoading = false }: Q
                         Cancel
                     </Button>
                 )}
-                <LoadingButton loading={isLoading}>
-                    <Button disabled={!isQuestionValid} type='submit' variant='contained' color='primary'>
-                        Ask
-                    </Button>
+                <LoadingButton
+                    loading={isLoading}
+                    disabled={!isQuestionValid}
+                    type='submit'
+                    variant='contained'
+                    color='primary'
+                >
+                    Ask
                 </LoadingButton>
             </FormActions>
         </Form>

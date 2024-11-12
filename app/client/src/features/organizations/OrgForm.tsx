@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { Button, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 
 import type { CreateOrganization } from '@local/graphql-types';
 import { Form } from '@local/components/Form';
@@ -47,10 +47,8 @@ export function OrgForm(props: OrgFormProps) {
                 />
             </FormContent>
             <FormActions disableGrow gridProps={{ justifyContent: 'flex-end' }}>
-                <LoadingButton loading={false}>
-                    <Button variant='contained' color='primary' type='submit'>
-                        Create
-                    </Button>
+                <LoadingButton loading={false} variant='contained' color='primary' type='submit'>
+                    Create
                 </LoadingButton>
             </FormActions>
         </Form>

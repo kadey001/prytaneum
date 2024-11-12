@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import * as React from 'react';
-import { Button, IconButton, InputAdornment, Grid, Typography, TextField } from '@mui/material';
+import { IconButton, InputAdornment, Grid, Typography, TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
@@ -130,10 +130,8 @@ export function RegisterFormDemo() {
                         },
                     }}
                 >
-                    <LoadingButton loading={false}>
-                        <Button fullWidth variant='contained' color='secondary'>
-                            Create Account
-                        </Button>
+                    <LoadingButton loading={false} fullWidth variant='contained' color='secondary'>
+                        Create Account
                     </LoadingButton>
                 </Grid>
             </Form>

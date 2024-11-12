@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Grid, IconButton, InputAdornment, Typography, TextField } from '@mui/material';
+import { Grid, IconButton, InputAdornment, Typography, TextField } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Form } from '@local/components/Form';
 import { useForm, useSnack } from '@local/core';
@@ -144,10 +144,15 @@ export function PasswordResetForm({ onSuccess, onFailure, token, tokenReady }: P
                         },
                     }}
                 >
-                    <LoadingButton loading={isLoading}>
-                        <Button fullWidth type='submit' variant='contained' color='secondary' disabled={!tokenIsValid}>
-                            Submit
-                        </Button>
+                    <LoadingButton
+                        loading={isLoading}
+                        fullWidth
+                        type='submit'
+                        variant='contained'
+                        color='secondary'
+                        disabled={!tokenIsValid}
+                    >
+                        Submit
                     </LoadingButton>
                 </Grid>
             </Form>

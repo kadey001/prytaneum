@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Grid, Typography, TextField } from '@mui/material';
+import { Grid, Typography, TextField } from '@mui/material';
 import { Form } from '@local/components/Form';
 import { useForm, useSnack } from '@local/core';
 import { graphql } from 'relay-runtime';
@@ -83,10 +83,8 @@ export function PasswordResetRequestForm({ onSuccess, onFailure }: Props) {
                         },
                     }}
                 >
-                    <LoadingButton loading={isLoading}>
-                        <Button fullWidth type='submit' variant='contained' color='secondary'>
-                            Submit
-                        </Button>
+                    <LoadingButton loading={isLoading} fullWidth type='submit' variant='contained' color='secondary'>
+                        Submit
                     </LoadingButton>
                 </Grid>
             </Form>
