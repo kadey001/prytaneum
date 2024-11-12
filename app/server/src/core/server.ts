@@ -5,11 +5,23 @@ import { v4 as uuidv4 } from 'uuid';
 // Server should be a singleton.
 let _server: FastifyInstance | null = null;
 
+function mapPinoLevelToGCP(level: number): string {
+    if (level >= 60) return 'CRITICAL'; // fatal
+    if (level >= 50) return 'ERROR';
+    if (level >= 40) return 'WARNING';
+    if (level >= 30) return 'INFO';
+    if (level >= 20) return 'DEBUG';
+    return 'DEFAULT';
+}
+
 const makeProductionServer = () =>
     fastify({
         genReqId: () => uuidv4(),
         logger: {
             level: process.env.LOG_LEVEL ?? 'info',
+            formatters: {
+                level: (_, number) => ({ severity: mapPinoLevelToGCP(number) }),
+            },
             serializers: {
                 req: ({ headers, url }) => ({
                     url,
