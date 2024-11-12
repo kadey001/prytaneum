@@ -19,13 +19,15 @@ const isValidNodeEnv =
 const isProduction = process.env.NODE_ENV === 'production';
 const isStaging = process.env.NODE_ENV === 'staging';
 
-// const isValidCookieSecret = isProduction
-//     ? isString(process.env.COOKIE_SECRET) && !isSecret(process.env.COOKIE_SECRET)
-//     : isString(process.env.COOKIE_SECRET);
+const isSecret = (value: string) => value === 'secret';
 
-// const isValidJwtSecret = isProduction
-//     ? isString(process.env.COOKIE_SECRET) && !isSecret(process.env.COOKIE_SECRET)
-//     : isString(process.env.COOKIE_SECRET);
+const isValidCookieSecret = isProduction
+    ? isString(process.env.COOKIE_SECRET) && !isSecret(process.env.COOKIE_SECRET)
+    : isString(process.env.COOKIE_SECRET);
+
+const isValidJwtSecret = isProduction
+    ? isString(process.env.JWT_SECRET) && !isSecret(process.env.JWT_SECRET)
+    : isString(process.env.JWT_SECRET);
 
 // Any number is a valid port.
 const isValidPort = isNumber(process.env.PORT);
@@ -64,8 +66,8 @@ const isValidGoogleRedirectUri = isString(process.env.GOOGLE_REDIRECT_URI);
 
 export function checkEnv() {
     if (!isValidNodeEnv) throw new Error('NODE_ENV is not a valid value');
-    // if (!isValidCookieSecret) throw new Error('COOKIE_SECRET is not valid');
-    // if (!isValidJwtSecret) throw new Error('JWT_SECRET is not valid');
+    if (!isValidCookieSecret) throw new Error('COOKIE_SECRET is not valid');
+    if (!isValidJwtSecret) throw new Error('JWT_SECRET is not valid');
     if (!isValidPort) throw new Error('PORT is not valid');
     if (!isValidHost) throw new Error('HOST is not valid');
     if (!isValidOrigin) throw new Error('ORIGIN is not valid');

@@ -107,6 +107,16 @@ spec:
                             secretKeyRef:
                                 key: redis-password
                                 name: prod-redis-cluster
+                      - name: COOKIE_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                key: cookie
+                                name: prytaneum-client-secrets
+                      - name: JWT_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                key: jwt
+                                name: prytaneum-client-secrets
                       - name: 'GOOGLE_APPLICATION_CREDENTIALS'
                         value: '/var/secrets/google/key.json'
                   volumeMounts:
