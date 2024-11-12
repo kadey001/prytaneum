@@ -26,7 +26,17 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
         console.error('ErrorBoundary caught an error', error, errorInfo);
         this.setState({ error, errorInfo });
 
-        // TODO: Report error to error reporting service
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/report-error`, {
+            method: 'POST',
+            body: JSON.stringify({
+                error: error.message,
+                stack: error.stack,
+                componentStack: errorInfo.componentStack,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
     }
 
     render() {
@@ -35,6 +45,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             return (
                 <div style={{ padding: '2rem', textAlign: 'center' }}>
                     <h1>Something went wrong.</h1>
+                    <button onClick={() => window.location.reload()}>Reload</button>
                     <details style={{ whiteSpace: 'pre-wrap' }}>
                         {this.state.error && this.state.error.toString()}
                         <br />

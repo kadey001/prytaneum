@@ -4,3 +4,4 @@ export * from './redis';
 export * from './jwt';
 export * from './gcloud-storage';
 export * from './gcloud-translations';
+export * from './error-reporter';
