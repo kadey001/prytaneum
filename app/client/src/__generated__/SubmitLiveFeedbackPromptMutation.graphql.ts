@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<78151c8ff4ad120f16c1d61075af9857>>
+ * @generated SignedSource<<b0bbb77c1307cd7b9a20a4273a6c4b51>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -142,11 +142,6 @@ v13 = {
   "storageKey": null
 },
 v14 = [
-  {
-    "kind": "Literal",
-    "name": "after",
-    "value": ""
-  },
   {
     "kind": "Literal",
     "name": "first",
@@ -394,7 +389,7 @@ return {
                         ]
                       }
                     ],
-                    "storageKey": "responses(after:\"\",first:100)"
+                    "storageKey": "responses(first:100)"
                   },
                   {
                     "alias": null,
@@ -433,12 +428,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e39b92e5fce6643cf6430beaaf121f3d",
+    "cacheID": "dc9002fda557c40fa3496f5a410a6c36",
     "id": null,
     "metadata": {},
     "name": "SubmitLiveFeedbackPromptMutation",
     "operationKind": "mutation",
-    "text": "mutation SubmitLiveFeedbackPromptMutation(\n  $input: CreateFeedbackPrompt!\n) {\n  createFeedbackPrompt(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        prompt\n        isVote\n        isOpenEnded\n        isMultipleChoice\n        multipleChoiceOptions\n        createdAt\n        isDraft\n        ...useLiveFeedbackPromptResponsesFragment\n      }\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptResponsesFragment on EventLiveFeedbackPrompt {\n  id\n  responses(first: 100, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        isOpenEnded\n        response\n        isVote\n        vote\n        isMultipleChoice\n        multipleChoiceResponse\n        createdAt\n        createdBy {\n          id\n          firstName\n        }\n        prompt {\n          id\n          prompt\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "mutation SubmitLiveFeedbackPromptMutation(\n  $input: CreateFeedbackPrompt!\n) {\n  createFeedbackPrompt(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        prompt\n        isVote\n        isOpenEnded\n        isMultipleChoice\n        multipleChoiceOptions\n        createdAt\n        isDraft\n        ...useLiveFeedbackPromptResponsesFragment\n      }\n    }\n  }\n}\n\nfragment useLiveFeedbackPromptResponsesFragment on EventLiveFeedbackPrompt {\n  id\n  responses(first: 100) {\n    edges {\n      cursor\n      node {\n        id\n        isOpenEnded\n        response\n        isVote\n        vote\n        isMultipleChoice\n        multipleChoiceResponse\n        createdAt\n        createdBy {\n          id\n          firstName\n        }\n        prompt {\n          id\n          prompt\n        }\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

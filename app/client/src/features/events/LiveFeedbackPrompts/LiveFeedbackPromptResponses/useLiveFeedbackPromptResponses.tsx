@@ -4,7 +4,7 @@ import { useLiveFeedbackPromptResponsesFragment$key } from '@local/__generated__
 
 export const USE_LIVE_FEEDBACK_PROMPT_RESPONSES = graphql`
     fragment useLiveFeedbackPromptResponsesFragment on EventLiveFeedbackPrompt
-    @argumentDefinitions(first: { type: "Int", defaultValue: 100 }, after: { type: "String", defaultValue: "" }) {
+    @argumentDefinitions(first: { type: "Int", defaultValue: 100 }, after: { type: "String" }) {
         id
         responses(first: $first, after: $after) @connection(key: "useLiveFeedbackPromptResponsesFragment_responses") {
             __id

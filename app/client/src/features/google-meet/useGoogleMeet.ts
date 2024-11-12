@@ -23,12 +23,13 @@ export function useGoogleMeet({ fragmentRef }: GoogleMeetProps) {
     const builder = window.meet();
     const { user } = useUser();
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
+    const [isError, setIsError] = React.useState<boolean>(false);
     const [isConnected, setIsConnected] = React.useState<boolean>(false);
     const { displaySnack } = useSnack();
 
     const displayReloadButton = React.useMemo(() => {
-        return !isLoading && !isConnected;
-    }, [isConnected, isLoading]);
+        return !isLoading && !isConnected && !isError;
+    }, [isConnected, isError, isLoading]);
 
     const buildMeetApp = React.useCallback(() => {
         setIsLoading(true);
@@ -144,15 +145,20 @@ export function useGoogleMeet({ fragmentRef }: GoogleMeetProps) {
                         .catch((err) => {
                             console.error(err);
                             displaySnack('Error joining call', { variant: 'error' });
+                            setIsError(true);
+                            setIsLoading(false);
                         });
                 })
                 .catch((err) => {
                     console.error(err);
+                    setIsError(true);
+                    setIsLoading(false);
+                    // TODO: Report error
                     displaySnack('Meet app error, try refreshing the page.', { variant: 'error' });
                 });
         },
         [buildMeetApp, data.googleMeetUrl, displaySnack]
     );
 
-    return { connectToMeeting, displayReloadButton, isLoading };
+    return { connectToMeeting, displayReloadButton, isLoading, isError };
 }

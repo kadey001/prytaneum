@@ -6,7 +6,7 @@ import { useRefresh } from '@local/features/core';
 const USE_LIVE_FEEDBACK_PROMPTS = graphql`
     fragment useLiveFeedbackPromptsFragment on Event
     @refetchable(queryName: "liveFeedbackPromptPagination")
-    @argumentDefinitions(first: { type: "Int", defaultValue: 100 }, after: { type: "String", defaultValue: "" }) {
+    @argumentDefinitions(first: { type: "Int", defaultValue: 100 }, after: { type: "String" }) {
         id
         liveFeedbackPrompts(first: $first, after: $after)
             @connection(key: "useLiveFeedbackPromptsFragment_liveFeedbackPrompts") {
@@ -48,10 +48,20 @@ export function useLiveFeedbackPrompts({ fragmentRef, isModalOpen, isShareResult
     const refresh = React.useCallback(() => {
         // if the modal is open, don't refetch (Ensures secondary modal doesn't flash)
         if (isModalOpen) return;
-        refetch(
-            { first: 100, after: data.liveFeedbackPrompts?.pageInfo?.endCursor || '' },
-            { fetchPolicy: 'store-and-network' }
-        );
+
+        const endCursor = data.liveFeedbackPrompts?.pageInfo?.endCursor;
+
+        // Prepare variables conditionally
+        const variables: {
+            first: number;
+            after?: string | null;
+        } = { first: 100 };
+
+        if (endCursor) {
+            variables.after = endCursor;
+        }
+
+        refetch(variables, { fetchPolicy: 'store-and-network' });
     }, [isModalOpen, refetch, data.liveFeedbackPrompts?.pageInfo?.endCursor]);
     const { pauseRefresh, resumeRefresh } = useRefresh({ refreshInterval: REFETCH_INTERVAL, callback: refresh });
 

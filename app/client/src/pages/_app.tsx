@@ -18,6 +18,7 @@ import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { EventInfoPopperProvider } from '@local/components/EventInfoPoppers';
+import ErrorBoundary from '@local/components/ErrorBoundary';
 
 export const pdfJsOptions = {
     cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
@@ -116,7 +117,9 @@ export default function App({ Component, pageProps }: AppProps & { pageProps: an
                     ContainerProps={pageProps.containerProps}
                     disablePadding={pageProps.disablePadding}
                 >
-                    <Component {...pageProps} />
+                    <ErrorBoundary>
+                        <Component {...pageProps} />
+                    </ErrorBoundary>
                 </Layout>
             </Providers>
         </>

@@ -14,6 +14,7 @@ import {
     CHOICES_MAX_AMOUNT,
     STARTING_CHOICE_AMOUNT,
 } from '@local/utils/rules';
+import { FeedbackDashboardTab } from './LiveFeedbackPromptList';
 
 export type TLiveFeedbackPromptFormState = {
     prompt: string;
@@ -24,16 +25,17 @@ export type TLiveFeedbackPromptFormState = {
 export interface LiveFeedbackPromptFormProps {
     onSubmit?: (state: TLiveFeedbackPromptFormState, isDraft: boolean) => void;
     onCancel?: () => void;
+    selectedTab?: FeedbackDashboardTab;
 }
 
-export function LiveFeedbackPromptForm({ onSubmit, onCancel }: LiveFeedbackPromptFormProps) {
+export function LiveFeedbackPromptForm({ onSubmit, onCancel, selectedTab }: LiveFeedbackPromptFormProps) {
     const [choices, setChoices] = React.useState<string[]>(
         new Array(STARTING_CHOICE_AMOUNT).fill('', 0, STARTING_CHOICE_AMOUNT)
     );
     // form related hooks
     const [form, errors, handleSubmit, handleChange] = useForm({
         prompt: '',
-        feedbackType: 'open-ended',
+        feedbackType: selectedTab ?? 'open-ended',
         choices: choices,
     });
 

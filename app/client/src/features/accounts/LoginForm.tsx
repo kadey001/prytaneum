@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, InputAdornment, IconButton, Link as MUILink, Grid, Typography, TextField } from '@mui/material';
+import { InputAdornment, IconButton, Link as MUILink, Grid, Typography, TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Link from 'next/link';
@@ -133,17 +133,16 @@ export function LoginForm({ onSuccess, close, secondaryActions }: Props) {
                     </>
                 </FormContent>
                 <Grid container item direction='column' sx={{ '& > *': { margin: (theme) => theme.spacing(1, 0) } }}>
-                    <LoadingButton loading={isLoading}>
-                        <Button
-                            data-test-id='login-form-submit'
-                            fullWidth
-                            type='submit'
-                            variant='contained'
-                            color='secondary'
-                            disabled={form.password.length === 0 || form.email.length === 0}
-                        >
-                            Login
-                        </Button>
+                    <LoadingButton
+                        loading={isLoading}
+                        data-test-id='login-form-submit'
+                        fullWidth
+                        type='submit'
+                        variant='contained'
+                        color='secondary'
+                        disabled={form.password.length === 0 || form.email.length === 0}
+                    >
+                        Login
                     </LoadingButton>
                     {secondaryActions && (
                         <>

@@ -140,10 +140,13 @@ export function UploadReadingMaterials({ onSuccess, setTopics }: Props) {
                     <Button color='inherit' onClick={closeDialog}>
                         Cancel
                     </Button>
-                    <LoadingButton loading={isLoading}>
-                        <Button color='primary' disabled={Boolean(errorMessage) || isLoading} onClick={handleUpload}>
-                            Upload
-                        </Button>
+                    <LoadingButton
+                        loading={isLoading}
+                        color='primary'
+                        disabled={Boolean(errorMessage) || isLoading}
+                        onClick={handleUpload}
+                    >
+                        Upload
                     </LoadingButton>
                 </DialogActions>
             </Dialog>

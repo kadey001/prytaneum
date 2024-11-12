@@ -10,7 +10,7 @@ export const USE_QUESTIONS_BY_TOPIC = graphql`
     @refetchable(queryName: "questionsByTopicPagination")
     @argumentDefinitions(
         first: { type: "Int", defaultValue: 50 }
-        after: { type: "String", defaultValue: "" }
+        after: { type: "String" }
         topic: { type: "String", defaultValue: "default" }
         userLang: { type: "String!" }
     ) {

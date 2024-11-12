@@ -1,36 +1,63 @@
-import type { FastifyBaseLogger } from 'fastify';
 import { getOrCreateServer } from './server';
-import { getRedisClient } from './utils';
+import { getPrismaClient, getRedisClient } from './utils';
 
-export function initGracefulShutdown(logger: FastifyBaseLogger) {
+let isShuttingDown = false;
+
+export function initGracefulShutdown() {
+    const server = getOrCreateServer();
     const cleanup = () => {
-        logger.info('Gracefully shutting down...');
-        const server = getOrCreateServer();
-        const redis = getRedisClient(logger);
+        if (isShuttingDown) return; // Prevent multiple invocations
+        isShuttingDown = true;
+        server.log.info('Gracefully shutting down...');
 
-        logger.info('Closing redis client...');
-        redis
-            .quit()
+        // Stop accepting new connections
+        server
+            .close()
             .then(() => {
-                logger.info('Redis client closed.');
-                logger.info('Closing server...');
-                server
-                    .close()
+                server.log.info('Server closed.');
+
+                // Close Redis client
+                const redis = getRedisClient(server.log);
+                redis
+                    .quit()
                     .then(() => {
-                        logger.info('Server closed.');
+                        server.log.info('Redis client closed.');
                         process.exit(0);
                     })
                     .catch((err) => {
-                        logger.error(err);
+                        server.log.error('Error closing Redis client:', err);
+                        process.exit(1);
+                    });
+
+                // Close Prisma client
+                const prisma = getPrismaClient(server.log);
+                prisma
+                    .$disconnect()
+                    .then(() => {
+                        server.log.info('Prisma client closed.');
+                        process.exit(0);
+                    })
+                    .catch((err) => {
+                        server.log.error('Error closing Prisma client:', err);
                         process.exit(1);
                     });
             })
             .catch((err) => {
-                logger.error(err);
+                server.log.error('Error closing server:', err);
+                process.exit(1);
             });
     };
 
     process.on('SIGINT', cleanup);
     process.on('SIGTERM', cleanup);
-    process.on('uncaughtException', cleanup);
+
+    process.on('unhandledRejection', (reason, promise) => {
+        server.log.error('Unhandled Rejection at:', promise, 'reason:', reason);
+        process.exit(1);
+    });
+
+    process.on('uncaughtException', (err) => {
+        server.log.error('Uncaught Exception thrown:', err);
+        process.exit(1);
+    });
 }

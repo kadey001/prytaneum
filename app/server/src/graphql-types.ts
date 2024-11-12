@@ -802,6 +802,7 @@ export type Event = Node & {
     topics?: Maybe<Array<EventTopic>>;
     eventType?: Maybe<Scalars['String']>;
     googleMeetUrl?: Maybe<Scalars['String']>;
+    googleMeetSpace?: Maybe<Scalars['String']>;
 };
 
 export type EventquestionsArgs = {
@@ -3095,6 +3096,7 @@ export type EventResolvers<
     topics?: Resolver<Maybe<Array<ResolversTypes['EventTopic']>>, ParentType, ContextType>;
     eventType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     googleMeetUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    googleMeetSpace?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -4238,6 +4240,7 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         topics?: LoaderResolver<Maybe<Array<EventTopic>>, Event, {}, TContext>;
         eventType?: LoaderResolver<Maybe<Scalars['String']>, Event, {}, TContext>;
         googleMeetUrl?: LoaderResolver<Maybe<Scalars['String']>, Event, {}, TContext>;
+        googleMeetSpace?: LoaderResolver<Maybe<Scalars['String']>, Event, {}, TContext>;
     };
 
     EventEdge?: {

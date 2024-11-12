@@ -1,38 +1,24 @@
 import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Button, ButtonProps, CircularProgress } from '@mui/material';
 
-interface Props {
+interface LoadingButtonProps extends ButtonProps {
     loading: boolean;
-    children: JSX.Element;
-    className?: string;
-    style?: React.CSSProperties;
+    children: React.ReactNode;
+    disabled?: boolean;
 }
 
-/**
- * LoadingButton displays a clickable button with a loading circle if (bool) loading is set
- * @category Component
- * @constructor LoadingButton
- */
-export function LoadingButton({ loading, children, className, style }: Props) {
-    const theme = useTheme();
-    if (loading) {
-        try {
-            return React.cloneElement(
-                React.Children.only(children),
-                {
-                    disabled: loading,
-                    'aria-label': 'Loading Button',
-                    endIcon: undefined,
-                    startIcon: undefined,
-                },
-                <CircularProgress className={className} style={style} size={theme.typography.button.lineHeight} />
-            );
-        } catch (e) {
-            // eslint-disable-next-line no-console
-            console.warn(e);
-            return children;
-        }
-    }
-    return children;
-}
+export const LoadingButton = ({ loading, onClick, children, disabled = false, ...restProps }: LoadingButtonProps) => {
+    return (
+        <Button
+            onClick={onClick}
+            disabled={loading || disabled}
+            variant='contained'
+            color='primary'
+            style={{ position: 'relative' }}
+            {...restProps}
+        >
+            {loading && <CircularProgress size={24} style={{ position: 'absolute' }} />}
+            {children}
+        </Button>
+    );
+};

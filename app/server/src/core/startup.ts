@@ -6,15 +6,11 @@ import { getPrismaClient, getRedisClient, getTranslationClient } from './utils';
 import * as plugins from './plugins';
 import * as hooks from './hooks';
 
-require('@local/features/accounts/account');
-require('@local/features/events/moderation/issue-guide');
-require('@local/features/google/google-meet');
-
 export function startup() {
     const server = getOrCreateServer();
     server.log.info('Performing setup checks...');
     checkEnv();
-    initGracefulShutdown(server.log);
+    initGracefulShutdown();
     setupMetaRoutes(server);
     // Init prisma client
     getPrismaClient(server.log);
@@ -32,6 +28,17 @@ export function startup() {
 
     server.log.info('Attaching hooks...');
     hooks.attachPreHandlerTo(server);
+
+    server.log.info('Attaching routes...');
+    try {
+        require('@local/features/accounts/account');
+        require('@local/features/events/moderation/issue-guide');
+        require('@local/features/google/google-meet');
+    } catch (error) {
+        server.log.error('Failed to attach routes:', error);
+        server.log.fatal('Failed to attach routes, exiting.');
+        process.exit(1);
+    }
 
     server.log.info('Finished server setup.');
 

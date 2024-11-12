@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import * as React from 'react';
-import { Button, IconButton, InputAdornment, Grid, Typography, TextField } from '@mui/material';
+import { IconButton, InputAdornment, Grid, Typography, TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { graphql, useMutation } from 'react-relay';
@@ -214,17 +214,16 @@ export function RegisterForm({ onSuccess, onFailure, secondaryActions }: Props) 
                         },
                     }}
                 >
-                    <LoadingButton loading={isLoading}>
-                        <Button
-                            data-test-id='register-form-submit'
-                            fullWidth
-                            type='submit'
-                            variant='contained'
-                            color='secondary'
-                            disabled={!isAllInputsValid || values.firstName === ''}
-                        >
-                            Create Account
-                        </Button>
+                    <LoadingButton
+                        loading={isLoading}
+                        data-test-id='register-form-submit'
+                        fullWidth
+                        type='submit'
+                        variant='contained'
+                        color='secondary'
+                        disabled={!isAllInputsValid || values.firstName === ''}
+                    >
+                        Create Account
                     </LoadingButton>
                     {secondaryActions && <>{secondaryActions}</>}
                 </Grid>

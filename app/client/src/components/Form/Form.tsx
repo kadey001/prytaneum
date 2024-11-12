@@ -1,18 +1,19 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { Grid, GridProps } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-interface Props {
+interface FormProps {
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
     children: React.ReactNode | React.ReactNodeArray;
     styles?: GridProps['sx'];
+    className?: string;
 }
 
-export function Form({ onSubmit, children, styles }: Props) {
+export const Form = React.forwardRef<HTMLFormElement, FormProps>(({ onSubmit, children, styles, className }, ref) => {
     const theme = useTheme();
     return (
         <Grid
+            ref={ref}
             noValidate
             component='form'
             autoComplete='off'
@@ -27,12 +28,9 @@ export function Form({ onSubmit, children, styles }: Props) {
                 marginTop: theme.spacing(2),
                 ...styles,
             }}
+            className={className}
         >
             {children}
         </Grid>
     );
-}
-
-Form.propTypes = {
-    className: PropTypes.string,
-};
+});
