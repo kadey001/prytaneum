@@ -198,6 +198,7 @@ export type Event = Node & {
   /** The planned end date time string */
   endDateTime?: Maybe<Scalars['Date']>;
   eventType?: Maybe<Scalars['String']>;
+  googleMeetSpace?: Maybe<Scalars['String']>;
   googleMeetUrl?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   /** List of users who can view event when private */

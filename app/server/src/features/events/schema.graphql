@@ -130,6 +130,7 @@ type Event implements Node {
     topics: [EventTopic!]
     eventType: String
     googleMeetUrl: String
+    googleMeetSpace: String
 }
 
 enum EventType {
