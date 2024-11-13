@@ -8,8 +8,8 @@ import type {
 } from '@local/graphql-types';
 import { fromGlobalId } from 'graphql-relay';
 import { isModerator } from '../moderation/methods';
-import { ProtectedError } from '../../../lib/ProtectedError';
 import { Vote } from '@local/graphql-types';
+import { ProtectedError } from '@local/lib/ProtectedError';
 import { hashString } from '@local/lib/utilities';
 import { getRedisClient } from '@local/core/utils';
 import { getOrCreateServer } from '@local/core/server';
