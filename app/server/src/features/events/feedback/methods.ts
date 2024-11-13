@@ -43,6 +43,7 @@ async function cacheViewpoints(promptId: string, responses: string[], viewpoints
         const responsesHash = hashString(JSON.stringify(responses));
         const CACHE_EXPIRATION = 60 * 60 * 12; // 12 hours in seconds
         await redis.set(`viewpoints:${promptId}:${responsesHash}`, JSON.stringify(viewpoints), 'EX', CACHE_EXPIRATION);
+        server.log.debug(`Cached viewpoints for prompt ${promptId}`);
     } catch (error) {
         server.log.error(`Error caching viewpoints for prompt ${promptId}: ${error}`);
     }
