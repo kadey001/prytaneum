@@ -31,7 +31,7 @@ env:
     ORIGIN: ${{ vars.ORIGIN }}
     API_URL: ${{ vars.API_URL }}
     GOOGLE_MEET_API_KEY: ${{ vars.GOOGLE_MEET_API_KEY }}
-    $GOOGLE_ARTIFACT_REPO: ${{ vars.GOOGLE_ARTIFACT_REPO }}
+    GOOGLE_ARTIFACT_REPO: ${{ vars.GOOGLE_ARTIFACT_REPO }}
 
 jobs:
     staging:
