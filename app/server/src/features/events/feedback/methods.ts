@@ -8,8 +8,46 @@ import type {
 } from '@local/graphql-types';
 import { fromGlobalId } from 'graphql-relay';
 import { isModerator } from '../moderation/methods';
-import { ProtectedError } from '../../../lib/ProtectedError';
 import { Vote } from '@local/graphql-types';
+import { ProtectedError } from '@local/lib/ProtectedError';
+import { hashString } from '@local/lib/utilities';
+import { getRedisClient } from '@local/core/utils';
+import { getOrCreateServer } from '@local/core/server';
+
+const redis = getRedisClient();
+const server = getOrCreateServer();
+
+async function checkViewpointsCache(promptId: string, responses: string[]): Promise<string[] | null> {
+    try {
+        server.log.debug(`Checking cache for viewpoints for prompt ${promptId}`);
+        server.log.debug(`Responses: ${JSON.stringify(responses)}`);
+        const responsesHash = hashString(JSON.stringify(responses));
+        const cachedViewpoints = await redis.get(`viewpoints:${promptId}:${responsesHash}`);
+        if (cachedViewpoints) {
+            server.log.debug(`Found cached viewpoints for prompt ${promptId}: ${cachedViewpoints}`);
+            return JSON.parse(cachedViewpoints) as string[];
+        }
+        server.log.debug(`No cached viewpoints found for prompt ${promptId}`);
+        return null;
+    } catch (error) {
+        server.log.error(`Error checking cache for viewpoints for prompt ${promptId}: ${error}`);
+        return null;
+    }
+}
+
+async function cacheViewpoints(promptId: string, responses: string[], viewpoints: string[]) {
+    try {
+        server.log.debug(`Caching viewpoints for prompt ${promptId}`);
+        server.log.debug(`Responses: ${JSON.stringify(responses)}`);
+        server.log.debug(`Viewpoints: ${JSON.stringify(viewpoints)}`);
+        const responsesHash = hashString(JSON.stringify(responses));
+        const CACHE_EXPIRATION = 60 * 60 * 12; // 12 hours in seconds
+        await redis.set(`viewpoints:${promptId}:${responsesHash}`, JSON.stringify(viewpoints), 'EX', CACHE_EXPIRATION);
+        server.log.debug(`Cached viewpoints for prompt ${promptId}`);
+    } catch (error) {
+        server.log.error(`Error caching viewpoints for prompt ${promptId}: ${error}`);
+    }
+}
 
 export async function myFeedback(userId: string, eventId: string, prisma: PrismaClient) {
     const result = await prisma.eventLiveFeedback.findMany({
@@ -31,6 +69,10 @@ async function generateViewpoints(promptId: string, issue: string, eventId: stri
 
     const responses = _responses.map((response) => response.response);
 
+    const cachedViewpoints = await checkViewpointsCache(promptId, responses);
+
+    if (cachedViewpoints) return cachedViewpoints;
+
     let response: AxiosResponse<string[]> | null = null;
     try {
         const url = process.env.MODERATION_URL + 'promptsummary';
@@ -50,6 +92,7 @@ async function generateViewpoints(promptId: string, issue: string, eventId: stri
         console.error(error);
     }
     const viewpoints = response?.data || [];
+    await cacheViewpoints(promptId, responses, viewpoints);
     return viewpoints;
 }
 
@@ -63,6 +106,12 @@ async function generateViewpointsByVote(promptId: string, issue: string, eventId
 
         const responses = _responses.map((response) => response.response);
         if (responses.length === 0) continue;
+
+        const cachedViewpoints = await checkViewpointsCache(promptId, responses);
+        if (cachedViewpoints) {
+            viewpointsByVote[vote] = cachedViewpoints;
+            continue;
+        }
 
         let response: AxiosResponse<string[]> | null = null;
         try {
@@ -83,6 +132,7 @@ async function generateViewpointsByVote(promptId: string, issue: string, eventId
             console.error(error);
         }
         const viewpoints = response?.data || [];
+        await cacheViewpoints(promptId, responses, viewpoints);
         viewpointsByVote[vote] = viewpoints;
     }
     return viewpointsByVote;
@@ -104,6 +154,12 @@ async function generateViewpointsByMultipleChoice(
         const responses = _responses.map((response) => response.response);
         if (responses.length === 0) continue;
 
+        const cachedViewpoints = await checkViewpointsCache(promptId, responses);
+        if (cachedViewpoints) {
+            viewpointsByChoice[choice] = cachedViewpoints;
+            continue;
+        }
+
         let response: AxiosResponse<string[]> | null = null;
         try {
             const url = process.env.MODERATION_URL + 'promptsummary';
@@ -123,6 +179,7 @@ async function generateViewpointsByMultipleChoice(
             console.error(error);
         }
         const viewpoints = response?.data || [];
+        await cacheViewpoints(promptId, responses, viewpoints);
         viewpointsByChoice[choice] = viewpoints;
     }
     return viewpointsByChoice;
