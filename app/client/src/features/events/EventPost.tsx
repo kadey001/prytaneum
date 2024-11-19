@@ -83,6 +83,7 @@ export function EventPost({ node }: EventPostProps) {
                 isModerator: Boolean(eventData.isViewerModerator),
                 pauseParentRefreshing: () => {},
                 resumeParentRefreshing: () => {},
+                eventData,
             }}
         >
             <Grid container spacing={2} columns={16} height='100%'>

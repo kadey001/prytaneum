@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useQueryLoader } from 'react-relay';
 
 import { EventSettingsQuery } from '@local/__generated__/EventSettingsQuery.graphql';
-import { EventSettings, EVENT_SETTINGS_QUERY } from '@local/features/events';
+import { EventSettingsContainer, EVENT_SETTINGS_QUERY } from '@local/features/events';
 import { Loader } from '@local/components/Loader';
 import { useUser } from '@local/features/accounts';
 
@@ -26,7 +26,7 @@ const Page: NextPage = () => {
 
     return (
         <React.Suspense fallback={<Loader />}>
-            <EventSettings queryRef={queryRef} />
+            <EventSettingsContainer queryRef={queryRef} />
         </React.Suspense>
     );
 };

@@ -4,7 +4,7 @@ import { Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { SettingsMenu } from '@local/components/SettingsMenu';
-import type { EventSettingsQuery } from '@local/__generated__/EventSettingsQuery.graphql';
+import type { EventSettingsQuery, EventSettingsQuery$data } from '@local/__generated__/EventSettingsQuery.graphql';
 
 import { useUser } from '@local/features/accounts';
 import { useRouter } from 'next/router';
@@ -20,6 +20,7 @@ import { InviteEventSettings } from '../Invites/InviteEventSettings';
 import { DeleteEvent } from '../DeleteEvent';
 import { EventIssueGuideSettings } from '../EventIssueGuide';
 import { EventTopicSettings } from '../EventTopics/EventTopicSettings';
+import { useEventDetails } from '../useEventDetails';
 
 export const eventSettingsSections = [
     'Form',
@@ -47,24 +48,23 @@ export const EVENT_SETTINGS_QUERY = graphql`
                 ...ModeratorEventSettingsFragment
                 ...useInvitedUsersListFragment @arguments(eventId: $eventId)
                 ...EventIssueGuideSettingsFragment
+                ...useEventDetailsFragment
             }
         }
     }
 `;
 
-interface Props {
-    queryRef: PreloadedQuery<EventSettingsQuery>;
+type CheckedEventQueryNode = NonNullable<NonNullable<EventSettingsQuery$data>['node']>;
+
+interface EventSettingsProps {
+    node: CheckedEventQueryNode;
 }
 
-export function EventSettings({ queryRef }: Props) {
+export function EventSettings({ node }: EventSettingsProps) {
     const theme = useTheme();
     const xlBreakpointUp = useMediaQuery(theme.breakpoints.up('xl'));
     const lgBreakpointUp = useMediaQuery(theme.breakpoints.up('lg'));
-    const router = useRouter();
-    const { displaySnack } = useSnack();
-    const data = usePreloadedQuery(EVENT_SETTINGS_QUERY, queryRef);
-    const { user, isLoading } = useUser();
-    const [canView, setCanView] = React.useState(false);
+    const { eventData } = useEventDetails({ fragmentRef: node });
 
     const getContainerStyles = React.useMemo(() => {
         if (xlBreakpointUp) return { width: '80%', marginLeft: '300px' };
@@ -72,53 +72,42 @@ export function EventSettings({ queryRef }: Props) {
         return { width: '100%' };
     }, [xlBreakpointUp, lgBreakpointUp]);
 
-    React.useEffect(() => {
-        if (!isLoading && !user) router.push('/');
-        else if (data.node?.isViewerModerator) {
-            setCanView(true);
-        } else {
-            displaySnack('You must be a moderator to view', { variant: 'error' });
-            router.back();
-        }
-    }, [isLoading, user, router, data, displaySnack]);
-
-    if (!data.node || !canView || isLoading) return <Loader />;
-
     return (
         <EventContext.Provider
             value={{
-                eventId: data.node.id,
-                isModerator: Boolean(data.node.isViewerModerator),
+                eventId: node.id,
+                isModerator: Boolean(node.isViewerModerator),
                 pauseParentRefreshing: () => {},
                 resumeParentRefreshing: () => {},
+                eventData,
             }}
         >
             <div style={getContainerStyles}>
                 <Typography variant='h2' margin={theme.spacing(0, 0, 2, 0)}>
                     Event Settings
                 </Typography>
-                {data.node && (
+                {node && (
                     <SettingsMenu
                         config={[
                             {
                                 title: 'Details',
                                 description: 'Update basic event details',
-                                component: <EventDetails fragmentRef={data.node} />,
+                                component: <EventDetails fragmentRef={node} />,
                             },
                             {
                                 title: 'General',
                                 description: 'Customize the event using various settings',
-                                component: <GenericSettings fragmentRef={data.node} />,
+                                component: <GenericSettings fragmentRef={node} />,
                             },
                             {
                                 title: 'Video',
                                 description: 'Select and configure the type of video for this event',
-                                component: <VideoEventSettings fragmentRef={data.node} />,
+                                component: <VideoEventSettings fragmentRef={node} />,
                             },
                             {
                                 title: 'Speaker',
                                 description: 'Add and Modify speakers at this event',
-                                component: <SpeakerEventSettings fragmentRef={data.node} />,
+                                component: <SpeakerEventSettings fragmentRef={node} />,
                             },
                             {
                                 title: 'Topics',
@@ -128,27 +117,27 @@ export function EventSettings({ queryRef }: Props) {
                             {
                                 title: 'Issue Guide',
                                 description: 'Add and Modify the event issue guide',
-                                component: <EventIssueGuideSettings fragmentRef={data.node} />,
+                                component: <EventIssueGuideSettings fragmentRef={node} />,
                             },
                             {
                                 title: 'Moderators',
                                 description: 'Designate individuals as moderators',
-                                component: <ModeratorEventSettings fragmentRef={data.node} />,
+                                component: <ModeratorEventSettings fragmentRef={node} />,
                             },
                             {
                                 title: 'Invites',
                                 description: 'Invite people to join the event',
                                 component: (
                                     <InviteEventSettings
-                                        eventDetailsFragmentRef={data.node}
-                                        invitedUsersListFragmentRef={data.node}
+                                        eventDetailsFragmentRef={node}
+                                        invitedUsersListFragmentRef={node}
                                     />
                                 ),
                             },
                             {
                                 title: 'Delete Event',
                                 description: 'Click here to delete your event',
-                                component: <DeleteEvent fragmentRef={data.node} />,
+                                component: <DeleteEvent fragmentRef={node} />,
                             },
                         ]}
                     />
@@ -156,4 +145,30 @@ export function EventSettings({ queryRef }: Props) {
             </div>
         </EventContext.Provider>
     );
+}
+
+interface EventSettingsContainerProps {
+    queryRef: PreloadedQuery<EventSettingsQuery>;
+}
+
+export function EventSettingsContainer({ queryRef }: EventSettingsContainerProps) {
+    const router = useRouter();
+    const { displaySnack } = useSnack();
+    const data = usePreloadedQuery(EVENT_SETTINGS_QUERY, queryRef);
+    const { user, isLoading } = useUser();
+    const [canView, setCanView] = React.useState(false);
+
+    React.useEffect(() => {
+        if (!isLoading && !user) router.push('/');
+        else if (data.node?.isViewerModerator) {
+            setCanView(true);
+        } else {
+            displaySnack('You must be a moderator to view', { variant: 'error' });
+            router.back();
+        }
+    }, [isLoading, user, router, data.node?.isViewerModerator, displaySnack]);
+
+    if (!data.node || !canView || isLoading) return <Loader />;
+
+    return <EventSettings node={data.node} />;
 }

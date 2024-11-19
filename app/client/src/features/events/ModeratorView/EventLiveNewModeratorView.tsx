@@ -84,6 +84,7 @@ function EventLiveNewModeratorView({ node, refresh }: EventLiveProps) {
                 isModerator: Boolean(node.isViewerModerator),
                 pauseParentRefreshing,
                 resumeParentRefreshing,
+                eventData,
             }}
         >
             <PanelGroup direction='horizontal'>

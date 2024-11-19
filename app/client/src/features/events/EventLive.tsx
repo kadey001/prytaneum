@@ -193,6 +193,7 @@ function EventLive({ node, validateInvite, tokenProvided }: EventLiveProps) {
                 isModerator: Boolean(node.isViewerModerator),
                 pauseParentRefreshing,
                 resumeParentRefreshing,
+                eventData,
             }}
         >
             <EventTopicContext.Provider value={{ topic: 'default', topics: [] }}>
