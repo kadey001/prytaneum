@@ -66,7 +66,13 @@ const makeServer =
         : makeDevelopmentServer;
 
 export function getOrCreateServer() {
-    const server = _server ?? makeServer();
-    if (!_server) _server = server;
-    return server;
+    try {
+        const server = _server ?? makeServer();
+        if (!_server) _server = server;
+        return server;
+    } catch (error) {
+        console.error('Failed to create server.');
+        console.error(error);
+        process.exit(1);
+    }
 }
