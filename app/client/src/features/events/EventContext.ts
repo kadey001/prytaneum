@@ -16,8 +16,8 @@ interface TEventContext {
      * is the current user a moderator
      */
     isModerator: boolean;
-    pauseParentRefreshing: () => void;
-    resumeParentRefreshing: () => void;
+    pauseParentRefreshing?: () => void;
+    resumeParentRefreshing?: () => void;
     eventData: useEventDetailsFragment$data;
 }
 
