@@ -11,7 +11,7 @@ export function startup() {
     server.log.info('Performing setup checks...');
     checkEnv();
     server.log.info('Setting up graceful shutdown...');
-    initGracefulShutdown(server);
+    initGracefulShutdown();
 
     server.log.info('Creating clients...');
     try {
