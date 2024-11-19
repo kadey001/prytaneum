@@ -14,7 +14,6 @@ import {
 import DescriptionIcon from '@mui/icons-material/Description';
 import { OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { useTheme, alpha } from '@mui/material/styles';
-import { useEvent } from '@local/features/events/useEvent';
 import { ShareFeedbackPromptDraft } from './ShareFeedbackPromptDraft';
 import { SubmitLiveFeedbackPrompt } from './SubmitLiveFeedbackPrompt';
 import { useLiveFeedbackPrompts } from './useLiveFeedbackPrompts';
@@ -189,32 +188,22 @@ function PromptList({ prompts: readonlyPrompts, handleClick, selectedTab, setSel
 
 interface LiveFeedbackPromptsListProps {
     fragmentRef: useLiveFeedbackPromptsFragment$key;
-    isShareResultsOpen: boolean;
 }
 
 /**
  * This component is responsible for loading the query and passing the fragment ref to the PromptList component
  */
-export function LiveFeedbackPromptsList({ fragmentRef, isShareResultsOpen }: LiveFeedbackPromptsListProps) {
+export function LiveFeedbackPromptsList({ fragmentRef }: LiveFeedbackPromptsListProps) {
     const [open, setOpen] = React.useState(false);
     const { prompts, connections, refresh } = useLiveFeedbackPrompts({
         fragmentRef,
-        isModalOpen: open,
-        isShareResultsOpen,
     });
     const [selectedTab, setSelectedTab] = React.useState<FeedbackDashboardTab>('open-ended');
     const [selectedPrompt, setSelectedPrompt] = React.useState<Prompt | null>(null);
     const selectedPromptRef = React.useRef<Prompt | null>(null);
-    const { pauseParentRefreshing, resumeParentRefreshing, eventId } = useEvent();
 
-    const handleOpen = () => {
-        setOpen(true);
-        pauseParentRefreshing();
-    };
-    const handleClose = () => {
-        setOpen(false);
-        resumeParentRefreshing();
-    };
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const handlePromptClick = (prompt: Prompt) => {
         // Update the selected prompt ref
@@ -231,7 +220,7 @@ export function LiveFeedbackPromptsList({ fragmentRef, isShareResultsOpen }: Liv
 
     return (
         <React.Fragment>
-            <SubmitLiveFeedbackPrompt eventId={eventId} connections={connections} selectedTab={selectedTab} />
+            <SubmitLiveFeedbackPrompt connections={connections} selectedTab={selectedTab} />
             <Typography variant='h6'>Select view on a prompt to see its responses</Typography>
             <PromptList
                 prompts={prompts}
