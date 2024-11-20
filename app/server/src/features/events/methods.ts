@@ -14,7 +14,7 @@ const toEventId = toGlobalId('Event');
 export async function findBroadcastMessagesByEventId(eventId: string, prisma: PrismaClient) {
     return prisma.eventBroadcastMessage.findMany({
         where: { eventId, isVisible: true },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: 'desc' },
     });
 }
 
