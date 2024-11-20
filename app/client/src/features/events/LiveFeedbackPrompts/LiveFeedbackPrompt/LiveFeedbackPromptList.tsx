@@ -10,6 +10,8 @@ import {
     Tab,
     CardActions,
     CardHeader,
+    Stack,
+    Tooltip,
 } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { OpenInNew as OpenInNewIcon } from '@mui/icons-material';
@@ -19,6 +21,8 @@ import { SubmitLiveFeedbackPrompt } from './SubmitLiveFeedbackPrompt';
 import { useLiveFeedbackPrompts } from './useLiveFeedbackPrompts';
 import { useLiveFeedbackPromptsFragment$key } from '@local/__generated__/useLiveFeedbackPromptsFragment.graphql';
 import FeedbackResponsesDialog from './FeedbackResponsesDialog';
+import { useLiveFeedbackPrompted } from '../useLiveFeedbackPrompted';
+import { ShareFeedbackPrompt } from './ShareFeedbackPrompt';
 
 export type FeedbackDashboardTab = 'open-ended' | 'vote' | 'multiple-choice';
 
@@ -66,10 +70,15 @@ function PromptItem({ prompt, handleClick }: PromptItemProps) {
                 {prompt.isDraft ? (
                     <ShareFeedbackPromptDraft prompt={prompt} />
                 ) : (
-                    <IconButton onClick={() => handleClick(prompt)}>
-                        <OpenInNewIcon />
-                        <Typography variant='subtitle1'>View</Typography>
-                    </IconButton>
+                    <Stack direction='row' spacing={1}>
+                        <Tooltip title='View Responses' placement='top'>
+                            <IconButton onClick={() => handleClick(prompt)}>
+                                <OpenInNewIcon />
+                                <Typography variant='subtitle1'>View Responses</Typography>
+                            </IconButton>
+                        </Tooltip>
+                        <ShareFeedbackPrompt prompt={prompt} />
+                    </Stack>
                 )}
             </CardActions>
         </Card>
@@ -198,6 +207,7 @@ export function LiveFeedbackPromptsList({ fragmentRef }: LiveFeedbackPromptsList
     const { prompts, connections, refresh } = useLiveFeedbackPrompts({
         fragmentRef,
     });
+    useLiveFeedbackPrompted({ connections });
     const [selectedTab, setSelectedTab] = React.useState<FeedbackDashboardTab>('open-ended');
     const [selectedPrompt, setSelectedPrompt] = React.useState<Prompt | null>(null);
     const selectedPromptRef = React.useRef<Prompt | null>(null);

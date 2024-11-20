@@ -65,7 +65,7 @@ export function useLiveFeedbackPrompts({ fragmentRef }: Props) {
             liveFeedbackPrompts?.edges
                 ? liveFeedbackPrompts.edges.map(({ node, cursor }) => ({ ...node, cursor }))
                 : [],
-        [liveFeedbackPrompts]
+        [liveFeedbackPrompts?.edges]
     );
 
     const connections = React.useMemo(

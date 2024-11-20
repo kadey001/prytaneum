@@ -8,13 +8,15 @@ import { useLiveFeedbackPromptResponseSnack } from './LiveFeedbackPromptResponse
 export const USE_LIVE_FEEDBACK_PROMPT_SUBSCRIPTION = graphql`
     subscription useLiveFeedbackPromptSubscription($eventId: ID!) {
         feedbackPrompted(eventId: $eventId) {
-            id
-            prompt
-            isVote
-            isDraft
-            isOpenEnded
-            isMultipleChoice
-            multipleChoiceOptions
+            node {
+                id
+                prompt
+                isVote
+                isDraft
+                isOpenEnded
+                isMultipleChoice
+                multipleChoiceOptions
+            }
         }
     }
 `;
@@ -86,7 +88,7 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
             subscription: USE_LIVE_FEEDBACK_PROMPT_SUBSCRIPTION,
             onNext: (data) => {
                 if (!data) return;
-                const { feedbackPrompted } = data;
+                const { node: feedbackPrompted } = data.feedbackPrompted;
                 const {
                     id: promptId,
                     prompt,
@@ -95,6 +97,8 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
                     isMultipleChoice,
                     multipleChoiceOptions,
                 } = feedbackPrompted;
+                // Check if prompt is already enqueued to avoid duplicates
+                if (enqueuedPrompts.some((_prompt) => _prompt.id === promptId)) return;
                 enqueuedPrompts.push({
                     id: promptId,
                     prompt,
