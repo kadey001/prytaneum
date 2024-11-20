@@ -20,12 +20,23 @@ interface Props {
  * @param {AccordionData[]} config of the content
  */
 export function SettingsMenu({ config }: Props) {
+    const [expanded, setExpanded] = React.useState<string | false>(false);
+
+    const handleChange = (panel: string) => (e: React.SyntheticEvent, newExpanded: boolean) => {
+        e.preventDefault();
+        setExpanded(newExpanded ? panel : false);
+    };
+
     return (
-        <div style={{ height: '100%', width: '100%' }}>
+        <React.Fragment>
             {config.map(
                 ({ title: sectionTitle, description, component }, idx) =>
                     component && (
-                        <Accordion key={idx}>
+                        <Accordion
+                            key={idx}
+                            expanded={expanded === `panel-${sectionTitle}`}
+                            onChange={handleChange(`panel-${sectionTitle}`)}
+                        >
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={`panel-${sectionTitle}`}>
                                 <Typography variant='h5'>{sectionTitle}</Typography>
                             </AccordionSummary>
@@ -44,6 +55,6 @@ export function SettingsMenu({ config }: Props) {
                         </Accordion>
                     )
             )}
-        </div>
+        </React.Fragment>
     );
 }

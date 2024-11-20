@@ -839,6 +839,7 @@ export type Mutation = {
    * returns false if an account with the provided email cannot be found
    */
   resetPasswordRequest: ResetPasswordRequestMutationResponse;
+  reshareFeedbackPrompt: EventFeedbackPromptMutationResponse;
   shareFeedbackPromptDraft: EventFeedbackPromptMutationResponse;
   shareFeedbackPromptResults: EventFeedbackPromptMutationResponse;
   /** Start the event so that it is "live" */
@@ -1134,6 +1135,11 @@ export type MutationResetPasswordArgs = {
 
 export type MutationResetPasswordRequestArgs = {
   input: ResetPasswordRequestForm;
+};
+
+
+export type MutationReshareFeedbackPromptArgs = {
+  promptId: Scalars['ID'];
 };
 
 
@@ -1523,7 +1529,7 @@ export type Subscription = {
   eventUpdates: Event;
   feedbackCRUD: FeedbackOperation;
   feedbackPromptResultsShared: EventLiveFeedbackPrompt;
-  feedbackPrompted: EventLiveFeedbackPrompt;
+  feedbackPrompted: EventLiveFeedbackPromptEdge;
   /** subscription for whenever a new org is added */
   orgUpdated: OrganizationSubscription;
   participantMuted?: Maybe<Scalars['Boolean']>;

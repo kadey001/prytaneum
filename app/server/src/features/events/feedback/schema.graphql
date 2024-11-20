@@ -147,6 +147,7 @@ type Mutation {
     createFeedbackDM(input: CreateFeedbackDM!): EventFeedbackMutationResponse!
     createFeedbackPrompt(input: CreateFeedbackPrompt!): EventFeedbackPromptMutationResponse!
     shareFeedbackPromptDraft(promptId: ID!): EventFeedbackPromptMutationResponse!
+    reshareFeedbackPrompt(promptId: ID!): EventFeedbackPromptMutationResponse!
     createFeedbackPromptResponse(input: CreateFeedbackPromptResponse!): EventFeedbackPromptResponseMutationResponse!
     shareFeedbackPromptResults(eventId: ID!, promptId: ID!): EventFeedbackPromptMutationResponse!
     submitPostEventFeedback(feedback: String!, eventId: ID!): PostEventFeedbackMutationResponse!
@@ -164,6 +165,6 @@ type Query {
 
 type Subscription {
     feedbackCRUD(eventId: ID!): FeedbackOperation!
-    feedbackPrompted(eventId: ID!): EventLiveFeedbackPrompt!
+    feedbackPrompted(eventId: ID!): EventLiveFeedbackPromptEdge!
     feedbackPromptResultsShared(eventId: ID!): EventLiveFeedbackPrompt!
 }

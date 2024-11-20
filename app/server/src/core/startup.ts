@@ -10,32 +10,50 @@ export function startup() {
     const server = getOrCreateServer();
     server.log.info('Performing setup checks...');
     checkEnv();
+    server.log.info('Setting up graceful shutdown...');
     initGracefulShutdown();
-    setupMetaRoutes(server);
-    // Init prisma client
-    getPrismaClient(server.log);
-    // Intit redis client
-    getRedisClient(server.log);
 
-    getTranslationClient();
+    server.log.info('Creating clients...');
+    try {
+        getPrismaClient();
+        getRedisClient(server.log);
+        getTranslationClient();
+    } catch (error) {
+        server.log.error(error);
+        server.log.fatal('Failed to create clients, exiting.');
+        process.exit(1);
+    }
 
     server.log.info('Attaching plugins...');
-    plugins.attachAltairTo(server);
-    plugins.attachCookieTo(server);
-    plugins.attachCorsTo(server);
-    plugins.attachMercuriusTo(server);
-    plugins.attachMulterTo(server);
+    try {
+        plugins.attachAltairTo(server);
+        plugins.attachCookieTo(server);
+        plugins.attachCorsTo(server);
+        plugins.attachMercuriusTo(server);
+        plugins.attachMulterTo(server);
+    } catch (error) {
+        server.log.error(error);
+        server.log.fatal('Failed to attach plugins, exiting.');
+        process.exit(1);
+    }
 
     server.log.info('Attaching hooks...');
-    hooks.attachPreHandlerTo(server);
+    try {
+        hooks.attachPreHandlerTo(server);
+    } catch (error) {
+        server.log.error(error);
+        server.log.fatal('Failed to attach hooks, exiting.');
+        process.exit(1);
+    }
 
     server.log.info('Attaching routes...');
     try {
+        setupMetaRoutes(server);
         require('@local/features/accounts/account');
         require('@local/features/events/moderation/issue-guide');
         require('@local/features/google/google-meet');
     } catch (error) {
-        server.log.error('Failed to attach routes:', error);
+        server.log.error(error);
         server.log.fatal('Failed to attach routes, exiting.');
         process.exit(1);
     }

@@ -1,13 +1,14 @@
 import React from 'react';
 import { graphql, useMutation } from 'react-relay';
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import type { ModeratorActionsStartEventMutation } from '@local/__generated__/ModeratorActionsStartEventMutation.graphql';
 import type { ModeratorActionsEndEventMutation } from '@local/__generated__/ModeratorActionsEndEventMutation.graphql';
 import { useSnack } from '@local/core';
 import { ConfirmationDialog } from '@local/components/ConfirmationDialog';
-import { ShareFeedbackResults } from '../LiveFeedbackPrompts';
 import { useLiveFeedbackPromptsFragment$key } from '@local/__generated__/useLiveFeedbackPromptsFragment.graphql';
+import { FeedbackDashboard } from '../LiveFeedbackPrompts';
 
 export const START_EVENT_MUTATION = graphql`
     mutation ModeratorActionsStartEventMutation($eventId: String!) {
@@ -24,6 +25,17 @@ export const END_EVENT_MUTATION = graphql`
         }
     }
 `;
+
+const ResponsiveStack = ({ children }: { children: React.ReactNode }) => {
+    const theme = useTheme();
+    const mdDownBreakpoint = useMediaQuery(theme.breakpoints.down('md'));
+
+    return (
+        <Stack direction={mdDownBreakpoint ? 'column' : 'row'} justifyContent='center' alignItems='center' spacing={2}>
+            {children}
+        </Stack>
+    );
+};
 
 export interface ModeratorActionsProps {
     isLive: Boolean;
@@ -81,17 +93,15 @@ export function ModeratorActions({ isLive, setIsLive, eventId, fragmentRef }: Mo
 
     return (
         <Stack direction='column' paddingTop='1rem'>
-            <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
+            <ResponsiveStack>
                 {/* <Button variant='contained' onClick={() => console.log('TODO')}>
                     Intermission
                 </Button> */}
                 <Button variant='contained' color={isLive ? 'error' : 'success'} onClick={openConfirmationDialog}>
                     {isLive ? 'End Event' : 'Start Event'}
                 </Button>
-                <React.Suspense fallback={<ShareFeedbackResults fragmentRef={fragmentRef} />}>
-                    <ShareFeedbackResults fragmentRef={fragmentRef} />
-                </React.Suspense>
-            </Stack>
+                <FeedbackDashboard fragmentRef={fragmentRef} />
+            </ResponsiveStack>
             <ConfirmationDialog
                 title='Update Event Status'
                 open={isConfirmationDialogOpen}

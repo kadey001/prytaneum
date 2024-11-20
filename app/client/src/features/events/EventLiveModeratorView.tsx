@@ -56,29 +56,18 @@ interface EventLiveProps {
 }
 
 function EventLiveModeratorView({ node }: EventLiveProps) {
-    const { pauseEventDetailsRefresh, resumeEventDetailsRefresh } = useEventDetails({
+    const { eventData } = useEventDetails({
         fragmentRef: node,
     });
     const { id: eventId } = node;
-    const { pausePingEvent, resumePingEvent } = usePingEvent(eventId);
-
-    const pauseParentRefreshing = React.useCallback(() => {
-        pauseEventDetailsRefresh();
-        pausePingEvent();
-    }, [pauseEventDetailsRefresh, pausePingEvent]);
-
-    const resumeParentRefreshing = React.useCallback(() => {
-        resumeEventDetailsRefresh();
-        resumePingEvent();
-    }, [resumeEventDetailsRefresh, resumePingEvent]);
+    usePingEvent(eventId);
 
     return (
         <EventContext.Provider
             value={{
                 eventId: node.id,
                 isModerator: Boolean(node.isViewerModerator),
-                pauseParentRefreshing,
-                resumeParentRefreshing,
+                eventData,
             }}
         >
             <EventTopicContext.Provider value={{ topic: 'default', topics: [] }}>

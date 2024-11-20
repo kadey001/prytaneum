@@ -359,6 +359,7 @@ export type Mutation = {
     createFeedbackDM: EventFeedbackMutationResponse;
     createFeedbackPrompt: EventFeedbackPromptMutationResponse;
     shareFeedbackPromptDraft: EventFeedbackPromptMutationResponse;
+    reshareFeedbackPrompt: EventFeedbackPromptMutationResponse;
     createFeedbackPromptResponse: EventFeedbackPromptResponseMutationResponse;
     shareFeedbackPromptResults: EventFeedbackPromptMutationResponse;
     submitPostEventFeedback: PostEventFeedbackMutationResponse;
@@ -532,6 +533,10 @@ export type MutationcreateFeedbackPromptArgs = {
 };
 
 export type MutationshareFeedbackPromptDraftArgs = {
+    promptId: Scalars['ID'];
+};
+
+export type MutationreshareFeedbackPromptArgs = {
     promptId: Scalars['ID'];
 };
 
@@ -946,7 +951,7 @@ export type Subscription = {
     broadcastMessageCreated: EventBroadcastMessageEdgeContainer;
     broadcastMessageDeleted: EventBroadcastMessageEdgeContainer;
     feedbackCRUD: FeedbackOperation;
-    feedbackPrompted: EventLiveFeedbackPrompt;
+    feedbackPrompted: EventLiveFeedbackPromptEdge;
     feedbackPromptResultsShared: EventLiveFeedbackPrompt;
     /** Subscribes to the creation of invites for a given event. */
     userInvited: UserEdgeContainer;
@@ -2722,6 +2727,12 @@ export type MutationResolvers<
         ContextType,
         RequireFields<MutationshareFeedbackPromptDraftArgs, 'promptId'>
     >;
+    reshareFeedbackPrompt?: Resolver<
+        ResolversTypes['EventFeedbackPromptMutationResponse'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationreshareFeedbackPromptArgs, 'promptId'>
+    >;
     createFeedbackPromptResponse?: Resolver<
         ResolversTypes['EventFeedbackPromptResponseMutationResponse'],
         ParentType,
@@ -3189,7 +3200,7 @@ export type SubscriptionResolvers<
         RequireFields<SubscriptionfeedbackCRUDArgs, 'eventId'>
     >;
     feedbackPrompted?: SubscriptionResolver<
-        ResolversTypes['EventLiveFeedbackPrompt'],
+        ResolversTypes['EventLiveFeedbackPromptEdge'],
         'feedbackPrompted',
         ParentType,
         ContextType,

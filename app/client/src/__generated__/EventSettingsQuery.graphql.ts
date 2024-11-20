@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5718739fdb98a6127d07ddea18f96b1f>>
+ * @generated SignedSource<<e3a5476e33e7806b3a4ee4b9f38c611f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,7 +17,7 @@ export type EventSettingsQuery$data = {
   readonly node: {
     readonly id: string;
     readonly isViewerModerator?: boolean | null;
-    readonly " $fragmentSpreads": FragmentRefs<"EventDetailsFragment" | "EventIssueGuideSettingsFragment" | "GenericSettingsFragment" | "ModeratorEventSettingsFragment" | "SpeakerEventSettingsFragment" | "VideoEventSettingsFragment" | "useInvitedUsersListFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"EventDetailsFragment" | "EventIssueGuideSettingsFragment" | "GenericSettingsFragment" | "ModeratorEventSettingsFragment" | "SpeakerEventSettingsFragment" | "VideoEventSettingsFragment" | "useEventDetailsFragment" | "useInvitedUsersListFragment">;
   } | null;
 };
 export type EventSettingsQuery = {
@@ -79,10 +79,17 @@ v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "topic",
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "description",
   "storageKey": null
 },
-v8 = [
+v9 = [
   {
     "kind": "Literal",
     "name": "after",
@@ -94,35 +101,35 @@ v8 = [
     "value": 10
   }
 ],
-v9 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "email",
   "storageKey": null
 },
-v10 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "cursor",
   "storageKey": null
 },
-v11 = {
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "endCursor",
   "storageKey": null
 },
-v12 = {
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "hasNextPage",
   "storageKey": null
 },
-v13 = {
+v14 = {
   "alias": null,
   "args": null,
   "concreteType": "PageInfo",
@@ -130,12 +137,12 @@ v13 = {
   "name": "pageInfo",
   "plural": false,
   "selections": [
-    (v11/*: any*/),
-    (v12/*: any*/)
+    (v12/*: any*/),
+    (v13/*: any*/)
   ],
   "storageKey": null
 },
-v14 = {
+v15 = {
   "kind": "ClientExtension",
   "selections": [
     {
@@ -147,21 +154,21 @@ v14 = {
     }
   ]
 },
-v15 = {
+v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "firstName",
   "storageKey": null
 },
-v16 = {
+v17 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "lastName",
   "storageKey": null
 },
-v17 = {
+v18 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -222,6 +229,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "EventIssueGuideSettingsFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "useEventDetailsFragment"
               }
             ],
             "type": "Event",
@@ -255,14 +267,8 @@ return {
             "selections": [
               (v3/*: any*/),
               (v6/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "topic",
-                "storageKey": null
-              },
               (v7/*: any*/),
+              (v8/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -279,7 +285,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v8/*: any*/),
+                "args": (v9/*: any*/),
                 "concreteType": "EventSpeakerConnection",
                 "kind": "LinkedField",
                 "name": "speakers",
@@ -317,7 +323,7 @@ return {
                             "storageKey": null
                           },
                           (v6/*: any*/),
-                          (v7/*: any*/),
+                          (v8/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -325,23 +331,23 @@ return {
                             "name": "pictureUrl",
                             "storageKey": null
                           },
-                          (v9/*: any*/),
+                          (v10/*: any*/),
                           (v5/*: any*/)
                         ],
                         "storageKey": null
                       },
-                      (v10/*: any*/)
+                      (v11/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v13/*: any*/),
-                  (v14/*: any*/)
+                  (v14/*: any*/),
+                  (v15/*: any*/)
                 ],
                 "storageKey": "speakers(after:\"\",first:10)"
               },
               {
                 "alias": null,
-                "args": (v8/*: any*/),
+                "args": (v9/*: any*/),
                 "filters": null,
                 "handle": "connection",
                 "key": "SpeakerEventSettingsFragment_speakers",
@@ -357,7 +363,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v8/*: any*/),
+                "args": (v9/*: any*/),
                 "concreteType": "EventVideoConnection",
                 "kind": "LinkedField",
                 "name": "videos",
@@ -398,18 +404,18 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v10/*: any*/)
+                      (v11/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v13/*: any*/),
-                  (v14/*: any*/)
+                  (v14/*: any*/),
+                  (v15/*: any*/)
                 ],
                 "storageKey": "videos(after:\"\",first:10)"
               },
               {
                 "alias": null,
-                "args": (v8/*: any*/),
+                "args": (v9/*: any*/),
                 "filters": null,
                 "handle": "connection",
                 "key": "YoutubeSettingsFragment_videos",
@@ -460,7 +466,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v8/*: any*/),
+                "args": (v9/*: any*/),
                 "concreteType": "UserConnection",
                 "kind": "LinkedField",
                 "name": "moderators",
@@ -474,7 +480,7 @@ return {
                     "name": "edges",
                     "plural": true,
                     "selections": [
-                      (v10/*: any*/),
+                      (v11/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -484,10 +490,10 @@ return {
                         "plural": false,
                         "selections": [
                           (v2/*: any*/),
-                          (v15/*: any*/),
                           (v16/*: any*/),
                           (v17/*: any*/),
-                          (v9/*: any*/),
+                          (v18/*: any*/),
+                          (v10/*: any*/),
                           (v5/*: any*/)
                         ],
                         "storageKey": null
@@ -495,14 +501,14 @@ return {
                     ],
                     "storageKey": null
                   },
-                  (v13/*: any*/),
-                  (v14/*: any*/)
+                  (v14/*: any*/),
+                  (v15/*: any*/)
                 ],
                 "storageKey": "moderators(after:\"\",first:10)"
               },
               {
                 "alias": null,
-                "args": (v8/*: any*/),
+                "args": (v9/*: any*/),
                 "filters": null,
                 "handle": "connection",
                 "key": "ModeratorEventSettingsFragment_moderators",
@@ -511,7 +517,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v8/*: any*/),
+                "args": (v9/*: any*/),
                 "concreteType": "UserConnection",
                 "kind": "LinkedField",
                 "name": "invited",
@@ -534,9 +540,9 @@ return {
                         "plural": false,
                         "selections": [
                           (v2/*: any*/),
-                          (v15/*: any*/),
                           (v16/*: any*/),
                           (v17/*: any*/),
+                          (v18/*: any*/),
                           {
                             "alias": null,
                             "args": (v4/*: any*/),
@@ -558,14 +564,42 @@ return {
                     "name": "pageInfo",
                     "plural": false,
                     "selections": [
-                      (v12/*: any*/),
-                      (v11/*: any*/)
+                      (v13/*: any*/),
+                      (v12/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v14/*: any*/)
+                  (v15/*: any*/)
                 ],
                 "storageKey": "invited(after:\"\",first:10)"
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "isActive",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "isViewerInvited",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "EventTopic",
+                "kind": "LinkedField",
+                "name": "topics",
+                "plural": true,
+                "selections": [
+                  (v2/*: any*/),
+                  (v7/*: any*/),
+                  (v8/*: any*/)
+                ],
+                "storageKey": null
               }
             ],
             "type": "Event",
@@ -577,16 +611,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e907372ec3920fdc3706b623295c3a5b",
+    "cacheID": "292c88447da476b1563a8b532b331eab",
     "id": null,
     "metadata": {},
     "name": "EventSettingsQuery",
     "operationKind": "query",
-    "text": "query EventSettingsQuery(\n  $eventId: ID!\n) {\n  node(id: $eventId) {\n    __typename\n    id\n    ... on Event {\n      isViewerModerator\n      ...EventDetailsFragment\n      ...SpeakerEventSettingsFragment\n      ...VideoEventSettingsFragment\n      ...GenericSettingsFragment\n      ...ModeratorEventSettingsFragment\n      ...useInvitedUsersListFragment_32qNee\n      ...EventIssueGuideSettingsFragment\n    }\n  }\n}\n\nfragment EventDetailsFragment on Event {\n  id\n  title\n  topic\n  description\n  startDateTime\n  endDateTime\n}\n\nfragment EventIssueGuideSettingsFragment on Event {\n  id\n  title\n  issueGuideUrl\n}\n\nfragment GenericSettingsFragment on Event {\n  id\n  isQuestionFeedVisible\n  isCollectRatingsEnabled\n  isForumEnabled\n  isPrivate\n  issueGuideUrl\n}\n\nfragment GoogleMeetSettingsFragment on Event {\n  googleMeetUrl\n  id\n}\n\nfragment ModeratorEventSettingsFragment on Event {\n  id\n  moderators(first: 10, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        firstName\n        lastName\n        avatar\n        email\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment SpeakerEventSettingsFragment on Event {\n  id\n  speakers(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        eventId\n        name\n        title\n        description\n        pictureUrl\n        email\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment VideoEventSettingsFragment on Event {\n  eventType\n  ...YoutubeSettingsFragment\n  ...GoogleMeetSettingsFragment\n  id\n}\n\nfragment YoutubeSettingsFragment on Event {\n  id\n  videos(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        url\n        lang\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useInvitedUsersListFragment_32qNee on Event {\n  invited(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        firstName\n        lastName\n        avatar\n        moderatorOf(eventId: $eventId)\n      }\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
+    "text": "query EventSettingsQuery(\n  $eventId: ID!\n) {\n  node(id: $eventId) {\n    __typename\n    id\n    ... on Event {\n      isViewerModerator\n      ...EventDetailsFragment\n      ...SpeakerEventSettingsFragment\n      ...VideoEventSettingsFragment\n      ...GenericSettingsFragment\n      ...ModeratorEventSettingsFragment\n      ...useInvitedUsersListFragment_32qNee\n      ...EventIssueGuideSettingsFragment\n      ...useEventDetailsFragment\n    }\n  }\n}\n\nfragment EventDetailsFragment on Event {\n  id\n  title\n  topic\n  description\n  startDateTime\n  endDateTime\n}\n\nfragment EventIssueGuideSettingsFragment on Event {\n  id\n  title\n  issueGuideUrl\n}\n\nfragment GenericSettingsFragment on Event {\n  id\n  isQuestionFeedVisible\n  isCollectRatingsEnabled\n  isForumEnabled\n  isPrivate\n  issueGuideUrl\n}\n\nfragment GoogleMeetSettingsFragment on Event {\n  googleMeetUrl\n  id\n}\n\nfragment ModeratorEventSettingsFragment on Event {\n  id\n  moderators(first: 10, after: \"\") {\n    edges {\n      cursor\n      node {\n        id\n        firstName\n        lastName\n        avatar\n        email\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment SpeakerEventSettingsFragment on Event {\n  id\n  speakers(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        eventId\n        name\n        title\n        description\n        pictureUrl\n        email\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment VideoEventSettingsFragment on Event {\n  eventType\n  ...YoutubeSettingsFragment\n  ...GoogleMeetSettingsFragment\n  id\n}\n\nfragment YoutubeSettingsFragment on Event {\n  id\n  videos(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        url\n        lang\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment useEventDetailsFragment on Event {\n  id\n  title\n  topic\n  description\n  startDateTime\n  endDateTime\n  isActive\n  isViewerModerator\n  isPrivate\n  isViewerInvited\n  issueGuideUrl\n  topics {\n    id\n    topic\n    description\n  }\n  eventType\n}\n\nfragment useInvitedUsersListFragment_32qNee on Event {\n  invited(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        firstName\n        lastName\n        avatar\n        moderatorOf(eventId: $eventId)\n      }\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "678b5ebdc371349238206163d8609626";
+(node as any).hash = "cafed250469a666dd14f9e222175d52b";
 
 export default node;

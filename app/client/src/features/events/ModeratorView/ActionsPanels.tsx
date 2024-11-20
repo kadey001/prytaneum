@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import * as React from 'react';
-import { FragmentRefs, graphql } from 'relay-runtime';
+import { graphql } from 'relay-runtime';
 import { Badge, Grid, Stack, Tab, Tooltip } from '@mui/material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import HandymanIcon from '@mui/icons-material/Handyman';
@@ -20,9 +20,8 @@ import { LiveFeedbackList } from '../LiveFeedback';
 import { BroadcastMessageList } from '../BroadcastMessages/BroadcastMessageList';
 import { HorizontalResizeHandle } from '@local/components/PanelHandle';
 import { PreloadedQuery, usePreloadedQuery, useQueryLoader } from 'react-relay';
-import { ActionsPanelsQuery } from '@local/__generated__/ActionsPanelsQuery.graphql';
+import { ActionsPanelsQuery, ActionsPanelsQuery$data } from '@local/__generated__/ActionsPanelsQuery.graphql';
 import { ConditionalRender, Loader } from '@local/components';
-import { useEventDetails } from '../useEventDetails';
 import GoogleMeet from '@local/features/google-meet/GoogleMeet';
 
 export const ACTIONS_PANELS_QUERY = graphql`
@@ -40,19 +39,15 @@ export const ACTIONS_PANELS_QUERY = graphql`
     }
 `;
 
-export type ActionsPanelsNode = {
-    readonly id: string;
-    readonly ' $fragmentSpreads': FragmentRefs<any>;
-};
+export type ActionsPanelsNode = NonNullable<ActionsPanelsQuery$data['node']>;
 
 interface ActionsPanelProps {
     node: ActionsPanelsNode;
 }
 
 function ActionsPanels({ node }: ActionsPanelProps) {
-    const { eventData, isLive, setIsLive } = useEventDetails({
-        fragmentRef: node,
-    });
+    const { eventData } = useEvent();
+    const [isLive, setIsLive] = React.useState<boolean>(eventData.isActive ?? false);
     type Tabs = 'Moderator' | 'Feedback' | 'Broadcast' | 'Participants';
     const selectedTabFromSession = sessionStorage.getItem(`${node.id}-tab`) as Tabs | null;
     const [tab, setTab] = React.useState<Tabs>(selectedTabFromSession ?? 'Moderator');
@@ -63,6 +58,14 @@ function ActionsPanels({ node }: ActionsPanelProps) {
         setTab(newTab);
         sessionStorage.setItem(`${node.id}-tab`, newTab);
     };
+
+    React.useEffect(() => {
+        if (eventData.isActive) {
+            setIsLive(true);
+        } else {
+            setIsLive(false);
+        }
+    }, [eventData.isActive]);
 
     return (
         <PanelGroup autoSaveId='mod-panels-child-persistence' direction='vertical'>

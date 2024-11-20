@@ -1,3 +1,4 @@
+import { useEventDetailsFragment$data } from '@local/__generated__/useEventDetailsFragment.graphql';
 import { createContext } from 'react';
 
 /**
@@ -15,8 +16,9 @@ interface TEventContext {
      * is the current user a moderator
      */
     isModerator: boolean;
-    pauseParentRefreshing: () => void;
-    resumeParentRefreshing: () => void;
+    pauseParentRefreshing?: () => void;
+    resumeParentRefreshing?: () => void;
+    eventData: useEventDetailsFragment$data;
 }
 
 // if value is null, then there is no context within the parent tree

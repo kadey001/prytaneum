@@ -50,7 +50,10 @@ export function BroadcastMessageInput() {
         [form]
     );
 
-    const handleClose = () => setState({ message: '' });
+    const handleClose = () => {
+        close();
+        setState({ message: '' });
+    };
 
     const handleOpen = () => {
         setState({ message: '' });

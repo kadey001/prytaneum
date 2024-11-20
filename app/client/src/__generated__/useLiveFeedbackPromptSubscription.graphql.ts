@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f03c568493d8733a94f5ba6381b05dcd>>
+ * @generated SignedSource<<f7afa589034b18876582b9372e7a8ebf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,13 +14,15 @@ export type useLiveFeedbackPromptSubscription$variables = {
 };
 export type useLiveFeedbackPromptSubscription$data = {
   readonly feedbackPrompted: {
-    readonly id: string;
-    readonly isDraft: boolean | null;
-    readonly isMultipleChoice: boolean | null;
-    readonly isOpenEnded: boolean | null;
-    readonly isVote: boolean | null;
-    readonly multipleChoiceOptions: ReadonlyArray<string> | null;
-    readonly prompt: string;
+    readonly node: {
+      readonly id: string;
+      readonly isDraft: boolean | null;
+      readonly isMultipleChoice: boolean | null;
+      readonly isOpenEnded: boolean | null;
+      readonly isVote: boolean | null;
+      readonly multipleChoiceOptions: ReadonlyArray<string> | null;
+      readonly prompt: string;
+    };
   };
 };
 export type useLiveFeedbackPromptSubscription = {
@@ -46,7 +48,7 @@ v1 = [
         "variableName": "eventId"
       }
     ],
-    "concreteType": "EventLiveFeedbackPrompt",
+    "concreteType": "EventLiveFeedbackPromptEdge",
     "kind": "LinkedField",
     "name": "feedbackPrompted",
     "plural": false,
@@ -54,50 +56,61 @@ v1 = [
       {
         "alias": null,
         "args": null,
-        "kind": "ScalarField",
-        "name": "id",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "prompt",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "isVote",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "isDraft",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "isOpenEnded",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "isMultipleChoice",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "multipleChoiceOptions",
+        "concreteType": "EventLiveFeedbackPrompt",
+        "kind": "LinkedField",
+        "name": "node",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "prompt",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "isVote",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "isDraft",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "isOpenEnded",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "isMultipleChoice",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "multipleChoiceOptions",
+            "storageKey": null
+          }
+        ],
         "storageKey": null
       }
     ],
@@ -122,16 +135,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "d252d6ad06a7bbf09e1a22d19d75cd87",
+    "cacheID": "8a67d4ead30d9e680f812ec39555c066",
     "id": null,
     "metadata": {},
     "name": "useLiveFeedbackPromptSubscription",
     "operationKind": "subscription",
-    "text": "subscription useLiveFeedbackPromptSubscription(\n  $eventId: ID!\n) {\n  feedbackPrompted(eventId: $eventId) {\n    id\n    prompt\n    isVote\n    isDraft\n    isOpenEnded\n    isMultipleChoice\n    multipleChoiceOptions\n  }\n}\n"
+    "text": "subscription useLiveFeedbackPromptSubscription(\n  $eventId: ID!\n) {\n  feedbackPrompted(eventId: $eventId) {\n    node {\n      id\n      prompt\n      isVote\n      isDraft\n      isOpenEnded\n      isMultipleChoice\n      multipleChoiceOptions\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "734052273232777e5039afae3dbdc9cb";
+(node as any).hash = "35f418331281c37477421497ffc1a59a";
 
 export default node;

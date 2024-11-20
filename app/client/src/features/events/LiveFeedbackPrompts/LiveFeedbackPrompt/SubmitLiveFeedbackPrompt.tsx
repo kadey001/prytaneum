@@ -12,6 +12,7 @@ import { useSnack } from '@local/core';
 import { FEEDBACK_PROMPT_MAX_LENGTH } from '@local/utils/rules';
 import { isURL } from '@local/utils';
 import type { FeedbackDashboardTab } from './LiveFeedbackPromptList';
+import { useEvent } from '@local/features/events';
 
 export const SUBMIT_LIVE_FEEDBACK_PROMPT_MUTATION = graphql`
     mutation SubmitLiveFeedbackPromptMutation($input: CreateFeedbackPrompt!, $connections: [ID!]!) {
@@ -38,14 +39,14 @@ export const SUBMIT_LIVE_FEEDBACK_PROMPT_MUTATION = graphql`
 
 interface Props {
     className?: string;
-    eventId: string;
     connections: string[];
     selectedTab: FeedbackDashboardTab;
 }
 
-export function SubmitLiveFeedbackPrompt({ className, eventId, connections, selectedTab }: Props) {
+export function SubmitLiveFeedbackPrompt({ className, connections, selectedTab }: Props) {
     const [isOpen, open, close] = useResponsiveDialog();
     const { user } = useUser();
+    const { eventId } = useEvent();
     const { displaySnack } = useSnack();
     const [commit] = useMutation<SubmitLiveFeedbackPromptMutation>(SUBMIT_LIVE_FEEDBACK_PROMPT_MUTATION);
 

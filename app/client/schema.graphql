@@ -743,6 +743,7 @@ type Mutation {
   returns false if an account with the provided email cannot be found
   """
   resetPasswordRequest(input: ResetPasswordRequestForm!): ResetPasswordRequestMutationResponse!
+  reshareFeedbackPrompt(promptId: ID!): EventFeedbackPromptMutationResponse!
   shareFeedbackPromptDraft(promptId: ID!): EventFeedbackPromptMutationResponse!
   shareFeedbackPromptResults(eventId: ID!, promptId: ID!): EventFeedbackPromptMutationResponse!
 
@@ -956,7 +957,7 @@ type Subscription {
   eventUpdates(userId: ID!): Event!
   feedbackCRUD(eventId: ID!): FeedbackOperation!
   feedbackPromptResultsShared(eventId: ID!): EventLiveFeedbackPrompt!
-  feedbackPrompted(eventId: ID!): EventLiveFeedbackPrompt!
+  feedbackPrompted(eventId: ID!): EventLiveFeedbackPromptEdge!
 
   """subscription for whenever a new org is added"""
   orgUpdated: OrganizationSubscription!

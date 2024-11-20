@@ -1,2 +1,2 @@
-export * from './ShareFeedbackResults';
 export * from './useLiveFeedbackPrompt';
+export * from './FeedbackDashboard';

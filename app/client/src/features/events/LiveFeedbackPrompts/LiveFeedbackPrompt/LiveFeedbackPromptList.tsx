@@ -10,16 +10,19 @@ import {
     Tab,
     CardActions,
     CardHeader,
+    Stack,
+    Tooltip,
 } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { useTheme, alpha } from '@mui/material/styles';
-import { useEvent } from '@local/features/events/useEvent';
 import { ShareFeedbackPromptDraft } from './ShareFeedbackPromptDraft';
 import { SubmitLiveFeedbackPrompt } from './SubmitLiveFeedbackPrompt';
 import { useLiveFeedbackPrompts } from './useLiveFeedbackPrompts';
 import { useLiveFeedbackPromptsFragment$key } from '@local/__generated__/useLiveFeedbackPromptsFragment.graphql';
 import FeedbackResponsesDialog from './FeedbackResponsesDialog';
+import { useLiveFeedbackPrompted } from '../useLiveFeedbackPrompted';
+import { ShareFeedbackPrompt } from './ShareFeedbackPrompt';
 
 export type FeedbackDashboardTab = 'open-ended' | 'vote' | 'multiple-choice';
 
@@ -67,10 +70,15 @@ function PromptItem({ prompt, handleClick }: PromptItemProps) {
                 {prompt.isDraft ? (
                     <ShareFeedbackPromptDraft prompt={prompt} />
                 ) : (
-                    <IconButton onClick={() => handleClick(prompt)}>
-                        <OpenInNewIcon />
-                        <Typography variant='subtitle1'>View</Typography>
-                    </IconButton>
+                    <Stack direction='row' spacing={1}>
+                        <Tooltip title='View Responses' placement='top'>
+                            <IconButton onClick={() => handleClick(prompt)}>
+                                <OpenInNewIcon />
+                                <Typography variant='subtitle1'>View Responses</Typography>
+                            </IconButton>
+                        </Tooltip>
+                        <ShareFeedbackPrompt prompt={prompt} />
+                    </Stack>
                 )}
             </CardActions>
         </Card>
@@ -189,32 +197,23 @@ function PromptList({ prompts: readonlyPrompts, handleClick, selectedTab, setSel
 
 interface LiveFeedbackPromptsListProps {
     fragmentRef: useLiveFeedbackPromptsFragment$key;
-    isShareResultsOpen: boolean;
 }
 
 /**
  * This component is responsible for loading the query and passing the fragment ref to the PromptList component
  */
-export function LiveFeedbackPromptsList({ fragmentRef, isShareResultsOpen }: LiveFeedbackPromptsListProps) {
+export function LiveFeedbackPromptsList({ fragmentRef }: LiveFeedbackPromptsListProps) {
     const [open, setOpen] = React.useState(false);
     const { prompts, connections, refresh } = useLiveFeedbackPrompts({
         fragmentRef,
-        isModalOpen: open,
-        isShareResultsOpen,
     });
+    useLiveFeedbackPrompted({ connections });
     const [selectedTab, setSelectedTab] = React.useState<FeedbackDashboardTab>('open-ended');
     const [selectedPrompt, setSelectedPrompt] = React.useState<Prompt | null>(null);
     const selectedPromptRef = React.useRef<Prompt | null>(null);
-    const { pauseParentRefreshing, resumeParentRefreshing, eventId } = useEvent();
 
-    const handleOpen = () => {
-        setOpen(true);
-        pauseParentRefreshing();
-    };
-    const handleClose = () => {
-        setOpen(false);
-        resumeParentRefreshing();
-    };
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const handlePromptClick = (prompt: Prompt) => {
         // Update the selected prompt ref
@@ -231,7 +230,7 @@ export function LiveFeedbackPromptsList({ fragmentRef, isShareResultsOpen }: Liv
 
     return (
         <React.Fragment>
-            <SubmitLiveFeedbackPrompt eventId={eventId} connections={connections} selectedTab={selectedTab} />
+            <SubmitLiveFeedbackPrompt connections={connections} selectedTab={selectedTab} />
             <Typography variant='h6'>Select view on a prompt to see its responses</Typography>
             <PromptList
                 prompts={prompts}

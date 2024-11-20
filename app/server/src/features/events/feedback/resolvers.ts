@@ -3,7 +3,7 @@ import { connectionFromArray, fromGlobalId } from 'graphql-relay';
 import * as Feedback from './methods';
 import { Resolvers, withFilter, errors, toGlobalId, runMutation } from '@local/features/utils';
 import { ProtectedError } from '@local/lib/ProtectedError';
-import type { FeedbackOperation } from '@local/graphql-types';
+import type { EventLiveFeedbackPromptEdge, FeedbackOperation } from '@local/graphql-types';
 import { EventLiveFeedbackPrompt } from '../../../graphql-types';
 import { isModerator } from '../moderation/methods';
 
@@ -118,11 +118,10 @@ export const resolvers: Resolvers = {
                     node: formattedPrompt,
                     cursor: formattedPrompt.id,
                 };
-                if (!isDraft)
-                    ctx.pubsub.publish({
-                        topic: 'feedbackPrompted',
-                        payload: { feedbackPrompted: formattedPrompt },
-                    });
+                ctx.pubsub.publish({
+                    topic: 'feedbackPrompted',
+                    payload: { feedbackPrompted: edge, isDraft, prompterId: ctx.viewer.id },
+                });
                 return edge;
             });
         },
@@ -144,7 +143,29 @@ export const resolvers: Resolvers = {
                 };
                 ctx.pubsub.publish({
                     topic: 'feedbackPrompted',
-                    payload: { feedbackPrompted: formattedPrompt },
+                    payload: { feedbackPrompted: edge, isDraft: false, prompterId: ctx.viewer.id },
+                });
+                return edge;
+            });
+        },
+        async reshareFeedbackPrompt(parent, args, ctx) {
+            return runMutation(async () => {
+                if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
+                const { id: promptId } = fromGlobalId(args.promptId);
+                const prompt = await Feedback.findPromptByPromptId(promptId, ctx.prisma);
+                if (!prompt)
+                    throw new ProtectedError({
+                        userMessage: 'Inalid Prompt',
+                        internalMessage: 'Expected Prompt but got null',
+                    });
+                const formattedPrompt = toFeedbackPromptId(prompt);
+                const edge = {
+                    node: formattedPrompt,
+                    cursor: formattedPrompt.id,
+                };
+                ctx.pubsub.publish({
+                    topic: 'feedbackPrompted',
+                    payload: { feedbackPrompted: edge, isDraft: false, prompterId: ctx.viewer.id },
                 });
                 return edge;
             });
@@ -154,12 +175,31 @@ export const resolvers: Resolvers = {
                 if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
                 if (!args.input) throw new ProtectedError({ userMessage: errors.invalidArgs });
                 const { id: promptId } = fromGlobalId(args.input.promptId);
+
+                // Check if already responded
+                const hasResponded = await ctx.redis.get(`feedbackPromptResponse:${promptId}:${ctx.viewer.id}`);
+                if (hasResponded)
+                    throw new ProtectedError({
+                        userMessage: 'You have already submitted a response for this prompt.',
+                        internalMessage: `User ${ctx.viewer.id} tried to respond to prompt ${promptId}, but has already responded to it.`,
+                    });
+
                 const promptResponse = await Feedback.createFeedbackPromptResponse(
                     ctx.viewer.id,
                     promptId,
                     ctx.prisma,
                     args.input
                 );
+
+                // Cache that user has responded to this prompt
+                const REDIS_EXPIRATION = 60 * 60 * 24; // 1 day in seconds
+                ctx.redis.set(
+                    `feedbackPromptResponse:${promptId}:${ctx.viewer.id}`,
+                    JSON.stringify(promptResponse),
+                    'EX',
+                    REDIS_EXPIRATION
+                );
+
                 const formattedPromptResponse = toFeedbackPromptResponseId(promptResponse);
                 const edge = {
                     node: formattedPromptResponse,
@@ -242,14 +282,31 @@ export const resolvers: Resolvers = {
             ),
         },
         feedbackPrompted: {
-            subscribe: withFilter<{ feedbackPrompted: EventLiveFeedbackPrompt }>(
+            subscribe: withFilter<{
+                feedbackPrompted: EventLiveFeedbackPromptEdge;
+                isDraft: boolean;
+                prompterId: string;
+            }>(
                 (parent, args, ctx) => ctx.pubsub.subscribe('feedbackPrompted'),
-                (payload, args, ctx) => {
+                async (payload, args, ctx) => {
                     // Check that user is logged in
                     if (!ctx.viewer.id) return false;
-                    const { id: feedbackPromptId } = fromGlobalId(payload.feedbackPrompted.id);
                     const { id: eventId } = fromGlobalId(args.eventId);
-                    // TODO only update to non moderator participants
+                    // Check that user is not the prompter (already handled by mutation)
+                    const prompterId = payload.prompterId;
+                    if (ctx.viewer.id === prompterId) return false;
+                    const isDraft = payload.isDraft;
+                    if (isDraft) {
+                        // Check if user is a moderator, if so, share the draft prompt with them
+                        return isModerator(ctx.viewer.id, eventId, ctx.prisma);
+                    }
+                    // Check that user has not already responded to this prompt
+                    const { id: feedbackPromptId } = fromGlobalId(payload.feedbackPrompted.node.id);
+
+                    const hasResponded = await ctx.redis.get(
+                        `feedbackPromptResponse:${feedbackPromptId}:${ctx.viewer.id}`
+                    );
+                    if (hasResponded) return false;
                     return Feedback.doesEventMatchFeedbackPrompt(eventId, feedbackPromptId, ctx.prisma);
                 }
             ),

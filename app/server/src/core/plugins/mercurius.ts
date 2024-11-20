@@ -90,6 +90,9 @@ export function attachMercuriusTo(server: FastifyInstance) {
     mercuriusCodgen(server, {
         // Should be src/graphql-types.ts
         targetPath: join(__dirname, '../../graphql-types.ts'),
+        watchOptions: {
+            enabled: process.env.NODE_ENV === 'development',
+        },
         codegenConfig: {
             internalResolversPrefix: '__',
             // For some reason, mercurius changes this from the default.
