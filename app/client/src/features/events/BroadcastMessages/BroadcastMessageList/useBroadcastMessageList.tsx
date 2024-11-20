@@ -50,15 +50,12 @@ export function useBroadcastMessageList({ fragmentRef }: useBroadcastMessageList
     const MAX_MESSAGES_DISPLAYED = 50;
     const [isRefreshing, setIsRefreshing] = React.useState(false);
 
-    const broadcastMessageList = React.useMemo(
-        () =>
-            broadcastMessages?.edges
-                ? broadcastMessages.edges.map(({ node, cursor }) => {
-                      return { ...node, cursor };
-                  })
-                : [],
-        [broadcastMessages]
-    );
+    const broadcastMessageList = React.useMemo(() => {
+        if (!broadcastMessages?.edges) return [];
+        return broadcastMessages.edges.map(({ node, cursor }) => {
+            return { ...node, cursor };
+        });
+    }, [broadcastMessages]);
 
     const refresh = React.useCallback(() => {
         if (isRefreshing) return;

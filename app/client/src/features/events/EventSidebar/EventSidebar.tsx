@@ -25,6 +25,7 @@ import {
 } from '@local/components/EventInfoPoppers';
 import { Participant } from '../Participants/useParticipantList';
 import ParticipantList from '../Participants/ParticipantList';
+import { useBroadcastMessageSnack } from '../BroadcastMessages/useBroadcastMessageSnack';
 
 export const EVENT_SIDEBAR_FRAGMENT = graphql`
     fragment EventSidebarFragment on Event {
@@ -62,6 +63,7 @@ export const EventSidebar = ({ fragmentRef, participants }: EventSidebarProps) =
         useResponsiveDialog();
     const [isFeedbackPromptResultsOpen, openFeedbackPromptResults, closeFeedbackPromptResults] = useResponsiveDialog();
     const eventId = data.id;
+    useBroadcastMessageSnack();
 
     // Subscribe to live feedback prompts
     const { feedbackPromptRef } = useLiveFeedbackPrompt({ openFeedbackPromptResponse });

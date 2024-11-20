@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<88d7ebc54484770934cc6918f9478b58>>
+ * @generated SignedSource<<5d9ef99aff32a422e6c7d7b1d5ca49e8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -23,6 +23,7 @@ export type useBroadcastMessageCreatedSubscription$data = {
         readonly broadcastMessage: string;
         readonly createdBy: {
           readonly firstName: string | null;
+          readonly id: string;
         } | null;
         readonly id: string;
         readonly isVisible: boolean | null;
@@ -157,6 +158,7 @@ return {
                     "name": "createdBy",
                     "plural": false,
                     "selections": [
+                      (v5/*: any*/),
                       (v9/*: any*/)
                     ],
                     "storageKey": null
@@ -236,8 +238,8 @@ return {
                     "name": "createdBy",
                     "plural": false,
                     "selections": [
-                      (v9/*: any*/),
                       (v5/*: any*/),
+                      (v9/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -304,16 +306,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c6d1043261ee8b5b5f172e489b4abf0f",
+    "cacheID": "1611ad2a6ca58a36a3d209497142c2df",
     "id": null,
     "metadata": {},
     "name": "useBroadcastMessageCreatedSubscription",
     "operationKind": "subscription",
-    "text": "subscription useBroadcastMessageCreatedSubscription(\n  $eventId: ID!\n  $lang: String!\n) {\n  broadcastMessageCreated(eventId: $eventId) {\n    edge {\n      cursor\n      node {\n        id\n        broadcastMessage\n        position\n        isVisible\n        createdBy {\n          firstName\n          id\n        }\n        ...BroadcastMessageActionsFragment\n        ...BroadcastMessageAuthorFragment\n        ...BroadcastMessageContentFragment_3iqx2P\n      }\n    }\n  }\n}\n\nfragment BroadcastMessageActionsFragment on EventBroadcastMessage {\n  id\n  ...DeleteBroadcastMessageButtonFragment\n  ...EditBroadcastMessageButtonFragment\n}\n\nfragment BroadcastMessageAuthorFragment on EventBroadcastMessage {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment BroadcastMessageContentFragment_3iqx2P on EventBroadcastMessage {\n  broadcastMessage\n  lang\n  translatedBroadcastMessage(lang: $lang)\n}\n\nfragment DeleteBroadcastMessageButtonFragment on EventBroadcastMessage {\n  id\n  position\n}\n\nfragment EditBroadcastMessageButtonFragment on EventBroadcastMessage {\n  id\n}\n"
+    "text": "subscription useBroadcastMessageCreatedSubscription(\n  $eventId: ID!\n  $lang: String!\n) {\n  broadcastMessageCreated(eventId: $eventId) {\n    edge {\n      cursor\n      node {\n        id\n        broadcastMessage\n        position\n        isVisible\n        createdBy {\n          id\n          firstName\n        }\n        ...BroadcastMessageActionsFragment\n        ...BroadcastMessageAuthorFragment\n        ...BroadcastMessageContentFragment_3iqx2P\n      }\n    }\n  }\n}\n\nfragment BroadcastMessageActionsFragment on EventBroadcastMessage {\n  id\n  ...DeleteBroadcastMessageButtonFragment\n  ...EditBroadcastMessageButtonFragment\n}\n\nfragment BroadcastMessageAuthorFragment on EventBroadcastMessage {\n  createdBy {\n    id\n    firstName\n    lastName\n    avatar\n  }\n  createdAt\n}\n\nfragment BroadcastMessageContentFragment_3iqx2P on EventBroadcastMessage {\n  broadcastMessage\n  lang\n  translatedBroadcastMessage(lang: $lang)\n}\n\nfragment DeleteBroadcastMessageButtonFragment on EventBroadcastMessage {\n  id\n  position\n}\n\nfragment EditBroadcastMessageButtonFragment on EventBroadcastMessage {\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "c0da6dc48eee99a0a2ad77c935494b45";
+(node as any).hash = "702477e84febb7e0fe5cf931d293dc8a";
 
 export default node;
