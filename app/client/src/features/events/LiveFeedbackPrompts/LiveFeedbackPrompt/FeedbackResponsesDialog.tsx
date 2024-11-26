@@ -84,7 +84,6 @@ export default function FeedbackResponsesDialog({
                                 <ShareFeedbackPromptResults prompt={promptRef.current} />
                             </React.Fragment>
                         ) : null}
-                        {/* <ShareFeedbackResultsButton /> */}
                     </Stack>
                     {!selectedPrompt?.isOpenEnded ? (
                         <FormControl sx={{ m: 1, minWidth: 120 }}>

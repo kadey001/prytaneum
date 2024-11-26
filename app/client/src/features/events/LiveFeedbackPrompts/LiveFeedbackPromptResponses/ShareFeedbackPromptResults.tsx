@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import { ResponsiveDialog, useResponsiveDialog } from '@local/components';
 import { Grid, Typography, DialogContent } from '@mui/material';
 import { useEvent } from '../../useEvent';
+import { useSnack } from '@local/core';
 
 export const SHARE_FEEDBACK_PROMPT_RESULTS_MUTATION = graphql`
     mutation ShareFeedbackPromptResultsMutation($eventId: ID!, $promptId: ID!) {
@@ -32,11 +33,15 @@ export function ShareFeedbackPromptResults({ prompt }: ShareFeedbackResultsProps
     const [isOpen, open, close] = useResponsiveDialog();
     const [commit] = useMutation(SHARE_FEEDBACK_PROMPT_RESULTS_MUTATION);
     const { eventId } = useEvent();
+    const { displaySnack } = useSnack();
 
     const handleSubmit = () => {
         commit({
             variables: { eventId, promptId: prompt.id },
-            onCompleted: close,
+            onCompleted: () => {
+                displaySnack('Successfully shared feedback prompt results.', { variant: 'success' });
+                close();
+            },
         });
     };
 

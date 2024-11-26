@@ -53,6 +53,7 @@ export default function GenerateViewpoints({ promptId, setSelectedPrompt }: Prop
                 },
             },
             onCompleted: () => {
+                displaySnack('Successfully generated viewpoints.', { variant: 'success' });
                 close();
             },
             updater: (store) => {
