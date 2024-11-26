@@ -140,17 +140,16 @@ export const themes: TThemes = {
         ...base,
         palette: {
             ...base.palette,
-            primary: { main: '#4056a1' },
-            secondary: { main: '#f13c20' },
+            primary: { main: '#f3f1ee' },
+            secondary: { main: '#171818' },
         },
     }),
     light: createTheme({
         ...base,
         palette: {
             ...base.palette,
-            primary: { main: '#f3f1ee' },
-            // primary: { main: '#fef7ec' },
-            secondary: { main: '#171818' },
+            primary: { main: '#4056a1' },
+            secondary: { main: '#f13c20' },
         },
     }),
 };

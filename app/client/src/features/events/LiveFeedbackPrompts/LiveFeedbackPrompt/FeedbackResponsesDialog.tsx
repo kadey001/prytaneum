@@ -58,16 +58,6 @@ export default function FeedbackResponsesDialog({
         return <React.Fragment />;
     }, [selectedPrompt]);
 
-    const ShareFeedbackResultsButton = () => {
-        if (selectedPrompt)
-            return (
-                <Grid item paddingBottom='1rem'>
-                    <ShareFeedbackPromptResults prompt={selectedPrompt} />
-                </Grid>
-            );
-        return <React.Fragment />;
-    };
-
     return (
         <StyledDialog
             fullScreen={fullscreen}
@@ -86,9 +76,15 @@ export default function FeedbackResponsesDialog({
                     <PromptText />
                     <Stack direction='row' spacing={2}>
                         {promptRef.current ? (
-                            <GenerateViewpoints promptId={promptRef.current.id} setSelectedPrompt={setSelectedPrompt} />
+                            <React.Fragment>
+                                <GenerateViewpoints
+                                    promptId={promptRef.current.id}
+                                    setSelectedPrompt={setSelectedPrompt}
+                                />
+                                <ShareFeedbackPromptResults prompt={promptRef.current} />
+                            </React.Fragment>
                         ) : null}
-                        <ShareFeedbackResultsButton />
+                        {/* <ShareFeedbackResultsButton /> */}
                     </Stack>
                     {!selectedPrompt?.isOpenEnded ? (
                         <FormControl sx={{ m: 1, minWidth: 120 }}>

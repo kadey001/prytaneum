@@ -2,12 +2,28 @@ import { Chip, Divider, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { Prompt } from './LiveFeedbackPromptList';
 
-interface Props {
+const StyledViewpoint = ({ viewpoint }: { viewpoint: string }) => {
+    // Gradient from purple to blue
+    const gradient = 'linear-gradient(to right bottom, #9c27b0, #2979ff)';
+    return (
+        <Chip
+            variant='outlined'
+            label={viewpoint}
+            sx={{
+                marginBottom: '0.25rem',
+                color: 'white',
+                backgroundImage: gradient,
+            }}
+        />
+    );
+};
+
+interface ViewpointListProps {
     prompt: Prompt;
     vote: string;
 }
 
-export default function ViewpointsList({ prompt, vote }: Props) {
+export default function ViewpointsList({ prompt, vote }: ViewpointListProps) {
     const { viewpoints, voteViewpoints, isOpenEnded } = prompt;
 
     const viewpointsGenerated = React.useMemo(() => {
@@ -38,8 +54,8 @@ export default function ViewpointsList({ prompt, vote }: Props) {
                     <React.Fragment key={index}>
                         <Typography variant='h6'>{_vote}</Typography>
                         {voteViewpoints[_vote].map((viewpoint, _index) => (
-                            <div key={_index}>
-                                <Chip label={viewpoint} sx={{ marginBottom: '0.25rem' }} />
+                            <div key={`${_vote}:${_index}`}>
+                                <StyledViewpoint viewpoint={viewpoint} />
                             </div>
                         ))}
                     </React.Fragment>
@@ -52,7 +68,7 @@ export default function ViewpointsList({ prompt, vote }: Props) {
                     <Typography variant='h6'>{vote}</Typography>
                     {voteViewpoints[vote].map((viewpoint, index) => (
                         <div key={index}>
-                            <Chip label={viewpoint} sx={{ marginBottom: '0.25rem' }} />
+                            <StyledViewpoint viewpoint={viewpoint} />
                         </div>
                     ))}
                 </React.Fragment>
@@ -62,7 +78,7 @@ export default function ViewpointsList({ prompt, vote }: Props) {
             {isOpenEnded ? (
                 viewpoints.map((viewpoint, index) => (
                     <div key={index}>
-                        <Chip label={viewpoint} sx={{ marginBottom: '0.25rem' }} />
+                        <StyledViewpoint viewpoint={viewpoint} />
                     </div>
                 ))
             ) : (

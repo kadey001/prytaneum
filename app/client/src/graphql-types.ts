@@ -721,6 +721,12 @@ export type FeedbackOperation = {
   operationType: Operation;
 };
 
+export type GenerateViewpointsInput = {
+  eventId: Scalars['ID'];
+  isForcedRegenerate?: InputMaybe<Scalars['Boolean']>;
+  promptId: Scalars['ID'];
+};
+
 export type GeneratedTopic = {
   __typename?: 'GeneratedTopic';
   description: Scalars['String'];
@@ -1033,8 +1039,7 @@ export type MutationGenerateEventTopicsArgs = {
 
 
 export type MutationGenerateViewpointsArgs = {
-  eventId: Scalars['ID'];
-  promptId: Scalars['ID'];
+  input: GenerateViewpointsInput;
 };
 
 

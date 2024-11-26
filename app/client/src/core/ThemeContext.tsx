@@ -15,7 +15,7 @@ interface Props {
 export const ThemeSelector = React.createContext<(() => void)[]>([() => {}]);
 
 export function ThemeProvider({ children }: Props) {
-    const [state, setState] = React.useState<keyof TThemes>('dark');
+    const [state, setState] = React.useState<keyof TThemes>('light');
     return (
         <ThemeSelector.Provider value={[() => setState(state === 'light' ? 'dark' : 'light')]}>
             <MUIThemeProvider theme={themes[state]}>{children}</MUIThemeProvider>

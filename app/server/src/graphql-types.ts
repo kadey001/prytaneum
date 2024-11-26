@@ -555,8 +555,7 @@ export type MutationsubmitPostEventFeedbackArgs = {
 };
 
 export type MutationgenerateViewpointsArgs = {
-    eventId: Scalars['ID'];
-    promptId: Scalars['ID'];
+    input: GenerateViewpointsInput;
 };
 
 export type MutationcreateInviteArgs = {
@@ -1395,6 +1394,12 @@ export type Votes = {
     conflicted: Scalars['Int'];
 };
 
+export type GenerateViewpointsInput = {
+    eventId: Scalars['ID'];
+    promptId: Scalars['ID'];
+    isForcedRegenerate?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type CreateInvite = {
     email: Scalars['String'];
     eventId: Scalars['ID'];
@@ -2031,6 +2036,7 @@ export type ResolversTypes = {
     CreateFeedbackPrompt: CreateFeedbackPrompt;
     CreateFeedbackPromptResponse: CreateFeedbackPromptResponse;
     Votes: ResolverTypeWrapper<Votes>;
+    GenerateViewpointsInput: GenerateViewpointsInput;
     CreateInvite: CreateInvite;
     ValidateInvite: ValidateInvite;
     InviteMutationResponse: ResolverTypeWrapper<InviteMutationResponse>;
@@ -2211,6 +2217,7 @@ export type ResolversParentTypes = {
     CreateFeedbackPrompt: CreateFeedbackPrompt;
     CreateFeedbackPromptResponse: CreateFeedbackPromptResponse;
     Votes: Votes;
+    GenerateViewpointsInput: GenerateViewpointsInput;
     CreateInvite: CreateInvite;
     ValidateInvite: ValidateInvite;
     InviteMutationResponse: InviteMutationResponse;
@@ -2755,7 +2762,7 @@ export type MutationResolvers<
         ResolversTypes['EventFeedbackPromptMutationResponse'],
         ParentType,
         ContextType,
-        RequireFields<MutationgenerateViewpointsArgs, 'eventId' | 'promptId'>
+        RequireFields<MutationgenerateViewpointsArgs, 'input'>
     >;
     createInvite?: Resolver<
         ResolversTypes['InviteMutationResponse'],
