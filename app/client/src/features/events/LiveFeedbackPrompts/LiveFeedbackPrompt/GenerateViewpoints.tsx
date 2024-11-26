@@ -9,6 +9,7 @@ import { ResponsiveDialog, useResponsiveDialog } from '@local/components';
 import { useEvent } from '@local/features/events';
 import { Prompt } from './LiveFeedbackPromptList';
 import { useSnack } from '@local/core';
+import { LoadingButton } from '@local/components/LoadingButton';
 
 export const GENERATE_VIEWPOINTS_MUTATION = graphql`
     mutation GenerateViewpointsMutation($input: GenerateViewpointsInput!) {
@@ -38,12 +39,14 @@ export default function GenerateViewpoints({ promptId, setSelectedPrompt }: Prop
     const { eventId } = useEvent();
     const { displaySnack } = useSnack();
     const [checked, setChecked] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);
     };
 
     const handleSubmit = () => {
+        setIsLoading(true);
         commit({
             variables: {
                 input: {
@@ -54,6 +57,7 @@ export default function GenerateViewpoints({ promptId, setSelectedPrompt }: Prop
             },
             onCompleted: () => {
                 displaySnack('Successfully generated viewpoints.', { variant: 'success' });
+                setIsLoading(false);
                 close();
             },
             updater: (store) => {
@@ -81,11 +85,13 @@ export default function GenerateViewpoints({ promptId, setSelectedPrompt }: Prop
                     let errorMessage = 'Error generating viewpoints';
                     if (error instanceof Error) errorMessage += `: ${error.message}`;
                     displaySnack(errorMessage, { variant: 'error' });
+                    setIsLoading(false);
                 }
             },
             onError: (error) => {
                 console.error(error);
                 displaySnack(`Error generating viewpoints: ${error.message}`, { variant: 'error' });
+                setIsLoading(false);
             },
         });
     };
@@ -120,9 +126,9 @@ export default function GenerateViewpoints({ promptId, setSelectedPrompt }: Prop
                                 Cancel
                             </Button>
                             <div style={{ width: '0.5rem' }} />
-                            <Button variant='contained' onClick={handleSubmit}>
+                            <LoadingButton loading={isLoading} variant='contained' onClick={handleSubmit}>
                                 Generate
-                            </Button>
+                            </LoadingButton>
                         </Grid>
                     </Grid>
                 </DialogContent>
