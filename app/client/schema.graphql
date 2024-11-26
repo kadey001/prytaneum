@@ -611,6 +611,12 @@ type FeedbackOperation {
   operationType: Operation!
 }
 
+input GenerateViewpointsInput {
+  eventId: ID!
+  isForcedRegenerate: Boolean
+  promptId: ID!
+}
+
 type GeneratedTopic {
   description: String!
   locked: Boolean
@@ -701,7 +707,7 @@ type Mutation {
   Material limited to ~120k characters
   """
   generateEventTopics(eventId: String!, material: String!): TopicGenerationMutationResponse
-  generateViewpoints(eventId: ID!, promptId: ID!): EventFeedbackPromptMutationResponse!
+  generateViewpoints(input: GenerateViewpointsInput!): EventFeedbackPromptMutationResponse!
   hideQuestion(input: HideQuestion!): EventQuestion
   lockTopic(eventId: String!, topic: String!): TopicLockToggleMutationResponse
   lockTopics(eventId: String!, topics: [String!]!): MutationResponse

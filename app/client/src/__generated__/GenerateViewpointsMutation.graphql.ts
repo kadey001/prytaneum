@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9c61f1eaeb363806f7d6113fa7083e21>>
+ * @generated SignedSource<<9c11b6aa61d136f2fdb6f0c20dde1f49>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,13 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type GenerateViewpointsMutation$variables = {
+export type GenerateViewpointsInput = {
   eventId: string;
+  isForcedRegenerate?: boolean | null;
   promptId: string;
+};
+export type GenerateViewpointsMutation$variables = {
+  input: GenerateViewpointsInput;
 };
 export type GenerateViewpointsMutation$data = {
   readonly generateViewpoints: {
@@ -37,12 +41,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "eventId"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "promptId"
+    "name": "input"
   }
 ],
 v1 = [
@@ -51,13 +50,8 @@ v1 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "eventId",
-        "variableName": "eventId"
-      },
-      {
-        "kind": "Variable",
-        "name": "promptId",
-        "variableName": "promptId"
+        "name": "input",
+        "variableName": "input"
       }
     ],
     "concreteType": "EventFeedbackPromptMutationResponse",
@@ -151,16 +145,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "55957d2a7f9961a532cccf203f1ffd54",
+    "cacheID": "8741c137667be86ea906e0129ec57f61",
     "id": null,
     "metadata": {},
     "name": "GenerateViewpointsMutation",
     "operationKind": "mutation",
-    "text": "mutation GenerateViewpointsMutation(\n  $eventId: ID!\n  $promptId: ID!\n) {\n  generateViewpoints(eventId: $eventId, promptId: $promptId) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        viewpoints\n        voteViewpoints\n      }\n    }\n  }\n}\n"
+    "text": "mutation GenerateViewpointsMutation(\n  $input: GenerateViewpointsInput!\n) {\n  generateViewpoints(input: $input) {\n    isError\n    message\n    body {\n      cursor\n      node {\n        id\n        viewpoints\n        voteViewpoints\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d7273e1d4da70155aea5937e5caabedc";
+(node as any).hash = "aa89d219734805e1938400df4d0d6d2a";
 
 export default node;

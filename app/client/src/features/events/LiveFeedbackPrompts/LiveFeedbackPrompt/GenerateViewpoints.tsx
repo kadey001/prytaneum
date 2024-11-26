@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { graphql } from 'relay-runtime';
 import { useMutation } from 'react-relay';
-
 import Button from '@mui/material/Button';
+import InfoIcon from '@mui/icons-material/Info';
+import { Grid, Typography, DialogContent, FormGroup, FormControlLabel, Checkbox, Tooltip, Stack } from '@mui/material';
+
 import { ResponsiveDialog, useResponsiveDialog } from '@local/components';
-import { Grid, Typography, DialogContent } from '@mui/material';
-import { useEvent } from '../../useEvent';
+import { useEvent } from '@local/features/events';
 import { Prompt } from './LiveFeedbackPromptList';
+import { useSnack } from '@local/core';
 
 export const GENERATE_VIEWPOINTS_MUTATION = graphql`
-    mutation GenerateViewpointsMutation($eventId: ID!, $promptId: ID!) {
-        generateViewpoints(eventId: $eventId, promptId: $promptId) {
+    mutation GenerateViewpointsMutation($input: GenerateViewpointsInput!) {
+        generateViewpoints(input: $input) {
             isError
             message
             body {
@@ -34,35 +36,55 @@ export default function GenerateViewpoints({ promptId, setSelectedPrompt }: Prop
     const [isOpen, open, close] = useResponsiveDialog();
     const [commit] = useMutation(GENERATE_VIEWPOINTS_MUTATION);
     const { eventId } = useEvent();
+    const { displaySnack } = useSnack();
+    const [checked, setChecked] = React.useState(false);
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked(event.target.checked);
+    };
 
     const handleSubmit = () => {
         commit({
-            variables: { eventId, promptId },
+            variables: {
+                input: {
+                    eventId,
+                    promptId,
+                    isForcedRegenerate: checked,
+                },
+            },
             onCompleted: () => {
                 close();
             },
             updater: (store) => {
-                const payload = store.getRootField('generateViewpoints');
-                if (!payload) return console.error('No payload returned from generateViewpoints mutation');
-                const body = payload.getLinkedRecord('body');
-                if (!body) return console.error('No body returned from generateViewpoints mutation');
-                const node = body.getLinkedRecord('node');
-                if (!node) return console.error('No node returned from generateViewpoints mutation');
-                const viewpoints = node.getValue('viewpoints');
-                if (!viewpoints) return console.error('No viewpoints returned from generateViewpoints mutation');
-                const voteViewpoints = node.getValue('voteViewpoints') as Record<string, string[]> | null;
-                if (!voteViewpoints)
-                    return console.error('No voteViewpoints returned from generateViewpoints mutation');
-                const promptRecord = store.get(promptId);
-                if (!promptRecord) return console.error('No prompt found in store');
-                promptRecord.setValue(viewpoints, 'viewpoints');
-                setSelectedPrompt((prev) => {
-                    if (!prev) return prev;
-                    return { ...prev, viewpoints: viewpoints as string[], voteViewpoints };
-                });
+                try {
+                    const payload = store.getRootField('generateViewpoints');
+                    if (!payload) throw new Error('No payload returned from generateViewpoints mutation');
+                    const body = payload.getLinkedRecord('body');
+                    if (!body) throw new Error('No body returned from generateViewpoints mutation');
+                    const node = body.getLinkedRecord('node');
+                    if (!node) throw new Error('No node returned from generateViewpoints mutation');
+                    const viewpoints = node.getValue('viewpoints');
+                    if (!viewpoints) throw new Error('No viewpoints returned from generateViewpoints mutation');
+                    const voteViewpoints = node.getValue('voteViewpoints') as Record<string, string[]> | null;
+                    if (!voteViewpoints) throw new Error('No voteViewpoints returned from generateViewpoints mutation');
+                    const promptRecord = store.get(promptId);
+                    if (!promptRecord) throw new Error('No prompt found in store');
+
+                    promptRecord.setValue(viewpoints, 'viewpoints');
+                    setSelectedPrompt((prev) => {
+                        if (!prev) return prev;
+                        return { ...prev, viewpoints: viewpoints as string[], voteViewpoints };
+                    });
+                } catch (error) {
+                    console.error(error);
+                    let errorMessage = 'Error generating viewpoints';
+                    if (error instanceof Error) errorMessage += `: ${error.message}`;
+                    displaySnack(errorMessage, { variant: 'error' });
+                }
             },
             onError: (error) => {
                 console.error(error);
+                displaySnack(`Error generating viewpoints: ${error.message}`, { variant: 'error' });
             },
         });
     };
@@ -73,11 +95,33 @@ export default function GenerateViewpoints({ promptId, setSelectedPrompt }: Prop
                 <DialogContent>
                     <Grid container>
                         <Grid container item justifyContent='center'>
-                            <Typography>Are you sure you would like to generate/re-generate viewpoints?</Typography>
+                            <Typography>Are you sure you would like to generate viewpoints?</Typography>
+                        </Grid>
+                        <Grid container item justifyContent='right'>
+                            <FormGroup>
+                                <Stack spacing={1} direction='row' alignItems='center'>
+                                    <FormControlLabel
+                                        control={<Checkbox checked={checked} onChange={handleChange} />}
+                                        label='Force regenerate'
+                                    />
+                                    <Tooltip
+                                        title="Forces regeneration of viewpoints when responses haven't changed. 
+                                    By default viewpoints are cached until responses change. NOTE: This may overwrite any existing viewpoints."
+                                        placement='top'
+                                    >
+                                        <InfoIcon sx={(theme) => ({ color: theme.palette.primary.main })} />
+                                    </Tooltip>
+                                </Stack>
+                            </FormGroup>
                         </Grid>
                         <Grid container item justifyContent='center'>
-                            <Button onClick={close}>Cancel</Button>
-                            <Button onClick={handleSubmit}>Generate</Button>
+                            <Button variant='outlined' onClick={close}>
+                                Cancel
+                            </Button>
+                            <div style={{ width: '0.5rem' }} />
+                            <Button variant='contained' onClick={handleSubmit}>
+                                Generate
+                            </Button>
                         </Grid>
                     </Grid>
                 </DialogContent>

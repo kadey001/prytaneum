@@ -215,7 +215,7 @@ export const resolvers: Resolvers = {
                 const { id: promptId } = fromGlobalId(args.promptId);
                 const { id: eventId } = fromGlobalId(args.eventId);
                 // TODO: Pass in option to use ai summary
-                const prompt = await Feedback.summarizePromptResponses(promptId, eventId, ctx.prisma);
+                const prompt = await Feedback.summarizePromptResponses({ prisma: ctx.prisma, promptId, eventId });
                 const formattedPrompt = toFeedbackPromptId(prompt);
                 const edge = {
                     node: formattedPrompt,
@@ -238,10 +238,19 @@ export const resolvers: Resolvers = {
         async generateViewpoints(parent, args, ctx) {
             return runMutation(async () => {
                 if (!ctx.viewer.id) throw new ProtectedError({ userMessage: errors.noLogin });
-                if (!args.promptId) throw new ProtectedError({ userMessage: errors.invalidArgs });
-                const { id: eventId } = fromGlobalId(args.eventId);
-                const { id: promptId } = fromGlobalId(args.promptId);
-                const prompt = await Feedback.summarizePromptResponses(promptId, eventId, ctx.prisma);
+                if (!args.input.promptId) throw new ProtectedError({ userMessage: errors.invalidArgs });
+                const { id: eventId } = fromGlobalId(args.input.eventId);
+                const { id: promptId } = fromGlobalId(args.input.promptId);
+                const isForcedRegenerate = args.input.isForcedRegenerate || false;
+                ctx.app.log.info(
+                    `Generating viewpoints for prompt ${promptId} in event ${eventId}. Is forced: ${isForcedRegenerate}`
+                );
+                const prompt = await Feedback.summarizePromptResponses({
+                    prisma: ctx.prisma,
+                    promptId,
+                    eventId,
+                    forceRegenerate: isForcedRegenerate,
+                });
                 if (!prompt)
                     throw new ProtectedError({
                         userMessage: 'Inalid Prompt',
