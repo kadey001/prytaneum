@@ -51,15 +51,22 @@ export function ShareFeedbackPromptResults({ prompt }: ShareFeedbackResultsProps
                             </Typography>
                         </Grid>
                         <Grid container item justifyContent='center'>
-                            <Button onClick={close}>Cancel</Button>
-                            <Button onClick={handleSubmit}>Share</Button>
+                            <Button variant='outlined' onClick={close}>
+                                Cancel
+                            </Button>
+                            <div style={{ width: '0.5rem' }} />
+                            <Button variant='contained' onClick={handleSubmit}>
+                                Share
+                            </Button>
                         </Grid>
                     </Grid>
                 </DialogContent>
             </ResponsiveDialog>
-            <Button variant='contained' color='primary' onClick={open}>
-                Share Results
-            </Button>
+            <Grid item paddingBottom='1rem'>
+                <Button variant='contained' color='primary' onClick={open}>
+                    Share Results
+                </Button>
+            </Grid>
         </React.Fragment>
     );
 }
