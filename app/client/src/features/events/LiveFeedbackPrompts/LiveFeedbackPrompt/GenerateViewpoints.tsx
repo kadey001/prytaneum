@@ -3,6 +3,7 @@ import { graphql } from 'relay-runtime';
 import { useMutation } from 'react-relay';
 import Button from '@mui/material/Button';
 import InfoIcon from '@mui/icons-material/Info';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { Grid, Typography, DialogContent, FormGroup, FormControlLabel, Checkbox, Tooltip, Stack } from '@mui/material';
 
 import { ResponsiveDialog, useResponsiveDialog } from '@local/components';
@@ -134,7 +135,7 @@ export default function GenerateViewpoints({ promptId, setSelectedPrompt }: Prop
                 </DialogContent>
             </ResponsiveDialog>
             <Grid item paddingBottom='1rem'>
-                <Button variant='contained' color='primary' onClick={open}>
+                <Button variant='contained' startIcon={<AutoAwesomeIcon />} color='primary' onClick={open}>
                     Generate Viewpoints
                 </Button>
             </Grid>

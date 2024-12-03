@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Grid, MenuItem, FormControl, InputLabel, Select, Typography, Button } from '@mui/material';
+import { Grid, MenuItem, FormControl, InputLabel, Select, Typography } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -18,8 +18,6 @@ export const VIDEO_EVENT_SETTINGS_FRAGMENT = graphql`
     }
 `;
 
-// TODO: Add a mutation to change the EventType
-
 interface EventSettingsProps {
     fragmentRef: VideoEventSettingsFragment$key;
 }
@@ -33,17 +31,14 @@ export const VideoEventSettings = ({ fragmentRef }: EventSettingsProps) => {
 
     const handleVideoTypeChange = (event: SelectChangeEvent<EventType>) => {
         const newEventType = event.target.value as EventType;
+        const oldEventType = videoType;
         setVideoType(newEventType);
-    };
-
-    const updateVideoType = () => {
-        const onSuccess = () => {
-            console.log('Success');
-        };
+        const onSuccess = () => {};
         const onFailure = () => {
             console.error('Failed to update video type');
+            setVideoType(oldEventType);
         };
-        updateEventType(videoType, onSuccess, onFailure);
+        updateEventType(newEventType, onSuccess, onFailure);
     };
 
     return (
@@ -63,11 +58,6 @@ export const VideoEventSettings = ({ fragmentRef }: EventSettingsProps) => {
                         <MenuItem value='GOOGLE_MEET'>Google Meet</MenuItem>
                     </Select>
                 </FormControl>
-            </Grid>
-            <Grid item>
-                <Button variant='contained' color='primary' onClick={updateVideoType}>
-                    Set Event Video Type
-                </Button>
             </Grid>
             {videoType === 'NO_VIDEO' ? (
                 <Grid container justifyContent='center'>

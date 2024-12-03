@@ -9,7 +9,6 @@ import {
     TextField,
     Typography,
     Grid,
-    Tooltip,
     Stack,
 } from '@mui/material';
 
@@ -20,6 +19,7 @@ import { LoadingButton } from '@local/components/LoadingButton';
 import { EVENT_READING_MATERIALS_MAX_LENGTH } from '@local/utils/rules';
 import { UploadReadingMaterialsMutation } from '@local/__generated__/UploadReadingMaterialsMutation.graphql';
 import { Topic } from './types';
+import { GeminiIcon } from '@local/components/icons';
 
 const UPLOAD_READING_MATERIALS = graphql`
     mutation UploadReadingMaterialsMutation($eventId: String!, $material: String!) {
@@ -98,9 +98,7 @@ export function UploadReadingMaterials({ onSuccess, setTopics }: Props) {
                 <DialogTitle>
                     <Stack direction='row' justifyContent='space-between' alignItems='center'>
                         Input Background Materials
-                        <Tooltip title='Using Google Gemini'>
-                            <img src='/static/google-gemini-icon.svg' alt='Gemini Logo' width='25px' height='25px' />
-                        </Tooltip>
+                        <GeminiIcon />
                     </Stack>
                 </DialogTitle>
                 <DialogContent>
