@@ -13,7 +13,7 @@ interface Props {
 
 export function EventDetailsCard({ eventData }: Props) {
     const theme = useTheme();
-    const { id: eventId, title, topic, description, startDateTime, endDateTime } = eventData;
+    const { id: eventId, title, topic, description, startDateTime, endDateTime, isViewerModerator } = eventData;
     const router = useRouter();
 
     const handleRouteToSettings = React.useCallback(() => {
@@ -35,11 +35,15 @@ export function EventDetailsCard({ eventData }: Props) {
                 <Typography variant='h5' marginTop={theme.spacing(1)} fontWeight={700}>
                     {title}
                 </Typography>
-                <Tooltip title='Event Settings'>
-                    <IconButton onClick={handleRouteToSettings}>
-                        <SettingsIcon />
-                    </IconButton>
-                </Tooltip>
+                {isViewerModerator ? (
+                    <Tooltip title='Event Settings'>
+                        <IconButton onClick={handleRouteToSettings}>
+                            <SettingsIcon />
+                        </IconButton>
+                    </Tooltip>
+                ) : (
+                    <React.Fragment />
+                )}
             </Stack>
             <Typography color='textSecondary' variant='body1' marginBottom={theme.spacing(1)}>
                 {startTime} - {endTime} • {topic} • {description}
