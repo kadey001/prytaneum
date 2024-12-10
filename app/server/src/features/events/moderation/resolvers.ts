@@ -600,9 +600,17 @@ export const resolvers: Resolvers = {
                 const { id: eventId } = fromGlobalId(args.input.eventId);
                 const { eventType } = args.input;
 
-                const result = await Moderation.updateEventType(eventId, eventType, ctx.prisma);
+                const event = await Moderation.updateEventType(eventId, eventType, ctx.prisma);
+                const eventWithGlobalId = toEventId(event);
 
-                return result.eventType;
+                ctx.pubsub.publish({
+                    topic: 'eventUpdates',
+                    payload: {
+                        eventUpdates: eventWithGlobalId,
+                    },
+                });
+
+                return event.eventType;
             });
         },
     },

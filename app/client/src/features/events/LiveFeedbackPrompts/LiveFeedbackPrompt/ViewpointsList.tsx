@@ -1,4 +1,5 @@
-import { Chip, Divider, Tooltip, Typography } from '@mui/material';
+import { GeminiIcon } from '@local/components/icons';
+import { Chip, Divider, Typography } from '@mui/material';
 import React from 'react';
 import { Prompt } from './LiveFeedbackPromptList';
 
@@ -42,10 +43,7 @@ export default function ViewpointsList({ prompt, vote }: ViewpointListProps) {
     return (
         <React.Fragment>
             <Typography variant='h4'>
-                Summarized Viewpoints{' '}
-                <Tooltip title='Using Google Gemini' placement='top'>
-                    <img src='/static/google-gemini-icon.svg' alt='Gemini Logo' width='25px' height='25px' />
-                </Tooltip>
+                Summarized Viewpoints <GeminiIcon />
             </Typography>
             <Divider sx={{ width: '100%', marginBottom: '0.5rem' }} />
             {!viewpointsGenerated ? <Typography>No viewpoints generated yet</Typography> : null}
