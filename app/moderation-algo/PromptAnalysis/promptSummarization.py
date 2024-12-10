@@ -2,21 +2,34 @@ import sys
 sys.path.append('../')
 import GoogleGemini as gemini
 
-def SummarizePosts(model: str, topic: str, posts: list, subtopic='', force=False) -> str:
+def GetPostViewpoint(model: str, topic: str, post: str, subtopic='', force=False) -> list[str]:
+    "Return the viewpoint of the given post on the given topic and optionally the given subtopic"
+    prompt = 'Rephrase the following statement concisely:\n'
+    prompt += f'"{post}"\n'
+
+    response, safety_ratings = gemini.AskGoogleGemini(model, prompt, force=force)
+    return response
+
+# TODO: DELETE THIS remove anything with fixNum
+def SummarizePosts(model: str, topic: str, posts: list, subtopic='', force=False) -> list[str]:
+    "Return a list of the viewpoints discussed by the given posts on the given topic, or its subtopic if provided"
+    # If 5 or less posts are provided simply return reworded versions of them
+    if(len(posts) <= 5):
+        viewpoints = []
+        for post in posts:
+            viewpoint = GetPostViewpoint(model, topic, post, subtopic, force)
+            viewpoints.append(viewpoint)
+        return viewpoints
+
     if(len(subtopic) > 0):
         prompt = f'Summarize the viewpoints on "{subtopic}", within the broad topic of "{topic}",'
     else:
         prompt = f'Summarize the viewpoints on "{topic}" '
-    #prompt += 'in the following comments in just one to five sentences. '
-    prompt += 'in the following comments'
-    if(len(posts) > 5):
-        prompt += ' in just one to five sentences'
-    prompt += '. '
-    prompt += 'Your summarized viewpoints should read like real viewpoints. '
+    prompt += 'in the following statements in one to five concise sentences. '
     prompt += 'Start each sentence on a new line with a dash. '
-    prompt += 'The comments are:\n'
+    prompt += 'The statements are:\n'
     for i, post in enumerate(posts):
-        prompt += f'Comment {i+1}: "{post}"\n'
+        prompt += f'Statement {i+1}: "{post}"\n'
     prompt += 'The viewpoints are:\n'
 
     # Get response and change it to list format

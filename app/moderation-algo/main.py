@@ -319,9 +319,14 @@ def PromptSummarization():
         subtopic = request.get_json().get('subtopic')
         if(not subtopic):
             subtopic = ''
+
+        # If force is provided, overwrite previously saved response
+        force = request.get_json().get('force')
+        if(not force):
+            force = False
             
         # Summarize the viewpoints from the prompt responses
-        viewpoints = SummarizePosts(model, issue, promptResponses, subtopic) # [viewpoint1, viewpoint2, ...]
+        viewpoints = SummarizePosts(model, issue, promptResponses, subtopic, force) # [viewpoint1, viewpoint2, ...]
 
         # Return the viewpoints with success log message
         LogEventConsole('Successful run of prompt summarization')
