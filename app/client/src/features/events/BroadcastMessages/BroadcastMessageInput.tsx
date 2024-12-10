@@ -91,10 +91,10 @@ export function BroadcastMessageInput() {
                             </Typography>
                         </FormContent>
                         <FormActions disableGrow gridProps={{ justifyContent: 'flex-end' }}>
-                            <Button color='primary' onClick={close}>
+                            <Button variant='outlined' color='primary' onClick={close}>
                                 Cancel
                             </Button>
-                            <Button disabled={!isMessageValid} color='primary' type='submit'>
+                            <Button variant='contained' disabled={!isMessageValid} color='primary' type='submit'>
                                 Submit
                             </Button>
                         </FormActions>

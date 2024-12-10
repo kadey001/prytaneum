@@ -22,7 +22,9 @@ export function ConfirmationDialog({ open, onConfirm, title, children, onClose, 
                 <DialogContentText color='textPrimary'>{children}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
+                <Button variant='outlined' onClick={onClose}>
+                    Cancel
+                </Button>
                 <LoadingButton variant='contained' color='primary' onClick={onConfirm} loading={Boolean(isLoading)}>
                     Confirm
                 </LoadingButton>

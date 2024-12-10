@@ -243,7 +243,7 @@ export function EventForm({ onCancel, onSubmit, title, className, form, formType
             </FormContent>
             <FormActions disableGrow gridProps={{ justifyContent: 'flex-end' }}>
                 {onCancel && (
-                    <Button color='primary' disableElevation onClick={onCancel}>
+                    <Button variant='outlined' color='primary' disableElevation onClick={onCancel}>
                         Cancel
                     </Button>
                 )}

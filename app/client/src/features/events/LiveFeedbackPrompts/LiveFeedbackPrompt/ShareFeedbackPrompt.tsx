@@ -66,7 +66,10 @@ export function ShareFeedbackPrompt({ prompt }: Props) {
                         <b>Prompt: {prompt.prompt}</b>
                     </Typography>
                     <Grid container justifyContent='end'>
-                        <Button onClick={close}>Cancel</Button>
+                        <Button variant='outlined' onClick={close}>
+                            Cancel
+                        </Button>
+                        <div style={{ width: '0.5rem' }} />
                         <Button variant='contained' color='primary' onClick={handleSubmit}>
                             Share
                         </Button>
