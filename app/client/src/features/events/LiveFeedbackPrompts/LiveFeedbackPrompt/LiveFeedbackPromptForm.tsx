@@ -1,5 +1,16 @@
 import * as React from 'react';
-import { Button, TextField, Radio, RadioGroup, Typography, FormControlLabel, IconButton } from '@mui/material';
+import {
+    Button,
+    TextField,
+    Radio,
+    RadioGroup,
+    Typography,
+    FormControlLabel,
+    IconButton,
+    Tooltip,
+    ToggleButtonGroup,
+    ToggleButton,
+} from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import SendIcon from '@mui/icons-material/Send';
@@ -22,6 +33,7 @@ export type TLiveFeedbackPromptFormState = {
     prompt: string;
     feedbackType: string;
     choices: string[];
+    reasoningType: string;
 };
 
 export interface LiveFeedbackPromptFormProps {
@@ -35,10 +47,11 @@ export function LiveFeedbackPromptForm({ onSubmit, onCancel, selectedTab }: Live
         new Array(STARTING_CHOICE_AMOUNT).fill('', 0, STARTING_CHOICE_AMOUNT)
     );
     // form related hooks
-    const [form, errors, handleSubmit, handleChange] = useForm({
+    const [form, errors, handleSubmit, handleChange, setState] = useForm<TLiveFeedbackPromptFormState>({
         prompt: '',
         feedbackType: selectedTab ?? 'open-ended',
         choices: choices,
+        reasoningType: 'optional',
     });
 
     const handleMultipleChoiceChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,31 +96,88 @@ export function LiveFeedbackPromptForm({ onSubmit, onCancel, selectedTab }: Live
     };
 
     const onSaveDraft = () => {
-        if (onSubmit) onSubmit(form, true);
+        const isDraft = true;
+        if (onSubmit) onSubmit(form, isDraft);
+    };
+
+    const handleFeedbackTypeChange = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        const newFeedbackType = (event.target as HTMLButtonElement).value;
+        form.feedbackType = newFeedbackType;
+        setState((prev) => ({ ...prev, feedbackType: newFeedbackType }));
     };
 
     return (
         <Form
             onSubmit={handleSubmit((_form) => {
-                if (onSubmit) onSubmit(_form, false);
+                const isDraft = false;
+                if (onSubmit) onSubmit(_form, isDraft);
             })}
         >
             <FormTitle title='Feedback Prompt' />
             <FormContent>
-                <Grid container alignItems='center' justifyContent='space-around'>
-                    <Typography>Type of Feedback:</Typography>
-                    <RadioGroup
-                        row
-                        aria-label='feedback-prompt'
-                        name='feedback-prompt'
+                <Grid container alignItems='center' justifyContent='space-around' direction='column'>
+                    <Typography>Feedback Type:</Typography>
+                    <ToggleButtonGroup
+                        color='primary'
                         value={form.feedbackType}
-                        onChange={handleChange('feedbackType')}
+                        exclusive
+                        onChange={handleFeedbackTypeChange}
+                        aria-label='Platform'
                     >
-                        <FormControlLabel value='open-ended' control={<Radio />} label='Open Ended' />
-                        <FormControlLabel value='vote' control={<Radio />} label='Vote' />
-                        <FormControlLabel value='multiple-choice' control={<Radio />} label='Multiple Choice' />
-                    </RadioGroup>
+                        <ToggleButton value='open-ended'>Open Ended</ToggleButton>
+                        <ToggleButton value='vote'>Vote</ToggleButton>
+                        <ToggleButton value='multiple-choice'>Multiple Choice</ToggleButton>
+                    </ToggleButtonGroup>
                 </Grid>
+                {form.feedbackType === 'open-ended' ? null : (
+                    <Grid container alignItems='center' justifyContent='space-around' direction='column'>
+                        <Typography>Reasoning:</Typography>
+                        <RadioGroup
+                            row
+                            aria-label='reasoning-type'
+                            name='reasoning-type'
+                            value={form.reasoningType}
+                            onChange={handleChange('reasoningType')}
+                        >
+                            <FormControlLabel
+                                value='disabled'
+                                label='Disabled'
+                                control={
+                                    <Tooltip
+                                        placement='top'
+                                        title='Participants will not be asked to provide reasoning for their responses.'
+                                    >
+                                        <Radio color='error' />
+                                    </Tooltip>
+                                }
+                            />
+                            <FormControlLabel
+                                value='optional'
+                                label='Optional'
+                                control={
+                                    <Tooltip
+                                        placement='top'
+                                        title='Participants will have the option to provide reasoning for their responses.'
+                                    >
+                                        <Radio color='warning' />
+                                    </Tooltip>
+                                }
+                            />
+                            <FormControlLabel
+                                value='required'
+                                label='Required'
+                                control={
+                                    <Tooltip
+                                        placement='top'
+                                        title='Participants will be required to provide reasoning for their responses.'
+                                    >
+                                        <Radio />
+                                    </Tooltip>
+                                }
+                            />
+                        </RadioGroup>
+                    </Grid>
+                )}
                 <Grid item container justifyContent='center'>
                     {form.feedbackType === 'open-ended' && (
                         <Typography>Ask participants to provide open ended feedback on a topic.</Typography>

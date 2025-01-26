@@ -42,7 +42,13 @@ export function LiveFeedbackPromptResponseForm({ onSubmit, onCancel, promptRef }
         multipleChoiceResponse: '',
     });
 
-    const isFeedbackValid = useMemo(() => form.response.trim().length !== 0, [form]);
+    const isFeedbackValid = useMemo(() => {
+        const trimmedResponse = form.response.trim();
+        if (promptRef.current.reasoningType !== 'REQUIRED') {
+            return trimmedResponse.length <= FEEDBACK_PROMPT_RESPONSE_MAX_LENGTH;
+        }
+        return trimmedResponse.length !== 0 && trimmedResponse.length <= FEEDBACK_PROMPT_RESPONSE_MAX_LENGTH;
+    }, [form.response, promptRef]);
     const isValid = useMemo(() => {
         if (promptRef.current.isVote) {
             return form.vote !== '' && isFeedbackValid;
@@ -52,6 +58,17 @@ export function LiveFeedbackPromptResponseForm({ onSubmit, onCancel, promptRef }
         }
         return isFeedbackValid;
     }, [form, promptRef, isFeedbackValid]);
+
+    const reasoningType = useMemo(() => {
+        if (promptRef.current.isOpenEnded) return true; // always include reasoning for open ended
+        return promptRef.current.reasoningType;
+    }, [promptRef]);
+
+    const responseBoxLabel = useMemo(() => {
+        if (promptRef.current.isOpenEnded) return 'Write your response here...';
+        if (reasoningType === 'REQUIRED') return 'Write your reasoning here...';
+        return 'Feel free to write more here...';
+    }, [promptRef, reasoningType]);
 
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
@@ -92,27 +109,30 @@ export function LiveFeedbackPromptResponseForm({ onSubmit, onCancel, promptRef }
                         </RadioGroup>
                     </FormControl>
                 )}
-                <TextField
-                    id='feedback-prompt-response-field'
-                    name='feedback-prompt-response'
-                    label={
-                        promptRef.current.isOpenEnded ? 'Write your response here...' : 'Write your reasoning here...'
-                    }
-                    autoFocus
-                    error={Boolean(errors.response)}
-                    helperText={errors.response}
-                    required
-                    multiline
-                    value={form.response}
-                    onChange={handleChange('response')}
-                />
-                <Typography
-                    variant='caption'
-                    color={form.response.length > FEEDBACK_PROMPT_RESPONSE_MAX_LENGTH ? 'red' : 'black'}
-                    sx={{ display: 'block', textAlign: 'right' }}
-                >
-                    {form.response.length}/500
-                </Typography>
+                {reasoningType === 'DISABLED' ? null : (
+                    <div>
+                        <TextField
+                            id='feedback-prompt-response-field'
+                            name='feedback-prompt-response'
+                            label={responseBoxLabel}
+                            autoFocus
+                            error={Boolean(errors.response)}
+                            helperText={errors.response}
+                            required={reasoningType === 'REQUIRED'}
+                            multiline
+                            value={form.response}
+                            onChange={handleChange('response')}
+                        />
+
+                        <Typography
+                            variant='caption'
+                            color={form.response.length > FEEDBACK_PROMPT_RESPONSE_MAX_LENGTH ? 'red' : 'black'}
+                            sx={{ display: 'block', textAlign: 'right' }}
+                        >
+                            {form.response.length}/500
+                        </Typography>
+                    </div>
+                )}
             </FormContent>
             <FormActions disableGrow gridProps={{ justifyContent: 'flex-end' }}>
                 {onCancel && (

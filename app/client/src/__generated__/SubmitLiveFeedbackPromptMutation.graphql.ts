@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b0bbb77c1307cd7b9a20a4273a6c4b51>>
+ * @generated SignedSource<<5b68ab680718591061c5dc8c0b392c39>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type CreateFeedbackPrompt = {
   feedbackType: string;
   isDraft: boolean;
   prompt: string;
+  reasoningType: string;
 };
 export type SubmitLiveFeedbackPromptMutation$variables = {
   connections: ReadonlyArray<string>;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f7afa589034b18876582b9372e7a8ebf>>
+ * @generated SignedSource<<d78f735538448f962846ceeda530e1b6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,6 +22,7 @@ export type useLiveFeedbackPromptSubscription$data = {
       readonly isVote: boolean | null;
       readonly multipleChoiceOptions: ReadonlyArray<string> | null;
       readonly prompt: string;
+      readonly reasoningType: string | null;
     };
   };
 };
@@ -93,6 +94,13 @@ v1 = [
             "alias": null,
             "args": null,
             "kind": "ScalarField",
+            "name": "reasoningType",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "isOpenEnded",
             "storageKey": null
           },
@@ -135,16 +143,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "8a67d4ead30d9e680f812ec39555c066",
+    "cacheID": "01aa4568e3ec40471cd76af89add52b2",
     "id": null,
     "metadata": {},
     "name": "useLiveFeedbackPromptSubscription",
     "operationKind": "subscription",
-    "text": "subscription useLiveFeedbackPromptSubscription(\n  $eventId: ID!\n) {\n  feedbackPrompted(eventId: $eventId) {\n    node {\n      id\n      prompt\n      isVote\n      isDraft\n      isOpenEnded\n      isMultipleChoice\n      multipleChoiceOptions\n    }\n  }\n}\n"
+    "text": "subscription useLiveFeedbackPromptSubscription(\n  $eventId: ID!\n) {\n  feedbackPrompted(eventId: $eventId) {\n    node {\n      id\n      prompt\n      isVote\n      isDraft\n      reasoningType\n      isOpenEnded\n      isMultipleChoice\n      multipleChoiceOptions\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "35f418331281c37477421497ffc1a59a";
+(node as any).hash = "ce9b19eece13ed311b413068ce0b16a4";
 
 export default node;

@@ -13,6 +13,7 @@ export const USE_LIVE_FEEDBACK_PROMPT_SUBSCRIPTION = graphql`
                 prompt
                 isVote
                 isDraft
+                reasoningType
                 isOpenEnded
                 isMultipleChoice
                 multipleChoiceOptions
@@ -28,6 +29,7 @@ export interface Prompt {
     isOpenEnded: boolean;
     isMultipleChoice: boolean;
     multipleChoiceOptions: string[];
+    reasoningType: string;
 }
 
 interface Props {
@@ -54,6 +56,7 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
         isOpenEnded: false,
         isMultipleChoice: false,
         multipleChoiceOptions: [],
+        reasoningType: 'optional',
     });
 
     const openPrompt = React.useCallback(
@@ -70,6 +73,7 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
                 isOpenEnded: prompt.isOpenEnded,
                 isMultipleChoice: prompt.isMultipleChoice,
                 multipleChoiceOptions: prompt.multipleChoiceOptions,
+                reasoningType: prompt.reasoningType,
             };
             openFeedbackPromptResponse();
             // Remove prompt from enqueuedPrompts
@@ -96,6 +100,7 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
                     isOpenEnded,
                     isMultipleChoice,
                     multipleChoiceOptions,
+                    reasoningType,
                 } = feedbackPrompted;
                 // Check if prompt is already enqueued to avoid duplicates
                 if (enqueuedPrompts.some((_prompt) => _prompt.id === promptId)) return;
@@ -106,6 +111,7 @@ export function useLiveFeedbackPrompt({ openFeedbackPromptResponse }: Props) {
                     isOpenEnded: !!isOpenEnded,
                     isMultipleChoice: !!isMultipleChoice,
                     multipleChoiceOptions: multipleChoiceOptions === null ? [] : [...multipleChoiceOptions],
+                    reasoningType: reasoningType || 'optional',
                 });
 
                 displaySnack(promptId, 'New Feedback Prompt', { variant: 'info' });
