@@ -154,6 +154,12 @@ model EventLiveFeedback {
     refFeedback EventLiveFeedback? @relation("reply", fields: [refFeedbackId], references: [id], onDelete: Cascade)
 }
 
+enum ReasoningType {
+    DISABLED
+    OPTIONAL
+    REQUIRED
+}
+
 
 model EventLiveFeedbackPrompt {
     id String @id @default(uuid()) @db.Uuid
@@ -166,6 +172,7 @@ model EventLiveFeedbackPrompt {
     isMultipleChoice Boolean @default(false)
     multipleChoiceOptions String[] @default([]) // Format is ["option1", "option2"]
     isDraft Boolean @default(false)
+    reasoningType ReasoningType @default(OPTIONAL)
     viewpoints String[] @default([]) // Format is ["viewpoint1", "viewpoint2"]
     voteViewpoints Json @db.Json @default("{}") // { vote: viewpoints } example: { "FOR": ["viewpoint1", "viewpoint2"], "AGAINST": ["viewpoint1", "viewpoint2"] }
     stakeholders String[] @default([]) // Format is ["stakeholder1", "stakeholder2"]
