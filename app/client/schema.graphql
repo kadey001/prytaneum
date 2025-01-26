@@ -57,6 +57,7 @@ input CreateFeedbackPrompt {
   feedbackType: String!
   isDraft: Boolean!
   prompt: String!
+  reasoningType: String!
 }
 
 input CreateFeedbackPromptResponse {
@@ -381,6 +382,7 @@ type EventLiveFeedbackPrompt implements Node {
   isVote: Boolean
   multipleChoiceOptions: [String!]
   prompt: String!
+  reasoningType: String
   responses(after: String, first: Int): EventLiveFeedbackPromptResponseConnection
   stakeholders: [String!]
   viewpoints: [String!]

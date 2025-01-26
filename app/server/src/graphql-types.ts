@@ -1255,6 +1255,7 @@ export type EventLiveFeedbackPrompt = Node & {
     isMultipleChoice?: Maybe<Scalars['Boolean']>;
     multipleChoiceOptions?: Maybe<Array<Scalars['String']>>;
     isDraft?: Maybe<Scalars['Boolean']>;
+    reasoningType?: Maybe<Scalars['String']>;
     responses?: Maybe<EventLiveFeedbackPromptResponseConnection>;
     viewpoints?: Maybe<Array<Scalars['String']>>;
     voteViewpoints?: Maybe<Scalars['JSON']>;
@@ -1377,6 +1378,7 @@ export type CreateFeedbackPrompt = {
     feedbackType: Scalars['String'];
     choices: Array<Scalars['String']>;
     isDraft: Scalars['Boolean'];
+    reasoningType: Scalars['String'];
 };
 
 export type CreateFeedbackPromptResponse = {
@@ -3505,6 +3507,7 @@ export type EventLiveFeedbackPromptResolvers<
     isMultipleChoice?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     multipleChoiceOptions?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
     isDraft?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+    reasoningType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     responses?: Resolver<
         Maybe<ResolversTypes['EventLiveFeedbackPromptResponseConnection']>,
         ParentType,
@@ -4374,6 +4377,7 @@ export interface Loaders<TContext = import('mercurius').MercuriusContext & { rep
         isMultipleChoice?: LoaderResolver<Maybe<Scalars['Boolean']>, EventLiveFeedbackPrompt, {}, TContext>;
         multipleChoiceOptions?: LoaderResolver<Maybe<Array<Scalars['String']>>, EventLiveFeedbackPrompt, {}, TContext>;
         isDraft?: LoaderResolver<Maybe<Scalars['Boolean']>, EventLiveFeedbackPrompt, {}, TContext>;
+        reasoningType?: LoaderResolver<Maybe<Scalars['String']>, EventLiveFeedbackPrompt, {}, TContext>;
         responses?: LoaderResolver<
             Maybe<EventLiveFeedbackPromptResponseConnection>,
             EventLiveFeedbackPrompt,

@@ -21,6 +21,7 @@ type EventLiveFeedbackPrompt implements Node {
     isMultipleChoice: Boolean
     multipleChoiceOptions: [String!]
     isDraft: Boolean
+    reasoningType: String
     responses(first: Int, after: String): EventLiveFeedbackPromptResponseConnection
     viewpoints: [String!]
     voteViewpoints: JSON # { string: [string!] } - vote: [viewpoints] - multipleChoice: [viewpoints]
@@ -126,6 +127,7 @@ input CreateFeedbackPrompt {
     feedbackType: String!
     choices: [String!]!
     isDraft: Boolean!
+    reasoningType: String!
 }
 
 input CreateFeedbackPromptResponse {

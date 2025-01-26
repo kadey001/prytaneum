@@ -70,6 +70,7 @@ export type CreateFeedbackPrompt = {
   feedbackType: Scalars['String'];
   isDraft: Scalars['Boolean'];
   prompt: Scalars['String'];
+  reasoningType: Scalars['String'];
 };
 
 export type CreateFeedbackPromptResponse = {
@@ -458,6 +459,7 @@ export type EventLiveFeedbackPrompt = Node & {
   isVote?: Maybe<Scalars['Boolean']>;
   multipleChoiceOptions?: Maybe<Array<Scalars['String']>>;
   prompt: Scalars['String'];
+  reasoningType?: Maybe<Scalars['String']>;
   responses?: Maybe<EventLiveFeedbackPromptResponseConnection>;
   stakeholders?: Maybe<Array<Scalars['String']>>;
   viewpoints?: Maybe<Array<Scalars['String']>>;

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@local/__generated__/prisma';
+import { PrismaClient, ReasoningType } from '@local/__generated__/prisma';
 import axios, { AxiosResponse } from 'axios';
 import type {
     CreateFeedback,
@@ -330,13 +330,27 @@ export async function createFeedbackPrompt(
     prisma: PrismaClient,
     input: CreateFeedbackPrompt
 ) {
-    const { prompt, feedbackType } = input;
+    const { prompt, feedbackType, reasoningType } = input;
     // Moderator only action
     if ((await isModerator(userId, eventId, prisma)) === false) {
         throw new ProtectedError({
             userMessage: 'Only moderators can create feedback prompts',
             internalMessage: 'createFeedbackPrompt: user is not a moderator',
         });
+    }
+
+    console.log('reasoning type:', input.reasoningType);
+    let reasoningTypeValue: ReasoningType = 'OPTIONAL';
+    switch (reasoningType) {
+        case 'required':
+            reasoningTypeValue = 'REQUIRED';
+            break;
+        case 'disabled':
+            reasoningTypeValue = 'DISABLED';
+            break;
+        default:
+            reasoningTypeValue = 'OPTIONAL';
+            break;
     }
 
     return prisma.eventLiveFeedbackPrompt.create({
@@ -348,6 +362,7 @@ export async function createFeedbackPrompt(
             isMultipleChoice: feedbackType === 'multiple-choice',
             multipleChoiceOptions: input.choices,
             isDraft: input.isDraft,
+            reasoningType: reasoningTypeValue,
         },
     });
 }
